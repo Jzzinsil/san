@@ -236,6 +236,13 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .fadvice{margin-top:14px;border-top:1px solid var(--ink);padding-top:12px;font-size:13.5px;color:var(--text)}
 .fadvice::before{content:"※ ";color:var(--accent)}
 
+/* ---------- 접기(fold) ---------- */
+.fold{border:1px solid var(--hairline);background:var(--paper);margin-top:14px;padding:0}
+.fold > summary{padding:13px 16px;font-size:11.5px;letter-spacing:.16em;font-weight:700;color:var(--muted)}
+.fold[open] > summary{border-bottom:1px solid var(--hairline)}
+.fold .fcard{border-left:none;border-right:none;border-bottom:none;margin-top:0}
+.fold .fcard:first-of-type{border-top:none}
+
 /* ---------- 분야별 · 시간대별 · 주간 (눈금 슬라이더) ---------- */
 .subgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:16px;border:1px solid var(--hairline)}
 .subcat{padding:12px 10px;text-align:left;border-left:1px solid var(--hairline)}
@@ -401,8 +408,12 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .aq{font-size:13.5px;color:var(--muted);border-left:2px solid var(--ink);padding-left:12px}
 .aq b{color:var(--ink);font-weight:700}
 .averdict{display:flex;align-items:center;gap:16px;margin-top:16px;border:1px solid var(--line);padding:14px 16px}
-.averdict .vh{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;letter-spacing:.08em;white-space:nowrap}
-.averdict.yes .vh{color:var(--wood)}
+.averdict .vh{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1;letter-spacing:.08em;white-space:nowrap}
+.averdict .vt{font-size:18px}
+.averdict.yes{background:var(--ink);border-color:var(--ink)}
+.averdict.yes .vh{color:#d9b96a}
+.averdict.yes .vt{color:#f2ecdf}
+.averdict.yes .vd{color:rgba(242,236,223,.65)}
 .averdict.no .vh{color:var(--accent)}
 .averdict .vt{font-family:var(--serif);font-size:16.5px;font-weight:600;letter-spacing:.12em}
 .averdict .vd{font-size:12px;color:var(--dim);margin-top:2px}
@@ -780,7 +791,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.2</span>
+        <span style="letter-spacing:.2em">SAN v2.3</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2336,6 +2347,13 @@ function renderFortune(f, now, natalSaju, natalTGs) {
             range: `${String((23 + i * 2) % 24).padStart(2, '0')}:00–${String((1 + i * 2) % 24).padStart(2, '0')}:00`};
   });
   const nowIdx = Math.floor(mod(now.getHours() * 60 + now.getMinutes() + 60, 1440) / 120);
+  const hourRow = h => `
+      <div class="hrow${h.i === nowIdx ? ' now' : ''}">
+        <span class="hname">${h.name}</span>
+        <span class="htime">${h.range}</span>
+        <span class="hrate hr${h.rate}">${RATE_ICON[h.rate]}</span>
+        <span class="hline"><b>${TG_NICK[h.tg]}</b> · ${TENGOD_FORTUNE[h.tg]}</span>
+      </div>`;
   const good = hours.filter(h => h.rate === 3);
   const luckyHour = good.length ? good[t.dayIdx60 % good.length] : hours[nowIdx];
 
@@ -2364,13 +2382,11 @@ function renderFortune(f, now, natalSaju, natalTGs) {
     </div>
     <p class="ftheme">시간대별 운세</p>
     <p class="fagree">하루를 열두 시진으로 나눠, 각 시진의 천간이 당신의 일간에게 어떤 기운인지 읽습니다.</p>
-    <div class="hourgrid">${hours.map(h => `
-      <div class="hrow${h.i === nowIdx ? ' now' : ''}">
-        <span class="hname">${h.name}</span>
-        <span class="htime">${h.range}</span>
-        <span class="hrate hr${h.rate}">${RATE_ICON[h.rate]}</span>
-        <span class="hline"><b>${TG_NICK[h.tg]}</b> · ${TENGOD_FORTUNE[h.tg]}</span>
-      </div>`).join('')}</div>
+    <div class="hourgrid">${hourRow(hours[nowIdx])}</div>
+    <details>
+      <summary>전체 12시진 펼치기</summary>
+      <div class="hourgrid">${hours.map(hourRow).join('')}</div>
+    </details>
   </div>`;
 
   /* 이번 주 — 월~일 7일 등급 */
@@ -2395,7 +2411,10 @@ function renderFortune(f, now, natalSaju, natalTGs) {
     periodCard(f.periods[0], dayExtra) +
     hourCard +
     periodCard(f.periods[1], weekExtra) +
-    f.periods.slice(2).map(p => periodCard(p)).join('');
+    `<details class="fold">
+      <summary>이번 달 · 분기 · 올해 흐름 펼치기</summary>
+      ${f.periods.slice(2).map(p => periodCard(p)).join('')}
+    </details>`;
 }
 
 /* ---- 사주 ---- */
@@ -2697,8 +2716,8 @@ $('#gungForm').addEventListener('submit', e => {
 
   $('#gungResult').innerHTML = `<div class="acard">
     <p class="aq"><b>${esc(R.myName)}</b> ${gzOf(s1.day)}일주 · ${SIGNS[a1.sun.sign].k} &nbsp;✕&nbsp; <b>${esc(gname)}</b> ${gzOf(s2.day)}일주 · ${SIGNS[a2.sun.sign].k}${gTime ? '' : ' <span style="color:var(--dim)">(상대 시간 미상 — 정오 기준)</span>'}</p>
-    <div class="averdict yes">
-      <span class="vh" style="color:var(--ink);font-size:34px">${total}</span>
+    <div class="averdict${total >= 70 ? ' yes' : ''}">
+      <span class="vh">${total}</span>
       <span><span class="vt">${grade}</span><br><span class="vd">100점 만점 — 사주 ${sajuScore}/40 · 별 ${astroScore}/30 · 수 ${numScore}/30</span></span>
     </div>
     <div class="combo"><b>사주 ${sajuScore}/40</b><br>${linesSj.join('<br>')}</div>
