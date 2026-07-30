@@ -420,6 +420,7 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .spol.flat{color:var(--dim)}
 .pb{margin-top:12px;font-size:14px;color:var(--text)}
 .pb b{font-weight:700}
+.pb .pbx{color:var(--dim);font-size:12.5px}
 .combo{margin-top:14px;border-top:1px solid var(--hairline);padding-top:12px;font-size:13.5px;color:var(--muted)}
 .combo b{color:var(--ink);font-weight:700}
 .atiming{margin-top:14px;padding-top:12px;border-top:1px solid var(--hairline);font-size:13.5px;color:var(--text)}
@@ -779,7 +780,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.1</span>
+        <span style="letter-spacing:.2em">SAN v2.2</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1663,67 +1664,67 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
 /* ---------- 열두 패 (카드 덱) ---------- */
 /* el: 0목 1화 2토 3금 4수 · pol: +1 순풍 / 0 중립 / -1 역풍 · pos: [지금, 길목, 끝자리] */
 const DECK = [
-  {name:'등불', h:'燈', el:1, pol:1, kw:'방향 · 안내 · 가까운 빛', pos:[
+  {name:'등불', th:[7,1], h:'燈', el:1, pol:1, kw:'방향 · 안내 · 가까운 빛', pos:[
     '지금 당신 곁에는 크지 않지만 분명한 빛이 있습니다. 전부를 비추진 못해도, 다음 한 걸음을 비추기에는 충분합니다.',
     '멀리까지 다 보이지 않는 것이 이 문제의 본질입니다. 전체 지도를 요구하지 말고, 등불이 닿는 곳까지만 먼저 가보세요.',
     '이 일은 화려한 결말보다 조용한 확신으로 끝납니다 — 돌아보면 길이 이미 밝혀져 있었음을 알게 됩니다.']},
-  {name:'문', h:'門', el:2, pol:0, kw:'경계 · 선택 · 문턱', pos:[
+  {name:'문', th:[1,9], h:'門', el:2, pol:0, kw:'경계 · 선택 · 문턱', pos:[
     '당신은 지금 문턱에 서 있습니다. 들어가지도 나오지도 않은 상태 — 그 애매함이 답답함의 정체입니다.',
     '열쇠가 없는 게 아니라 손잡이를 아직 돌리지 않았을 뿐입니다. 이 문은 밖에서 열어주는 문이 아닙니다.',
     '문은 결국 열립니다. 다만 열리고 나면 이전으로 돌아갈 수 없다는 것 — 그것까지 받아들일 때 통과가 완성됩니다.']},
-  {name:'다리', h:'橋', el:0, pol:1, kw:'연결 · 건너감 · 사이', pos:[
+  {name:'다리', th:[2,5], h:'橋', el:0, pol:1, kw:'연결 · 건너감 · 사이', pos:[
     '끊어진 줄 알았던 두 지점 사이에 사실 다리가 놓여 있습니다. 사람일 수도, 기회일 수도 있습니다.',
     '건너갈지 말지를 다리 위에서 정할 수는 없습니다. 중간에 멈춰 서 있는 시간이 길어질수록 다리가 흔들립니다.',
     '건너편에서 이 일이 마무리됩니다. 지금 서 있는 자리의 논리가 아니라, 건너간 뒤의 논리로 끝이 납니다.']},
-  {name:'씨앗', h:'種', el:0, pol:1, kw:'시작 · 잠재 · 발아', pos:[
+  {name:'씨앗', th:[1,4], h:'種', el:0, pol:1, kw:'시작 · 잠재 · 발아', pos:[
     '겉으로는 아무 일도 없어 보이지만 땅 밑에서는 이미 시작되었습니다. 지금의 고요는 정지가 아니라 발아입니다.',
     '자꾸 파보고 싶은 마음이 가장 큰 적입니다. 심어둔 것을 확인하려고 꺼내는 순간 처음부터 다시입니다.',
     '결실은 예상보다 늦게, 그러나 예상보다 크게 옵니다. 이 질문의 시간 단위는 며칠이 아니라 계절입니다.']},
-  {name:'칼', h:'劍', el:3, pol:-1, kw:'결단 · 끊어냄 · 정리', pos:[
+  {name:'칼', th:[9,4], h:'劍', el:3, pol:-1, kw:'결단 · 끊어냄 · 정리', pos:[
     '무뎌진 채로 쥐고 있는 것이 있습니다. 자르지도 놓지도 못한 그것이 지금 기운을 가장 많이 새게 합니다.',
     '이 길목의 과제는 덧붙이는 것이 아니라 끊는 것입니다. 무엇을 남길지가 아니라 무엇을 버릴지를 먼저 정하세요.',
     '깔끔하게 잘린 단면으로 끝납니다. 아플 수 있지만 곪지 않습니다 — 늦게 자를수록 단면만 넓어집니다.']},
-  {name:'거울', h:'鏡', el:3, pol:0, kw:'직시 · 반사 · 자기 이해', pos:[
+  {name:'거울', th:[7,2], h:'鏡', el:3, pol:0, kw:'직시 · 반사 · 자기 이해', pos:[
     '상황이 아니라 상황에 비친 당신이 핵심입니다. 지금 밖에서 벌어지는 일은 안에 있던 것이 비친 상입니다.',
     '피하고 싶은 장면을 정면으로 봐야 하는 구간입니다. 거울은 흐리게 봐주지 않지만, 거짓말도 하지 않습니다.',
     '끝에서 당신은 원하던 답 대신 정확한 답을 얻습니다. 그리고 그것이 결국 원하던 것보다 쓸모 있습니다.']},
-  {name:'우물', h:'井', el:4, pol:1, kw:'깊이 · 저장 · 마르지 않음', pos:[
+  {name:'우물', th:[4,7], h:'井', el:4, pol:1, kw:'깊이 · 저장 · 마르지 않음', pos:[
     '겉은 잔잔하지만 깊이 내려가면 차 있는 것이 많습니다. 당신이 생각하는 것보다 당신의 자원은 깊습니다.',
     '두레박을 내리는 수고 없이 물을 마실 수는 없습니다. 있는 것을 꺼내 쓰는 일 — 그것이 이 길목의 일입니다.',
     '한 번에 터지는 결말이 아니라 길어 올릴 때마다 다시 차오르는 결말입니다. 오래 두고 쓰는 답을 얻습니다.']},
-  {name:'바람', h:'風', el:0, pol:-1, kw:'변화 · 소문 · 흔들림', pos:[
+  {name:'바람', th:[5,3], h:'風', el:0, pol:-1, kw:'변화 · 소문 · 흔들림', pos:[
     '지금 흔들리는 것은 당신이 약해서가 아니라 바람의 구간을 지나고 있어서입니다. 주변의 말들이 유난히 크게 들립니다.',
     '바람과 싸워 이기는 방법은 없습니다. 맞서면 꺾이고 접으면 지나갑니다 — 돛으로 쓸 수 있는 바람인지만 판별하세요.',
     '바람이 지나간 자리에는 날아간 것과 남은 것이 분명해집니다. 남은 것이 진짜 당신 것입니다.']},
-  {name:'산', h:'山', el:2, pol:0, kw:'무게 · 기다림 · 부동', pos:[
+  {name:'산', th:[4,6], h:'山', el:2, pol:0, kw:'무게 · 기다림 · 부동', pos:[
     '지금 이 일은 밀어서 움직이는 국면이 아닙니다. 산 앞에 서 있다면, 산을 옮길 게 아니라 넘을 준비를 할 때입니다.',
     '조급함이 유일한 장애물입니다. 이 산은 우회로가 없고 오르는 수밖에 없으며, 오르는 데는 시간이 듭니다.',
     '정상은 생각보다 높지 않았음을 알게 됩니다. 끝에 도착하면 무겁던 것이 전망으로 바뀝니다.']},
-  {name:'배', h:'舟', el:4, pol:1, kw:'이동 · 항해 · 출발', pos:[
+  {name:'배', th:[5,1], h:'舟', el:4, pol:1, kw:'이동 · 항해 · 출발', pos:[
     '이미 닻이 반쯤 올라가 있습니다. 마음은 항구에 없는데 몸만 항구에 있는 상태 — 그 어긋남이 지금의 피로입니다.',
     '떠날 이유는 충분한데 떠날 준비가 문제입니다. 배는 용기로 뜨지만, 항해는 준비로 갑니다.',
     '이 일의 끝은 지금 있는 자리가 아닌 곳에 있습니다. 도착지에서 보면 출발이 가장 어려운 구간이었습니다.']},
-  {name:'실', h:'絲', el:3, pol:0, kw:'인연 · 얽힘 · 이어짐', pos:[
+  {name:'실', th:[2,6], h:'絲', el:3, pol:0, kw:'인연 · 얽힘 · 이어짐', pos:[
     '이 질문에는 당신 혼자만 있지 않습니다. 가늘지만 질긴 실이 누군가와, 혹은 지난 일과 이어져 있습니다.',
     '엉킨 실은 잡아당길수록 조여듭니다. 푸는 것은 힘이 아니라 순서 — 가장 바깥의 매듭부터 천천히.',
     '완전히 끊어지는 결말도, 완전히 풀리는 결말도 아닙니다. 남길 실 한 가닥을 고르는 것으로 끝납니다.']},
-  {name:'별', h:'星', el:1, pol:1, kw:'희망 · 지침 · 먼 빛', pos:[
+  {name:'별', th:[8,1], h:'星', el:1, pol:1, kw:'희망 · 지침 · 먼 빛', pos:[
     '멀어서 흐려 보일 뿐 방향 자체는 틀리지 않았습니다. 필요한 것은 새 목표가 아니라, 시야를 가리는 것들의 정리입니다.',
     '별은 손에 잡히지 않는다는 이유로 무시되기 쉽습니다. 하지만 항해자는 잡을 수 없는 별로 잡을 수 있는 항로를 만듭니다.',
     '이 일은 도착이 아니라 정렬로 끝납니다 — 원하던 지점보다, 옳은 방향 위에 서 있는 자신을 발견하게 됩니다.']},
-  {name:'탑', h:'塔', el:2, pol:-1, kw:'높음 · 고립 · 내려다봄', pos:[
+  {name:'탑', th:[7,9], h:'塔', el:2, pol:-1, kw:'높음 · 고립 · 내려다봄', pos:[
     '높이 올라온 대신 혼자가 되었습니다. 지금의 외로움은 실패의 증거가 아니라 높이의 비용입니다.',
     '탑 안에서는 탑이 보이지 않습니다. 내려와서 보는 것, 남에게 물어보는 것 — 그게 이 길목의 숙제입니다.',
     '스스로 내려오면 계단이 되고, 버티면 균열이 됩니다. 어느 쪽이든 땅에 닿는 것으로 끝나는 일입니다.']},
-  {name:'불씨', h:'火', el:1, pol:0, kw:'열정 · 온도 · 살아있는 불', pos:[
+  {name:'불씨', th:[3,7], h:'火', el:1, pol:0, kw:'열정 · 온도 · 살아있는 불', pos:[
     '꺼진 줄 알았던 것이 아직 살아 있습니다. 재 속의 불씨처럼, 이 마음은 당신이 생각하는 것보다 오래 견딥니다.',
     '한 번에 다 태우려는 조급함이 불씨를 꺼뜨립니다. 필요한 것은 장작더미가 아니라 바람 한 줌 — 작게, 자주.',
     '큰불이 아니라 오래가는 불로 끝납니다. 화려하게 타오르는 대신, 겨울을 나는 온기가 됩니다.']},
-  {name:'그릇', h:'器', el:2, pol:1, kw:'담음 · 준비 · 그릇의 크기', pos:[
+  {name:'그릇', th:[4,8], h:'器', el:2, pol:1, kw:'담음 · 준비 · 그릇의 크기', pos:[
     '기회가 없는 것이 아니라 담을 그릇이 빚어지는 중입니다. 그릇이 구워지는 동안은 원래 가마 속처럼 답답합니다.',
     '더 큰 그릇을 탐내기 전에 지금 그릇의 금부터 메우세요. 새는 그릇에는 무엇을 부어도 같습니다.',
     '담을 수 있는 만큼 정확히 담기는 결말입니다. 그리고 그 크기는 지금 예상보다 한 치수 큽니다.']},
-  {name:'뿌리', h:'根', el:0, pol:0, kw:'근본 · 출처 · 보이지 않는 절반', pos:[
+  {name:'뿌리', th:[4,9], h:'根', el:0, pol:0, kw:'근본 · 출처 · 보이지 않는 절반', pos:[
     '문제는 가지가 아니라 뿌리에 있습니다. 지금 보이는 일은 오래된 것의 가장 최신 버전일 뿐입니다.',
     '빨리 끝내고 싶다면 역설적으로 더 깊이 파야 합니다. 이번에 뿌리까지 다루면 같은 일이 다시 오지 않습니다.',
     '겉보기에는 조용한 결말이지만 아래에서는 큰 것이 바뀝니다. 다음 계절의 당신이 그 차이를 증명합니다.']}
@@ -2028,6 +2029,21 @@ function finishDraw() {
   const names = picks.map(c => c.name);
   const pairLines = PAIR_TEXT.filter(([a, b]) => names.includes(a) && names.includes(b)).map(p => p[2]);
 
+  const myWeak = R.saju.counts.indexOf(Math.min(...R.saju.counts));
+  const myDom = R.saju.counts.indexOf(Math.max(...R.saju.counts));
+  const perSlots = [R.fortune.periods[0], R.fortune.periods[2], R.fortune.periods[4]];
+  const cardNotes = (c, i) => {
+    const notes = [];
+    if (c.el === myWeak && R.saju.counts[myWeak] <= 1)
+      notes.push(`이 패의 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h}) 기운은 당신 명식에 가장 옅은 기운입니다 — 안에 없는 답이 밖에서 온 셈이니, 평소의 방식 대신 이 패의 방식을 빌려보라는 뜻입니다.`);
+    else if (c.el === myDom && R.saju.counts[myDom] >= (R.saju.total >= 8 ? 3 : 2))
+      notes.push(`당신 명식에서 가장 강한 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h}) 기운과 같은 결 — 몸에 익은 방식이 통한다는 신호입니다.`);
+    if (c.th.some(t => ev.cat.themes.includes(t)))
+      notes.push(`이 패의 주제는 지금 물은 「${ev.cat.label}」의 결과 겹칩니다 — 손이 질문의 과녁 위에 있는 패를 집었습니다.`);
+    if (c.th.includes(perSlots[i].theme))
+      notes.push(`${['오늘', '이달', '올해'][i]}의 흐름(${THEMES[perSlots[i].theme].name})과 같은 결 — 패가 시절과 공명합니다.`);
+    return notes.length ? ` <span class="pbx">${notes.join(' ')}</span>` : '';
+  };
   const spots = picks.map((c, i) => `
     <div class="spot">
       <p class="slabel">${['지금', '길목', '끝자리'][i]}</p>
@@ -2037,7 +2053,20 @@ function finishDraw() {
       <p class="spol ${c.pol > 0 ? 'up' : c.pol < 0 ? 'down' : 'flat'}">${c.pol > 0 ? '順 밀어주는 패' : c.pol < 0 ? '逆 막아서는 패' : '平 중립의 패'}</p>
     </div>`).join('');
   const passages = picks.map((c, i) =>
-    `<p class="pb"><b>${POS_LABEL[i]} · ${c.name}(${c.h})</b><br>${c.pos[i]}</p>`).join('');
+    `<p class="pb"><b>${POS_LABEL[i]} · ${c.name}(${c.h})</b><br>${c.pos[i]}${cardNotes(c, i)}</p>`).join('');
+  const kwOf = c => c.kw.split(' · ')[0];
+  const intro = `<p class="pb" style="margin-top:14px">「${ev.cat.label}」을 묻는 당신 — ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath} — 에게 세 패는 이렇게 배열됐습니다. 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`;
+
+  /* 명식 다층 교차 */
+  const crossLines = [`패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDesc}.`];
+  const weakCnt = picks.filter(c => c.el === myWeak).length;
+  if (weakCnt >= 2 && R.saju.counts[myWeak] <= 1)
+    crossLines.push(`셋 중 ${weakCnt}장이 당신에게 비어 있는 ${ELEMENTS[myWeak].k}(${ELEMENTS[myWeak].h}) 기운을 들고 왔습니다 — 이 질문의 답이 당신 안이 아니라 밖(사람 · 환경 · 새로운 방식)에 있다는 신호입니다.`);
+  const ZTOEL = [1, 2, 0, 4];
+  if (domEl === ZTOEL[R.astro.sun.sign % 4])
+    crossLines.push(`태양 ${SIGNS[R.astro.sun.sign].k}의 ${ZOD_EL[R.astro.sun.sign % 4]} 원소와도 같은 온도의 패입니다 — 당신의 정체성과 어긋나지 않는 방향입니다.`);
+  if (picks.some(c => c.th.includes(R.fortune.periods[0].num.theme)))
+    crossLines.push(`오늘의 개인 일수(${R.fortune.PD})와 같은 결의 패가 섞여 있습니다 — 오늘 물어서 오늘 답이 맞는 질문입니다.`);
 
   const card = document.createElement('div');
   card.className = 'acard';
@@ -2049,9 +2078,10 @@ function finishDraw() {
     </div>
     <span class="acat">${ev.cat.label}</span>
     <div class="spread3">${spots}</div>
+    ${intro}
     ${passages}
     <div class="combo"><b>패가 겹쳐 만든 결</b><br>${comboLine(picks.map(c => c.el))}${pairLines.length ? '<br>' + pairLines.join('<br>') : ''}</div>
-    <div class="combo"><b>명식에 놓아 읽기</b><br>패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDesc}.</div>
+    <div class="combo"><b>당신의 명식과 겹쳐 읽기</b><br>${crossLines.join('<br>')}</div>
     ${ev.pts.saju >= 1 && ev.pts.astro + ev.pts.num === 0
       ? `<div class="combo"><b>갈림 읽기</b><br>세 하늘의 목소리가 갈립니다 — 명식(사주)은 그릇이 준비됐다고 말하는데, 하늘의 때(별)와 수의 계절은 아직 조용합니다. 실력의 문제가 아니라 타이밍의 문제라는 뜻입니다.</div>`
       : ev.pts.saju === 0 && ev.pts.astro + ev.pts.num >= 1
