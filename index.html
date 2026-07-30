@@ -222,6 +222,8 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .fdate{font-size:11px;color:var(--dim);letter-spacing:.06em}
 .ftheme{font-family:var(--serif);font-size:20px;font-weight:500;letter-spacing:.1em;margin-top:12px}
 .fagree{font-size:12.5px;color:var(--muted);margin-top:4px}
+.fsplit{margin-top:10px;border-left:2px solid var(--accent);padding-left:10px;font-size:13px;color:var(--muted)}
+.fsplit b{color:var(--ink)}
 .fev{margin-top:14px;border-top:1px solid var(--hairline)}
 .fev .frow{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--hairline);font-size:13px}
 .fev .frow:last-child{border-bottom:none}
@@ -755,7 +757,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v1.7</span>
+        <span style="letter-spacing:.2em">SAN v1.8</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1631,7 +1633,7 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
     ? `가장 결이 맞는 시기는 <b>${PERIOD_META[tp.key].kr}</b>입니다 — ${THEMES[tp.theme].name}의 기운이 이 질문을 받쳐줍니다.`
     : `다섯 시계 중 이 질문과 정확히 겹치는 시기는 아직 없습니다. <b>올해</b>의 큰 흐름(${THEMES[f.periods[4].theme].name}) 위에서 무리하지 않는 것이 좋습니다.`;
 
-  return {cat, ev: sajuPt + astroPt + numPt, sajuLine, astroLine, numLine, timing};
+  return {cat, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt}, sajuLine, astroLine, numLine, timing};
 }
 
 /* ---------- 열두 패 (카드 덱) ---------- */
@@ -2026,6 +2028,11 @@ function finishDraw() {
     ${passages}
     <div class="combo"><b>패가 겹쳐 만든 결</b><br>${comboLine(picks.map(c => c.el))}${pairLines.length ? '<br>' + pairLines.join('<br>') : ''}</div>
     <div class="combo"><b>명식에 놓아 읽기</b><br>패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDesc}.</div>
+    ${ev.pts.saju >= 1 && ev.pts.astro + ev.pts.num === 0
+      ? `<div class="combo"><b>갈림 읽기</b><br>세 하늘의 목소리가 갈립니다 — 명식(사주)은 그릇이 준비됐다고 말하는데, 하늘의 때(별)와 수의 계절은 아직 조용합니다. 실력의 문제가 아니라 타이밍의 문제라는 뜻입니다.</div>`
+      : ev.pts.saju === 0 && ev.pts.astro + ev.pts.num >= 1
+      ? `<div class="combo"><b>갈림 읽기</b><br>세 하늘의 목소리가 갈립니다 — 때(별·수)는 열리고 있는데, 명식의 그릇이 이 방향으로는 옅습니다. 기회가 와도 잡을 준비를 먼저 하라는 뜻입니다.</div>`
+      : ''}
     <details>
       <summary>세 하늘의 근거</summary>
       <div class="fev" style="margin-top:10px">
@@ -2175,6 +2182,18 @@ function renderSynth(saju, astro, num) {
       <p>당신 안에는 ${a}과(와) ${b}이(가) 동시에 삽니다. ${tally[a].srcs[0]}은 ${a}을(를), ${tally[b].srcs[0]}은 ${b}을(를) 가리키죠. 모순이 아니라 진폭입니다 — 두 극 사이를 오가는 리듬이 당신을 단조롭지 않은 사람으로 만듭니다.</p>
     </div>`;
   }
+  /* 체계의 갈림 — 두 교차점이 서로 다른 하늘에서만 보일 때 */
+  if (top.length === 2) {
+    const sysOf = s => (s.includes('사주') || s.includes('오행')) ? '사주' : (s.includes('라이프패스') || s.includes('표현수')) ? '수' : '별';
+    const sA = new Set(top[0][1].srcs.map(sysOf)), sB = new Set(top[1][1].srcs.map(sysOf));
+    if (![...sA].some(x => sB.has(x))) {
+      html += `<div class="card trait">
+        <p class="tsub">체계의 갈림</p>
+        <p class="tname" style="font-size:18px">다른 하늘이 보는 다른 얼굴</p>
+        <p>「${top[0][0]}」은 ${[...sA].join(' · ')}의 눈에만, 「${top[1][0]}」은 ${[...sB].join(' · ')}의 눈에만 보입니다. 상황에 따라 전혀 다른 얼굴이 나오는 이유가 여기 있습니다 — 모순이 아니라, 서로 다른 체계가 당신의 다른 층을 비추고 있는 것입니다.</p>
+      </div>`;
+    }
+  }
   $('#synthTraits').innerHTML = html;
 
   /* 겉·속·중심 */
@@ -2205,11 +2224,24 @@ function renderFortune(f, now, natalSaju, natalTGs) {
     day: `${y}. ${m}. ${d}.`, week: `${m}월 ${f.weekOfMonth}째 주`,
     month: `${m}월`, quarter: `${f.quarter}분기`, year: `${y}년`
   };
+  const TENSION_THEMES = [[1,9],[4,5],[3,7],[6,5]];
+  const inTension = (a, b) => TENSION_THEMES.some(([x, z]) => (a === x && b === z) || (a === z && b === x));
+  const tn = t => THEMES[t].name;
+  const tShort = t => THEMES[t].name.split(' · ')[0];
   const periodCard = (p, extra = '') => {
     const th = THEMES[p.theme];
-    const agreeLine = p.agree === 3 ? '세 체계가 한목소리를 냅니다.'
-      : p.agree === 2 ? '세 체계 중 두 곳이 같은 방향을 가리킵니다.'
-      : '기운이 여러 갈래입니다 — 이 시기의 중심 체계를 기준으로 읽습니다.';
+    let agreeLine, splitHtml = '';
+    if (p.agree === 3) agreeLine = '세 체계가 한목소리를 냅니다.';
+    else if (p.agree === 2) {
+      agreeLine = '세 체계 중 두 곳이 같은 방향을 가리킵니다.';
+      const diss = [['사주', p.saju.theme], ['별', p.astro.theme], ['수', p.num.theme]].find(([, t]) => t !== p.theme);
+      if (diss) splitHtml = `<p class="fsplit"><b>갈림 읽기</b> — ${diss[0]}만 <b>${tn(diss[1])}</b>을 가리킵니다. ${inTension(p.theme, diss[1])
+        ? `본류와 정면으로 당기는 결이니 시간을 나누세요. 큰 줄기는 ${tShort(p.theme)}으로 가되, ${diss[0]}가 짚는 ${tShort(diss[1])}의 일을 먼저 짧게 정리하고 출발하면 둘 다 삽니다.`
+        : `어긋남이 아니라 방식의 제안입니다. ${tShort(p.theme)}을 하되, ${tShort(diss[1])}의 태도로 하라는 뜻으로 읽으세요.`}</p>`;
+    } else {
+      agreeLine = '세 시계가 서로 다른 시간을 가리킵니다 — 갈림 자체가 이 시기의 정보입니다.';
+      splitHtml = `<p class="fsplit"><b>갈림 읽기</b> — 현실의 일(사주)은 <b>${tn(p.saju.theme)}</b>, 바깥의 흐름(별)은 <b>${tn(p.astro.theme)}</b>, 안의 주기(수)는 <b>${tn(p.num.theme)}</b>. 하나로 합치려 하지 말고 영역을 나누세요 — 일과 현실은 ${tShort(p.saju.theme)}의 결로, 사람과 기회는 ${tShort(p.astro.theme)}의 결로, 마음의 페이스는 ${tShort(p.num.theme)}의 결로 따로 운용하는 것이 이 시기의 정답입니다.</p>`;
+    }
     return `<div class="fcard">
       <div class="fhead">
         <span class="fperiod">${PERIOD_META[p.key].label} · ${PERIOD_META[p.key].kr}</span>
@@ -2217,6 +2249,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
       </div>
       <p class="ftheme">${th.name}</p>
       <p class="fagree">${agreeLine}</p>
+      ${splitHtml}
       <div class="fev">
         <div class="frow"><span class="fsys">사주</span><span class="ftxt">${p.saju.label} <b>${p.saju.gz}</b> → 일간에게 <b>${p.saju.tg}</b> · ${TENGOD_FORTUNE[p.saju.tg]}</span></div>
         <div class="frow"><span class="fsys">별</span><span class="ftxt">${p.astro.who}이 <b>${SIGNS[p.astro.sign].k}</b>를 지나며 ${p.astro.base}에서 <b>${p.astro.house}번째 자리</b> — ${HOUSE_FORTUNE[p.astro.house]}</span></div>
