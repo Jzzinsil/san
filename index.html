@@ -731,6 +731,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
             <div class="field">
               <label for="gTime">태어난 시간 (선택)</label>
               <input type="time" id="gTime">
+              <label class="check"><input type="checkbox" id="gNotime"> 태어난 시간을 몰라요</label>
             </div>
             <div class="field">
               <label for="gCountry">태어난 곳</label>
@@ -754,7 +755,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v1.6</span>
+        <span style="letter-spacing:.2em">SAN v1.7</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1791,6 +1792,10 @@ $('#notime').addEventListener('change', e => {
   $('#time').disabled = e.target.checked;
   if (e.target.checked) $('#time').value = '';
 });
+$('#gNotime').addEventListener('change', e => {
+  $('#gTime').disabled = e.target.checked;
+  if (e.target.checked) $('#gTime').value = '';
+});
 
 $('#form').addEventListener('submit', e => {
   e.preventDefault();
@@ -2531,7 +2536,7 @@ $('#gungForm').addEventListener('submit', e => {
   gErr.style.display = 'none';
 
   let gTime = null;
-  if ($('#gTime').value) { const [h, mi] = $('#gTime').value.split(':').map(Number); gTime = {h, m: mi}; }
+  if (!$('#gNotime').checked && $('#gTime').value) { const [h, mi] = $('#gTime').value.split(':').map(Number); gTime = {h, m: mi}; }
   const gc = GEO[gCountrySel.value];
   const arr = gc.cities[gCitySel.value];
   const geo2 = {lat: arr[0], lon: arr[1], tz: arr.length > 2 ? arr[2] : gc.tz};
