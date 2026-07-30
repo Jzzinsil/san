@@ -82,7 +82,10 @@ body{
 .fgroup .glabel{font-size:10px;font-weight:700;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
 .field{margin-bottom:12px}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.frow.parentrow{grid-template-columns:1.1fr 1.1fr .8fr}
+.frow.parentrow{grid-template-columns:1fr 1.4fr .7fr}
+.dselrow{display:grid;grid-template-columns:1.15fr .85fr .85fr 1.15fr;gap:8px}
+.dsel{display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:6px}
+.dsel select,.dselrow select{padding:9px 8px;background-position:right 8px center}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;letter-spacing:.04em}
 .field input[type=text],.field input[type=date],.field input[type=time],.field select{
   width:100%;
@@ -423,8 +426,10 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
   .page-head h1{font-size:30px}
   .form-card{padding:22px 18px}
   .frow{grid-template-columns:1fr}
-  .frow.parentrow{grid-template-columns:1.4fr 1fr}
+  .frow.parentrow{grid-template-columns:1.6fr .8fr}
   .frow.parentrow .field:first-child{grid-column:1/-1}
+  .dselrow{grid-template-columns:1.2fr .9fr .9fr}
+  .dselrow select:nth-child(4){grid-column:1/-1}
   .big3{grid-template-columns:1fr}
   .numgrid{grid-template-columns:1fr}
   .card{padding:18px 16px}
@@ -482,16 +487,18 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <div class="fgroup">
       <p class="glabel">태어난 순간</p>
       <div class="field">
-        <label for="date">생년월일</label>
-        <div class="frow" style="grid-template-columns:1.6fr 1fr">
-          <input type="date" id="date" required min="1900-01-01" max="2099-12-31" aria-describedby="err">
+        <label for="dateY">생년월일</label>
+        <div class="dselrow">
+          <select id="dateY" aria-label="태어난 연도" aria-describedby="err"></select>
+          <select id="dateM" aria-label="태어난 월"></select>
+          <select id="dateD" aria-label="태어난 일"></select>
           <select id="cal" aria-label="양력·음력 선택">
             <option value="solar">양력</option>
             <option value="lunar">음력 (평달)</option>
             <option value="lunarLeap">음력 (윤달)</option>
           </select>
         </div>
-        <p class="err" id="err" role="alert">생년월일을 입력해주세요. (1900–2099년)</p>
+        <p class="err" id="err" role="alert">생년월일을 선택해주세요.</p>
       </div>
       <div class="field">
         <label for="time">태어난 시간</label>
@@ -524,8 +531,12 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <input type="text" id="father" placeholder="김영호">
         </div>
         <div class="field">
-          <label for="fatherDate">아버지 생년월일</label>
-          <input type="date" id="fatherDate" min="1900-01-01" max="2099-12-31">
+          <label for="fatherY">아버지 생년월일</label>
+          <div class="dsel">
+            <select id="fatherY" aria-label="아버지 연도"></select>
+            <select id="fatherM" aria-label="아버지 월"></select>
+            <select id="fatherD" aria-label="아버지 일"></select>
+          </div>
         </div>
         <div class="field">
           <label for="fatherCal">달력</label>
@@ -538,8 +549,12 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <input type="text" id="mother" placeholder="박은정">
         </div>
         <div class="field">
-          <label for="motherDate">어머니 생년월일</label>
-          <input type="date" id="motherDate" min="1900-01-01" max="2099-12-31">
+          <label for="motherY">어머니 생년월일</label>
+          <div class="dsel">
+            <select id="motherY" aria-label="어머니 연도"></select>
+            <select id="motherM" aria-label="어머니 월"></select>
+            <select id="motherD" aria-label="어머니 일"></select>
+          </div>
         </div>
         <div class="field">
           <label for="motherCal">달력</label>
@@ -678,7 +693,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v1.3</span>
+        <span style="letter-spacing:.2em">SAN v1.4</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1644,6 +1659,17 @@ function fillCities(){
 }
 countrySel.addEventListener('change', fillCities);
 fillCities();
+
+/* 연 → 월 → 일 셀렉트 채우기 */
+function fillDateSel(pre) {
+  const nowY = new Date().getFullYear();
+  let ys = '<option value="">년</option>';
+  for (let yy = nowY; yy >= 1900; yy--) ys += `<option>${yy}</option>`;
+  $('#' + pre + 'Y').innerHTML = ys;
+  $('#' + pre + 'M').innerHTML = '<option value="">월</option>' + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">${i + 1}월</option>`).join('');
+  $('#' + pre + 'D').innerHTML = '<option value="">일</option>' + Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${i + 1}일</option>`).join('');
+}
+['date', 'father', 'mother'].forEach(fillDateSel);
 function getGeo(){
   const c = GEO[countrySel.value];
   const arr = c.cities[citySel.value];
@@ -1657,32 +1683,36 @@ $('#notime').addEventListener('change', e => {
 
 $('#form').addEventListener('submit', e => {
   e.preventDefault();
-  const dateEl = $('#date'), err = $('#err');
+  const err = $('#err');
   const showErr = msg => {
     err.textContent = msg;
     err.style.display = 'block';
-    dateEl.setAttribute('aria-invalid', 'true');
-    dateEl.focus();
+    $('#dateY').focus();
   };
-  const parseYmd = v => { if (!v) return null; const [yy, mm, dd] = v.split('-').map(Number); return {y: yy, m: mm, d: dd}; };
-  const toSolar = (dt, calv) => {
-    if (!dt || calv === 'solar') return dt;
-    return lunarToSolar(dt.y, dt.m, dt.d, calv === 'lunarLeap');
+  const readSel = pre => {
+    const yy = +$('#' + pre + 'Y').value, mm = +$('#' + pre + 'M').value, dd = +$('#' + pre + 'D').value;
+    return {y: yy, m: mm, d: dd, filled: !!(yy && mm && dd), touched: !!(yy || mm || dd)};
   };
+  const validSolar = t => { const dt = new Date(t.y, t.m - 1, t.d); return dt.getMonth() === t.m - 1 && dt.getDate() === t.d; };
+  const toSolar = (t, calv) => calv === 'solar'
+    ? (validSolar(t) ? {y: t.y, m: t.m, d: t.d} : null)
+    : lunarToSolar(t.y, t.m, t.d, calv === 'lunarLeap');
 
-  const raw = parseYmd(dateEl.value);
-  if (!raw || raw.y < 1900 || raw.y > 2099) { showErr('생년월일을 입력해주세요. (1900–2099년)'); return; }
+  const raw = readSel('date');
+  if (!raw.filled) { showErr('생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
   const cal = $('#cal').value;
   const solar = toSolar(raw, cal);
-  if (!solar) { showErr(cal === 'lunarLeap' ? '그 해에는 해당 윤달이 없습니다. 달력 선택을 확인해주세요.' : '음력 날짜가 올바르지 않습니다.'); return; }
+  if (!solar) { showErr(cal === 'solar' ? '존재하지 않는 날짜입니다.' : cal === 'lunarLeap' ? '그 해에는 해당 윤달이 없습니다. 달력 선택을 확인해주세요.' : '음력에 없는 날짜입니다.'); return; }
   const {y, m, d} = solar;
 
-  const fDate = toSolar(parseYmd($('#fatherDate').value), $('#fatherCal').value);
-  const mDate = toSolar(parseYmd($('#motherDate').value), $('#motherCal').value);
-  if ($('#fatherDate').value && !fDate) { showErr('아버지 음력 날짜가 올바르지 않습니다.'); return; }
-  if ($('#motherDate').value && !mDate) { showErr('어머니 음력 날짜가 올바르지 않습니다.'); return; }
+  const fRaw = readSel('father'), mRaw = readSel('mother');
+  if (fRaw.touched && !fRaw.filled) { showErr('아버지 생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
+  if (mRaw.touched && !mRaw.filled) { showErr('어머니 생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
+  const fDate = fRaw.filled ? toSolar(fRaw, $('#fatherCal').value) : null;
+  const mDate = mRaw.filled ? toSolar(mRaw, $('#motherCal').value) : null;
+  if (fRaw.filled && !fDate) { showErr('아버지 생년월일이 올바르지 않습니다.'); return; }
+  if (mRaw.filled && !mDate) { showErr('어머니 생년월일이 올바르지 않습니다.'); return; }
   err.style.display = 'none';
-  dateEl.removeAttribute('aria-invalid');
 
   let time = null;
   if (!$('#notime').checked && $('#time').value) {
