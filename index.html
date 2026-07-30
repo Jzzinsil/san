@@ -1889,11 +1889,10 @@ function finishDraw() {
 }
 
 /* ---- 첫 마디 (대표 표식 헤드라인) ---- */
-const SINSAL_WEIGHT = {
-  jangseong:5, goegang:5, yangin:4.5, cheoneul:4.2, baekho:4, dohwa:4, yeokma:4,
-  gwimun:3.6, hwagae:3.5, hongyeom:3.2, wonjin:3.2, gongmang:3.2,
-  mangsin:3, geopsal:3, banan:3, munchang:3,
-  jaesal:2.6, cheonsal:2.6, wolsal:2.6, jisal:2.6, yukhae:2.6
+const SINSAL_WEIGHT = { /* 희귀도·규정력 — 흔한 표식일수록 낮게 */
+  goegang:8, yangin:7, baekho:6.5, cheoneul:6, gwimun:6, wonjin:5.5, gongmang:5,
+  munchang:4.5, hongyeom:4.5, jangseong:4.2, dohwa:4, yeokma:4, hwagae:4,
+  banan:3.5, mangsin:3.5, geopsal:3.5, jaesal:3, cheonsal:3, wolsal:3, jisal:3, yukhae:3
 };
 const HEADLINE_FIRST = {
   jangseong:{
@@ -1917,43 +1916,57 @@ function renderHeadline(inp, saju, astro, num) {
   const dk = STEMS[saju.day.stem];
   const sinsal = computeSinsal(saju);
   const lensLine = `일간 <b>${dk.k}(${dk.h})</b> ${ILGAN_SHORT[dk.k]} · 태양 <b>${SIGNS[astro.sun.sign].k}</b> · 라이프패스 <b>${num.lifePath}</b>`;
-  if (!sinsal.length) {
-    el.innerHTML = `<div class="card headline">
-      <p class="hl-label">첫 마디</p>
-      <div class="hl-main"><span class="hl-hanja">淸</span><div><p class="hl-name">맑은 명식</p><p class="hl-where">표식 없음</p></div></div>
-      <p>뚜렷한 신살 없이 맑게 흐르는 사주입니다. 극단으로 끌려가는 힘이 적어, 삶의 방향을 스스로 정하는 폭이 넓은 명식 — 그래서 이 사주는 표식이 아니라 일간부터 읽습니다.</p>
-      <div class="hl-lens">${lensLine} — 아래 리딩이 이 사주의 본론입니다.</div>
-    </div>`;
-    return;
-  }
-  let best = sinsal[0], bs = -1;
-  for (const x of sinsal) {
-    const w = (SINSAL_WEIGHT[x.key] || 2.5) * 2 + x.count * 2
-      + (x.where.some(s => s.includes('일')) ? 2 : 0)
-      + (x.where.some(s => s.includes('연')) ? .5 : 0);
-    if (w > bs) { bs = w; best = x; }
-  }
-  const st = SINSAL_TEXT[best.key];
-  const ff = HEADLINE_FIRST[best.key];
-  const first = ff ? ((inp.gender === 'F' && ff.F) || (inp.gender === 'M' && ff.M) || ff.D) : st.desc;
-  const inDay = best.where.some(s => s.includes('일'));
-  const reason = (best.count > 1 ? `같은 표식이 ${best.count}곳에 겹쳐 있고, ` : '')
-    + (inDay ? '나 자신을 뜻하는 일주 자리에 닿아 있어' : '명식의 뿌리인 연주 자리에 새겨져 있어')
-    + ' 이 사주의 기본값이 됩니다. 나머지 글자들이 전부 이 별의 영향 아래에서 읽히기 때문에, 이 별부터 읽습니다.';
-  el.innerHTML = `<div class="card headline">
+  const shell = (hanja, name, badge, where, bodyHtml) => `<div class="card headline">
     <p class="hl-label">첫 마디</p>
     <div class="hl-main">
-      <span class="hl-hanja">${st.hanja}</span>
-      <div>
-        <p class="hl-name">${st.name}${best.count > 1 ? ' ×' + best.count : ''} <span class="ss-count">${st.type}</span></p>
-        <p class="hl-where">${best.where.join(' · ')}</p>
-      </div>
+      <span class="hl-hanja">${hanja}</span>
+      <div><p class="hl-name">${name} <span class="ss-count">${badge}</span></p><p class="hl-where">${where}</p></div>
     </div>
-    <p>${first}</p>
-    ${best.count > 1 ? `<p class="small" style="margin-top:10px">${st.many}</p>` : ''}
-    <p class="small" style="margin-top:10px"><b>왜 이것부터 읽는가</b> — ${reason}</p>
-    <div class="hl-lens">${lensLine} — 아래의 모든 리딩은 ${st.name}의 결 위에 놓고 읽으면 한 겹 더 정확해집니다.</div>
+    ${bodyHtml}
+    <div class="hl-lens">${lensLine} — 아래의 모든 리딩은 ${name.replace(/ ×\d+$/, '')}의 결 위에 놓고 읽으면 한 겹 더 정확해집니다.</div>
   </div>`;
+
+  /* 후보 1 — 신살: 희귀도 + 겹침 + 일지 가산 */
+  let bestS = null, bs = -1;
+  for (const x of sinsal) {
+    const w = (SINSAL_WEIGHT[x.key] || 3)
+      + (x.count - 1) * 3
+      + (x.where.some(s => s.includes('일')) ? 1.5 : 0)
+      + (x.count >= 3 ? 1.5 : 0);
+    if (w > bs) { bs = w; bestS = x; }
+  }
+
+  /* 후보 2 — 오행 쏠림: 절반 가까이가 한 기운이면 구조가 표식보다 먼저 읽힘 */
+  const th = saju.total >= 8 ? 4 : 3;
+  const maxC = Math.max(...saju.counts);
+  const domEl = saju.counts.indexOf(maxC);
+  const elScore = maxC >= th ? 6.8 + (maxC - th) * 2 : -1;
+
+  if (elScore > bs && elScore > 0) {
+    const e = ELEMENTS[domEl];
+    el.innerHTML = shell(e.h, `${e.k}(${e.h}) 편중`, '구조', `${saju.total}글자 중 ${maxC}자`,
+      `<p>이 사주는 표식보다 쏠림이 먼저 보입니다. ${saju.total}글자 가운데 ${maxC}자가 ${e.k}(${e.h}) — 명식의 비중이 한쪽으로 크게 기울어 있습니다. ${OHAENG_MUCH[domEl]}</p>
+      <p class="small" style="margin-top:10px"><b>왜 이것부터 읽는가</b> — 개별 표식보다 기운의 배분이 삶의 결을 먼저 결정하는 명식이기 때문입니다. 아래 오행 균형 카드에서 전체 배분을 확인하세요.</p>`);
+    return;
+  }
+
+  if (!bestS) {
+    el.innerHTML = shell('淸', '맑은 명식', '구조', '표식 없음',
+      `<p>뚜렷한 신살 없이 맑게 흐르는 사주입니다. 극단으로 끌려가는 힘이 적어, 삶의 방향을 스스로 정하는 폭이 넓은 명식 — 그래서 이 사주는 표식이 아니라 일간부터 읽습니다.</p>`);
+    return;
+  }
+
+  const st = SINSAL_TEXT[bestS.key];
+  const ff = HEADLINE_FIRST[bestS.key];
+  const first = ff ? ((inp.gender === 'F' && ff.F) || (inp.gender === 'M' && ff.M) || ff.D) : st.desc;
+  const inDay = bestS.where.some(s => s.includes('일'));
+  const reason = (bestS.count > 1 ? `같은 표식이 ${bestS.count}곳에 겹쳐 있고, ` : '')
+    + (inDay ? '나 자신을 뜻하는 일주 자리에 닿아 있어' : '명식의 뿌리 자리에 새겨져 있어')
+    + ' 이 사주에서 가장 도드라지는 글자가 됩니다. 나머지 글자들이 이 별의 영향 아래에서 읽히기 때문에, 이 별부터 읽습니다.';
+  el.innerHTML = shell(st.hanja, `${st.name}${bestS.count > 1 ? ' ×' + bestS.count : ''}`, st.type, bestS.where.join(' · '),
+    `<p>${first}</p>
+    ${bestS.count > 1 ? `<p class="small" style="margin-top:10px">${st.many}</p>` : ''}
+    <p class="small" style="margin-top:10px"><b>왜 이것부터 읽는가</b> — ${reason}</p>`);
 }
 
 /* ---- 통합 리딩 ---- */
