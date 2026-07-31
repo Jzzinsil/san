@@ -831,11 +831,11 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <section class="reading" id="report">
       <p class="sec-label">One-Page Report</p>
       <h2 class="sec-title">명식 리포트</h2>
-      <p class="sec-desc">여덟 장의 리딩에서 결론만 추려 한 장에 담았습니다. 이미지로 저장해 간직하거나, 마음 가는 사람에게 건네도 좋습니다.</p>
+      <p class="sec-desc">여덟 장의 리딩에서 결론만 추려 한 장에 담았습니다. 아래 버튼을 누르면 당신의 명식 글자로 그린 행운 부적이 만들어집니다.</p>
       <div class="card repcard" id="reportCard"></div>
       <div style="text-align:center;margin-top:20px">
-        <button type="button" class="btn" id="saveReport" style="width:auto;padding:13px 34px">이미지로 저장</button>
-        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">PNG 한 장으로 저장됩니다 — 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.</p>
+        <button type="button" class="btn" id="saveReport" style="width:auto;padding:13px 34px">행운 부적 저장</button>
+        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">일간 · 일지 · 별자리 · 수로 그린 당신만의 부적이 PNG로 저장됩니다 — 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.</p>
       </div>
     </section>
 
@@ -846,7 +846,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.7.1</span>
+        <span style="letter-spacing:.2em">SAN v2.8</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2553,7 +2553,9 @@ function renderReport(inp, saju, astro, num, f) {
   } else {
     mirror = `겉 월간 ${mTg}의 가면 · 속 달 ${SIGNS[astro.moon.sign].k} — 출생 시간이 있어야 온전히 읽힙니다`;
   }
-  const top = tagVotes(saju, astro, num).sorted[0];
+  const tv = tagVotes(saju, astro, num).sorted;
+  const top = tv[0];
+  const lineTag = (tv.find(t => !ILGAN_SHORT[dk.k].includes(t[0])) || tv[0])[0];
   const weak = saju.counts.indexOf(Math.min(...saju.counts));
   const dom = saju.counts.indexOf(Math.max(...saju.counts));
   const tsh = t => THEMES[t].name.split(' · ')[0];
@@ -2572,7 +2574,13 @@ function renderReport(inp, saju, astro, num, f) {
   const nameLine = inp.name || inp.ename || '이름 없는 별';
   const metaLine = `${inp.y}. ${inp.m}. ${inp.d}.${inp.time ? ` ${String(inp.time.h).padStart(2, '0')}:${String(inp.time.m).padStart(2, '0')}` : ''} · ${inp.geo.name}`;
   const fpLine = `${STEMS[saju.day.stem].k}${BRANCHES[saju.day.branch].k}일주 × 태양 ${SIGNS[astro.sun.sign].k} ${astro.sun.deg}° × 라이프패스 ${num.lifePath}`;
-  window.REPORT = {rows, adv, nameLine, metaLine, fpLine};
+  window.REPORT = {rows, adv, nameLine, metaLine, fpLine,
+    tal: {
+      stemH: dk.h, branchH: BRANCHES[saju.day.branch].h,
+      zodG: SIGNS[astro.sun.sign].g, lp: num.lifePath, domEl: dom,
+      sealCh: (inp.name || inp.ename || dk.h).charAt(0),
+      line: `${ILGAN_SHORT[dk.k]} · 「${lineTag}」의 결을 타고난 사람`
+    }};
   $('#reportCard').innerHTML = `
     <div class="rephead">
       <p class="rmark">山</p>
@@ -2584,19 +2592,70 @@ function renderReport(inp, saju, astro, num, f) {
     <p class="repfoot">${adv}</p>`;
 }
 
-/* 리포트 → PNG — 로고(山 + SAN) 포함, 전부 이 기기 안에서 그려짐 */
+/* 리포트 → 행운 부적 PNG — 명식의 글자로 그리는 개인 부적, 전부 기기 안에서 생성 */
 function reportToPng() {
   const R = window.REPORT;
-  if (!R) return;
+  if (!R || !R.tal) return;
   const c = document.createElement('canvas');
   if (!c.getContext) return;
   const x = c.getContext('2d');
-  const S = 2, W = 720, pad = 48, colW = 92, gapX = 18;
+  const S = 2, W = 480, H = 840, pad = 40;
   const serif = (getComputedStyle(document.documentElement).getPropertyValue('--serif') || '').trim() || 'serif';
-  const wrap = (text, font, maxW) => {
-    x.font = font;
-    const out = [];
-    let line = '';
+  const INK = '#2e2a23', DIM = '#6a6354', RED = '#a63d28', PAPER = '#f2ecdf';
+  const ELC = ['#4a7a4a', '#a63d28', '#b08a3e', '#857f70', '#3d5f7a'];
+  const T = R.tal, cx = W / 2;
+  c.width = W * S; c.height = H * S;
+  x.scale(S, S);
+  x.fillStyle = PAPER; x.fillRect(0, 0, W, H);
+  x.strokeStyle = INK; x.lineWidth = 1; x.strokeRect(12, 12, W - 24, H - 24);
+  x.strokeStyle = RED; x.lineWidth = .75; x.strokeRect(18, 18, W - 36, H - 36);
+  /* 로고 */
+  x.textAlign = 'center';
+  x.fillStyle = INK; x.font = `500 30px ${serif}`; x.fillText('山', cx, 74);
+  x.fillStyle = DIM; x.font = `700 10px ${serif}`; x.fillText('S  A  N', cx, 93);
+  x.strokeStyle = INK; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(pad, 112); x.lineTo(W - pad, 112); x.stroke();
+  /* 부적 머리 — 삼산 봉우리 (가운데 봉우리는 중심 오행의 색) */
+  const py = 178, pw = 46;
+  x.lineWidth = 2; x.strokeStyle = RED;
+  x.beginPath(); x.moveTo(cx - pw * 1.5, py); x.lineTo(cx - pw, py - 26); x.lineTo(cx - pw / 2, py); x.stroke();
+  x.beginPath(); x.moveTo(cx + pw / 2, py); x.lineTo(cx + pw, py - 26); x.lineTo(cx + pw * 1.5, py); x.stroke();
+  x.fillStyle = ELC[T.domEl];
+  x.beginPath(); x.moveTo(cx - pw * .62, py); x.lineTo(cx, py - 40); x.lineTo(cx + pw * .62, py); x.closePath(); x.fill();
+  x.fillStyle = RED; x.font = `700 13px ${serif}`; x.fillText('幸 運 符', cx, py + 26);
+  /* 곁줄 — 좌우 세로획과 마디 */
+  x.strokeStyle = RED; x.lineWidth = 1.5;
+  [72, W - 72].forEach(sx => {
+    x.beginPath(); x.moveTo(sx, 240); x.lineTo(sx, 560); x.stroke();
+    [300, 400, 500].forEach(sy => { x.beginPath(); x.moveTo(sx - 7, sy); x.lineTo(sx + 7, sy); x.stroke(); });
+  });
+  /* 본체 — 일간을 크게, 일지를 받침으로 */
+  x.fillStyle = RED;
+  x.font = `700 128px ${serif}`; x.fillText(T.stemH, cx, 372);
+  x.font = `600 60px ${serif}`; x.fillText(T.branchH, cx, 452);
+  /* 왼쪽 태양 별자리 기호 · 오른쪽 라이프패스 */
+  x.font = `500 26px ${serif}`; x.fillText(T.zodG, cx - 108, 350);
+  x.strokeStyle = RED; x.lineWidth = 1.5;
+  x.beginPath(); x.arc(cx + 108, 341, 17, 0, Math.PI * 2); x.stroke();
+  x.font = `700 17px ${serif}`; x.fillText(String(T.lp), cx + 108, 347);
+  /* 기운 획 — 굽이쳐 내려오는 획 */
+  x.lineWidth = 3; x.lineCap = 'round';
+  x.beginPath(); x.moveTo(cx, 478);
+  x.bezierCurveTo(cx - 22, 505, cx + 22, 525, cx, 548);
+  x.quadraticCurveTo(cx - 14, 562, cx + 6, 568);
+  x.stroke(); x.lineCap = 'butt';
+  /* 도장 — 이름 첫 글자 */
+  x.save();
+  x.translate(cx + 92, 545); x.rotate(-.06);
+  x.fillStyle = RED; x.fillRect(-26, -26, 52, 52);
+  x.fillStyle = PAPER; x.font = `700 30px ${serif}`; x.fillText(T.sealCh, 0, 11);
+  x.restore();
+  /* 나를 표현하는 한 줄 */
+  x.strokeStyle = INK; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(pad, 628); x.lineTo(W - pad, 628); x.stroke();
+  x.fillStyle = INK; x.font = `600 15.5px ${serif}`;
+  const wrap = (text, maxW) => {
+    const out = []; let line = '';
     for (const ch of String(text)) {
       if (x.measureText(line + ch).width > maxW && line) { out.push(line); line = ch === ' ' ? '' : ch; }
       else line += ch;
@@ -2604,41 +2663,12 @@ function reportToPng() {
     if (line) out.push(line);
     return out;
   };
-  const rowFont = `500 14px ${serif}`, labFont = `700 11px ${serif}`;
-  const valW = W - pad * 2 - colW - gapX;
-  const plain = s => s.replace(/<[^>]+>/g, '');
-  const rowLines = R.rows.map(r => wrap(plain(r[1]), rowFont, valW));
-  const advLines = wrap(R.adv, `500 14.5px ${serif}`, W - pad * 2 - 16);
-  const rowsH = rowLines.reduce((s, ls) => s + Math.max(1, ls.length) * 23 + 21, 0);
-  const H = 236 + rowsH + 24 + advLines.length * 25 + 84;
-  c.width = W * S; c.height = H * S;
-  x.scale(S, S);
-  x.fillStyle = '#f2ecdf'; x.fillRect(0, 0, W, H);
-  x.strokeStyle = '#2e2a23'; x.lineWidth = 1; x.strokeRect(14, 14, W - 28, H - 28);
-  x.textAlign = 'center';
-  x.fillStyle = '#2e2a23'; x.font = `500 40px ${serif}`; x.fillText('山', W / 2, 84);
-  x.fillStyle = '#6a6354'; x.font = `700 11px ${serif}`; x.fillText('S  A  N', W / 2, 106);
-  x.fillStyle = '#2e2a23'; x.font = `600 20px ${serif}`; x.fillText(R.nameLine, W / 2, 142);
-  x.fillStyle = '#6a6354'; x.font = `500 12px ${serif}`;
-  x.fillText(R.metaLine, W / 2, 166);
-  x.fillText(R.fpLine, W / 2, 186);
-  x.beginPath(); x.moveTo(pad, 208); x.lineTo(W - pad, 208); x.stroke();
-  x.textAlign = 'left';
-  let yy = 238;
-  R.rows.forEach((r, i) => {
-    x.fillStyle = '#6a6354'; x.font = labFont; x.fillText(r[0], pad, yy);
-    x.fillStyle = '#2e2a23'; x.font = rowFont;
-    rowLines[i].forEach((ln, j) => x.fillText(ln, pad + colW + gapX, yy + j * 23));
-    yy += Math.max(1, rowLines[i].length) * 23 + 6;
-    x.strokeStyle = 'rgba(46,42,35,.22)'; x.beginPath(); x.moveTo(pad, yy - 1); x.lineTo(W - pad, yy - 1); x.stroke();
-    yy += 15;
-  });
-  x.textAlign = 'center'; x.fillStyle = '#575146'; x.font = `500 14.5px ${serif}`;
-  advLines.forEach((ln, j) => x.fillText(ln, W / 2, yy + 12 + j * 25));
-  x.fillStyle = '#6a6354'; x.font = `500 10.5px ${serif}`;
-  x.fillText('山 SAN — 세 하늘의 리딩 · jzzinsil.github.io/san', W / 2, H - 34);
+  wrap(T.line, W - pad * 2 - 10).forEach((ln, i) => x.fillText(ln, cx, 668 + i * 26));
+  x.fillStyle = DIM; x.font = `500 12px ${serif}`; x.fillText(R.nameLine, cx, 736);
+  /* 워터마크 */
+  x.font = `500 10.5px ${serif}`; x.fillText('山 SAN — 세 하늘의 리딩 · jzzinsil.github.io/san', cx, H - 36);
   /* 다운로드 — Safari 호환을 위해 Blob URL + DOM 부착 방식 사용 */
-  const fname = `SAN-리포트-${R.nameLine.replace(/\s+/g, '')}.png`;
+  const fname = `SAN-부적-${R.nameLine.replace(/\s+/g, '')}.png`;
   const download = href => {
     const a = document.createElement('a');
     a.download = fname;
