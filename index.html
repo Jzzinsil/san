@@ -87,6 +87,7 @@ body{
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .frow.parentrow{grid-template-columns:1fr 1.4fr .7fr}
 .dselrow{display:grid;grid-template-columns:1.15fr .85fr .85fr 1.15fr;gap:8px}
+.dselrow2{display:grid;grid-template-columns:1.6fr .9fr;gap:8px}
 .dsel{display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:6px}
 .dsel select,.dselrow select{padding:9px 8px;background-position:right 8px center}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;letter-spacing:.04em}
@@ -543,31 +544,30 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <option value="F">여성</option>
           <option value="M">남성</option>
         </select>
-        <p class="hint">장성 · 도화 같은 표식의 해석에 반영됩니다.</p>
+        <p class="hint">몇몇 타고난 별의 풀이에 반영됩니다.</p>
       </div>
     </div>
 
     <div class="fgroup">
       <p class="glabel">태어난 순간</p>
       <div class="field">
-        <label for="dateY">생년월일</label>
-        <div class="dselrow">
-          <select id="dateY" aria-label="태어난 연도" aria-describedby="err"></select>
-          <select id="dateM" aria-label="태어난 월"></select>
-          <select id="dateD" aria-label="태어난 일"></select>
+        <label for="dateNum">생년월일 — 숫자 8자리</label>
+        <div class="dselrow2">
+          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19930314" maxlength="10" aria-describedby="err" aria-label="생년월일 숫자 8자리">
           <select id="cal" aria-label="양력·음력 선택">
             <option value="solar">양력</option>
             <option value="lunar">음력 (평달)</option>
             <option value="lunarLeap">음력 (윤달)</option>
           </select>
         </div>
-        <p class="err" id="err" role="alert">생년월일을 선택해주세요.</p>
+        <p class="hint">숫자만 쭉 치면 됩니다 — 1993.03.14처럼 자동으로 정리돼요.</p>
+        <p class="err" id="err" role="alert">생년월일을 입력해주세요.</p>
       </div>
       <div class="field">
-        <label for="time">태어난 시간</label>
-        <input type="time" id="time">
+        <label for="time">태어난 시간 — 숫자 4자리</label>
+        <input type="text" id="time" inputmode="numeric" placeholder="예: 1830 (오후 6시 30분)" maxlength="5" style="max-width:220px">
         <label class="check"><input type="checkbox" id="notime"> 태어난 시간을 몰라요</label>
-        <p class="hint">시간이 있어야 사주 시주(時柱)와 상승 별자리까지 계산됩니다.</p>
+        <p class="hint">시간까지 알면 첫인상 자리(상승 별자리)와 시간의 기둥까지 더 깊게 읽을 수 있어요.</p>
       </div>
     </div>
 
@@ -583,7 +583,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <select id="city"></select>
         </div>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">목록에 없으면 가장 가까운 큰 도시를 고르세요. 위도·경도·시간대가 상승궁과 사주 진태양시 계산에 쓰입니다.</p>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">목록에 없으면 가장 가까운 큰 도시를 고르세요. 태어난 곳에 따라 그 순간의 하늘이 달라져 계산에 쓰입니다.</p>
     </div>
 
     <div class="fgroup">
@@ -594,12 +594,8 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <input type="text" id="father" placeholder="김영호">
         </div>
         <div class="field">
-          <label for="fatherY">아버지 생년월일</label>
-          <div class="dsel">
-            <select id="fatherY" aria-label="아버지 연도"></select>
-            <select id="fatherM" aria-label="아버지 월"></select>
-            <select id="fatherD" aria-label="아버지 일"></select>
-          </div>
+          <label for="fatherNum">아버지 생년월일</label>
+          <input type="text" id="fatherNum" inputmode="numeric" placeholder="예: 19650208" maxlength="10" aria-label="아버지 생년월일 숫자 8자리">
         </div>
         <div class="field">
           <label for="fatherCal">달력</label>
@@ -612,19 +608,15 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <input type="text" id="mother" placeholder="박은정">
         </div>
         <div class="field">
-          <label for="motherY">어머니 생년월일</label>
-          <div class="dsel">
-            <select id="motherY" aria-label="어머니 연도"></select>
-            <select id="motherM" aria-label="어머니 월"></select>
-            <select id="motherD" aria-label="어머니 일"></select>
-          </div>
+          <label for="motherNum">어머니 생년월일</label>
+          <input type="text" id="motherNum" inputmode="numeric" placeholder="예: 19670521" maxlength="10" aria-label="어머니 생년월일 숫자 8자리">
         </div>
         <div class="field">
           <label for="motherCal">달력</label>
           <select id="motherCal"><option value="solar">양력</option><option value="lunar">음력</option><option value="lunarLeap">음력 윤달</option></select>
         </div>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">성함만 넣으면 이름의 수로, 생년월일까지 넣으면 부모님 사주와의 관계(십성 · 오행 · 합충)까지 읽습니다.</p>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">성함만 넣어도 조금, 생년월일까지 넣으면 부모님에게 물려받은 기운과 두 분과의 관계까지 깊게 읽습니다.</p>
     </div>
 
     <button type="submit" class="btn">리딩 시작</button>
@@ -689,7 +681,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <section class="reading" id="fortune">
       <p class="sec-label">Combined Fortune</p>
       <h2 class="sec-title">교차 운세</h2>
-      <p class="sec-desc">시간대별 · 오늘 · 이번 주 · 이번 달 · 분기 · 올해 — 사주의 일진과 십성, 하늘을 지나는 달·태양·목성, 수비학의 개인 주기수를 겹쳐 여섯 개의 시계로 읽습니다.</p>
+      <p class="sec-desc">시간대별 · 오늘 · 이번 주 · 이번 달 · 분기 · 올해 — 세 점술이 각자 갖고 있는 시계를 겹쳐, 지금 당신에게 흐르는 때를 여섯 단위로 읽습니다.</p>
       <p class="epi">"시간이란 무엇인가. 아무도 묻지 않을 때는 알고 있다가, 설명하려는 순간 알 수 없게 된다." — 그래서 시간은 설명하는 대신, 이렇게 읽어봅니다.</p>
       <div id="fortuneCards"></div>
     </section>
@@ -698,7 +690,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <section class="reading" id="ask">
       <p class="sec-label">Ask the Sky</p>
       <h2 class="sec-title">하늘에 묻기</h2>
-      <p class="sec-desc">궁금한 것을 물어보고, 열두 장의 패 중 세 장을 직접 뽑으세요. 뽑힌 패의 결과 당신의 명식, 지금 흐르는 운을 겹쳐 세 체계가 함께 답합니다.</p>
+      <p class="sec-desc">궁금한 것을 물어보고, 열두 장의 패 중 세 장을 직접 뽑으세요. 뽑힌 패와 당신의 타고난 기운, 지금 흐르는 운을 겹쳐 답을 드립니다.</p>
       <div class="askbox">
         <form id="askForm">
           <label for="askInput" style="display:block;font-size:13.5px;font-weight:600;color:var(--muted);margin-bottom:8px">질문</label>
@@ -774,7 +766,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <section class="reading" id="roots">
       <p class="sec-label">Roots</p>
       <h2 class="sec-title">뿌리 — 부모님</h2>
-      <p class="sec-desc">사주에서 연주는 조상, 월주는 부모의 자리입니다. 부모님의 명식을 당신의 명식에 겹쳐, 물려받은 기운과 관계의 결을 읽습니다.</p>
+      <p class="sec-desc">사주의 여덟 글자에는 조상과 부모의 자리가 따로 있습니다. 부모님의 기운을 당신의 것과 겹쳐, 물려받은 것과 두 분과의 관계를 읽습니다.</p>
       <p class="epi">"이 삶으로 들어오기 전에 나는 어디에 있었을까." — 그 답은 누구도 모르지만, 당신이 통과해서 온 두 사람의 기록은 여기 남아 있습니다.</p>
       <div id="rootsBody"></div>
     </section>
@@ -797,18 +789,16 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
             </div>
           </div>
           <div class="field">
-            <label for="gY">상대 생년월일</label>
-            <div class="dselrow">
-              <select id="gY" aria-label="상대 연도"></select>
-              <select id="gM" aria-label="상대 월"></select>
-              <select id="gD" aria-label="상대 일"></select>
+            <label for="gNum">상대 생년월일 — 숫자 8자리</label>
+            <div class="dselrow2">
+              <input type="text" id="gNum" inputmode="numeric" placeholder="예: 19950316" maxlength="10" aria-label="상대 생년월일 숫자 8자리">
               <select id="gCal" aria-label="양력·음력"><option value="solar">양력</option><option value="lunar">음력 (평달)</option><option value="lunarLeap">음력 (윤달)</option></select>
             </div>
           </div>
           <div class="frow">
             <div class="field">
-              <label for="gTime">태어난 시간 (선택)</label>
-              <input type="time" id="gTime">
+              <label for="gTime">태어난 시간 (선택) — 숫자 4자리</label>
+              <input type="text" id="gTime" inputmode="numeric" placeholder="예: 1830" maxlength="5">
               <label class="check"><input type="checkbox" id="gNotime"> 태어난 시간을 몰라요</label>
             </div>
             <div class="field">
@@ -847,7 +837,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.1.6</span><br>
+        <span style="letter-spacing:.2em">SAN v3.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1931,15 +1921,34 @@ countrySel.addEventListener('change', fillCities);
 fillCities();
 
 /* 연 → 월 → 일 셀렉트 채우기 */
-function fillDateSel(pre) {
-  const nowY = new Date().getFullYear();
-  let ys = '<option value="">년</option>';
-  for (let yy = nowY; yy >= 1900; yy--) ys += `<option>${yy}</option>`;
-  $('#' + pre + 'Y').innerHTML = ys;
-  $('#' + pre + 'M').innerHTML = '<option value="">월</option>' + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">${i + 1}월</option>`).join('');
-  $('#' + pre + 'D').innerHTML = '<option value="">일</option>' + Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${i + 1}일</option>`).join('');
+/* 날짜 8자리 · 시간 4자리 — 숫자만 치면 자동으로 구분점이 붙음 */
+function bindDate8(el) {
+  el.addEventListener('input', () => {
+    const d = el.value.replace(/\D/g, '').slice(0, 8);
+    el.value = d.length > 6 ? `${d.slice(0, 4)}.${d.slice(4, 6)}.${d.slice(6)}` : d.length > 4 ? `${d.slice(0, 4)}.${d.slice(4)}` : d;
+  });
 }
-['date', 'father', 'mother', 'g'].forEach(fillDateSel);
+function bindTime4(el) {
+  el.addEventListener('input', () => {
+    const d = el.value.replace(/\D/g, '').slice(0, 4);
+    el.value = d.length > 2 ? `${d.slice(0, 2)}:${d.slice(2)}` : d;
+  });
+}
+['dateNum', 'fatherNum', 'motherNum', 'gNum'].forEach(id => bindDate8($('#' + id)));
+['time', 'gTime'].forEach(id => bindTime4($('#' + id)));
+/* 8자리 입력 → {y,m,d} */
+const readNum8 = id => {
+  const d = ($('#' + id).value || '').replace(/\D/g, '');
+  return {y: +d.slice(0, 4), m: +d.slice(4, 6), d: +d.slice(6, 8), filled: d.length === 8, touched: d.length > 0};
+};
+/* 4자리 입력 → {h,m} | null(비움) | false(불완전) */
+const readTime4 = id => {
+  const d = ($('#' + id).value || '').replace(/\D/g, '');
+  if (!d.length) return null;
+  if (d.length < 4) return false;
+  const h = +d.slice(0, 2), mi = +d.slice(2, 4);
+  return (h > 23 || mi > 59) ? false : {h, m: mi};
+};
 
 /* 궁합 상대 지역 셀렉트 */
 const gCountrySel = $('#gCountry'), gCitySel = $('#gCity');
@@ -1966,8 +1975,8 @@ $('#gNotime').addEventListener('change', e => {
 
 /* 입력 기억하기 — 옵트인일 때만 이 브라우저(localStorage)에 저장 · 서버 전송 없음 */
 const MEM_KEY = 'san_form_v1';
-const MEM_FIELDS = ['name','ename','gender','dateY','dateM','dateD','cal','time','country','city',
-  'father','fatherY','fatherM','fatherD','fatherCal','mother','motherY','motherM','motherD','motherCal'];
+const MEM_FIELDS = ['name','ename','gender','dateNum','cal','time','country','city',
+  'father','fatherNum','fatherCal','mother','motherNum','motherCal'];
 function saveForm() {
   try {
     const data = {notime: $('#notime').checked};
@@ -2002,27 +2011,23 @@ $('#form').addEventListener('submit', e => {
   const showErr = msg => {
     err.textContent = msg;
     err.style.display = 'block';
-    $('#dateY').focus();
-  };
-  const readSel = pre => {
-    const yy = +$('#' + pre + 'Y').value, mm = +$('#' + pre + 'M').value, dd = +$('#' + pre + 'D').value;
-    return {y: yy, m: mm, d: dd, filled: !!(yy && mm && dd), touched: !!(yy || mm || dd)};
+    $('#dateNum').focus();
   };
   const validSolar = t => { const dt = new Date(t.y, t.m - 1, t.d); return dt.getMonth() === t.m - 1 && dt.getDate() === t.d; };
   const toSolar = (t, calv) => calv === 'solar'
     ? (validSolar(t) ? {y: t.y, m: t.m, d: t.d} : null)
     : lunarToSolar(t.y, t.m, t.d, calv === 'lunarLeap');
 
-  const raw = readSel('date');
-  if (!raw.filled) { showErr('생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
+  const raw = readNum8('dateNum');
+  if (!raw.filled) { showErr('생년월일을 숫자 8자리로 입력해주세요 — 예: 19930314.'); return; }
   const cal = $('#cal').value;
   const solar = toSolar(raw, cal);
   if (!solar) { showErr(cal === 'solar' ? '존재하지 않는 날짜입니다.' : cal === 'lunarLeap' ? '그 해에는 해당 윤달이 없습니다. 달력 선택을 확인해주세요.' : '음력에 없는 날짜입니다.'); return; }
   const {y, m, d} = solar;
 
-  const fRaw = readSel('father'), mRaw = readSel('mother');
-  if (fRaw.touched && !fRaw.filled) { showErr('아버지 생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
-  if (mRaw.touched && !mRaw.filled) { showErr('어머니 생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
+  const fRaw = readNum8('fatherNum'), mRaw = readNum8('motherNum');
+  if (fRaw.touched && !fRaw.filled) { showErr('아버지 생년월일을 숫자 8자리로 입력해주세요 — 예: 19650208.'); return; }
+  if (mRaw.touched && !mRaw.filled) { showErr('어머니 생년월일을 숫자 8자리로 입력해주세요 — 예: 19670521.'); return; }
   const fDate = fRaw.filled ? toSolar(fRaw, $('#fatherCal').value) : null;
   const mDate = mRaw.filled ? toSolar(mRaw, $('#motherCal').value) : null;
   if (fRaw.filled && !fDate) { showErr('아버지 생년월일이 올바르지 않습니다.'); return; }
@@ -2030,9 +2035,9 @@ $('#form').addEventListener('submit', e => {
   err.style.display = 'none';
 
   let time = null;
-  if (!$('#notime').checked && $('#time').value) {
-    const [h, mi] = $('#time').value.split(':').map(Number);
-    time = {h, m: mi};
+  if (!$('#notime').checked) {
+    time = readTime4('time');
+    if (time === false) { showErr('태어난 시간은 숫자 4자리로 입력해주세요 — 예: 0930, 1830. 모르면 「몰라요」에 체크하세요.'); return; }
   }
   const input = {
     y, m, d, time,
@@ -2400,7 +2405,7 @@ function tagVotes(saju, astro, num) {
 function renderHeadline(inp, saju, astro, num) {
   const el = $('#headline');
   const dk = STEMS[saju.day.stem];
-  const lensLine = `일간 <b>${dk.k}(${dk.h})</b> ${ILGAN_SHORT[dk.k]} · 태양 <b>${SIGNS[astro.sun.sign].k}</b> · 라이프패스 <b>${num.lifePath}</b>`;
+  const lensLine = `당신의 세 줄 요약 — 타고난 기질은 <b>${ILGAN_SHORT[dk.k]}</b>(사주), 세상을 사는 얼굴은 <b>${SIGNS[astro.sun.sign].k}</b>(별자리), 평생의 큰 숙제는 <b>${NUM_ESSENCE[num.lifePath].t}</b>(수비학)`;
   const shell = (hanja, name, badge, where, bodyHtml) => `<div class="card headline">
     <p class="hl-label">첫 마디</p>
     <div class="hl-main">
@@ -2408,7 +2413,7 @@ function renderHeadline(inp, saju, astro, num) {
       <div><p class="hl-name">${name} <span class="ss-count">${badge}</span></p><p class="hl-where">${where}</p></div>
     </div>
     ${bodyHtml}
-    <div class="hl-lens">${lensLine} — 아래의 모든 리딩은 ${name.replace(/ ×\d+$/, '')}의 결 위에 놓고 읽으면 한 겹 더 정확해집니다.</div>
+    <div class="hl-lens">${lensLine}. 아래의 모든 풀이는 방금 읽은 「${name.replace(/ ×\d+$/, '')}」 이야기를 바탕에 두고 이어집니다.</div>
   </div>`;
 
   const {bestS, bs, elScore, domEl, maxC} = headlinePick(saju);
@@ -2446,11 +2451,12 @@ function renderSynth(saju, astro, num) {
   const lp = NUM_ESSENCE[num.lifePath];
 
   $('#synthOpen').innerHTML =
-    `사주는 당신을 <b style="color:var(--gold-soft)">${ILGAN_SHORT[dk.k]}</b>(${dk.k}${dk.h})으로,<br>` +
-    `별은 <b style="color:var(--gold-soft)">${SIGNS[astro.sun.sign].k}의 태양</b>으로,<br>` +
-    `수는 <b style="color:var(--gold-soft)">${num.lifePath} · ${lp.t}</b>로 기록했습니다.<br>` +
-    `서로 다른 세 언어의 번역을 겹쳐 읽습니다.<br>` +
-    `<span style="font-size:12px;color:var(--dim)">${STEMS[saju.day.stem].k}${BRANCHES[saju.day.branch].k}일주 × 태양 ${SIGNS[astro.sun.sign].k} ${astro.sun.deg}° × ${num.lifePath}의 조합 — 60갑자와 하늘의 도수가 함께 겹치는 사람은 사실상 없어, 이 리딩은 당신에게만 놓입니다.</span>`;
+    `서로 모르는 세 가지 점술이 각자의 언어로 당신을 불렀습니다.<br>` +
+    `태어난 순간의 여덟 글자(사주)는 <b style="color:var(--gold-soft)">${ILGAN_SHORT[dk.k]}</b>,<br>` +
+    `태어난 날의 하늘(별자리)은 <b style="color:var(--gold-soft)">${SIGNS[astro.sun.sign].k}</b>,<br>` +
+    `생년월일을 전부 더한 수(수비학)는 <b style="color:var(--gold-soft)">${lp.t}</b>.<br>` +
+    `세 목소리가 같은 곳을 가리킬 때, 그것이 진짜 당신입니다.<br>` +
+    `<span style="font-size:12px;color:var(--dim)">이 세 가지가 전부 겹치는 사람은 사실상 없습니다 — 이 리딩은 당신에게만 놓입니다.</span>`;
 
   /* 태그 투표 */
   const {tally, sorted} = tagVotes(saju, astro, num);
@@ -3153,8 +3159,9 @@ $('#gungForm').addEventListener('submit', e => {
   if (!R) return;
   const gErr = $('#gErr');
   const show = t => { gErr.textContent = t; gErr.style.display = 'block'; };
-  const yy = +$('#gY').value, mm = +$('#gM').value, dd = +$('#gD').value;
-  if (!yy || !mm || !dd) { show('상대의 생년월일을 년 · 월 · 일 모두 선택해주세요.'); return; }
+  const graw = readNum8('gNum');
+  if (!graw.filled) { show('상대의 생년월일을 숫자 8자리로 입력해주세요 — 예: 19950316.'); return; }
+  const yy = graw.y, mm = graw.m, dd = graw.d;
   const calv = $('#gCal').value;
   let sol;
   if (calv === 'solar') {
@@ -3162,10 +3169,13 @@ $('#gungForm').addEventListener('submit', e => {
     sol = (dt.getMonth() === mm - 1 && dt.getDate() === dd) ? {y: yy, m: mm, d: dd} : null;
   } else sol = lunarToSolar(yy, mm, dd, calv === 'lunarLeap');
   if (!sol) { show('존재하지 않는 날짜입니다. 달력 선택을 확인해주세요.'); return; }
-  gErr.style.display = 'none';
 
   let gTime = null;
-  if (!$('#gNotime').checked && $('#gTime').value) { const [h, mi] = $('#gTime').value.split(':').map(Number); gTime = {h, m: mi}; }
+  if (!$('#gNotime').checked) {
+    gTime = readTime4('gTime');
+    if (gTime === false) { show('상대의 시간은 숫자 4자리로 — 예: 1830. 모르면 비워두거나 「몰라요」에 체크하세요.'); return; }
+  }
+  gErr.style.display = 'none';
   const gc = GEO[gCountrySel.value];
   const arr = gc.cities[gCitySel.value];
   const geo2 = {lat: arr[0], lon: arr[1], tz: arr.length > 2 ? arr[2] : gc.tz};
@@ -3329,6 +3339,7 @@ function renderNumer(n, usedName, curYear, saju, astro) {
     <p class="lnum">${n.lifePath}</p>
     <p class="ltitle">${lp.t}</p>
     <p class="lrole" style="letter-spacing:.14em">${lp.k}</p>
+    <p style="font-size:12px;color:var(--dim);margin-top:10px">생년월일 숫자를 전부 더해 나온 수 — 평생 되풀이되는 인생 숙제의 번호라고 생각하면 됩니다.</p>
     <p>${LIFEPATH_TEXT[n.lifePath]}</p>
     <p class="small" style="margin-top:12px">같은 ${n.lifePath}번 길을 걷는 사람은 많지만, ${ILGAN_SHORT[ndk.k]}(${ndk.k} 일간)과 ${SIGNS[astro.sun.sign].k}의 온도로 이 길을 걷는 것은 당신의 방식입니다 — 리딩의 다른 장과 겹쳐 읽어야 온전한 지도가 됩니다.</p>
     <details style="max-width:560px;margin:26px auto 0;text-align:left">
