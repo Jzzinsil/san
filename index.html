@@ -219,6 +219,39 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .layers .lval{font-size:14px;color:var(--text)}
 .layers .lval .lsrc{display:block;font-size:11.5px;color:var(--dim);margin-top:5px}
 
+/* ---------- 거울 카드 (간판 리딩) ---------- */
+.card.mirror{border:1px solid var(--ink)}
+.mirror .mlabel{font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.mirror .msub{font-size:12.5px;color:var(--dim);margin:8px 0 0}
+.mfaces{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin-top:16px}
+.mface{padding:18px 16px}
+.mface + .mface{border-left:1px dashed var(--line)}
+.mface .mfh{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
+.mface .mft{font-family:var(--serif);font-size:18.5px;font-weight:600;margin:6px 0 4px}
+.mface .mline{font-size:13px;line-height:1.75;margin-top:9px}
+.mface .msrc,.mcore .msrc{display:block;font-size:11px;color:var(--dim);margin-top:10px}
+.mgap{margin-top:14px;background:var(--ink);padding:16px 18px}
+.mgap .mgh{font-family:var(--serif);color:#d9b96a;font-size:15.5px;font-weight:600;letter-spacing:.12em;margin-bottom:7px}
+.mgap p{color:#f2ecdf;font-size:13.5px;line-height:1.85}
+.mcore{margin-top:14px;padding-top:13px;border-top:1px solid var(--hairline);font-size:13px;color:var(--muted);line-height:1.8}
+@media (max-width:560px){
+  .mfaces{grid-template-columns:1fr}
+  .mface + .mface{border-left:none;border-top:1px dashed var(--line)}
+}
+
+/* ---------- 리포트 (한 장 요약) ---------- */
+.repcard{padding:28px 26px}
+.rephead{text-align:center;padding-bottom:18px;border-bottom:1px solid var(--ink)}
+.rephead .rmark{font-family:var(--serif);font-size:34px;line-height:1;color:var(--ink)}
+.rephead .rsan{font-size:9.5px;font-weight:700;letter-spacing:.55em;text-indent:.55em;color:var(--dim);margin-top:7px}
+.rephead .rname{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:.14em;margin-top:16px}
+.rephead .rmeta{font-size:12px;color:var(--dim);margin-top:7px;line-height:1.75}
+.reprow{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid var(--hairline)}
+.reprow .rk{font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--dim);padding-top:2px}
+.reprow .rv{font-size:13.5px;line-height:1.75}
+.repfoot{margin-top:16px;font-family:var(--serif);font-size:13.5px;color:var(--muted);line-height:1.9;text-align:center}
+@media (max-width:560px){.reprow{grid-template-columns:72px 1fr;gap:10px}}
+
 /* ---------- fortune ---------- */
 .fcard{background:var(--paper);border:1px solid var(--line);border-radius:0;padding:22px 24px;margin-top:14px}
 .fhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:9px;border-bottom:1px solid var(--ink)}
@@ -596,9 +629,14 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
 
     <button type="submit" class="btn">리딩 시작</button>
 
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px">
+      <label class="check" style="margin:0"><input type="checkbox" id="remember"> 이 브라우저에 입력 정보 기억하기 <span style="color:var(--dim)">(내 기기에만 저장 · 서버 전송 없음)</span></label>
+      <button type="button" id="forget" style="display:none;background:none;border:none;padding:0;font:inherit;font-size:12px;color:var(--dim);text-decoration:underline;cursor:pointer">저장된 정보 지우기</button>
+    </div>
+
     <div class="privacy">
       <p class="ptitle">개인정보 안내</p>
-      <p>입력하신 모든 정보(이름 · 생년월일 · 출생 시간 · 출생지 · 성별 · 가족 정보)는 별도의 가입 절차 없이 지금 사용 중인 브라우저 안에서만 계산에 사용됩니다. 어떤 정보도 서버로 전송되지 않으며, 수집 · 기록 · 저장되지 않고, 제3자에게 제공되지 않습니다. 페이지를 닫거나 새로고침하면 입력 내용은 즉시 사라집니다. 이 페이지는 쿠키를 사용하지 않고 외부 서버와 일절 통신하지 않습니다. 본 서비스는 개인정보를 처리하지 않으므로 개인정보 처리방침의 적용 대상이 아니며, 리딩 결과는 오락 및 참고 목적으로만 제공됩니다.</p>
+      <p>입력하신 모든 정보(이름 · 생년월일 · 출생 시간 · 출생지 · 성별 · 가족 정보)는 별도의 가입 절차 없이 지금 사용 중인 브라우저 안에서만 계산에 사용됩니다. 어떤 정보도 서버로 전송되지 않으며, 수집 · 기록되지 않고, 제3자에게 제공되지 않습니다. 기본적으로 페이지를 닫거나 새로고침하면 입력 내용은 즉시 사라집니다. 「이 브라우저에 입력 정보 기억하기」를 직접 켠 경우에만 입력값이 지금 사용 중인 브라우저 안에 저장되며(이 경우에도 서버 전송은 없습니다), 「저장된 정보 지우기」로 언제든 삭제할 수 있습니다. 이 페이지는 쿠키를 사용하지 않고 외부 서버와 일절 통신하지 않습니다. 본 서비스는 개인정보를 처리하지 않으므로 개인정보 처리방침의 적용 대상이 아니며, 리딩 결과는 오락 및 참고 목적으로만 제공됩니다.</p>
     </div>
   </form>
 
@@ -627,6 +665,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
       <a href="#numer" data-t="numer">수비학</a>
       <a href="#roots" data-t="roots">뿌리</a>
       <a href="#gung" data-t="gung">궁합</a>
+      <a href="#report" data-t="report">리포트</a>
     </nav>
 
     <!-- ============ 통합 리딩 ============ -->
@@ -637,11 +676,13 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
       <p class="epi">"나는 나 자신에게 하나의 질문이 되었다." — 이 페이지는 그 질문을 세 갈래의 언어로 읽어본 기록입니다.</p>
       <div id="headline"></div>
       <div class="synth-open"><p id="synthOpen"></p></div>
-      <div id="synthTraits"></div>
-      <div class="card layers">
-        <h3>겉 · 속 · 중심</h3>
+      <div class="card mirror">
+        <p class="mlabel">Signature Reading</p>
+        <h3>거울 — 남이 보는 나 · 내가 아는 나</h3>
+        <p class="msub">같은 사람이 왜 다르게 보이는가 — 겉의 기록과 속의 기록을 나란히 놓고, 그 간극을 읽습니다.</p>
         <div id="synthLayers"></div>
       </div>
+      <div id="synthTraits"></div>
     </section>
 
     <!-- ============ 운세 ============ -->
@@ -786,14 +827,26 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
       <div id="gungResult"></div>
     </section>
 
+    <!-- ============ 리포트 ============ -->
+    <section class="reading" id="report">
+      <p class="sec-label">One-Page Report</p>
+      <h2 class="sec-title">명식 리포트</h2>
+      <p class="sec-desc">여덟 장의 리딩에서 결론만 추려 한 장에 담았습니다. 이미지로 저장해 간직하거나, 마음 가는 사람에게 건네도 좋습니다.</p>
+      <div class="card repcard" id="reportCard"></div>
+      <div style="text-align:center;margin-top:20px">
+        <button type="button" class="btn" id="saveReport" style="width:auto;padding:13px 34px">이미지로 저장</button>
+        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">PNG 한 장으로 저장됩니다 — 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.</p>
+      </div>
+    </section>
+
     <footer>
       <p class="epi" style="margin:0 auto 20px;text-align:center">사람은 자기 안에, 자기가 다 알지 못하는 넓이를 가지고 있다.<br>이 리딩이 그 넓이의 한 조각을 비추었기를.</p>
       <p>
         절기 경계는 태양 황경(입춘 315°) 기준으로, 시주는 출생 도시 경도와 균시차를 반영한 진태양시 기준으로 계산합니다.<br>
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
-        입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
+        입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.6</span>
+        <span style="letter-spacing:.2em">SAN v2.7</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1904,6 +1957,38 @@ $('#gNotime').addEventListener('change', e => {
   if (e.target.checked) $('#gTime').value = '';
 });
 
+/* 입력 기억하기 — 옵트인일 때만 이 브라우저(localStorage)에 저장 · 서버 전송 없음 */
+const MEM_KEY = 'san_form_v1';
+const MEM_FIELDS = ['name','ename','gender','dateY','dateM','dateD','cal','time','country','city',
+  'father','fatherY','fatherM','fatherD','fatherCal','mother','motherY','motherM','motherD','motherCal'];
+function saveForm() {
+  try {
+    const data = {notime: $('#notime').checked};
+    MEM_FIELDS.forEach(id => data[id] = $('#' + id).value);
+    localStorage.setItem(MEM_KEY, JSON.stringify(data));
+    $('#forget').style.display = '';
+  } catch (e) {}
+}
+function forgetForm() {
+  try { localStorage.removeItem(MEM_KEY); } catch (e) {}
+  $('#remember').checked = false;
+  $('#forget').style.display = 'none';
+}
+function restoreForm() {
+  let data = null;
+  try { data = JSON.parse(localStorage.getItem(MEM_KEY)); } catch (e) {}
+  if (!data) return;
+  MEM_FIELDS.forEach(id => { if (data[id] != null) $('#' + id).value = data[id]; });
+  fillCities();                       // 나라 복원 후 도시 목록 재생성
+  if (data.city != null) citySel.value = data.city;
+  $('#notime').checked = !!data.notime;
+  $('#time').disabled = !!data.notime;
+  $('#remember').checked = true;
+  $('#forget').style.display = '';
+}
+$('#forget').addEventListener('click', forgetForm);
+restoreForm();
+
 $('#form').addEventListener('submit', e => {
   e.preventDefault();
   const err = $('#err');
@@ -1953,6 +2038,8 @@ $('#form').addEventListener('submit', e => {
     fatherDate: fDate, motherDate: mDate,
     geo: getGeo()
   };
+
+  if ($('#remember').checked) saveForm(); else forgetForm();
 
   /* 로딩 페이지 → 결과 페이지 전환 (스크롤 없음) */
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2039,6 +2126,7 @@ function render(inp) {
   renderAstro(astro, geo, ename, saju);
   renderNumer(num, nameForNum, now.getFullYear(), saju, astro);
   renderRoots(inp, saju, num, now);
+  renderReport(inp, saju, astro, num, fortune);
   showTab('synth');
 }
 
@@ -2256,10 +2344,47 @@ const HEADLINE_FIRST = {
   gongmang:{D:'비움의 표식이 먼저 보입니다. 남들이 매달리는 것에 담담해지는 자리 — 결핍이 아니라 자유의 기운이며, 정신적인 가치에서 만족을 찾을 때 삶이 편안해지는 명식입니다.'}
 };
 
+/* 첫 마디 후보 선정 — 헤드라인과 리포트가 공유 */
+function headlinePick(saju) {
+  const sinsal = computeSinsal(saju);
+  let bestS = null, bs = -1;
+  for (const x of sinsal) {
+    const w = (SINSAL_WEIGHT[x.key] || 3)
+      + (x.count - 1) * 3
+      + (x.where.some(s => s.includes('일')) ? 1.5 : 0)
+      + (x.count >= 3 ? 1.5 : 0);
+    if (w > bs) { bs = w; bestS = x; }
+  }
+  const th = saju.total >= 8 ? 4 : 3;
+  const maxC = Math.max(...saju.counts);
+  const domEl = saju.counts.indexOf(maxC);
+  const elScore = maxC >= th ? 6.8 + (maxC - th) * 2 : -1;
+  return {sinsal, bestS, bs, elScore, domEl, maxC};
+}
+/* 세 하늘 태그 투표 — 통합 리딩과 리포트가 공유 */
+function tagVotes(saju, astro, num) {
+  const dk = STEMS[saju.day.stem];
+  const votes = [];
+  const push = (tags, src) => tags.forEach(t => votes.push({t, src}));
+  push(ILGAN_TAGS[dk.k], `사주 일간 ${dk.k}${dk.h}`);
+  const domEl = saju.counts.indexOf(Math.max(...saju.counts));
+  push([EL_TAG[domEl]], `오행의 중심 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h})`);
+  push(SIGN_TAGS[astro.sun.sign], `태양 ${SIGNS[astro.sun.sign].k}`);
+  push([SIGN_TAGS[astro.moon.sign][0]], `달 ${SIGNS[astro.moon.sign].k}`);
+  if (astro.rising) push([SIGN_TAGS[astro.rising.sign][0]], `상승 ${SIGNS[astro.rising.sign].k}`);
+  push(NUM_TAGS[num.lifePath], `라이프패스 ${num.lifePath}`);
+  if (num.name) push([NUM_TAGS[num.name.expression][0]], `표현수 ${num.name.expression}`);
+  const tally = {};
+  votes.forEach(v => {
+    (tally[v.t] = tally[v.t] || {n: 0, srcs: []});
+    tally[v.t].n++; if (!tally[v.t].srcs.includes(v.src)) tally[v.t].srcs.push(v.src);
+  });
+  return {tally, sorted: Object.entries(tally).sort((a, b) => b[1].n - a[1].n)};
+}
+
 function renderHeadline(inp, saju, astro, num) {
   const el = $('#headline');
   const dk = STEMS[saju.day.stem];
-  const sinsal = computeSinsal(saju);
   const lensLine = `일간 <b>${dk.k}(${dk.h})</b> ${ILGAN_SHORT[dk.k]} · 태양 <b>${SIGNS[astro.sun.sign].k}</b> · 라이프패스 <b>${num.lifePath}</b>`;
   const shell = (hanja, name, badge, where, bodyHtml) => `<div class="card headline">
     <p class="hl-label">첫 마디</p>
@@ -2271,21 +2396,7 @@ function renderHeadline(inp, saju, astro, num) {
     <div class="hl-lens">${lensLine} — 아래의 모든 리딩은 ${name.replace(/ ×\d+$/, '')}의 결 위에 놓고 읽으면 한 겹 더 정확해집니다.</div>
   </div>`;
 
-  /* 후보 1 — 신살: 희귀도 + 겹침 + 일지 가산 */
-  let bestS = null, bs = -1;
-  for (const x of sinsal) {
-    const w = (SINSAL_WEIGHT[x.key] || 3)
-      + (x.count - 1) * 3
-      + (x.where.some(s => s.includes('일')) ? 1.5 : 0)
-      + (x.count >= 3 ? 1.5 : 0);
-    if (w > bs) { bs = w; bestS = x; }
-  }
-
-  /* 후보 2 — 오행 쏠림: 절반 가까이가 한 기운이면 구조가 표식보다 먼저 읽힘 */
-  const th = saju.total >= 8 ? 4 : 3;
-  const maxC = Math.max(...saju.counts);
-  const domEl = saju.counts.indexOf(maxC);
-  const elScore = maxC >= th ? 6.8 + (maxC - th) * 2 : -1;
+  const {bestS, bs, elScore, domEl, maxC} = headlinePick(saju);
 
   if (elScore > bs && elScore > 0) {
     const e = ELEMENTS[domEl];
@@ -2327,23 +2438,7 @@ function renderSynth(saju, astro, num) {
     `<span style="font-size:12px;color:var(--dim)">${STEMS[saju.day.stem].k}${BRANCHES[saju.day.branch].k}일주 × 태양 ${SIGNS[astro.sun.sign].k} ${astro.sun.deg}° × ${num.lifePath}의 조합 — 60갑자와 하늘의 도수가 함께 겹치는 사람은 사실상 없어, 이 리딩은 당신에게만 놓입니다.</span>`;
 
   /* 태그 투표 */
-  const votes = [];
-  const push = (tags, src) => tags.forEach(t => votes.push({t, src}));
-  push(ILGAN_TAGS[dk.k], `사주 일간 ${dk.k}${dk.h}`);
-  const domEl = saju.counts.indexOf(Math.max(...saju.counts));
-  push([EL_TAG[domEl]], `오행의 중심 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h})`);
-  push(SIGN_TAGS[astro.sun.sign], `태양 ${SIGNS[astro.sun.sign].k}`);
-  push([SIGN_TAGS[astro.moon.sign][0]], `달 ${SIGNS[astro.moon.sign].k}`);
-  if (astro.rising) push([SIGN_TAGS[astro.rising.sign][0]], `상승 ${SIGNS[astro.rising.sign].k}`);
-  push(NUM_TAGS[num.lifePath], `라이프패스 ${num.lifePath}`);
-  if (num.name) push([NUM_TAGS[num.name.expression][0]], `표현수 ${num.name.expression}`);
-
-  const tally = {};
-  votes.forEach(v => {
-    (tally[v.t] = tally[v.t] || {n: 0, srcs: []});
-    tally[v.t].n++; if (!tally[v.t].srcs.includes(v.src)) tally[v.t].srcs.push(v.src);
-  });
-  const sorted = Object.entries(tally).sort((a, b) => b[1].n - a[1].n);
+  const {tally, sorted} = tagVotes(saju, astro, num);
   const top = sorted.slice(0, 2);
 
   let html = '';
@@ -2382,24 +2477,172 @@ function renderSynth(saju, astro, num) {
   }
   $('#synthTraits').innerHTML = html;
 
-  /* 겉·속·중심 */
-  const layers = [];
-  const outer = [];
+  /* 거울 — 남이 보는 나 · 내가 아는 나 */
+  const mTg = tenGod(saju.day.stem, saju.month.stem);
+  const outer = [`사주 월간 <b>${mTg}</b> — 사회라는 무대에서 자주 쓰게 되는 역할의 가면: ${TENGOD_DESC[mTg]}`];
   if (astro.rising) outer.push(`상승 ${SIGNS[astro.rising.sign].k} — ${RISING_TEXT[astro.rising.sign]}`);
+  else outer.push(`상승궁 — 태어난 시간이 있어야 읽히는 첫인상의 층이라, 지금은 한 겹이 비어 있습니다.`);
   if (num.name) outer.push(`성격수 ${num.name.personality} — 세상은 당신을 ${NUM_ESSENCE[num.name.personality].k}의 인상으로 기억합니다.`);
-  if (outer.length) layers.push({k:'겉 · 첫인상', v: outer.join('<br>'), s:'상승 별자리 + 이름의 자음'});
-  layers.push({
-    k:'속 · 마음', s:'달 별자리' + (num.name ? ' + 이름의 모음' : ''),
-    v: `달 ${SIGNS[astro.moon.sign].k} — ${MOON_TEXT[astro.moon.sign]}` +
-       (num.name ? `<br>영혼수 ${num.name.soulUrge} — 내면 깊은 곳은 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망합니다.` : '')
-  });
-  layers.push({
-    k:'중심 · 본질', s:'사주 일간 + 태양 별자리 + 라이프패스',
-    v: `${ILGAN_SHORT[dk.k]}의 기질 위에 ${SIGNS[astro.sun.sign].k}의 정체성, 그리고 ${NUM_ESSENCE[num.lifePath].t}(${num.lifePath})의 인생 과제가 놓여 있습니다.`
-  });
-  $('#synthLayers').innerHTML = layers.map(l =>
-    `<div class="lrow"><p class="lkey">${l.k}</p><p class="lval">${l.v}<span class="lsrc">근거 · ${l.s}</span></p></div>`).join('');
+  const outerSrc = '사주 월간' + (astro.rising ? ' + 상승 별자리' : '') + (num.name ? ' + 이름의 자음' : '');
+  const inner = [`달 ${SIGNS[astro.moon.sign].k} — ${MOON_TEXT[astro.moon.sign]}`];
+  if (num.name) inner.push(`영혼수 ${num.name.soulUrge} — 내면 깊은 곳은 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망합니다.`);
+  inner.push(`일간 ${dk.k}(${dk.h}) — ${ILGAN_SHORT[dk.k]}, 이것이 마음의 바탕 재료입니다.`);
+  const innerSrc = '달 별자리' + (num.name ? ' + 이름의 모음' : '') + ' + 사주 일간';
+  const coreText = `${ILGAN_SHORT[dk.k]}의 기질 위에 ${SIGNS[astro.sun.sign].k}의 정체성, 그리고 ${NUM_ESSENCE[num.lifePath].t}(${num.lifePath})의 인생 과제가 놓여 있습니다.`;
+
+  /* 간극 읽기 — 겉과 속의 원소 관계 + 결의 겹침 */
+  let gap;
+  if (astro.rising) {
+    const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
+    gap = oe === ie
+      ? `상승과 달이 같은 ${ZOD_EL[oe]}의 원소 — 겉과 속의 온도가 같아, 보이는 대로의 사람에 가깝습니다.`
+      : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
+      ? `겉(${ZOD_EL[oe]})이 속(${ZOD_EL[ie]})을 자연스럽게 통역해주는 상생의 배치 — 오해받는 일이 적은 편입니다.`
+      : `겉은 ${ZOD_EL[oe]}, 속은 ${ZOD_EL[ie]} — 온도차가 있는 배치라 "알고 보니 다른 사람"이라는 말을 듣는 타입입니다. 간극은 결함이 아니라 깊이입니다.`;
+  } else {
+    gap = `첫인상의 층(상승궁)은 태어난 시간이 있어야 온전히 읽힙니다 — 지금은 사주 월간의 가면과 마음의 층으로 짚었습니다.`;
+  }
+  const outTags = new Set([...(astro.rising ? SIGN_TAGS[astro.rising.sign] : []), ...(num.name ? NUM_TAGS[num.name.personality] : [])]);
+  const inTags = new Set([...SIGN_TAGS[astro.moon.sign], ...(num.name ? NUM_TAGS[num.name.soulUrge] : [])]);
+  const shared = [...outTags].filter(t => inTags.has(t));
+  const gapClose = astro.rising && astro.rising.sign % 4 === astro.moon.sign % 4;
+  const sharedLine = outTags.size && inTags.size
+    ? (shared.length
+      ? ` 그리고 「${shared[0]}」의 결만은 겉과 속 양쪽에 흐릅니다 — 숨겨도 새어 나오는 당신다움입니다.`
+      : gapClose
+      ? ` 다만 결의 무늬는 겉과 속이 다르게 짜여 있습니다 — 온도는 같아도, 무늬는 가까이서 봐야 보입니다.`
+      : ` 겉의 결과 속의 결이 하나도 겹치지 않습니다 — 오래 두고 봐야 진짜가 보이는 사람입니다.`)
+    : '';
+  $('#synthLayers').innerHTML = `
+    <div class="mfaces">
+      <div class="mface">
+        <p class="mfh">Mirror · 거울 밖</p>
+        <p class="mft">남이 보는 나</p>
+        ${outer.map(x => `<p class="mline">${x}</p>`).join('')}
+        <span class="msrc">근거 · ${outerSrc}</span>
+      </div>
+      <div class="mface">
+        <p class="mfh">Mirror · 거울 안</p>
+        <p class="mft">내가 아는 나</p>
+        ${inner.map(x => `<p class="mline">${x}</p>`).join('')}
+        <span class="msrc">근거 · ${innerSrc}</span>
+      </div>
+    </div>
+    <div class="mgap"><p class="mgh">間 — 간극 읽기</p><p>${gap}${sharedLine}</p></div>
+    <p class="mcore"><b>그 사이 · 중심</b> — ${coreText}<span class="msrc">근거 · 사주 일간 + 태양 별자리 + 라이프패스</span></p>`;
 }
+
+/* ---- 리포트 (한 장 요약) ---- */
+function renderReport(inp, saju, astro, num, f) {
+  const dk = STEMS[saju.day.stem];
+  const hp = headlinePick(saju);
+  const first = hp.elScore > hp.bs && hp.elScore > 0
+    ? `${ELEMENTS[hp.domEl].k}(${ELEMENTS[hp.domEl].h}) 편중 — ${saju.total}글자 중 ${hp.maxC}자가 한 기운`
+    : hp.bestS
+    ? `${SINSAL_TEXT[hp.bestS.key].name}(${SINSAL_TEXT[hp.bestS.key].hanja})${hp.bestS.count > 1 ? ' ×' + hp.bestS.count : ''} — 가장 짙은 ${SINSAL_TEXT[hp.bestS.key].type}`
+    : '맑은 명식 — 표식 없이 스스로 방향을 정하는 사주';
+  const mTg = tenGod(saju.day.stem, saju.month.stem);
+  let mirror;
+  if (astro.rising) {
+    const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
+    mirror = oe === ie
+      ? `겉과 속이 같은 ${ZOD_EL[oe]}의 온도 — 보이는 대로의 사람`
+      : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
+      ? `겉 ${ZOD_EL[oe]} · 속 ${ZOD_EL[ie]} — 겉이 속을 통역하는 상생의 배치`
+      : `겉 ${ZOD_EL[oe]} · 속 ${ZOD_EL[ie]} — "알고 보니 다른 사람" 타입`;
+  } else {
+    mirror = `겉 월간 ${mTg}의 가면 · 속 달 ${SIGNS[astro.moon.sign].k} — 출생 시간이 있어야 온전히 읽힙니다`;
+  }
+  const top = tagVotes(saju, astro, num).sorted[0];
+  const weak = saju.counts.indexOf(Math.min(...saju.counts));
+  const dom = saju.counts.indexOf(Math.max(...saju.counts));
+  const tsh = t => THEMES[t].name.split(' · ')[0];
+  const rows = [
+    ['첫 마디', first],
+    ['거울', mirror],
+    ['굵은 결', `「${top[0]}」 — ${top[1].n}곳의 하늘이 같은 말을 합니다`],
+    ['재료', `일간 ${dk.k}(${dk.h}) · ${ILGAN_SHORT[dk.k]} · 중심 기운 ${ELEMENTS[dom].k}(${ELEMENTS[dom].h})${saju.counts[weak] === 0 ? ` · ${ELEMENTS[weak].k}(${ELEMENTS[weak].h}) 비어 있음` : ''}`],
+    ['세 하늘', `태양 ${SIGNS[astro.sun.sign].k} · 달 ${SIGNS[astro.moon.sign].k} · ${astro.rising ? '상승 ' + SIGNS[astro.rising.sign].k : '상승 시간 미상'}`],
+    ['수', `라이프패스 ${num.lifePath} ${NUM_ESSENCE[num.lifePath].t}${num.name ? ` · 표현 ${num.name.expression} · 영혼 ${num.name.soulUrge} · 성격 ${num.name.personality}` : ''}`],
+    ['표식', hp.sinsal.length ? hp.sinsal.map(x => `${SINSAL_TEXT[x.key].name}${x.count > 1 ? '×' + x.count : ''}`).join(' · ') : '없음 — 맑게 흐르는 명식'],
+    ['계절', `오늘 ${tsh(f.periods[0].theme)} · 이번 달 ${tsh(f.periods[2].theme)} · 올해 ${tsh(f.periods[4].theme)}`],
+    ['행운', `${EL_COLOR[weak]} · ${EL_DIR[weak]} · 숫자 ${EL_NUM[weak]}`]
+  ];
+  const adv = THEMES[f.periods[4].theme].adv;
+  const nameLine = inp.name || inp.ename || '이름 없는 별';
+  const metaLine = `${inp.y}. ${inp.m}. ${inp.d}.${inp.time ? ` ${String(inp.time.h).padStart(2, '0')}:${String(inp.time.m).padStart(2, '0')}` : ''} · ${inp.geo.name}`;
+  const fpLine = `${STEMS[saju.day.stem].k}${BRANCHES[saju.day.branch].k}일주 × 태양 ${SIGNS[astro.sun.sign].k} ${astro.sun.deg}° × 라이프패스 ${num.lifePath}`;
+  window.REPORT = {rows, adv, nameLine, metaLine, fpLine};
+  $('#reportCard').innerHTML = `
+    <div class="rephead">
+      <p class="rmark">山</p>
+      <p class="rsan">SAN</p>
+      <p class="rname">${esc(nameLine)}</p>
+      <p class="rmeta">${metaLine}<br>${fpLine}</p>
+    </div>
+    ${rows.map(r => `<div class="reprow"><span class="rk">${r[0]}</span><span class="rv">${r[1]}</span></div>`).join('')}
+    <p class="repfoot">${adv}</p>`;
+}
+
+/* 리포트 → PNG — 로고(山 + SAN) 포함, 전부 이 기기 안에서 그려짐 */
+function reportToPng() {
+  const R = window.REPORT;
+  if (!R) return;
+  const c = document.createElement('canvas');
+  if (!c.getContext) return;
+  const x = c.getContext('2d');
+  const S = 2, W = 720, pad = 48, colW = 92, gapX = 18;
+  const serif = (getComputedStyle(document.documentElement).getPropertyValue('--serif') || '').trim() || 'serif';
+  const wrap = (text, font, maxW) => {
+    x.font = font;
+    const out = [];
+    let line = '';
+    for (const ch of String(text)) {
+      if (x.measureText(line + ch).width > maxW && line) { out.push(line); line = ch === ' ' ? '' : ch; }
+      else line += ch;
+    }
+    if (line) out.push(line);
+    return out;
+  };
+  const rowFont = `500 14px ${serif}`, labFont = `700 11px ${serif}`;
+  const valW = W - pad * 2 - colW - gapX;
+  const plain = s => s.replace(/<[^>]+>/g, '');
+  const rowLines = R.rows.map(r => wrap(plain(r[1]), rowFont, valW));
+  const advLines = wrap(R.adv, `500 14.5px ${serif}`, W - pad * 2 - 16);
+  const rowsH = rowLines.reduce((s, ls) => s + Math.max(1, ls.length) * 23 + 21, 0);
+  const H = 236 + rowsH + 24 + advLines.length * 25 + 84;
+  c.width = W * S; c.height = H * S;
+  x.scale(S, S);
+  x.fillStyle = '#f2ecdf'; x.fillRect(0, 0, W, H);
+  x.strokeStyle = '#2e2a23'; x.lineWidth = 1; x.strokeRect(14, 14, W - 28, H - 28);
+  x.textAlign = 'center';
+  x.fillStyle = '#2e2a23'; x.font = `500 40px ${serif}`; x.fillText('山', W / 2, 84);
+  x.fillStyle = '#6a6354'; x.font = `700 11px ${serif}`; x.fillText('S  A  N', W / 2, 106);
+  x.fillStyle = '#2e2a23'; x.font = `600 20px ${serif}`; x.fillText(R.nameLine, W / 2, 142);
+  x.fillStyle = '#6a6354'; x.font = `500 12px ${serif}`;
+  x.fillText(R.metaLine, W / 2, 166);
+  x.fillText(R.fpLine, W / 2, 186);
+  x.beginPath(); x.moveTo(pad, 208); x.lineTo(W - pad, 208); x.stroke();
+  x.textAlign = 'left';
+  let yy = 238;
+  R.rows.forEach((r, i) => {
+    x.fillStyle = '#6a6354'; x.font = labFont; x.fillText(r[0], pad, yy);
+    x.fillStyle = '#2e2a23'; x.font = rowFont;
+    rowLines[i].forEach((ln, j) => x.fillText(ln, pad + colW + gapX, yy + j * 23));
+    yy += Math.max(1, rowLines[i].length) * 23 + 6;
+    x.strokeStyle = 'rgba(46,42,35,.22)'; x.beginPath(); x.moveTo(pad, yy - 1); x.lineTo(W - pad, yy - 1); x.stroke();
+    yy += 15;
+  });
+  x.textAlign = 'center'; x.fillStyle = '#575146'; x.font = `500 14.5px ${serif}`;
+  advLines.forEach((ln, j) => x.fillText(ln, W / 2, yy + 12 + j * 25));
+  x.fillStyle = '#6a6354'; x.font = `500 10.5px ${serif}`;
+  x.fillText('山 SAN — 세 하늘의 리딩 · jzzinsil.github.io/san', W / 2, H - 34);
+  const a = document.createElement('a');
+  a.download = `SAN-리포트-${R.nameLine.replace(/\s+/g, '')}.png`;
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+$('#saveReport').addEventListener('click', reportToPng);
 
 /* ---- 교차 운세 ---- */
 function renderFortune(f, now, natalSaju, natalTGs) {
