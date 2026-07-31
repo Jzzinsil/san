@@ -835,7 +835,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
       <div class="card repcard" id="reportCard"></div>
       <div style="text-align:center;margin-top:20px">
         <button type="button" class="btn" id="saveReport" style="width:auto;padding:13px 34px">나의 세화 간직하기</button>
-        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 휴대폰에서는 공유 창에서 「이미지 저장」을 누르면 사진첩에 담깁니다. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.</p>
+        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 휴대폰에서는 공유 창에서 「이미지 저장」을 누르면 사진첩에 담깁니다. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.<br><span id="sehwaNext" style="color:var(--muted)"></span></p>
       </div>
     </section>
 
@@ -846,7 +846,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.9.2</span>
+        <span style="letter-spacing:.2em">SAN v3.0</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2581,8 +2581,19 @@ function renderReport(inp, saju, astro, num, f) {
       zodK: SIGNS[astro.sun.sign].k, sunDeg: astro.sun.deg, moonK: SIGNS[astro.moon.sign].k,
       lp: num.lifePath, lpT: NUM_ESSENCE[num.lifePath].t,
       domEl: dom, counts: saju.counts.slice(), lineTag,
-      line: `${ILGAN_SHORT[dk.k]} · 「${lineTag}」의 결을 타고난 사람`
+      line: `${ILGAN_SHORT[dk.k]} · 「${lineTag}」의 결을 타고난 사람`,
+      month: (() => {
+        const nowM = new Date();
+        const mp = f.periods[2];
+        const EN = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+        return {i: nowM.getMonth() + 1, year: nowM.getFullYear(), en: EN[nowM.getMonth()],
+                gz: mp.saju.gz, tg: mp.saju.tg, pm: f.PM, house: mp.astro.house,
+                themeName: THEMES[mp.theme].name.split(' · ')[0]};
+      })()
     }};
+  const nextM = new Date().getMonth() + 2;
+  const nx = $('#sehwaNext');
+  if (nx) nx.textContent = `세화는 달마다 새로 그려집니다 — 다음 세화는 ${nextM > 12 ? 1 : nextM}월 1일에 열립니다.`;
   $('#reportCard').innerHTML = `
     <div class="rephead">
       <p class="rmark">山</p>
@@ -2608,14 +2619,30 @@ function reportToPng() {
   const ELC = ['#5d7a55', '#a34f33', '#b3874a', '#8d8574', '#4e6b80'];
   const T = R.tal, cx = W / 2;
   const sp = px => { if ('letterSpacing' in x) x.letterSpacing = px + 'px'; };
+  /* 월별 팔레트 — [상단, 중단, 하단, 빛, 포인트] 계절의 온도로 순환 */
+  const MP = [
+    ['#e7e3d9', '#e0dbce', '#d4cfc1', 'rgba(244,242,236,.85)', '#6b7686'],
+    ['#e9e4d8', '#e2dccc', '#d6d0c0', 'rgba(246,243,236,.85)', '#7b7a88'],
+    ['#eae6d4', '#e3ddc6', '#d8d2b8', 'rgba(247,245,233,.85)', '#7d8a5e'],
+    ['#ece6d2', '#e6dec4', '#dcd4b5', 'rgba(249,245,231,.85)', '#6f8d63'],
+    ['#ede5cf', '#e7ddc0', '#ddd3b0', 'rgba(250,245,229,.85)', '#5e8a6e'],
+    ['#eee8d7', '#e8e1ca', '#ded7bc', 'rgba(250,247,235,.85)', '#578578'],
+    ['#efe9da', '#eae2cf', '#e0d8c1', 'rgba(251,248,238,.85)', '#4e7b87'],
+    ['#eee6d3', '#e8dec5', '#ded3b4', 'rgba(250,246,232,.85)', '#587a8c'],
+    ['#ebe1cb', '#e4d8bb', '#d9cca9', 'rgba(248,242,226,.85)', '#9a7749'],
+    ['#e9dcc3', '#e1d2b1', '#d5c59f', 'rgba(246,238,219,.85)', '#a4663d'],
+    ['#e6dbc6', '#ded1b7', '#d1c5a8', 'rgba(244,238,223,.85)', '#8d6047'],
+    ['#e5e1d7', '#ddd9cc', '#d1cdc0', 'rgba(243,242,238,.85)', '#5f6b79']
+  ];
+  const M = T.month, pal = MP[((M ? M.i : 1) - 1) % 12];
   c.width = W * S; c.height = H * S;
   x.scale(S, S);
-  /* 배경 — 따뜻한 종이 그라데이션 + 중앙의 은은한 빛 */
+  /* 배경 — 이달의 종이 그라데이션 + 중앙의 은은한 빛 */
   const g = x.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#ece4d3'); g.addColorStop(.55, '#e6dcc8'); g.addColorStop(1, '#dcd1b9');
+  g.addColorStop(0, pal[0]); g.addColorStop(.55, pal[1]); g.addColorStop(1, pal[2]);
   x.fillStyle = g; x.fillRect(0, 0, W, H);
   const rg = x.createRadialGradient(cx, 610, 60, cx, 610, 430);
-  rg.addColorStop(0, 'rgba(249,243,229,.8)'); rg.addColorStop(1, 'rgba(249,243,229,0)');
+  rg.addColorStop(0, pal[3]); rg.addColorStop(1, pal[3].replace(/\.\d+\)/, '0)'));
   x.fillStyle = rg; x.fillRect(0, 0, W, H);
   /* 스펙 카드 (좌상단) — 명식 명세 */
   const bx = m, by = m, bw = 336, bp = 22;
@@ -2665,6 +2692,18 @@ function reportToPng() {
   x.fillStyle = INK; x.font = `600 10px ${MONO}`; sp(1.5);
   x.fillText(`「${T.lineTag}」의 결`, bx + bp, yF);
   x.textAlign = 'right'; x.fillText('SAN', bx + bw - bp, yF); sp(0);
+  /* 이달 블록 (우상단) — 매달 새로 그려지는 부분 */
+  if (M) {
+    x.textAlign = 'right';
+    x.fillStyle = pal[4]; x.font = `700 9.5px ${MONO}`; sp(3);
+    x.fillText(`${M.en} · EDITION ${String(M.i).padStart(2, '0')}`, W - m, by + 16); sp(0);
+    x.fillStyle = INK; x.font = `500 14px ${serifV}`;
+    x.fillText(`${M.gz}월 — ${M.tg}의 달`, W - m, by + 46);
+    x.fillStyle = DIM; x.font = `500 11.5px ${serifV}`;
+    x.fillText(`이달의 행운 수 ${M.pm} · 태양은 ${M.house}번째 집`, W - m, by + 70);
+    x.fillText(`이달의 결 「${M.themeName}」`, W - m, by + 92);
+    x.textAlign = 'left';
+  }
   /* 히어로 — 일간 한 글자를 오브제처럼 */
   x.textAlign = 'center';
   x.save();
@@ -2682,7 +2721,7 @@ function reportToPng() {
   /* 코너 — 시그니처 연도 · 워드마크 */
   x.textAlign = 'left'; x.fillStyle = DIM; x.font = `600 9.5px ${MONO}`; sp(4);
   x.fillText('SEHWA 歲畫', m, H - 96);
-  x.fillText(String(new Date().getFullYear()), m, H - 76);
+  x.fillText(M ? `EDITION ${String(M.i).padStart(2, '0')} · ${M.year}` : String(new Date().getFullYear()), m, H - 76);
   sp(0);
   /* 워드마크 — 네모 안 山 + S A N */
   const lcx = W - m - 44;
@@ -2710,8 +2749,11 @@ function reportToPng() {
   };
   if (c.toBlob) c.toBlob(blob => {
     if (!blob) { download(c.toDataURL('image/jpeg', .92)); return; }
+    /* 공유 시트(사진첩 저장)는 모바일에서만 — 데스크톱은 항상 다운로드 폴더로 */
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform || ''));
     const file = typeof File !== 'undefined' ? new File([blob], fname, {type: 'image/jpeg'}) : null;
-    if (file && navigator.canShare && navigator.canShare({files: [file]})) {
+    if (isMobile && file && navigator.canShare && navigator.canShare({files: [file]})) {
       navigator.share({files: [file]}).catch(e => {
         if (!e || e.name !== 'AbortError') download(URL.createObjectURL(blob));
       });
