@@ -837,7 +837,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.3.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.3.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1243,10 +1243,19 @@ function computeNumerology(y, m, d, nameForNum, currentYear) {
   const lifePath = reduceNum(ry + rm + rd);
   const birthday = reduceNum(d);
   const personalYear = reduceNum(reduceNum(m, false) + reduceNum(d, false) + reduceNum(digitSum(currentYear), false), false);
+  /* 계산 과정 풀어쓰기 — 1996 → 1+9+9+6 = 25 → 2+5 = 7 처럼 덧셈을 전부 보여줌 */
+  const ex = n => String(n).split('').join('+');
+  const chain = (n0, final) => {
+    let s = '', cur = n0, guard = 0;
+    while (cur !== final && guard++ < 4) { const nx = digitSum(cur); s += ` → ${ex(cur)} = ${nx}`; cur = nx; }
+    return s;
+  };
   return {
     lifePath, birthday, personalYear,
-    trail: {y: `${y} → ${digitSum(y)} → ${ry}`, m: `${m}월 → ${rm}`, d: `${d}일 → ${rd}`,
-            sum: `${ry} + ${rm} + ${rd} = ${ry + rm + rd}` + (ry + rm + rd !== lifePath ? ` → ${lifePath}` : '')},
+    trail: {y: `${y}${chain(y, ry)}`,
+            m: `${m}월${m === rm ? '' : chain(m, rm)}`,
+            d: `${d}일${d === rd ? '' : chain(d, rd)}`,
+            sum: `${ry}(연) + ${rm}(월) + ${rd}(일) = ${ry + rm + rd}${ry + rm + rd !== lifePath ? chain(ry + rm + rd, lifePath) : ''}`},
     name: nameNumbers(nameForNum)
   };
 }
@@ -3367,7 +3376,7 @@ function renderNumer(n, usedName, curYear, saju, astro) {
     <p class="small" style="margin-top:12px">같은 ${n.lifePath}번 길을 걷는 사람은 많지만, ${ILGAN_SHORT[ndk.k]}(${ndk.k} 일간)과 ${SIGNS[astro.sun.sign].k}의 온도로 이 길을 걷는 것은 당신의 방식입니다 — 리딩의 다른 장과 겹쳐 읽어야 온전한 지도가 됩니다.</p>
     <details style="max-width:560px;margin:26px auto 0;text-align:left">
       <summary>계산 과정</summary>
-      <div class="math">연도 ${n.trail.y}<br>월 ${n.trail.m} &nbsp;·&nbsp; 일 ${n.trail.d}<br>${n.trail.sum}${[11,22,33].includes(n.lifePath) ? ' <b style="color:var(--gold-soft)">(마스터 넘버 — 더 줄이지 않습니다)</b>' : ''}</div>
+      <div class="math"><span style="color:var(--dim)">자리 숫자를 한 자리가 될 때까지 계속 더하는 방식입니다.</span><br>연도 ${n.trail.y}<br>월 ${n.trail.m} &nbsp;·&nbsp; 일 ${n.trail.d}<br>${n.trail.sum}${[11,22,33].includes(n.lifePath) ? ' <b style="color:var(--gold-soft)">(11 · 22 · 33은 특별한 마스터 수라 더 줄이지 않습니다)</b>' : ''}</div>
     </details>`;
 
   const cards = [];
