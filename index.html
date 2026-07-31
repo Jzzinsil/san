@@ -846,7 +846,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.7</span>
+        <span style="letter-spacing:.2em">SAN v2.7.1</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2637,12 +2637,30 @@ function reportToPng() {
   advLines.forEach((ln, j) => x.fillText(ln, W / 2, yy + 12 + j * 25));
   x.fillStyle = '#6a6354'; x.font = `500 10.5px ${serif}`;
   x.fillText('山 SAN — 세 하늘의 리딩 · jzzinsil.github.io/san', W / 2, H - 34);
-  const a = document.createElement('a');
-  a.download = `SAN-리포트-${R.nameLine.replace(/\s+/g, '')}.png`;
-  a.href = c.toDataURL('image/png');
-  a.click();
+  /* 다운로드 — Safari 호환을 위해 Blob URL + DOM 부착 방식 사용 */
+  const fname = `SAN-리포트-${R.nameLine.replace(/\s+/g, '')}.png`;
+  const download = href => {
+    const a = document.createElement('a');
+    a.download = fname;
+    a.href = href;
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { if (href.startsWith('blob:')) URL.revokeObjectURL(href); a.remove(); }, 2000);
+  };
+  if (c.toBlob) c.toBlob(blob => {
+    if (blob) download(URL.createObjectURL(blob));
+    else download(c.toDataURL('image/png'));
+  }, 'image/png');
+  else download(c.toDataURL('image/png'));
 }
-$('#saveReport').addEventListener('click', reportToPng);
+$('#saveReport').addEventListener('click', () => {
+  reportToPng();
+  const btn = $('#saveReport'), t = btn.textContent;
+  btn.textContent = '저장했습니다 ✓';
+  setTimeout(() => { btn.textContent = t; }, 2000);
+});
 
 /* ---- 교차 운세 ---- */
 function renderFortune(f, now, natalSaju, natalTGs) {
