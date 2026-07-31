@@ -824,7 +824,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
       <p class="sec-desc">복을 부르고 액을 막으려 곁에 걸어두던 그림, 세화(歲畫). 당신의 명식과 이달의 운으로 매달 새로 그려집니다. 간직해 두면 길한 기운이 따릅니다.</p>
       <div style="text-align:center;margin:6px 0 28px">
         <button type="button" class="btn" id="saveReport" style="width:auto;padding:14px 38px">나의 세화 간직하기</button>
-        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 휴대폰에서는 공유 창에서 「이미지 저장」을 누르면 사진첩에 담깁니다. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.<br><span id="sehwaNext" style="color:var(--muted)"></span></p>
+        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 휴대폰에서는 공유 창에서 「이미지 저장」을, 카카오톡 등 앱 안에서 열었다면 화면에 뜨는 세화를 길게 눌러 저장하세요. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.<br><span id="sehwaNext" style="color:var(--muted)"></span></p>
       </div>
       <p style="font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);margin-bottom:10px">세화의 근거 — 한 장 명세</p>
       <div class="card repcard" id="reportCard"></div>
@@ -837,7 +837,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.2.2</span><br>
+        <span style="letter-spacing:.2em">SAN v3.3</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -2640,6 +2640,26 @@ function renderReport(inp, saju, astro, num, f) {
     <p class="repfoot">${adv}</p>`;
 }
 
+/* 카카오톡·인스타 등 인앱 브라우저 — 다운로드가 막혀 있어 길게 눌러 저장 안내로 대체 */
+const IS_INAPP = /KAKAOTALK|Instagram|FBAN|FBAV|Line\/|NAVER\(inapp/i.test(navigator.userAgent);
+function showSehwaOverlay(dataUrl) {
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(24,21,17,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:auto';
+  ov.innerHTML = `
+    <p style="color:#f2ecdf;font-size:14px;line-height:1.7;margin-bottom:14px;text-align:center">아래 세화를 <b style="color:#d9b96a">길게 꾹 누른 뒤</b><br>「이미지 저장」 또는 「사진 저장」을 선택하세요</p>
+    <img src="${dataUrl}" alt="나의 세화" style="max-width:86%;max-height:64vh;border:1px solid rgba(242,236,223,.3)">
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      ${/KAKAOTALK/i.test(navigator.userAgent) ? '<button type="button" id="ovExt" style="background:#d9b96a;color:#2e2a23;border:none;padding:11px 18px;font:inherit;font-size:13px;cursor:pointer">기본 브라우저에서 열기</button>' : ''}
+      <button type="button" id="ovClose" style="background:none;color:#f2ecdf;border:1px solid rgba(242,236,223,.4);padding:11px 18px;font:inherit;font-size:13px;cursor:pointer">닫기</button>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#ovClose').addEventListener('click', () => ov.remove());
+  const ext = ov.querySelector('#ovExt');
+  if (ext) ext.addEventListener('click', () => {
+    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
+  });
+}
+
 /* 리포트 → 시그니처 카드 JPG — 에디토리얼 포스터 스타일, 전부 기기 안에서 생성 */
 function reportToPng() {
   const R = window.REPORT;
@@ -2771,7 +2791,8 @@ function reportToPng() {
   x.fillStyle = DIM; x.font = `500 8.5px ${MONO}`; sp(1);
   x.fillText('jzzinsil.github.io/san', lcx, H - 62);
   sp(0); x.textAlign = 'left';
-  /* 저장 — JPG · 모바일은 공유 시트로 사진첩 저장, 그 외 다운로드 */
+  /* 저장 — 인앱 브라우저는 길게 눌러 저장 안내, 모바일은 공유 시트, 그 외 다운로드 */
+  if (IS_INAPP) { showSehwaOverlay(c.toDataURL('image/jpeg', .92)); return; }
   const fname = `SAN-세화-${R.nameLine.replace(/\s+/g, '')}.jpg`;
   const download = href => {
     const a = document.createElement('a');
@@ -2799,6 +2820,7 @@ function reportToPng() {
 }
 $('#saveReport').addEventListener('click', () => {
   reportToPng();
+  if (IS_INAPP) return; // 인앱은 오버레이 안내가 뜨므로 완료 표시 생략
   const btn = $('#saveReport'), t = btn.textContent;
   btn.textContent = '저장했습니다 ✓';
   setTimeout(() => { btn.textContent = t; }, 2000);
