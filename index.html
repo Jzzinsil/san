@@ -837,7 +837,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.3.2</span><br>
+        <span style="letter-spacing:.2em">SAN v3.3.3</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1919,12 +1919,21 @@ const elCls = i => 'el-' + ELEMENTS[i].cls;
 const scrollMode = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* 나라/도시 셀렉트 */
+/* 나라/도시 셀렉트 — 큰 도시를 위로, 나머지는 가나다순 그대로 */
+const CITY_PRIORITY = ['서울', '부산', '인천', '대구', '대전', '광주', '수원', '울산', '용인', '고양', '창원', '성남'];
+function cityOptions(cities) {
+  const names = Object.keys(cities);
+  const pri = CITY_PRIORITY.filter(n => names.includes(n));
+  if (pri.length < 2) return names.map(x => `<option>${x}</option>`).join('');
+  const rest = names.filter(n => !pri.includes(n));
+  return pri.map(x => `<option>${x}</option>`).join('')
+    + '<option disabled>──────────</option>'
+    + rest.map(x => `<option>${x}</option>`).join('');
+}
 const countrySel = $('#country'), citySel = $('#city');
 countrySel.innerHTML = Object.keys(GEO).map(c => `<option>${c}</option>`).join('');
 function fillCities(){
-  const c = GEO[countrySel.value];
-  citySel.innerHTML = Object.keys(c.cities).map(x => `<option>${x}</option>`).join('');
+  citySel.innerHTML = cityOptions(GEO[countrySel.value].cities);
 }
 countrySel.addEventListener('change', fillCities);
 fillCities();
@@ -1963,7 +1972,7 @@ const readTime4 = id => {
 const gCountrySel = $('#gCountry'), gCitySel = $('#gCity');
 gCountrySel.innerHTML = Object.keys(GEO).map(c => `<option>${c}</option>`).join('');
 function fillGCities() {
-  gCitySel.innerHTML = Object.keys(GEO[gCountrySel.value].cities).map(x => `<option>${x}</option>`).join('');
+  gCitySel.innerHTML = cityOptions(GEO[gCountrySel.value].cities);
 }
 gCountrySel.addEventListener('change', fillGCities);
 fillGCities();
