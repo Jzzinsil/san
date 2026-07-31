@@ -846,7 +846,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.9</span>
+        <span style="letter-spacing:.2em">SAN v2.9.1</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2669,7 +2669,7 @@ function reportToPng() {
   x.textAlign = 'center';
   x.save();
   x.shadowColor = 'rgba(60,50,35,.25)'; x.shadowBlur = 48; x.shadowOffsetY = 28;
-  x.fillStyle = INK; x.font = `600 252px ${serifV}`;
+  x.fillStyle = INK; x.font = `500 252px ${serifV}`;
   x.fillText(T.stemH, cx, 700);
   x.restore();
   x.fillStyle = DIM; x.font = `500 26px ${serifV}`; sp(8); x.fillText(T.branchH, cx, 764); sp(0);
@@ -2684,11 +2684,17 @@ function reportToPng() {
   x.fillText('SIGNATURE', m, H - 96);
   x.fillText(String(new Date().getFullYear()), m, H - 76);
   sp(0);
-  x.textAlign = 'right';
-  x.fillStyle = INK; x.font = `600 30px ${serifV}`;
-  x.fillText('山 San.', W - m, H - 82);
+  /* 워드마크 — 네모 안 山 + S A N */
+  const lcx = W - m - 44;
+  x.textAlign = 'center';
+  x.strokeStyle = FAINT; x.lineWidth = 1;
+  x.strokeRect(lcx - 23, H - 152, 46, 46);
+  x.fillStyle = INK; x.font = `500 20px ${serifV}`;
+  x.fillText('山', lcx, H - 121);
+  x.font = `500 13px ${serifV}`; sp(7);
+  x.fillText('SAN', lcx + 4, H - 86); sp(0);
   x.fillStyle = DIM; x.font = `500 8.5px ${MONO}`; sp(1);
-  x.fillText('jzzinsil.github.io/san', W - m, H - 60);
+  x.fillText('jzzinsil.github.io/san', lcx, H - 62);
   sp(0); x.textAlign = 'left';
   /* 저장 — JPG · 모바일은 공유 시트로 사진첩 저장, 그 외 다운로드 */
   const fname = `SAN-시그니처-${R.nameLine.replace(/\s+/g, '')}.jpg`;
