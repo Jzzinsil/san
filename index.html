@@ -837,7 +837,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.3</span><br>
+        <span style="letter-spacing:.2em">SAN v3.3.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -2859,15 +2859,18 @@ function renderFortune(f, now, natalSaju, natalTGs) {
         <span class="fdate">${dateLabel[p.key]}</span>
       </div>
       <p class="ftheme">${th.name}</p>
+      <p class="fadvice">${THEMES[p.theme].adv}</p>
       <p class="fagree">${agreeLine}</p>
       ${splitHtml}
-      <div class="fev">
-        <div class="frow"><span class="fsys">사주</span><span class="ftxt">${p.saju.label} <b>${p.saju.gz}</b> — 당신에게 <b>${tgLabel(p.saju.tg)}</b>의 기운이 들어옵니다. ${TENGOD_FORTUNE[p.saju.tg]}</span></div>
-        <div class="frow"><span class="fsys">별</span><span class="ftxt">지금 ${p.astro.who}은 당신의 <b>‘${HOUSE_FORTUNE[p.astro.house]}’</b>를 지나는 중입니다 (${SIGNS[p.astro.sign].k}).</span></div>
-        <div class="frow"><span class="fsys">수</span><span class="ftxt">${p.num.label} <b>${p.num.n}</b> — ${NUM_CYCLE[Math.min(p.num.n, 9)]}</span></div>
-      </div>
       ${extra}
-      <p class="fadvice">${THEMES[p.theme].adv}</p>
+      <details>
+        <summary>세 하늘의 근거</summary>
+        <div class="fev">
+          <div class="frow"><span class="fsys">사주</span><span class="ftxt">${p.saju.label} <b>${p.saju.gz}</b> — 당신에게 <b>${tgLabel(p.saju.tg)}</b>의 기운이 들어옵니다. ${TENGOD_FORTUNE[p.saju.tg]}</span></div>
+          <div class="frow"><span class="fsys">별</span><span class="ftxt">지금 ${p.astro.who}은 당신의 <b>‘${HOUSE_FORTUNE[p.astro.house]}’</b>를 지나는 중입니다 (${SIGNS[p.astro.sign].k}).</span></div>
+          <div class="frow"><span class="fsys">수</span><span class="ftxt">${p.num.label} <b>${p.num.n}</b> — ${NUM_CYCLE[Math.min(p.num.n, 9)]}</span></div>
+        </div>
+      </details>
     </div>`;
   };
 
@@ -3273,10 +3276,10 @@ $('#gungForm').addEventListener('submit', e => {
       <span class="vh">${total}</span>
       <span><span class="vt">${grade}</span><br><span class="vd">100점 만점 — 사주 ${sajuScore}/40 · 별 ${astroScore}/30 · 수 ${numScore}/30</span></span>
     </div>
+    <p class="fadvice">${GUNG_ADVICE[weakest]}</p>
     <div class="combo"><b>사주 ${sajuScore}/40</b><br>${linesSj.join('<br>')}</div>
     <div class="combo"><b>별 ${astroScore}/30</b><br>${linesAs.join('<br>')}</div>
     <div class="combo"><b>수 ${numScore}/30</b><br>${linesNu.join('<br>')}</div>
-    <p class="fadvice">${GUNG_ADVICE[weakest]}</p>
     <p class="small" style="margin-top:12px;color:var(--dim)">두 지문 ${fp1} ✕ ${fp2} — 일주 60갑자와 태양 도수가 함께 겹치는 쌍은 사실상 없어, 이 궁합 리딩은 두 사람만의 것입니다.</p>
   </div>`;
   $('#gungResult').scrollIntoView({behavior: scrollMode(), block: 'nearest'});
