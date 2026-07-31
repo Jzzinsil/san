@@ -837,7 +837,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.3.3</span><br>
+        <span style="letter-spacing:.2em">SAN v3.3.4</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -2658,13 +2658,17 @@ function renderReport(inp, saju, astro, num, f) {
     <p class="repfoot">${adv}</p>`;
 }
 
-/* 카카오톡·인스타 등 인앱 브라우저 — 다운로드가 막혀 있어 길게 눌러 저장 안내로 대체 */
+/* 카카오톡 인앱 브라우저는 이미지 저장 메뉴 자체가 없어(공유·복사만) 기본 브라우저로 자동 전환 */
+if (/KAKAOTALK/i.test(navigator.userAgent)) {
+  location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
+}
+/* 그 외 인앱 브라우저(인스타 등) — 다운로드가 막혀 있어 길게 눌러 저장 안내로 대체 */
 const IS_INAPP = /KAKAOTALK|Instagram|FBAN|FBAV|Line\/|NAVER\(inapp/i.test(navigator.userAgent);
 function showSehwaOverlay(dataUrl) {
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(24,21,17,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:auto';
   ov.innerHTML = `
-    <p style="color:#f2ecdf;font-size:14px;line-height:1.7;margin-bottom:14px;text-align:center">아래 세화를 <b style="color:#d9b96a">길게 꾹 누른 뒤</b><br>「이미지 저장」 또는 「사진 저장」을 선택하세요</p>
+    <p style="color:#f2ecdf;font-size:14px;line-height:1.7;margin-bottom:14px;text-align:center">아래 세화를 <b style="color:#d9b96a">길게 꾹 누른 뒤</b> 「이미지 저장」을 선택하세요<br><span style="font-size:12px;opacity:.75">저장 메뉴가 없으면 「이미지 복사」 후 갤러리 · 메모에 붙여넣거나,<br>화면 메뉴의 「다른 브라우저로 열기」를 이용해주세요</span></p>
     <img src="${dataUrl}" alt="나의 세화" style="max-width:86%;max-height:64vh;border:1px solid rgba(242,236,223,.3)">
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
       ${/KAKAOTALK/i.test(navigator.userAgent) ? '<button type="button" id="ovExt" style="background:#d9b96a;color:#2e2a23;border:none;padding:11px 18px;font:inherit;font-size:13px;cursor:pointer">기본 브라우저에서 열기</button>' : ''}
