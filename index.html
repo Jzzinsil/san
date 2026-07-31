@@ -791,7 +791,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되거나 저장되지 않으며, 브라우저를 닫으면 사라집니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.4</span>
+        <span style="letter-spacing:.2em">SAN v2.5</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1619,6 +1619,20 @@ function detectCat(q) {
   }
   return best;
 }
+/* 질문 유형 감지 — yesno(기본) · neg(하지 말까) · choice(갈림길) · when(시기) · open(열린 물음) */
+function detectQType(q) {
+  const sp = q.split(/\s*(?:아니면|[vV][sS])\s*/);
+  if (sp.length >= 2 && sp[0].trim() && sp[1].trim()) {
+    const b = sp[1].replace(/\s*(?:중에?서?)?\s*(?:어디가|뭐가|어느\s*쪽|어떤\s*게|누가)?\s*(?:나아|나을까|나은가|낫나|좋을까|좋아|좋은가|맞을까|할까)?\s*[?？.!\s]*$/, '').trim();
+    if (b) return {t:'choice', a:sp[0].trim(), b};
+    return {t:'choice'};
+  }
+  if (/중에?서?\s*(뭐|어느|어떤|누구|무엇)|둘\s*중/.test(q)) return {t:'choice'};
+  if (/언제|몇\s*[년월일주달살]|시기|타이밍/.test(q)) return {t:'when'};
+  if (/어떻게|어떡|어떤\s|무엇을|뭘\s|뭐를|뭐가\s|왜\s|어디[로서에가]/.test(q)) return {t:'open'};
+  const neg = /지\s*말까|말아야|안\s*\S+\s*(게|것이|편이)\s*(나을|낫|좋)/.test(q);
+  return {t:'yesno', neg};
+}
 function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근거 수집
   const cat = CATS[detectCat(q)];
   const f = R.fortune;
@@ -1669,7 +1683,8 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
     ? `가장 결이 맞는 시기는 <b>${PERIOD_META[tp.key].kr}</b>입니다 — ${THEMES[tp.theme].name}의 기운이 이 질문을 받쳐줍니다.`
     : `다섯 시계 중 이 질문과 정확히 겹치는 시기는 아직 없습니다. <b>올해</b>의 큰 흐름(${THEMES[f.periods[4].theme].name}) 위에서 무리하지 않는 것이 좋습니다.`;
 
-  return {cat, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt}, sajuLine, astroLine, numLine, timing};
+  return {cat, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt}, sajuLine, astroLine, numLine, timing,
+    tpKr: tp ? PERIOD_META[tp.key].kr : null, tpTheme: tp ? THEMES[tp.theme].name : null};
 }
 
 /* ---------- 열두 패 (카드 덱) ---------- */
@@ -2023,10 +2038,11 @@ function finishDraw() {
   const R = window.READING;
   const ev = gatherEvidence(q, R);
 
-  /* 판정: 명식 근거(0~4) + 패의 결(-3~+3) → 예/아니오 */
+  /* 판정: 명식 근거(0~4)를 평년 수준 2점 기준으로 보정 + 패의 결(-3~+3) → 예/아니오 */
+  const qt = detectQType(q);
   const polSum = picks.reduce((s, c) => s + c.pol, 0);
-  const total = ev.ev + polSum;
-  const score = total >= 4 ? 3 : total >= 2 ? 2 : total >= 0 ? 1 : 0;
+  const total = (ev.ev - 2) + polSum;
+  const score = total >= 3 ? 3 : total >= 1 ? 2 : total >= -1 ? 1 : 0;
   const v = VERDICTS[score];
 
   /* 패의 중심 오행 → 일간과의 관계 */
@@ -2079,14 +2095,59 @@ function finishDraw() {
   if (picks.some(c => c.th.includes(R.fortune.periods[0].num.theme)))
     crossLines.push(`오늘의 개인 일수(${R.fortune.PD})와 같은 결의 패가 섞여 있습니다 — 오늘 물어서 오늘 답이 맞는 질문입니다.`);
 
+  /* 질문 유형별 판정 상자 */
+  const clip = s => s.length > 16 ? s.slice(0, 16) + '…' : s;
+  let verdictHTML, advLine = v.adv;
+  if (qt.t === 'when') {
+    verdictHTML = `
+    <div class="averdict${ev.tpKr ? ' yes' : ''}">
+      <span class="vh"${ev.tpKr && ev.tpKr.length > 2 ? ' style="font-size:30px"' : ''}>${ev.tpKr || '未定'}</span>
+      <span><span class="vt">${ev.tpKr ? '때를 묻는 물음 — 이 시기입니다' : '때를 묻는 물음 — 아직 열린 창이 없습니다'}</span><br>
+      <span class="vd">${ev.tpKr ? `다섯 시계 중 「${ev.tpKr}」의 결(${ev.tpTheme})이 이 질문과 겹칩니다` : '다섯 시계 어디에도 이 질문의 결이 아직 없습니다 — 준비 국면입니다'}</span></span>
+    </div>`;
+    advLine = ev.tpKr
+      ? `시기를 물으셨기에 예/아니오 대신 때로 답합니다 — 「${ev.tpKr}」의 창이 열리면, 끝자리 패(${picks[2].name})의 결로 마무리하세요.`
+      : '지금은 날짜를 박을 때가 아니라 준비를 쌓을 국면입니다. 흐름이 겹치는 때에 다시 물으세요.';
+  } else if (qt.t === 'choice') {
+    const lean = total >= 1;
+    const pick = qt.a ? `「${esc(clip(lean ? qt.a : qt.b))}」` : (lean ? '먼저 떠올린 길' : '뒤에 말한 길');
+    verdictHTML = `
+    <div class="averdict${lean ? ' yes' : ''}">
+      <span class="vh">${lean ? '前' : '後'}</span>
+      <span><span class="vt">${pick} 쪽으로 기웁니다</span><br>
+      <span class="vd">기운이 밀어주는 때는 먼저 꺼낸 마음이 답이고, 막히는 때는 다른 길이 답입니다</span></span>
+    </div>`;
+    advLine = `${pick} 쪽을 고르되, 길목 패(${picks[1].name})가 말하는 과제를 그 길의 통행료로 치르세요.`;
+  } else if (qt.t === 'open') {
+    verdictHTML = `
+    <div class="averdict yes">
+      <span class="vh">${ELEMENTS[domEl].h}</span>
+      <span><span class="vt">${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h})의 방식으로 푸세요</span><br>
+      <span class="vd">열린 물음이라 예/아니오 대신 방향으로 답합니다 — 당신에게 ${relName}의 자리입니다</span></span>
+    </div>`;
+    advLine = `${relDesc}. 구체적인 '어떻게'는 세 패의 본문 — 특히 길목 자리(${picks[1].name}) — 에 있습니다.`;
+  } else if (qt.neg) {
+    const doIt = score >= 2;
+    verdictHTML = `
+    <div class="averdict${doIt ? ' yes' : ' no'}">
+      <span class="vh">${doIt ? '아니오' : '예'}</span>
+      <span><span class="vt">${doIt ? '말리지 않습니다 — 하는 쪽입니다' : '접는 쪽에 결이 있습니다'}</span><br>
+      <span class="vd">거꾸로 물으셨기에 거꾸로 답합니다 · ${v.h} — 기운은 ${doIt ? '미는' : '막는'} 중</span></span>
+    </div>`;
+    advLine = doIt ? `"말까"라 물으셨지만 기운은 하는 쪽을 밉니다. ${v.adv}` : v.adv;
+  } else {
+    verdictHTML = `
+    <div class="averdict ${v.yn === 'YES' ? 'yes' : 'no'}">
+      <span class="vh">${v.yn === 'YES' ? '예' : '아니오'}</span>
+      <span><span class="vt">${v.t}</span><br><span class="vd">${v.h} · ${v.d}</span></span>
+    </div>`;
+  }
+
   const card = document.createElement('div');
   card.className = 'acard';
   card.innerHTML = `
     <p class="aq">물음 · <b>${esc(q)}</b></p>
-    <div class="averdict ${v.yn === 'YES' ? 'yes' : 'no'}">
-      <span class="vh">${v.yn === 'YES' ? '예' : '아니오'}</span>
-      <span><span class="vt">${v.t}</span><br><span class="vd">${v.h} · ${v.d}</span></span>
-    </div>
+    ${verdictHTML}
     <span class="acat">${ev.cat.label}</span>
     <div class="spread3">${spots}</div>
     ${intro}
@@ -2107,7 +2168,7 @@ function finishDraw() {
       </div>
     </details>
     <p class="atiming">${ev.timing}</p>
-    <p class="fadvice">${v.adv}</p>`;
+    <p class="fadvice">${advLine}</p>`;
   $('#askAnswers').prepend(card);
   card.scrollIntoView({behavior: scrollMode(), block: 'nearest'});
 }
