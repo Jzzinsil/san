@@ -847,7 +847,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.1</span>
+        <span style="letter-spacing:.2em">SAN v3.1.1</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2571,6 +2571,7 @@ function renderReport(inp, saju, astro, num, f) {
   const tv = tagVotes(saju, astro, num).sorted;
   const top = tv[0];
   const lineTag = (tv.find(t => !ILGAN_SHORT[dk.k].includes(t[0])) || tv[0])[0];
+  const lineTag2 = (tv.find(t => t[0] !== lineTag) || tv[0])[0];
   const weak = saju.counts.indexOf(Math.min(...saju.counts));
   const dom = saju.counts.indexOf(Math.max(...saju.counts));
   const tsh = t => THEMES[t].name.split(' · ')[0];
@@ -2595,7 +2596,7 @@ function renderReport(inp, saju, astro, num, f) {
       ilju: `${dk.h}${BRANCHES[saju.day.branch].h} · ${dk.k}${BRANCHES[saju.day.branch].k}`,
       zodK: SIGNS[astro.sun.sign].k, sunDeg: astro.sun.deg, moonK: SIGNS[astro.moon.sign].k,
       lp: num.lifePath, lpT: NUM_ESSENCE[num.lifePath].t,
-      domEl: dom, counts: saju.counts.slice(), lineTag,
+      domEl: dom, counts: saju.counts.slice(), lineTag, tagPair: `${lineTag} · ${lineTag2}`,
       line: `${ILGAN_SHORT[dk.k]} · ${SIGN_ESSENCE[astro.sun.sign]}의 온도 · ${NUM_ESSENCE[num.lifePath].t}의 길`,
       month: (() => {
         const nowM = new Date();
@@ -2707,7 +2708,7 @@ function reportToPng() {
   });
   x.strokeStyle = FAINT; x.beginPath(); x.moveTo(bx + bp, yD); x.lineTo(bx + bw - bp, yD); x.stroke();
   x.fillStyle = INK; x.font = `600 10px ${MONO}`; sp(1.5);
-  x.fillText(`「${T.lineTag}」의 결`, bx + bp, yF);
+  x.fillText(`「${T.tagPair || T.lineTag}」의 결`, bx + bp, yF);
   x.textAlign = 'right'; x.fillText('SAN', bx + bw - bp, yF); sp(0);
   /* 이달 블록 (우상단) — 매달 새로 그려지는 부분: 달의 일반 성격 + 나의 월운 */
   if (M) {
