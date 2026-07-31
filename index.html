@@ -142,6 +142,7 @@ body.loading #loading{display:flex}
 #loading .lline{width:180px;height:9px;margin-top:18px;background:linear-gradient(var(--hairline),var(--hairline)) 0 50%/100% 1px no-repeat;position:relative}
 #loading .lline::after{content:"";position:absolute;top:0;bottom:0;left:0;width:1px;background:var(--ink);animation:sweep 1.3s ease-in-out infinite}
 @keyframes sweep{0%{left:0}50%{left:calc(100% - 1px)}100%{left:0}}
+#loading .lepi{margin-top:44px;text-align:center}
 
 /* ---------- results common ---------- */
 #result{display:none}
@@ -607,6 +608,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <div class="lmark" aria-hidden="true">山</div>
     <p class="ltext" id="loadingText">명식을 세우는 중</p>
     <div class="lline" aria-hidden="true"></div>
+    <p class="epi lepi">사람들은 높은 산과 바다의 큰 물결과 별들의 길을 보러 떠나면서,<br>정작 자기 자신은 지나쳐 간다.<span class="src">— 1,600년 전의 어느 고백에서</span></p>
   </div>
 
   <main id="result" tabindex="-1">
