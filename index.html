@@ -831,11 +831,11 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <section class="reading" id="report">
       <p class="sec-label">One-Page Report</p>
       <h2 class="sec-title">명식 리포트</h2>
-      <p class="sec-desc">여덟 장의 리딩에서 결론만 추려 한 장에 담았습니다. 아래 버튼을 누르면 당신의 명식 글자로 그린 행운 부적이 만들어집니다.</p>
+      <p class="sec-desc">여덟 장의 리딩에서 결론만 추려 한 장에 담았습니다. 아래 버튼을 누르면 당신의 명식으로 만든 시그니처 카드 한 장이 만들어집니다.</p>
       <div class="card repcard" id="reportCard"></div>
       <div style="text-align:center;margin-top:20px">
-        <button type="button" class="btn" id="saveReport" style="width:auto;padding:13px 34px">행운 부적 저장</button>
-        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">일간 · 일지 · 별자리 · 수로 그린 당신만의 부적이 PNG로 저장됩니다 — 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.</p>
+        <button type="button" class="btn" id="saveReport" style="width:auto;padding:13px 34px">시그니처 카드 저장</button>
+        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 휴대폰에서는 공유 창에서 「이미지 저장」을 누르면 사진첩에 담깁니다. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.</p>
       </div>
     </section>
 
@@ -846,7 +846,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v2.8</span>
+        <span style="letter-spacing:.2em">SAN v2.9</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2577,8 +2577,10 @@ function renderReport(inp, saju, astro, num, f) {
   window.REPORT = {rows, adv, nameLine, metaLine, fpLine,
     tal: {
       stemH: dk.h, branchH: BRANCHES[saju.day.branch].h,
-      zodG: SIGNS[astro.sun.sign].g, lp: num.lifePath, domEl: dom,
-      sealCh: (inp.name || inp.ename || dk.h).charAt(0),
+      ilju: `${dk.h}${BRANCHES[saju.day.branch].h} · ${dk.k}${BRANCHES[saju.day.branch].k}`,
+      zodK: SIGNS[astro.sun.sign].k, sunDeg: astro.sun.deg, moonK: SIGNS[astro.moon.sign].k,
+      lp: num.lifePath, lpT: NUM_ESSENCE[num.lifePath].t,
+      domEl: dom, counts: saju.counts.slice(), lineTag,
       line: `${ILGAN_SHORT[dk.k]} · 「${lineTag}」의 결을 타고난 사람`
     }};
   $('#reportCard').innerHTML = `
@@ -2592,83 +2594,104 @@ function renderReport(inp, saju, astro, num, f) {
     <p class="repfoot">${adv}</p>`;
 }
 
-/* 리포트 → 행운 부적 PNG — 명식의 글자로 그리는 개인 부적, 전부 기기 안에서 생성 */
+/* 리포트 → 시그니처 카드 JPG — 에디토리얼 포스터 스타일, 전부 기기 안에서 생성 */
 function reportToPng() {
   const R = window.REPORT;
   if (!R || !R.tal) return;
   const c = document.createElement('canvas');
   if (!c.getContext) return;
   const x = c.getContext('2d');
-  const S = 2, W = 480, H = 840, pad = 40;
-  const serif = (getComputedStyle(document.documentElement).getPropertyValue('--serif') || '').trim() || 'serif';
-  const INK = '#2e2a23', DIM = '#6a6354', RED = '#a63d28', PAPER = '#f2ecdf';
-  const ELC = ['#4a7a4a', '#a63d28', '#b08a3e', '#857f70', '#3d5f7a'];
+  const S = 2, W = 880, H = 1100, m = 64;
+  const serifV = (getComputedStyle(document.documentElement).getPropertyValue('--serif') || '').trim() || 'serif';
+  const MONO = '"SF Mono", "Menlo", "Courier New", monospace';
+  const INK = '#2b2721', DIM = '#7d7565', FAINT = 'rgba(43,39,33,.4)';
+  const ELC = ['#5d7a55', '#a34f33', '#b3874a', '#8d8574', '#4e6b80'];
   const T = R.tal, cx = W / 2;
+  const sp = px => { if ('letterSpacing' in x) x.letterSpacing = px + 'px'; };
   c.width = W * S; c.height = H * S;
   x.scale(S, S);
-  x.fillStyle = PAPER; x.fillRect(0, 0, W, H);
-  x.strokeStyle = INK; x.lineWidth = 1; x.strokeRect(12, 12, W - 24, H - 24);
-  x.strokeStyle = RED; x.lineWidth = .75; x.strokeRect(18, 18, W - 36, H - 36);
-  /* 로고 */
-  x.textAlign = 'center';
-  x.fillStyle = INK; x.font = `500 30px ${serif}`; x.fillText('山', cx, 74);
-  x.fillStyle = DIM; x.font = `700 10px ${serif}`; x.fillText('S  A  N', cx, 93);
-  x.strokeStyle = INK; x.lineWidth = 1;
-  x.beginPath(); x.moveTo(pad, 112); x.lineTo(W - pad, 112); x.stroke();
-  /* 부적 머리 — 삼산 봉우리 (가운데 봉우리는 중심 오행의 색) */
-  const py = 178, pw = 46;
-  x.lineWidth = 2; x.strokeStyle = RED;
-  x.beginPath(); x.moveTo(cx - pw * 1.5, py); x.lineTo(cx - pw, py - 26); x.lineTo(cx - pw / 2, py); x.stroke();
-  x.beginPath(); x.moveTo(cx + pw / 2, py); x.lineTo(cx + pw, py - 26); x.lineTo(cx + pw * 1.5, py); x.stroke();
+  /* 배경 — 따뜻한 종이 그라데이션 + 중앙의 은은한 빛 */
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#ece4d3'); g.addColorStop(.55, '#e6dcc8'); g.addColorStop(1, '#dcd1b9');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const rg = x.createRadialGradient(cx, 610, 60, cx, 610, 430);
+  rg.addColorStop(0, 'rgba(249,243,229,.8)'); rg.addColorStop(1, 'rgba(249,243,229,0)');
+  x.fillStyle = rg; x.fillRect(0, 0, W, H);
+  /* 스펙 카드 (좌상단) — 명식 명세 */
+  const bx = m, by = m, bw = 336, bp = 22;
+  const attrs = [
+    ['ILJU', T.ilju],
+    ['SUN', `${T.zodK} ${T.sunDeg}°`],
+    ['MOON', T.moonK],
+    ['LIFE PATH', `${T.lp} · ${T.lpT}`]
+  ];
+  const yName = by + bp + 16;
+  const yA = yName + 34;
+  const yG = yA + attrs.length * 22 + 18;
+  const yD = yG + 5 * 20 + 8;
+  const yF = yD + 24;
+  const bh = yF + 16 - by;
+  x.strokeStyle = FAINT; x.lineWidth = 1; x.strokeRect(bx, by, bw, bh);
+  x.textAlign = 'left';
+  x.fillStyle = INK; x.font = `700 15px ${serifV}`; sp(2);
+  x.fillText(R.nameLine, bx + bp, yName);
+  const nw = x.measureText(R.nameLine).width; sp(0);
   x.fillStyle = ELC[T.domEl];
-  x.beginPath(); x.moveTo(cx - pw * .62, py); x.lineTo(cx, py - 40); x.lineTo(cx + pw * .62, py); x.closePath(); x.fill();
-  x.fillStyle = RED; x.font = `700 13px ${serif}`; x.fillText('幸 運 符', cx, py + 26);
-  /* 곁줄 — 좌우 세로획과 마디 */
-  x.strokeStyle = RED; x.lineWidth = 1.5;
-  [72, W - 72].forEach(sx => {
-    x.beginPath(); x.moveTo(sx, 240); x.lineTo(sx, 560); x.stroke();
-    [300, 400, 500].forEach(sy => { x.beginPath(); x.moveTo(sx - 7, sy); x.lineTo(sx + 7, sy); x.stroke(); });
+  x.beginPath(); x.arc(bx + bp + nw + 13, yName - 5, 3.5, 0, Math.PI * 2); x.fill();
+  attrs.forEach(([k, v], i) => {
+    const yy = yA + i * 22;
+    x.fillStyle = DIM; x.font = `600 9px ${MONO}`; sp(1.5); x.fillText(k, bx + bp, yy); sp(0);
+    x.fillStyle = INK; x.font = `500 12.5px ${serifV}`; x.fillText(v, bx + bp + 94, yy);
   });
-  /* 본체 — 일간을 크게, 일지를 받침으로 */
-  x.fillStyle = RED;
-  x.font = `700 128px ${serif}`; x.fillText(T.stemH, cx, 372);
-  x.font = `600 60px ${serif}`; x.fillText(T.branchH, cx, 452);
-  /* 왼쪽 태양 별자리 기호 · 오른쪽 라이프패스 */
-  x.font = `500 26px ${serif}`; x.fillText(T.zodG, cx - 108, 350);
-  x.strokeStyle = RED; x.lineWidth = 1.5;
-  x.beginPath(); x.arc(cx + 108, 341, 17, 0, Math.PI * 2); x.stroke();
-  x.font = `700 17px ${serif}`; x.fillText(String(T.lp), cx + 108, 347);
-  /* 기운 획 — 굽이쳐 내려오는 획 */
-  x.lineWidth = 3; x.lineCap = 'round';
-  x.beginPath(); x.moveTo(cx, 478);
-  x.bezierCurveTo(cx - 22, 505, cx + 22, 525, cx, 548);
-  x.quadraticCurveTo(cx - 14, 562, cx + 6, 568);
-  x.stroke(); x.lineCap = 'butt';
-  /* 도장 — 이름 첫 글자 */
-  x.save();
-  x.translate(cx + 92, 545); x.rotate(-.06);
-  x.fillStyle = RED; x.fillRect(-26, -26, 52, 52);
-  x.fillStyle = PAPER; x.font = `700 30px ${serif}`; x.fillText(T.sealCh, 0, 11);
-  x.restore();
-  /* 나를 표현하는 한 줄 */
-  x.strokeStyle = INK; x.lineWidth = 1;
-  x.beginPath(); x.moveTo(pad, 628); x.lineTo(W - pad, 628); x.stroke();
-  x.fillStyle = INK; x.font = `600 15.5px ${serif}`;
-  const wrap = (text, maxW) => {
-    const out = []; let line = '';
-    for (const ch of String(text)) {
-      if (x.measureText(line + ch).width > maxW && line) { out.push(line); line = ch === ' ' ? '' : ch; }
-      else line += ch;
+  /* 오행 게이지 */
+  const gl = ['木', '火', '土', '金', '水'];
+  const gx0 = bx + bp + 30, gx1 = bx + bw - bp - 26;
+  const maxC = Math.max(...T.counts, 4);
+  gl.forEach((h, i) => {
+    const yy = yG + i * 20;
+    x.fillStyle = DIM; x.font = `500 11px ${serifV}`; x.fillText(h, bx + bp, yy);
+    x.strokeStyle = 'rgba(43,39,33,.22)'; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(gx0, yy - 4); x.lineTo(gx1, yy - 4); x.stroke();
+    for (let t = 0; t <= maxC; t++) {
+      const tx = gx0 + (gx1 - gx0) * t / maxC;
+      x.beginPath(); x.moveTo(tx, yy - 7); x.lineTo(tx, yy - 1); x.stroke();
     }
-    if (line) out.push(line);
-    return out;
-  };
-  wrap(T.line, W - pad * 2 - 10).forEach((ln, i) => x.fillText(ln, cx, 668 + i * 26));
-  x.fillStyle = DIM; x.font = `500 12px ${serif}`; x.fillText(R.nameLine, cx, 736);
-  /* 워터마크 */
-  x.font = `500 10.5px ${serif}`; x.fillText('山 SAN — 세 하늘의 리딩 · jzzinsil.github.io/san', cx, H - 36);
-  /* 다운로드 — Safari 호환을 위해 Blob URL + DOM 부착 방식 사용 */
-  const fname = `SAN-부적-${R.nameLine.replace(/\s+/g, '')}.png`;
+    const dx = gx0 + (gx1 - gx0) * T.counts[i] / maxC;
+    x.fillStyle = i === T.domEl ? ELC[i] : INK;
+    x.beginPath(); x.arc(dx, yy - 4, 3.2, 0, Math.PI * 2); x.fill();
+    x.fillStyle = DIM; x.font = `500 9px ${MONO}`; x.fillText(String(T.counts[i]), gx1 + 10, yy - 1);
+  });
+  x.strokeStyle = FAINT; x.beginPath(); x.moveTo(bx + bp, yD); x.lineTo(bx + bw - bp, yD); x.stroke();
+  x.fillStyle = INK; x.font = `600 10px ${MONO}`; sp(1.5);
+  x.fillText(`「${T.lineTag}」의 결`, bx + bp, yF);
+  x.textAlign = 'right'; x.fillText('SAN', bx + bw - bp, yF); sp(0);
+  /* 히어로 — 일간 한 글자를 오브제처럼 */
+  x.textAlign = 'center';
+  x.save();
+  x.shadowColor = 'rgba(60,50,35,.25)'; x.shadowBlur = 48; x.shadowOffsetY = 28;
+  x.fillStyle = INK; x.font = `600 252px ${serifV}`;
+  x.fillText(T.stemH, cx, 700);
+  x.restore();
+  x.fillStyle = DIM; x.font = `500 26px ${serifV}`; sp(8); x.fillText(T.branchH, cx, 764); sp(0);
+  /* 나를 표현하는 한 줄 */
+  x.fillStyle = '#6d6555'; sp(1);
+  let lf = 13.5;
+  x.font = `500 ${lf}px ${serifV}`;
+  while (x.measureText(T.line).width > W - m * 2 && lf > 10) { lf -= .5; x.font = `500 ${lf}px ${serifV}`; }
+  x.fillText(T.line, cx, 832); sp(0);
+  /* 코너 — 시그니처 연도 · 워드마크 */
+  x.textAlign = 'left'; x.fillStyle = DIM; x.font = `600 9.5px ${MONO}`; sp(4);
+  x.fillText('SIGNATURE', m, H - 96);
+  x.fillText(String(new Date().getFullYear()), m, H - 76);
+  sp(0);
+  x.textAlign = 'right';
+  x.fillStyle = INK; x.font = `600 30px ${serifV}`;
+  x.fillText('山 San.', W - m, H - 82);
+  x.fillStyle = DIM; x.font = `500 8.5px ${MONO}`; sp(1);
+  x.fillText('jzzinsil.github.io/san', W - m, H - 60);
+  sp(0); x.textAlign = 'left';
+  /* 저장 — JPG · 모바일은 공유 시트로 사진첩 저장, 그 외 다운로드 */
+  const fname = `SAN-시그니처-${R.nameLine.replace(/\s+/g, '')}.jpg`;
   const download = href => {
     const a = document.createElement('a');
     a.download = fname;
@@ -2680,10 +2703,15 @@ function reportToPng() {
     setTimeout(() => { if (href.startsWith('blob:')) URL.revokeObjectURL(href); a.remove(); }, 2000);
   };
   if (c.toBlob) c.toBlob(blob => {
-    if (blob) download(URL.createObjectURL(blob));
-    else download(c.toDataURL('image/png'));
-  }, 'image/png');
-  else download(c.toDataURL('image/png'));
+    if (!blob) { download(c.toDataURL('image/jpeg', .92)); return; }
+    const file = typeof File !== 'undefined' ? new File([blob], fname, {type: 'image/jpeg'}) : null;
+    if (file && navigator.canShare && navigator.canShare({files: [file]})) {
+      navigator.share({files: [file]}).catch(e => {
+        if (!e || e.name !== 'AbortError') download(URL.createObjectURL(blob));
+      });
+    } else download(URL.createObjectURL(blob));
+  }, 'image/jpeg', .92);
+  else download(c.toDataURL('image/jpeg', .92));
 }
 $('#saveReport').addEventListener('click', () => {
   reportToPng();
