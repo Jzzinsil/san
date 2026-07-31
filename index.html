@@ -526,7 +526,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
 
   <form class="form-card" id="form" novalidate>
     <h2>명식 세우기</h2>
-    <p class="fsub">자세히 넣을수록 세 체계의 교차 해석이 정밀해집니다</p>
+    <p class="fsub">명식(命式) — 태어난 순간을 글자와 별로 옮긴 당신의 지도입니다. 자세히 넣을수록 세 체계의 교차 해석이 정밀해집니다</p>
 
     <div class="fgroup" style="border-top:none;padding-top:0;margin-top:0">
       <p class="glabel">이름</p>
@@ -548,7 +548,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           <option value="F">여성</option>
           <option value="M">남성</option>
         </select>
-        <p class="hint">장성 · 도화 같은 표식의 해석에 반영됩니다.</p>
+        <p class="hint">장성(이끄는 별) · 도화(끌어당기는 별) 같은 타고난 표식을 풀 때 반영됩니다.</p>
       </div>
     </div>
 
@@ -704,7 +704,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
           </div>
         </form>
         <div id="askDraw"></div>
-        <p class="askhint">판정의 근거는 당신의 명식에서, 결은 그날 손이 고른 패에서 나옵니다. 같은 질문이라도 패가 다르면 결이 달라집니다.</p>
+        <p class="askhint">예/아니오의 근거는 당신의 명식에서 오고, 답의 결 — 말의 무늬와 방향 — 은 그날 손이 고른 패에서 옵니다. 같은 질문이라도 패가 다르면 결이 달라집니다.</p>
       </div>
       <div id="askAnswers"></div>
     </section>
@@ -837,11 +837,11 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
     <footer>
       <p class="epi" style="margin:0 auto 20px;text-align:center">사람은 자기 안에, 자기가 다 알지 못하는 넓이를 가지고 있다.<br>이 리딩이 그 넓이의 한 조각을 비추었기를.</p>
       <p>
-        절기 경계는 태양 황경(입춘 315°) 기준으로, 시주는 출생 도시 경도와 균시차를 반영한 진태양시 기준으로 계산합니다.<br>
+        절기의 경계는 하늘에서 해가 지나는 자리(태양 황경 — 입춘은 315°)로, 시주는 출생 도시의 경도와 해시계의 계절 오차(균시차)까지 반영한 실제 태양의 시간(진태양시)으로 계산합니다.<br>
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.3.5</span><br>
+        <span style="letter-spacing:.2em">SAN v3.4</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1325,7 +1325,7 @@ function computeFortune(natal, dates, tz) {
         {who:'달', sign: Math.floor(moonT / 30), house: transitHouse(natal.moonLong, moonT), theme: HOUSE_THEME[transitHouse(natal.moonLong, moonT)], base:'내 달자리'},
         {n: PD, label:'개인 일수', theme: PD === 0 ? 9 : Math.min(PD, 9)}),
       mk('week',
-        {gz: gz(wedSaju.day), tg: tg(wedSaju.day.stem), theme: TG_THEME[tg(wedSaju.day.stem)], label:'주중 심일의 일진'},
+        {gz: gz(wedSaju.day), tg: tg(wedSaju.day.stem), theme: TG_THEME[tg(wedSaju.day.stem)], label:'한 주의 한가운데(수요일) 일진'},
         {who:'태양', sign: Math.floor(sunT / 30), house: transitHouse(natal.sunLong, sunT), theme: HOUSE_THEME[transitHouse(natal.sunLong, sunT)], base:'내 태양자리'},
         {n: PW, label:'개인 주수', theme: Math.min(PW, 9)}),
       mk('month',
@@ -1694,9 +1694,9 @@ function verdictLines(score, ev, picks, polSum) {
   if (score === 2) {
     const cond = down[0] || (gate.pol <= 0 ? gate : null);
     return {
-      t: cond ? `다만 「${cond.name}」의 매듭부터` : `다만 ${missing.join('·')}의 때를 기다리며 천천히`,
+      t: cond ? `다만 「${cond.name}」${jIga(cond.name)} 짚는 매듭부터` : `다만 ${missing.join('·')}의 때를 기다리며 천천히`,
       d: `방향은 맞습니다 — ${cond
-        ? `${pillars.length ? pillars.join('·') + '의 근거가 받치지만, ' : ''}「${cond.name}」(${kw1(cond)})${jIga(cond.name)} 조건을 겁니다`
+        ? `${pillars.length ? pillars.join('·') + '의 근거가 받치지만, ' : ''}「${cond.name}」(${kw1(cond)})${jIga(cond.name)} 먼저 풀어야 할 일 하나를 조건으로 겁니다`
         : `${missing.join('·')}의 근거가 아직 옅으니 가볍게 시작하세요`}`,
       adv: cond
         ? `해도 됩니다. 단, 「${cond.name}」${jIga(cond.name)} 말하는 ${kw1(cond)}의 과제를 먼저 정리하고 움직이세요.`
@@ -1768,20 +1768,20 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
   const hit = transits.find(t => cat.houses.includes(t.house));
   let astroLine, astroPt = 0;
   if (hit) { astroPt = 1;
-    astroLine = `지금 <b>${hit.who}</b>이 당신의 <b>${hit.house}번째 자리</b>를 지나고 있습니다 — ${HOUSE_FORTUNE[hit.house]}. 이 질문이 하늘에서도 조명되는 중입니다.`;
+    astroLine = `지금 <b>${hit.who}</b>이 하늘 열두 자리 중 당신의 <b>${hit.house}번째 자리</b>를 지나고 있습니다 — ${HOUSE_FORTUNE[hit.house]}. 이 질문이 하늘에서도 조명되는 중입니다.`;
   } else {
     const jup = transits[2];
-    astroLine = `이 주제의 자리(${cat.houses.join('·')}번째)는 지금 고요합니다. 대신 목성이 <b>${jup.house}번째 자리</b>에 머물러 ${HOUSE_FORTUNE[jup.house]}에 순풍이 붑니다.`;
+    astroLine = `하늘을 열두 자리로 나눌 때 이 주제가 깃드는 자리(${cat.houses.join('·')}번째)는 지금 고요합니다. 대신 목성이 <b>${jup.house}번째 자리</b>에 머물러 ${HOUSE_FORTUNE[jup.house]}에 순풍이 붑니다.`;
   }
 
   /* 수 근거 */
   let numLine, numPt = 0;
   if (cat.nums.includes(f.PY)) { numPt = 1;
-    numLine = `올해 개인 연수 <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 질문과 정확히 같은 결의 해입니다.`;
+    numLine = `올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 질문과 정확히 같은 결의 해입니다.`;
   } else if (cat.nums.includes(f.PM)) { numPt = 1;
     numLine = `이번 달 개인 월수 <b>${f.PM}</b> — ${NUM_CYCLE[f.PM]}. 이 질문과 같은 결의 달입니다.`;
   } else {
-    numLine = `올해 개인 연수 <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 주제의 큰 문은 <b>${cat.nums[0]}</b>의 해에 더 활짝 열립니다. 지금은 그 준비 국면.`;
+    numLine = `올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 주제의 큰 문은 <b>${cat.nums[0]}</b>의 해에 더 활짝 열립니다. 지금은 그 준비 국면.`;
   }
 
   /* 타이밍: 카테고리와 결이 맞는 첫 기간 */
@@ -2140,7 +2140,7 @@ function render(inp) {
     `태양 <b>${SIGNS[astro.sun.sign].k}</b>`,
     `<b>${dayGz}</b>일주`,
     `라이프패스 <b>${num.lifePath}</b>`,
-    `지문 <b>${STEMS[saju.year.stem].h}${BRANCHES[saju.year.branch].h}·${STEMS[saju.month.stem].h}${BRANCHES[saju.month.branch].h}·${STEMS[saju.day.stem].h}${BRANCHES[saju.day.branch].h} ${SIGNS[astro.sun.sign].g}${astro.sun.deg}°·${num.lifePath}</b>`
+    `나의 지문(사주·태양·수 한 줄) <b>${STEMS[saju.year.stem].h}${BRANCHES[saju.year.branch].h}·${STEMS[saju.month.stem].h}${BRANCHES[saju.month.branch].h}·${STEMS[saju.day.stem].h}${BRANCHES[saju.day.branch].h} ${SIGNS[astro.sun.sign].g}${astro.sun.deg}°·${num.lifePath}</b>`
   ].map(c => `<span class="chip">${c}</span>`).join('');
 
   /* 질문 답변용 상태 저장 */
@@ -2265,7 +2265,7 @@ function finishDraw() {
   const passages = picks.map((c, i) =>
     `<p class="pb"><b>${POS_LABEL[i]} · ${c.name}(${c.h})</b><br>${c.pos[i]}${cardNotes(c, i)}</p>`).join('');
   const kwOf = c => c.kw.split(' · ')[0];
-  const intro = `<p class="pb" style="margin-top:14px">「${ev.cat.label}」${jEul(ev.cat.label)} 묻는 당신 — ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath} — 에게 세 패는 이렇게 배열됐습니다. 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`;
+  const intro = `<p class="pb" style="margin-top:14px">「${ev.cat.label}」${jEul(ev.cat.label)} 묻는 당신에게 세 패는 이렇게 배열됐습니다. 당신은 ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath}의 사람 — 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`;
 
   /* 명식 다층 교차 */
   const crossLines = [`패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDesc}.`];
@@ -2297,7 +2297,7 @@ function finishDraw() {
     <div class="averdict${lean ? ' yes' : ''}">
       <span class="vh">${lean ? '前' : '後'}</span>
       <span><span class="vt">${pick} 쪽으로 기웁니다</span><br>
-      <span class="vd">기운이 밀어주는 때는 먼저 꺼낸 마음이 답이고, 막히는 때는 다른 길이 답입니다</span></span>
+      <span class="vd">${lean ? '지금은 기운이 미는 때 — 먼저 꺼낸 마음이 곧 답입니다' : '지금은 기운이 막히는 때 — 남겨둔 다른 길이 답입니다'}</span></span>
     </div>`;
     advLine = `${pick} 쪽을 고르되, 길목 패(${picks[1].name})가 말하는 과제를 그 길의 통행료로 치르세요.`;
   } else if (qt.t === 'open') {
@@ -2313,8 +2313,8 @@ function finishDraw() {
     verdictHTML = `
     <div class="averdict${doIt ? ' yes' : ' no'}">
       <span class="vh">${doIt ? '아니오' : '예'}</span>
-      <span><span class="vt">${doIt ? '말리지 않습니다 — 하는 쪽입니다' : '접는 쪽에 결이 있습니다'}</span><br>
-      <span class="vd">거꾸로 물으셨기에 거꾸로 답합니다 · ${v.h} — 기운은 ${doIt ? '미는' : '막는'} 중</span></span>
+      <span><span class="vt">${doIt ? '「말까」라는 물음에 아니오 — 그대로 하셔도 좋습니다' : '「말까」라는 물음에 예 — 접는 쪽이 맞습니다'}</span><br>
+      <span class="vd">물음을 뒤집으셨기에 답의 방향도 뒤집어 드립니다 · ${v.h} — 기운은 ${doIt ? '미는' : '막는'} 중</span></span>
     </div>`;
     advLine = doIt ? `"말까"라 물으셨지만 기운은 하는 쪽을 밉니다. ${vl.adv}` : vl.adv;
   } else {
@@ -2520,7 +2520,7 @@ function renderSynth(saju, astro, num) {
 
   /* 거울 — 남이 보는 나 · 내가 아는 나 */
   const mTg = tenGod(saju.day.stem, saju.month.stem);
-  const outer = [`사주 월간 <b>${mTg}</b> — 사회라는 무대에서 자주 쓰게 되는 역할의 가면: ${TENGOD_DESC[mTg]}`];
+  const outer = [`사주 월간(태어난 달의 하늘 글자) <b>${mTg}</b> — 사회라는 무대에서 자주 쓰게 되는 역할의 가면: ${TENGOD_DESC[mTg]}`];
   if (astro.rising) outer.push(`상승 ${SIGNS[astro.rising.sign].k} — ${RISING_TEXT[astro.rising.sign]}`);
   else outer.push(`상승궁 — 태어난 시간이 있어야 읽히는 첫인상의 층이라, 지금은 한 겹이 비어 있습니다.`);
   if (num.name) outer.push(`성격수 ${num.name.personality} — 세상은 당신을 ${NUM_ESSENCE[num.name.personality].k}의 인상으로 기억합니다.`);
@@ -2782,7 +2782,7 @@ function reportToPng() {
     x.fillText(`${M.gz}월 — ${M.gzChar}`, W - m, by + 46);
     x.fillStyle = DIM; x.font = `500 11.5px ${serifV}`;
     x.fillText(`당신에게는 ${M.tg}의 달 — ${M.tgHint}`, W - m, by + 70);
-    x.fillText(`행운 수 ${M.pm} · 태양은 당신의 ${M.house}번째 집`, W - m, by + 92);
+    x.fillText(`행운 수 ${M.pm} · 태양은 당신의 ${M.house}번째 자리`, W - m, by + 92);
     x.fillText(`이달의 결 「${M.themeName}」`, W - m, by + 114);
     x.textAlign = 'left';
   }
@@ -2873,7 +2873,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
       agreeLine = '세 체계 중 두 곳이 같은 방향을 가리킵니다.';
       const diss = [['사주', p.saju.theme], ['별', p.astro.theme], ['수', p.num.theme]].find(([, t]) => t !== p.theme);
       if (diss) splitHtml = `<p class="fsplit"><b>갈림 읽기</b> — ${diss[0]}만 <b>${tn(diss[1])}</b>을 가리킵니다. ${inTension(p.theme, diss[1])
-        ? `본류와 정면으로 당기는 결이니 시간을 나누세요. 큰 줄기는 ${tShort(p.theme)}으로 가되, ${diss[0]}가 짚는 ${tShort(diss[1])}의 일을 먼저 짧게 정리하고 출발하면 둘 다 삽니다.`
+        ? `큰 흐름과 반대로 당기는 기운이니 하루를 둘로 나누세요. 큰 줄기는 ${tShort(p.theme)}으로 가되, ${diss[0]}가 짚는 ${tShort(diss[1])}의 일을 먼저 짧게 정리하고 출발하면 둘 다 삽니다.`
         : `어긋남이 아니라 방식의 제안입니다. ${tShort(p.theme)}을 하되, ${tShort(diss[1])}의 태도로 하라는 뜻으로 읽으세요.`}</p>`;
     } else {
       agreeLine = '세 시계가 서로 다른 시간을 가리킵니다 — 갈림 자체가 이 시기의 정보입니다.';
@@ -3244,7 +3244,7 @@ $('#gungForm').addEventListener('submit', e => {
     `당신은 ${esc(gname)}에게 <b>${tg2}(${grp2})</b> — ${REL_PAIR[grp2]}`
   ];
   const b1 = s1.day.branch, b2 = s2.day.branch;
-  if (inPairs(JIJI_HAP, b1, b2)) { sj += 10; linesSj.push('두 일지가 <b>육합(合)</b> — 살을 맞대는 자리가 서로 끌립니다. 오래 곁에 있어도 소모되지 않는 조합입니다.'); }
+  if (inPairs(JIJI_HAP, b1, b2)) { sj += 10; linesSj.push('두 사람의 일지 — 태어난 날의 땅 글자 — 가 <b>육합(合)</b>을 이룹니다. 곁에 있는 것만으로 서로 끌리는 짝의 글자라, 오래 곁에 있어도 소모되지 않는 조합입니다.'); }
   else if (sgOf(b1) === sgOf(b2) && b1 !== b2) { sj += 8; linesSj.push('두 일지가 <b>삼합(三合)</b>의 같은 결 — 목적이 같을 때 강하게 뭉치는 조합입니다.'); }
   else if (inPairs(JIJI_CHUNG, b1, b2)) { sj -= 8; linesSj.push('두 일지가 <b>충(沖)</b> — 강하게 끌리고 강하게 흔들리는, 불꽃 같은 조합입니다. 싸움의 규칙을 미리 정해두면 오래갑니다.'); }
   else if (inPairs(GUNG_WONJIN, b1, b2)) { sj -= 5; linesSj.push('두 일지가 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결. 거리 조절이 이 관계의 기술입니다.'); }
