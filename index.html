@@ -846,7 +846,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.0</span>
+        <span style="letter-spacing:.2em">SAN v3.0.1</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -1236,9 +1236,12 @@ function nameNumbers(rawName) { // 이름 → {roman, expression, soulUrge, pers
     all += v;
     if (VOWELS.includes(ch)) vow += v; else con += v;
   }
+  const expression = reduceNum(all);
   return {
     roman: romanize(rawName).toUpperCase().replace(/[^A-Z ]/g, '').replace(/\s+/g, ' ').trim(),
-    expression: reduceNum(all), soulUrge: reduceNum(vow), personality: reduceNum(con),
+    expression,
+    soulUrge: vow ? reduceNum(vow) : expression,       // 모음/자음이 없는 이름은 0이 되어
+    personality: con ? reduceNum(con) : expression,    // 표 조회가 깨지므로 표현수로 대신함
     sums: {all, vow, con}
   };
 }
@@ -2379,7 +2382,15 @@ function tagVotes(saju, astro, num) {
     (tally[v.t] = tally[v.t] || {n: 0, srcs: []});
     tally[v.t].n++; if (!tally[v.t].srcs.includes(v.src)) tally[v.t].srcs.push(v.src);
   });
-  return {tally, sorted: Object.entries(tally).sort((a, b) => b[1].n - a[1].n)};
+  /* 동률은 개인 시드(일주·태양·수)로 갈라, 같은 점수라도 사람마다 다른 태그가 앞서게 */
+  const ents = Object.entries(tally);
+  const L = ents.length;
+  const seed = (saju.dayIdx60 + astro.sun.sign * 5 + (num.lifePath || 0) * 11) % L;
+  const rot = i => (i - seed + L) % L;
+  const sorted = ents.map((e, i) => [e[0], e[1], i])
+    .sort((a, b) => b[1].n - a[1].n || rot(a[2]) - rot(b[2]))
+    .map(e => [e[0], e[1]]);
+  return {tally, sorted};
 }
 
 function renderHeadline(inp, saju, astro, num) {
@@ -2581,7 +2592,7 @@ function renderReport(inp, saju, astro, num, f) {
       zodK: SIGNS[astro.sun.sign].k, sunDeg: astro.sun.deg, moonK: SIGNS[astro.moon.sign].k,
       lp: num.lifePath, lpT: NUM_ESSENCE[num.lifePath].t,
       domEl: dom, counts: saju.counts.slice(), lineTag,
-      line: `${ILGAN_SHORT[dk.k]} · 「${lineTag}」의 결을 타고난 사람`,
+      line: `${ILGAN_SHORT[dk.k]} · ${SIGN_ESSENCE[astro.sun.sign]}의 온도 · ${NUM_ESSENCE[num.lifePath].t}의 길`,
       month: (() => {
         const nowM = new Date();
         const mp = f.periods[2];
