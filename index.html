@@ -847,7 +847,7 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.0.2</span>
+        <span style="letter-spacing:.2em">SAN v3.1</span>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
     </footer>
@@ -2544,6 +2544,9 @@ function renderSynth(saju, astro, num) {
     <p class="mcore"><b>그 사이 · 중심</b> — ${coreText}<span class="msrc">근거 · 사주 일간 + 태양 별자리 + 라이프패스</span></p>`;
 }
 
+/* 월지(月支)별 그 달의 일반 성격 — 절기의 결, 모두에게 같은 층 */
+const MONTH_CHAR = ['밤이 가장 깊은 달', '겨울이 여무는 달', '봄이 문을 여는 달', '움이 트는 달', '봄이 여무는 달', '여름이 드는 달', '해가 가장 높은 달', '여름이 여무는 달', '가을이 드는 달', '결실이 맑아지는 달', '가을이 여무는 달', '겨울이 드는 달'];
+
 /* ---- 리포트 (한 장 요약) ---- */
 function renderReport(inp, saju, astro, num, f) {
   const dk = STEMS[saju.day.stem];
@@ -2600,7 +2603,9 @@ function renderReport(inp, saju, astro, num, f) {
         const EN = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
         return {i: nowM.getMonth() + 1, year: nowM.getFullYear(), en: EN[nowM.getMonth()],
                 gz: mp.saju.gz, tg: mp.saju.tg, pm: f.PM, house: mp.astro.house,
-                themeName: THEMES[mp.theme].name.split(' · ')[0]};
+                themeName: THEMES[mp.theme].name.split(' · ')[0],
+                gzChar: MONTH_CHAR[f.today.month.branch],
+                tgHint: (TENGOD_FORTUNE[mp.saju.tg] || '').split(' — ')[0]};
       })()
     }};
   const nextM = new Date().getMonth() + 2;
@@ -2704,16 +2709,17 @@ function reportToPng() {
   x.fillStyle = INK; x.font = `600 10px ${MONO}`; sp(1.5);
   x.fillText(`「${T.lineTag}」의 결`, bx + bp, yF);
   x.textAlign = 'right'; x.fillText('SAN', bx + bw - bp, yF); sp(0);
-  /* 이달 블록 (우상단) — 매달 새로 그려지는 부분 */
+  /* 이달 블록 (우상단) — 매달 새로 그려지는 부분: 달의 일반 성격 + 나의 월운 */
   if (M) {
     x.textAlign = 'right';
     x.fillStyle = pal[4]; x.font = `700 9.5px ${MONO}`; sp(3);
     x.fillText(`${M.en} · EDITION ${String(M.i).padStart(2, '0')}`, W - m, by + 16); sp(0);
     x.fillStyle = INK; x.font = `500 14px ${serifV}`;
-    x.fillText(`${M.gz}월 — ${M.tg}의 달`, W - m, by + 46);
+    x.fillText(`${M.gz}월 — ${M.gzChar}`, W - m, by + 46);
     x.fillStyle = DIM; x.font = `500 11.5px ${serifV}`;
-    x.fillText(`이달의 행운 수 ${M.pm} · 태양은 ${M.house}번째 집`, W - m, by + 70);
-    x.fillText(`이달의 결 「${M.themeName}」`, W - m, by + 92);
+    x.fillText(`당신에게는 ${M.tg}의 달 — ${M.tgHint}`, W - m, by + 70);
+    x.fillText(`행운 수 ${M.pm} · 태양은 당신의 ${M.house}번째 집`, W - m, by + 92);
+    x.fillText(`이달의 결 「${M.themeName}」`, W - m, by + 114);
     x.textAlign = 'left';
   }
   /* 히어로 — 일간 한 글자를 오브제처럼 */
