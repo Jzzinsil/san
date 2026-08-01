@@ -834,7 +834,7 @@ gtag('config', 'G-L7QPQ5GGL7');
     <section class="reading" id="report">
       <p class="sec-label">Sehwa · Monthly Edition</p>
       <h2 class="sec-title">이달의 세화</h2>
-      <p class="sec-desc">복을 부르고 액을 막으려 곁에 걸어두던 그림, 세화(歲畫). 쉽게 말해 <b>당신만을 위해 그려지는 이달의 행운 카드</b>입니다 — 아래에서 미리 보고, 버튼 한 번으로 <b>이미지 한 장</b>으로 저장해 폰 배경화면·프로필로 쓰세요. 매달 1일에 새로 그려집니다.</p>
+      <p class="sec-desc">복을 부르고 액을 막으려 곁에 걸어두던 그림, 세화(歲畫). 쉽게 말해 <b>당신만을 위해 그려지는 이달의 행운 카드</b>입니다 — 아래에서 미리 보고, 버튼 한 번이면 <b>이미지 한 장</b>으로 저장됩니다 — 폰 배경화면·프로필로 쓰세요. 매달 1일에 새로 그려집니다.</p>
       <div style="text-align:center;margin:6px 0 28px">
         <div id="sehwaPrev" style="margin:0 auto 18px"></div>
         <button type="button" class="btn" id="saveReport" style="width:auto;padding:14px 38px">세화 이미지 저장하기</button>
@@ -851,7 +851,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.6</span><br>
+        <span style="letter-spacing:.2em">SAN v3.6.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -2706,7 +2706,7 @@ function renderReport(inp, saju, astro, num, f) {
   const nx = $('#sehwaNext');
   if (nx) nx.textContent = `세화는 달마다 새로 그려집니다 — 다음 세화는 ${nextM > 12 ? 1 : nextM}월 1일에 열립니다.`;
   const pv = $('#sehwaPrev');
-  if (pv) requestAnimationFrame(() => { // 폰트 적용 후 한 프레임 뒤에 그리기
+  if (pv) (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { // 세리프 폰트 로드 후 그리기
     const c = buildSehwaCanvas();
     if (c) pv.innerHTML = `<img src="${c.toDataURL('image/jpeg', .85)}" alt="이달의 세화 미리보기" style="width:min(250px,72%);border:1px solid var(--hairline);box-shadow:0 14px 44px rgba(43,39,33,.14)"><p style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-top:10px">이 그림 한 장이 저장됩니다</p>`;
   });
@@ -3339,8 +3339,9 @@ $('#gungForm').addEventListener('submit', e => {
   const geo2 = {lat: arr[0], lon: arr[1], tz: arr.length > 2 ? arr[2] : gc.tz};
   const s2 = computeSaju(sol.y, sol.m, sol.d, gTime, Math.round((geo2.lon - geo2.tz * 15) * 4), geo2.tz);
   const a2 = computeAstro(sol.y, sol.m, sol.d, gTime, geo2);
-  const gname = $('#gName').value.trim() || '상대';
-  const n2 = computeNumerology(sol.y, sol.m, sol.d, gname, new Date().getFullYear());
+  const gnameRaw = $('#gName').value.trim();
+  const gname = gnameRaw || '상대'; // 표시용 — 계산에는 입력된 이름만 쓴다
+  const n2 = computeNumerology(sol.y, sol.m, sol.d, gnameRaw, new Date().getFullYear());
   const s1 = R.saju, a1 = R.astro, n1 = R.num;
   const gzOf = p => STEMS[p.stem].k + BRANCHES[p.branch].k;
 
@@ -3354,7 +3355,7 @@ $('#gungForm').addEventListener('submit', e => {
     : [`<b>${esc(gname)}</b>는 당신에게 <b>${tg1}(${grp1})</b> — ${REL_PAIR[grp1]}`,
        `당신은 ${esc(gname)}에게 <b>${tg2}(${grp2})</b> — ${REL_PAIR[grp2]}`];
   const b1 = s1.day.branch, b2 = s2.day.branch;
-  if (inPairs(JIJI_HAP, b1, b2)) { sj += 10; bonds.push({w:10, t:'일지 육합 — 태어난 날의 땅 글자끼리 서로 끌리는 짝'}); linesSj.push('두 사람의 일지 — 태어난 날의 땅 글자 — 가 <b>육합(合)</b>을 이룹니다. 곁에 있는 것만으로 서로 끌리는 짝의 글자라, 오래 곁에 있어도 소모되지 않는 조합입니다.'); }
+  if (inPairs(JIJI_HAP, b1, b2)) { sj += 10; bonds.push({w:10, t:'일지 육합 — 사주에서 태어난 날의 글자끼리 서로 끌리는 짝'}); linesSj.push('두 사람의 일지 — 태어난 날의 땅 글자 — 가 <b>육합(合)</b>을 이룹니다. 곁에 있는 것만으로 서로 끌리는 짝의 글자라, 오래 곁에 있어도 소모되지 않는 조합입니다.'); }
   else if (sgOf(b1) === sgOf(b2) && b1 !== b2) { sj += 8; bonds.push({w:8, t:'일지 삼합 — 목적이 같을 때 강하게 뭉치는 결'}); linesSj.push('두 일지가 <b>삼합(三合)</b>의 같은 결 — 목적이 같을 때 강하게 뭉치는 조합입니다.'); }
   else if (inPairs(JIJI_CHUNG, b1, b2)) { sj -= 8; rubs.push({w:8, t:'일지 충 — 세게 끌리고 세게 흔들리는 자리', adv:'싸움의 규칙 하나(멈춤말)를 미리 정해두세요. 이 강한 에너지는 규칙만 있으면 관계를 깨는 대신 밀어주는 힘이 됩니다'}); linesSj.push('두 일지가 <b>충(沖)</b> — 강하게 끌리고 강하게 흔들리는, 불꽃 같은 조합입니다. 싸움의 규칙을 미리 정해두면 오래갑니다.'); }
   else if (inPairs(GUNG_WONJIN, b1, b2)) { sj -= 5; rubs.push({w:6, t:'일지 원진 — 애증이 교차하기 쉬운 결', adv:'붙어 있는 시간보다 거리의 리듬을 설계하세요. 각자의 방이 있을 때 오히려 가까워지는 조합입니다'}); linesSj.push('두 일지가 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결. 거리 조절이 이 관계의 기술입니다.'); }
@@ -3366,9 +3367,9 @@ $('#gungForm').addEventListener('submit', e => {
   const fillA = theirEl === myWeak, fillB = myEl === theirWeak;
   if (fillA) { sj += 4; linesSj.push(`${esc(gname)}의 ${ELEMENTS[theirEl].k}(${ELEMENTS[theirEl].h}) 기운이 당신 명식의 빈 자리를 채웁니다.`); }
   if (fillB) { sj += 4; linesSj.push(`당신의 ${ELEMENTS[myEl].k}(${ELEMENTS[myEl].h}) 기운이 ${esc(gname)} 명식의 빈 자리를 채웁니다.`); }
-  if (fillA && fillB) bonds.push({w:9, t:'서로의 빈 오행을 정확히 채워주는 구조'});
-  else if (fillA) bonds.push({w:5, t:`${esc(gname)}의 ${ELEMENTS[theirEl].k} 기운이 당신의 빈 자리를 채우는 구조`});
-  else if (fillB) bonds.push({w:5, t:`당신의 ${ELEMENTS[myEl].k} 기운이 ${esc(gname)}의 빈 자리를 채우는 구조`});
+  if (fillA && fillB) bonds.push({w:9, t:'서로에게 부족한 기운을 정확히 채워주는 구조'});
+  else if (fillA) bonds.push({w:5, t:`${esc(gname)}의 ${ELEMENTS[theirEl].k} 기운이 당신에게 부족한 기운을 채우는 구조`});
+  else if (fillB) bonds.push({w:5, t:`당신의 ${ELEMENTS[myEl].k} 기운이 ${esc(gname)}에게 부족한 기운을 채우는 구조`});
   const yb1 = s1.year.branch, yb2 = s2.year.branch;
   if (inPairs(JIJI_HAP, yb1, yb2) || (sgOf(yb1) === sgOf(yb2) && yb1 !== yb2)) { sj += 4; bonds.push({w:3, t:`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠의 합`}); linesSj.push(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠 — 띠끼리도 합의 결입니다.`); }
   else if (inPairs(JIJI_CHUNG, yb1, yb2)) { sj -= 4; rubs.push({w:3, t:'띠끼리의 충', adv:'가족 행사나 명절처럼 배경이 겹치는 자리에서 긁히기 쉬운 결입니다. 둘의 문제가 아니라 결의 문제로 읽고 넘기세요'}); linesSj.push(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠 — 띠끼리는 충. 어른들 말로는 상극이지만, 일지가 더 중요합니다.`); }
@@ -3379,35 +3380,46 @@ $('#gungForm').addEventListener('submit', e => {
   const [sunPt] = zodCompat(se1, se2);
   const [moonPt0] = zodCompat(me1, me2);
   const [aspPt, aspLine] = sunAspect(a1.sun.long - a2.sun.long);
+  /* 물병자리=바람처럼 이름과 원소가 어긋나는 별자리가 있어 원소를 병기하고,
+     원소가 다른 짝은 누가 어느 쪽인지 이름으로 지정한다 — "~쪽" 익명 문장 금지 */
+  const SUN_ROLE = {0:'먼저 움직이는', 1:'현실을 챙기는', 2:'생각과 말이 앞서는', 3:'마음이 먼저 반응하는'};
+  const MOON_ROLE = {0:'감정을 바로 내보이는', 1:'감정을 안으로 삭이는', 2:'말로 풀어야 풀리는', 3:'기분이 깊게 스며드는'};
   const linesAs = [
-    `태양 <b>${SIGNS[a1.sun.sign].k}</b> ↔ <b>${SIGNS[a2.sun.sign].k}</b> — ${SUN_ELPAIR[elKey(se1, se2)]}.`,
-    `달 <b>${SIGNS[a1.moon.sign].k}</b> ↔ <b>${SIGNS[a2.moon.sign].k}</b> — ${MOON_ELPAIR[elKey(me1, me2)]}.`,
+    `태양 <b>${SIGNS[a1.sun.sign].k}</b>(${ZODEL_NAME[se1]}) ↔ <b>${SIGNS[a2.sun.sign].k}</b>(${ZODEL_NAME[se2]}) — ${SUN_ELPAIR[elKey(se1, se2)]}.${se1 !== se2 ? ` 여기서 ${SUN_ROLE[se1]} 쪽이 당신, ${SUN_ROLE[se2]} 쪽이 ${esc(gname)}입니다.` : ''}`,
+    `달 <b>${SIGNS[a1.moon.sign].k}</b>(${ZODEL_NAME[me1]}) ↔ <b>${SIGNS[a2.moon.sign].k}</b>(${ZODEL_NAME[me2]}) — ${MOON_ELPAIR[elKey(me1, me2)]}.${me1 !== me2 ? ` 여기서 ${MOON_ROLE[me1]} 쪽이 당신, ${MOON_ROLE[me2]} 쪽이 ${esc(gname)}입니다.` : ''}`,
     `두 태양이 이루는 각 — ${aspLine}`
   ];
   if (sunPt >= 10) bonds.push({w:5, t:'서로를 살리는 태양 원소의 짝'});
   else if (sunPt <= 4) rubs.push({w:5, t:'태양 원소의 온도차', adv:'같은 문장을 서로 다른 언어로 말하는 짝입니다. 상대의 말을 내 사전으로 해석하지 말고, 뜻을 한 번 더 물어보는 습관이 지름길입니다'});
   if (moonPt0 >= 9) bonds.push({w:5, t:'감정의 결이 잘 포개지는 달의 짝'});
-  else if (moonPt0 <= 4) rubs.push({w:6, t:'감정을 다루는 방식의 차이(달의 원소)', adv:'감정 처리 속도가 다른 짝은, 회복이 빠른 쪽이 기다려주는 만큼 깊어집니다'});
+  else if (moonPt0 <= 4) rubs.push({w:6, t:'감정을 다루는 방식의 차이 — 두 사람의 달이 서로 다른 원소에 있습니다', adv:'감정 처리 속도가 다른 짝은, 회복이 빠른 쪽이 기다려주는 만큼 깊어집니다'});
   if (aspPt >= 8) bonds.push({w:6, t:'두 태양의 삼각(120°) — 애쓰지 않아도 흐르는 각'});
   else if (aspPt === 7) bonds.push({w:4, t:'두 태양의 육각(60°) — 협력이 저절로 되는 각'});
   else if (aspPt <= 3) rubs.push({w:6, t:'두 태양의 직각(90°) — 마찰로 서로를 키우는 각', adv:'부딪힘이 잦다는 건 서로에게 무던하지 않다는 뜻입니다. 싸움을 없애려 하지 말고, 짧게 끝내는 기술을 쌓으세요'});
-  const astroScore = Math.max(3, Math.min(30, sunPt + Math.round(moonPt0 * 0.8) + aspPt + 3));
+  const astroScore = Math.max(3, Math.min(30, sunPt + Math.round(moonPt0 * 0.8) + aspPt + 4));
 
   /* 수 — 라이프패스 짝 문장 · 표현수 · 올해의 흐름 */
   let nu = 0;
   const linesNu = [];
-  const [lpPt, lpPhrase] = lpRel(n1.lifePath, n2.lifePath);
+  const [lpPt] = lpRel(n1.lifePath, n2.lifePath);
   nu += lpPt;
+  const lg1 = COMPAT_GROUP(n1.lifePath), lg2 = COMPAT_GROUP(n2.lifePath);
+  const GROUP_ROLE = {0:'새 문을 여는', 1:'그것을 현실로 만드는', 2:'거기에 온기와 색을 입히는'};
+  const lpBridge = n1.lifePath === n2.lifePath
+    ? '같은 길을 걷는 두 사람이라 서로를 거울처럼 이해하지만, 같은 함정에도 같이 빠질 수 있습니다. 번갈아 브레이크가 되어주세요'
+    : lg1 === lg2
+    ? '결이 같은 수라, 애쓰지 않아도 서로의 우선순위가 이해되는 조합입니다'
+    : `우선순위가 달라 결정의 순서에서 부딪히곤 하지만, 당신이 ${GROUP_ROLE[lg1]} 쪽이고 ${esc(gname)}${jIga(gname)} ${GROUP_ROLE[lg2]} 쪽 — 순서만 합의하면 서로에게 가장 필요한 분업입니다`;
   linesNu.push(n1.lifePath === n2.lifePath
-    ? `라이프패스가 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>로 같습니다 — ${lpPhrase}.`
-    : `라이프패스 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>과 <b>${n2.lifePath}(${NUM_ESSENCE[n2.lifePath].t})</b> — 당신은 ${lpLove(n1.lifePath)} 사람, ${esc(gname)}는 ${lpLove(n2.lifePath)} 사람입니다. ${lpPhrase}.`);
+    ? `라이프패스가 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>로 같습니다 — ${lpBridge}.`
+    : `라이프패스 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>과 <b>${n2.lifePath}(${NUM_ESSENCE[n2.lifePath].t})</b> — 당신은 ${lpLove(n1.lifePath)} 사람, ${esc(gname)}는 ${lpLove(n2.lifePath)} 사람입니다. ${lpBridge}.`);
   if (n1.lifePath === n2.lifePath) bonds.push({w:5, t:`라이프패스 ${n1.lifePath}이 같은 두 사람 — 같은 과제를 사는 동행`});
   else if (lpPt <= 7) rubs.push({w:4, t:'인생의 우선순위 차이(라이프패스)', adv:'목표가 다른 게 아니라 순서가 다른 것입니다. 아이디어는 자유롭게 꺼내되 실행은 현실 기준으로 — 순서만 합의하면 최강의 분업이 됩니다'});
   if (n1.name && n2.name) {
     const e1 = n1.name.expression, e2 = n2.name.expression;
-    if (e1 === e2 || COMPAT_GROUP(e1) === COMPAT_GROUP(e2)) { nu += 8; linesNu.push(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 겉으로 드러나는 방식이 닮은 결이라, 첫 만남부터 합이 빨랐을 조합입니다.`); }
-    else { nu += 5; linesNu.push(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 드러나는 방식은 ${lpLove(e1)} 쪽과 ${lpLove(e2)} 쪽으로 다릅니다. 처음엔 낯설고, 오래 볼수록 역할이 나뉩니다.`); }
-  } else nu += 5;
+    if (e1 === e2 || COMPAT_GROUP(e1) === COMPAT_GROUP(e2)) { nu += 10; linesNu.push(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 겉으로 드러나는 방식이 닮은 결이라, 첫 만남부터 합이 빨랐을 조합입니다.`); }
+    else { nu += 6; linesNu.push(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 드러나는 방식은 ${lpLove(e1)} 쪽과 ${lpLove(e2)} 쪽으로 다릅니다. 처음엔 낯설고, 오래 볼수록 역할이 나뉩니다.`); }
+  } else nu += 6;
   if (n1.personalYear === n2.personalYear) { nu += 6; bonds.push({w:4, t:`올해 같은 개인 연수(${n1.personalYear}) — 지금 같은 계절을 지나는 중`}); linesNu.push(`올해 개인 연수가 <b>${n1.personalYear}</b>로 같습니다 — 지금 같은 계절을 지나는 중입니다.`); }
   else { nu += 3; linesNu.push(`올해 개인 연수는 <b>${n1.personalYear}</b>과 <b>${n2.personalYear}</b> — 서로 다른 계절을 지나는 중입니다. 속도 차이는 어긋남이 아니라 시차입니다.`); }
   const numScore = Math.min(30, nu);
