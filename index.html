@@ -802,9 +802,9 @@ gtag('config', 'G-L7QPQ5GGL7');
             </div>
           </div>
           <div class="field">
-            <label for="gNum">상대 생년월일 — 숫자 8자리</label>
+            <label for="gNum">상대 생년월일 — 연도만 알면 4자리, 다 알면 8자리</label>
             <div class="dselrow2">
-              <input type="text" id="gNum" inputmode="numeric" placeholder="예: 19950316" maxlength="10" aria-label="상대 생년월일 숫자 8자리">
+              <input type="text" id="gNum" inputmode="numeric" placeholder="예: 19950316 · 연도만 1995" maxlength="10" aria-label="상대 생년월일 — 연도만 알면 4자리, 다 알면 8자리">
               <select id="gCal" aria-label="양력·음력"><option value="solar">양력</option><option value="lunar">음력 (평달)</option><option value="lunarLeap">음력 (윤달)</option></select>
             </div>
           </div>
@@ -851,7 +851,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.6.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.6.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -3317,9 +3317,48 @@ $('#gungForm').addEventListener('submit', e => {
   if (!R) return;
   const gErr = $('#gErr');
   const show = t => { gErr.textContent = t; gErr.style.display = 'block'; };
-  const graw = readNum8('gNum');
-  if (!graw.filled) { show('상대의 생년월일을 숫자 8자리로 입력해주세요 — 예: 19950316.'); return; }
-  const yy = graw.y, mm = graw.m, dd = graw.d;
+  const gd = ($('#gNum').value || '').replace(/\D/g, '');
+  /* 연도만 아는 상대 — 4자리 입력이면 띠·연의 기운으로 본 간이 궁합. 월일 없이 계산 가능한 것만 말한다 */
+  if (gd.length === 4) {
+    const yy2 = +gd, thisY = new Date().getFullYear();
+    if (yy2 < 1900 || yy2 > thisY) { show('연도는 1900년부터 올해 사이로 입력해주세요.'); return; }
+    gErr.style.display = 'none';
+    const gname2 = $('#gName').value.trim() || '상대';
+    const s1y = R.saju;
+    const ys2 = (((yy2 - 4) % 10) + 10) % 10, yb2 = (((yy2 - 4) % 12) + 12) % 12;
+    const myYb = s1y.year.branch, myDb = s1y.day.branch;
+    const lines = [];
+    let gradeT = '무난한 결', headDesc = '띠끼리 합도 충도 아닌 자리 — 관계는 두 사람이 만드는 대로 흐릅니다';
+    if (inPairs(JIJI_HAP, myYb, yb2)) { gradeT = '끌리는 결'; headDesc = '띠끼리 육합 — 나고 자란 리듬이 서로 끌리는 짝입니다';
+      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>육합(合)</b> — 세대의 기운이 서로 끌어당기는 짝입니다.`); }
+    else if (sgOf(myYb) === sgOf(yb2) && myYb !== yb2) { gradeT = '뭉치는 결'; headDesc = '띠끼리 삼합 — 같은 목적 앞에서 강하게 뭉칩니다';
+      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>삼합(三合)</b>의 같은 결 — 방향이 같을 때 시너지가 큰 짝입니다.`); }
+    else if (inPairs(JIJI_CHUNG, myYb, yb2)) { gradeT = '불꽃의 결'; headDesc = '띠끼리 충 — 세게 끌리고 세게 부딪힙니다';
+      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>충(沖)</b> — 어른들이 꺼리던 조합이지만 끌림도 그만큼 강한 자리입니다. 생월일까지 보면 일지가 이를 뒤집는 경우도 많습니다.`); }
+    else if (inPairs(GUNG_WONJIN, myYb, yb2)) { gradeT = '애증의 결'; headDesc = '띠끼리 원진 — 거리 조절이 이 관계의 기술입니다';
+      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결입니다. 각자의 방이 있을 때 오히려 가까워집니다.`); }
+    else if (inPairs(GUNG_GWIMUN, myYb, yb2)) { gradeT = '예민한 결'; headDesc = '띠끼리 귀문 — 서로의 예민한 곳에 닿는 짝입니다';
+      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>귀문(鬼門)</b> — 서로의 예민한 곳을 건드리지만, 그만큼 말 없이도 통하는 결입니다.`); }
+    else lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠 — 합도 충도 아닌 자리라, 띠보다 두 사람이 만드는 관계가 그대로 결이 됩니다.`);
+    if (inPairs(JIJI_HAP, myDb, yb2)) lines.push(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 합 — 곁에 두면 편안해지는 신호입니다.`);
+    else if (sgOf(myDb) === sgOf(yb2) && myDb !== yb2) lines.push(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 삼합 — 함께 무언가 도모하기 좋은 신호입니다.`);
+    else if (inPairs(JIJI_CHUNG, myDb, yb2)) lines.push(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 충 — 가까워질수록 생활 리듬의 조율이 필요한 신호입니다.`);
+    const tgy = tenGod(s1y.day.stem, ys2);
+    lines.push(`${yy2}년의 하늘 기운(연간 ${STEMS[ys2].k})은 당신에게 <b>${tgy}(${TG_GROUP[tgy]})</b> — ${REL_PAIR[TG_GROUP[tgy]]}`);
+    $('#gungResult').innerHTML = `<div class="acard">
+      <p class="aq"><b>${esc(R.myName)}</b> &nbsp;✕&nbsp; <b>${esc(gname2)}</b> ${yy2}년생 · ${BRANCHES[yb2].animal}띠</p>
+      <div class="averdict">
+        <span class="vh">${BRANCHES[yb2].h}</span>
+        <span><span class="vt">${gradeT}</span><br><span class="vd">${headDesc}</span></span>
+      </div>
+      <div class="combo"><b>연도만으로 본 간이 궁합</b><br>${lines.join('<br>')}</div>
+      <p class="small" style="margin-top:12px;color:var(--dim)">연도만으로는 띠와 그해의 기운까지만 읽을 수 있습니다. 1~2월생이라면 입춘 전 출생일 수 있어 띠가 전해로 밀릴 수 있어요. 생월일까지(8자리) 입력하면 일주 십성 · 두 태양의 각도 · 수의 결을 겹친 100점 리딩이 열립니다.</p>
+    </div>`;
+    $('#gungResult').scrollIntoView({behavior: scrollMode(), block: 'nearest'});
+    return;
+  }
+  if (gd.length !== 8) { show('상대 생년월일 — 연도만 알면 4자리(예: 1995), 전부 알면 8자리(예: 19950316)로 입력해주세요.'); return; }
+  const yy = +gd.slice(0, 4), mm = +gd.slice(4, 6), dd = +gd.slice(6, 8);
   const calv = $('#gCal').value;
   let sol;
   if (calv === 'solar') {
