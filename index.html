@@ -850,7 +850,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.4.4</span><br>
+        <span style="letter-spacing:.2em">SAN v3.4.5</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1423,6 +1423,8 @@ const TENGOD_FORTUNE = {
   '정인':'귀인과 지원이 들어오는 기운 — 도움을 받아들이세요'
 };
 const TG_NICK = {비견:'내 편', 겁재:'경쟁', 식신:'창작', 상관:'표현', 편재:'큰 재물', 정재:'착실한 재물', 편관:'도전', 정관:'인정', 편인:'직감', 정인:'귀인'};
+/* 세화 중앙 길자(吉字) — 이달의 십성이 정한다. 달마다 바뀌고, 같은 달에도 일간에 따라 다르다 */
+const SEHWA_CHAR = {비견:['立','립','흔들리지 않고 서는 달'], 겁재:['勇','용','담대하게 나아가는 달'], 식신:['豊','풍','넉넉히 차오르는 달'], 상관:['彩','채','빛깔을 드러내는 달'], 편재:['財','재','기회가 흐르는 달'], 정재:['實','실','열매를 거두는 달'], 편관:['毅','의','단단히 버티는 달'], 정관:['貴','귀','격이 높아지는 달'], 편인:['慧','혜','지혜가 밝아지는 달'], 정인:['德','덕','복이 쌓이는 달']};
 const tgLabel = tg => `${TG_NICK[tg]}(${tg})`;
 const OHAENG_LACK = {
   0:'목(木)이 비어 있습니다. 시작하고 뻗어나가는 기운이 약할 수 있으니, 새로운 일 앞에서 스스로 등을 떠미는 연습이 필요합니다.',
@@ -2654,6 +2656,7 @@ function renderReport(inp, saju, astro, num, f) {
                 gz: mp.saju.gz, tg: mp.saju.tg, pm: f.PM, house: mp.astro.house,
                 themeName: THEMES[mp.theme].name.split(' · ')[0],
                 gzChar: MONTH_CHAR[f.today.month.branch],
+                hero: SEHWA_CHAR[mp.saju.tg],
                 tgHint: (TENGOD_FORTUNE[mp.saju.tg] || '').split(' — ')[0]};
       })()
     }};
@@ -2795,14 +2798,17 @@ function reportToPng() {
     x.fillText(`이달의 결 「${M.themeName}」`, W - m, by + 114);
     x.textAlign = 'left';
   }
-  /* 히어로 — 일간 한 글자를 오브제처럼 */
+  /* 히어로 — 이달의 길자 한 글자를 오브제처럼, 십성 따라 달마다 바뀜 */
+  const hero = M && M.hero;
   x.textAlign = 'center';
   x.save();
   x.shadowColor = 'rgba(60,50,35,.25)'; x.shadowBlur = 48; x.shadowOffsetY = 28;
   x.fillStyle = INK; x.font = `500 252px ${serifV}`;
-  x.fillText(T.stemH, cx, 700);
+  x.fillText(hero ? hero[0] : T.stemH, cx, 700);
   x.restore();
-  x.fillStyle = DIM; x.font = `500 26px ${serifV}`; sp(8); x.fillText(T.branchH, cx, 764); sp(0);
+  x.fillStyle = DIM;
+  if (hero) { x.font = `500 14.5px ${serifV}`; sp(2); x.fillText(`이달의 길자 「${hero[1]}」 — ${hero[2]}`, cx, 758); sp(0); }
+  else { x.font = `500 26px ${serifV}`; sp(8); x.fillText(T.branchH, cx, 764); sp(0); }
   /* 나를 표현하는 한 줄 */
   x.fillStyle = '#6d6555'; sp(1);
   let lf = 13.5;
