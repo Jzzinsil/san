@@ -837,7 +837,7 @@ gtag('config', 'G-L7QPQ5GGL7');
       <p class="sec-desc">복을 부르고 액을 막으려 곁에 걸어두던 그림, 세화(歲畫). 당신의 명식과 이달의 운으로 매달 새로 그려집니다. 간직해 두면 길한 기운이 따릅니다.</p>
       <div style="text-align:center;margin:6px 0 28px">
         <button type="button" class="btn" id="saveReport" style="width:auto;padding:14px 38px">나의 세화 간직하기</button>
-        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 휴대폰에서는 공유 창에서 「이미지 저장」을, 카카오톡 등 앱 안에서 열었다면 화면에 뜨는 세화를 길게 눌러 저장하세요. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.<br><span id="sehwaNext" style="color:var(--muted)"></span></p>
+        <p style="color:var(--dim);font-size:11.5px;margin-top:9px">JPG 한 장으로 만들어집니다 — 아이폰은 공유 창에서 「이미지 저장」을 누르고, 안드로이드는 바로 저장됩니다(알림이나 갤러리에서 확인). 카카오톡 등 앱 안에서 열었다면 화면에 뜨는 세화를 길게 눌러 저장하세요. 이 기기 안에서만 만들어지고 어디에도 업로드되지 않습니다.<br><span id="sehwaNext" style="color:var(--muted)"></span></p>
       </div>
       <p style="font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);margin-bottom:10px">세화의 근거 — 한 장 명세</p>
       <div class="card repcard" id="reportCard"></div>
@@ -850,7 +850,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.4.3</span><br>
+        <span style="letter-spacing:.2em">SAN v3.4.4</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -2841,11 +2841,11 @@ function reportToPng() {
   };
   if (c.toBlob) c.toBlob(blob => {
     if (!blob) { download(c.toDataURL('image/jpeg', .92)); return; }
-    /* 공유 시트(사진첩 저장)는 모바일에서만 — 데스크톱은 항상 다운로드 폴더로 */
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    /* 공유 시트(사진첩 저장)는 iOS만 — 안드로이드 공유 시트엔 「이미지 저장」이 없어 바로 다운로드 */
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
       (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform || ''));
     const file = typeof File !== 'undefined' ? new File([blob], fname, {type: 'image/jpeg'}) : null;
-    if (isMobile && file && navigator.canShare && navigator.canShare({files: [file]})) {
+    if (isIOS && file && navigator.canShare && navigator.canShare({files: [file]})) {
       navigator.share({files: [file]}).catch(e => {
         if (!e || e.name !== 'AbortError') download(URL.createObjectURL(blob));
       });
