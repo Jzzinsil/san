@@ -850,7 +850,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.4.5</span><br>
+        <span style="letter-spacing:.2em">SAN v3.5</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1659,21 +1659,21 @@ const SINSAL_TEXT = {
 /* ---------- 질문 카테고리 ---------- */
 const CATS = {
   love:    {label:'사랑 · 인연', keys:['연애','사랑','결혼','남자친구','여자친구','남친','여친','고백','소개팅','재회','이별','썸','인연','데이트','그 사람','짝사랑','권태기'],
-            themes:[2,6], houses:[5,7], nums:[2,6], tg:['정관','편관','정재','편재'], grant:'인연을 담는 그릇'},
+            themes:[2,6], houses:[5,7], nums:[2,6], tg:['정관','편관','정재','편재'], grant:'인연을 담는 그릇', micro:'마음에 둔 사람이 있다면 오늘 가벼운 안부 한 통을 보내는 것부터'},
   work:    {label:'일 · 커리어', keys:['취업','직장','이직','사업','창업','커리어','승진','면접','퇴사','회사','일자리','프로젝트','계약','발령'],
-            themes:[6,8,1], houses:[10,6], nums:[1,4,8], tg:['정관','편관','식신','상관'], grant:'일과 명예를 담는 그릇'},
+            themes:[6,8,1], houses:[10,6], nums:[1,4,8], tg:['정관','편관','식신','상관'], grant:'일과 명예를 담는 그릇', micro:'마음에 둔 자리가 있다면 오늘 공고 하나를 저장하거나 이력서 첫 줄을 고치는 것부터'},
   money:   {label:'돈 · 재물', keys:['돈','재물','투자','주식','코인','부동산','재테크','대출','월급','매매','수익','연봉','살까','팔까'],
-            themes:[8,4], houses:[2,8], nums:[8,4], tg:['정재','편재'], grant:'재물을 담는 그릇'},
+            themes:[8,4], houses:[2,8], nums:[8,4], tg:['정재','편재'], grant:'재물을 담는 그릇', micro:'금액과 기한을 오늘 종이에 적어 눈으로 확인하는 것부터'},
   study:   {label:'공부 · 시험', keys:['시험','공부','합격','자격증','수능','학교','유학','논문','성적','붙을'],
-            themes:[7], houses:[9,3], nums:[7,4], tg:['정인','편인'], grant:'배움을 담는 그릇'},
+            themes:[7], houses:[9,3], nums:[7,4], tg:['정인','편인'], grant:'배움을 담는 그릇', micro:'오늘 책상에 앉아 첫 페이지를 펴는 것부터'},
   move:    {label:'이동 · 변화', keys:['이사','이동','여행','이민','출장','떠나','옮기','바꿔','바꿀'],
-            themes:[5,9], houses:[9,3], nums:[5], tg:['편재','상관'], grant:'움직임의 기운'},
+            themes:[5,9], houses:[9,3], nums:[5], tg:['편재','상관'], grant:'움직임의 기운', micro:'날짜 하나를 골라 달력에 적어보는 것부터'},
   health:  {label:'건강 · 회복', keys:['건강','수술','다이어트','운동','아프','회복','병원','체력'],
-            themes:[4,7], houses:[6,12], nums:[4,7], tg:['비견','정인'], grant:'버티는 힘'},
+            themes:[4,7], houses:[6,12], nums:[4,7], tg:['비견','정인'], grant:'버티는 힘', micro:'오늘 10분 걷거나 병원 예약 전화 한 통부터'},
   relation:{label:'사람 · 관계', keys:['친구','가족','부모','인간관계','동료','갈등','화해','사이','상사','팀'],
-            themes:[2,6], houses:[7,11], nums:[2,6,9], tg:['비견','정인'], grant:'사람을 곁에 두는 힘'},
+            themes:[2,6], houses:[7,11], nums:[2,6,9], tg:['비견','정인'], grant:'사람을 곁에 두는 힘', micro:'먼저 연락 한 통을 넣는 것부터'},
   general: {label:'삶 · 흐름', keys:[],
-            themes:[1,5], houses:[1,10], nums:[1,9], tg:['비견','정관'], grant:'중심을 잡는 힘'}
+            themes:[1,5], houses:[1,10], nums:[1,9], tg:['비견','정관'], grant:'중심을 잡는 힘', micro:'가장 작게 쪼갠 일 하나를 오늘 안에 끝내는 것부터'}
 };
 const VERDICTS = {
   3:{yn:'YES', h:'吉', t:'지금 하세요', d:'명식의 근거와 뽑힌 패가 같은 방향을 가리킵니다',
@@ -1697,9 +1697,9 @@ function verdictLines(score, ev, picks, polSum) {
     return {
       t: `「${lead.name}」 패가 앞장섭니다 — 지금`,
       d: pillars.length === 3
-        ? `명식·별·수가 모두 같은 방향, 순풍 패 ${up.length}장 — 놓치기 아까운 정렬입니다`
-        : `${pillars.join('·')}의 근거 위에 순풍 패 ${up.length}장이 얹혔습니다`,
-      adv: `묻기보다 실행할 때입니다. 「${lead.name}」의 ${kw1(lead)} — 그 결을 첫걸음으로 삼으세요.`
+        ? `타고난 기운도, 하늘의 때도, 숫자의 흐름도 같은 방향인데 손까지 밀어주는 패를 뽑았습니다 — 이렇게 다 겹치는 때는 드뭅니다`
+        : `${pillars.join('·')}${jIga(pillars[pillars.length-1])} 밀어주는 위에, 손이 뽑은 밀어주는 패 ${up.length}장이 얹혔습니다`,
+      adv: `이번에는 고민을 더 늘리지 말고 움직일 차례입니다. 뽑힌 「${lead.name}」 패의 뜻은 ${kw1(lead)} — ${ev.cat.micro} 시작하세요.`
     };
   }
   if (score === 2) {
@@ -1728,6 +1728,46 @@ function verdictLines(score, ev, picks, polSum) {
     d: `${missing.length === 3 ? '명식·별·수 모두 이 방향엔 조용하고' : `${missing.join('·')}의 근거가 비고`} ${polSum < 0 ? `패의 결까지 역풍(${polSum})` : '패도 이 길을 밀어주지 않습니다'} — 시기가 아니라 방향의 문제입니다`,
     adv: `지금 계획대로 밀면 비용이 큽니다. 끝자리 패 「${last.name}」 — ${kw1(last)} 쪽에서 방향을 다시 고르세요.`
   };
+}
+/* 왜 이 답인가 — 판정의 셈법을 일반인의 말로 풀어주는 블록.
+   결정을 못 내리는 사람을 위한 서비스라, 결론만큼 "왜"가 또렷해야 한다.
+   원칙(일반인 독자 감사 반영): 미설명 단어 금지 · 실제 점수 공개 · 패 이름엔 뜻 병기 · 무엇이 답을 결정했는지 명시 */
+function whyBlock(ev, picks, polSum, total) {
+  const up = picks.filter(c => c.pol > 0), down = picks.filter(c => c.pol < 0);
+  const kw1 = c => c.kw.split(' · ')[0];
+  const saju = ev.pts.saju >= 2
+    ? `<b>사주</b>는 두 겹으로 밀어줍니다 — 타고난 사주에 ${ev.cat.grant}이 갖춰져 있고, 올해 들어온 운까지 같은 방향입니다`
+    : ev.pts.saju === 1
+    ? `<b>사주</b>는 절반만 밀어줍니다 — 타고난 그릇과 올해의 운 중 한쪽만 준비된 상태입니다`
+    : `<b>사주</b>는 조용합니다 — 타고난 사주도 올해의 운도 이 주제를 특별히 밀지 않습니다`;
+  const astro = ev.pts.astro
+    ? `<b>별</b>은 밀어줍니다 — 지금 행성 하나가 당신 하늘의 「${ev.cat.label}」 영역을 지나는 중입니다`
+    : `<b>별</b>은 조용합니다 — 당신 하늘의 「${ev.cat.label}」 영역을 지금 지나는 행성이 없습니다`;
+  const num = ev.pts.num
+    ? `<b>생일 숫자</b>는 밀어줍니다 — 생년월일로 계산한 지금의 흐름이 이 주제와 같은 방향입니다`
+    : `<b>생일 숫자</b>는 조용합니다 — 생년월일로 계산한 흐름으로는 아직 이 주제의 때가 아닙니다`;
+  const nm = a => a.map(c => `${c.name}=${kw1(c)}`).join(', ');
+  const cards = `<b>패</b> — 당신 손이 뽑은 세 장은 ${
+    up.length && down.length ? `밀어주는 패 ${up.length}장(${nm(up)})과 막아서는 패 ${down.length}장(${nm(down)})이 섞였습니다`
+    : up.length ? `밀어주는 패 ${up.length}장(${nm(up)})${up.length < 3 ? ', 나머지는 중립' : ''}입니다`
+    : down.length ? `막아서는 패 ${down.length}장(${nm(down)})${down.length < 3 ? ', 나머지는 중립' : ''}입니다`
+    : `셋 다 밀지도 막지도 않는 중립입니다`}`;
+  const sum = total >= 3
+    ? '또렷한 순풍입니다. 가장 밝은 답이 나온 이유입니다'
+    : total >= 1
+    ? '약한 순풍입니다. 답이 긍정이되 조건이 붙은 이유입니다'
+    : total >= -1
+    ? '순풍이라 하기엔 부족합니다. 답이 신중한 쪽으로 나온 이유입니다'
+    : '역풍입니다. 답이 말리는 쪽으로 나온 이유입니다';
+  const score = `점수로 보면 — 하늘의 응원 <b>${ev.ev}점</b>(4점 만점, 2점이 보통 수준), 패의 방향 <b>${polSum > 0 ? '+' : ''}${polSum}</b>(3장 합계). 보통과의 차이를 더하면 <b>${total > 0 ? '+' : ''}${total}</b> — ${sum}`;
+  const sc = t => t >= 3 ? 3 : t >= 1 ? 2 : t >= -1 ? 1 : 0;
+  const baseScore = sc(ev.ev - 2), fullScore = sc(total);
+  const decider = baseScore === fullScore
+    ? '패를 빼고 하늘만 봐도 같은 답이 나옵니다 — 그만큼 오늘의 패운에 흔들리지 않는 판정입니다.'
+    : `이번 답의 결정타는 당신 손이었습니다 — 하늘만 보면 「${VERDICTS[baseScore].t}」였는데, 뽑은 패가 답을 「${VERDICTS[fullScore].t}」 쪽으로 옮겼습니다.`;
+  return `<div class="combo"><b>왜 이 답이 나왔나 — 하나씩 보면</b><br>` +
+    `이 답은 두 가지를 더해 나옵니다. 당신을 읽는 세 갈래(사주 · 별 · 생일 숫자)가 이 일을 밀어주는가, 그리고 당신 손이 뽑은 패가 밀어주는가.<br>` +
+    `${saju}.<br>${astro}.<br>${num}.<br>${cards}.<br>${score}.<br>${decider}</div>`;
 }
 function detectCat(q) {
   let best = 'general', bestN = 0;
@@ -1758,16 +1798,16 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
 
   /* 사주 근거 */
   const natalMatch = cat.tg.find(g => R.natalTGs.has(g));
-  const flow = [{tg: yearTG, label:'올해 세운'}, {tg: monthTG, label:'이달 월운'}].find(x => cat.tg.includes(x.tg));
+  const flow = [{tg: yearTG, label:'올해 들어온 운'}, {tg: monthTG, label:'이번 달의 운'}].find(x => cat.tg.includes(x.tg));
   let sajuLine, sajuPt = 0;
   if (natalMatch && flow) { sajuPt = 2;
-    sajuLine = `명식에 <b>${natalMatch}</b>(${cat.grant})${jIga(natalMatch)} 있고, ${flow.label}에 <b>${tgLabel(flow.tg)}</b>까지 같은 기운입니다 — 안이 준비되고 밖이 밀어주는 모양새.`;
+    sajuLine = `타고난 사주에 <b>${natalMatch}</b>(${cat.grant})${jIga(natalMatch)} 있고, ${flow.label}도 <b>${tgLabel(flow.tg)}</b>으로 같은 방향입니다 — 안(타고난 것)이 준비되고 밖(지금 운)이 밀어주는 모양새.`;
   } else if (natalMatch) { sajuPt = 1;
-    sajuLine = `명식에 <b>${natalMatch}</b>${jIga(natalMatch)} 있어 ${cat.grant}은 갖춰져 있습니다. 다만 지금 운이 미는 방향은 <b>${tgLabel(yearTG)}</b> 쪽입니다.`;
+    sajuLine = `타고난 사주에 <b>${natalMatch}</b>${jIga(natalMatch)} 있어 ${cat.grant}은 갖춰져 있습니다. 다만 올해 운이 미는 방향은 <b>${tgLabel(yearTG)}</b> 쪽이라, 준비는 됐는데 바람은 다른 데서 부는 상태입니다.`;
   } else if (flow) { sajuPt = 1;
-    sajuLine = `명식에 ${cat.grant}이 뚜렷하진 않지만, ${flow.label}의 <b>${tgLabel(flow.tg)}</b>이 그 기운을 채워주는 중 — 운이 문을 여는 시기입니다.`;
+    sajuLine = `타고난 사주에 ${cat.grant}이 뚜렷하진 않지만, ${flow.label}인 <b>${tgLabel(flow.tg)}</b>이 그 기운을 채워주는 중 — 타고나지 않았어도 지금은 운이 문을 열어주는 시기입니다.`;
   } else {
-    sajuLine = `명식과 지금 운 모두 이 방향의 기운이 옅습니다. 억지로 밀기보다 이달의 흐름(<b>${THEMES[f.periods[2].theme].name}</b>)을 먼저 타는 편이 낫습니다.`;
+    sajuLine = `타고난 사주에도, 올해 들어온 운에도 이 방향의 기운이 옅습니다. 억지로 밀기보다 이번 달의 큰 흐름(<b>${THEMES[f.periods[2].theme].name}</b>)을 먼저 타는 편이 낫습니다.`;
   }
 
   /* 별 근거 */
@@ -1798,8 +1838,8 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
   /* 타이밍: 카테고리와 결이 맞는 첫 기간 */
   const tp = f.periods.find(p => cat.themes.includes(p.theme));
   const timing = tp
-    ? `가장 결이 맞는 시기는 <b>${PERIOD_META[tp.key].kr}</b>입니다 — ${THEMES[tp.theme].name}의 기운이 이 질문을 받쳐줍니다.`
-    : `다섯 시계 중 이 질문과 정확히 겹치는 시기는 아직 없습니다. <b>올해</b>의 큰 흐름(${THEMES[f.periods[4].theme].name}) 위에서 무리하지 않는 것이 좋습니다.`;
+    ? `언제가 좋은가 — 오늘 · 이번 주 · 이번 달 · 이번 분기 · 올해, 다섯 구간 중 <b>${PERIOD_META[tp.key].kr}</b>의 흐름(${THEMES[tp.theme].name})이 이 질문과 가장 잘 맞습니다.`
+    : `언제가 좋은가 — 오늘 · 이번 주 · 이번 달 · 이번 분기 · 올해, 다섯 구간을 살폈지만 이 질문에 "지금이다" 할 만한 구간은 아직 없습니다. 급하게 정하면 손해 보기 쉬운 때라는 뜻이니, 당분간은 결정 대신 준비에 시간을 쓰세요. 올해 운의 키워드가 「${THEMES[f.periods[4].theme].name}」이니, 그쪽에 가까운 준비일수록 흐름과 맞습니다.`;
 
   return {cat, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt}, sajuLine, astroLine, numLine, timing,
     tpKr: tp ? PERIOD_META[tp.key].kr : null, tpTheme: tp ? THEMES[tp.theme].name : null};
@@ -2296,7 +2336,7 @@ function finishDraw() {
     <div class="averdict${ev.tpKr ? ' yes' : ''}">
       <span class="vh"${ev.tpKr && ev.tpKr.length > 2 ? ' style="font-size:30px"' : ''}>${ev.tpKr || '未定'}</span>
       <span><span class="vt">${ev.tpKr ? '때를 묻는 물음 — 이 시기입니다' : '때를 묻는 물음 — 아직 열린 창이 없습니다'}</span><br>
-      <span class="vd">${ev.tpKr ? `다섯 시계 중 「${ev.tpKr}」의 결(${ev.tpTheme})이 이 질문과 겹칩니다` : '다섯 시계 어디에도 이 질문의 결이 아직 없습니다 — 준비 국면입니다'}</span></span>
+      <span class="vd">${ev.tpKr ? `오늘부터 올해까지 다섯 구간 중 「${ev.tpKr}」의 흐름(${ev.tpTheme})이 이 질문과 겹칩니다` : '오늘부터 올해까지 다섯 구간 어디에도 이 질문의 흐름이 아직 없습니다 — 지금은 준비하는 구간입니다'}</span></span>
     </div>`;
     advLine = ev.tpKr
       ? `시기를 물으셨기에 예/아니오 대신 때로 답합니다 — 「${ev.tpKr}」의 창이 열리면, 끝자리 패(${picks[2].name})의 결로 마무리하세요.`
@@ -2342,6 +2382,7 @@ function finishDraw() {
     <p class="aq">물음 · <b>${esc(q)}</b></p>
     ${verdictHTML}
     <span class="acat">${ev.cat.label}</span>
+    ${whyBlock(ev, picks, polSum, total)}
     <div class="spread3">${spots}</div>
     ${intro}
     ${passages}
