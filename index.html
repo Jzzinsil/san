@@ -27,6 +27,7 @@
   --accent:#a63d28;
   --gold:#a63d28;
   --gold-soft:#96371f;
+  --nowgold:#b8860b;
   --wood:#3f7a5a;
   --fire:#c13b34;
   --earth:#94660a;
@@ -231,7 +232,7 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .mface + .mface{border-left:1px dashed var(--line)}
 .mface .mfh{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
 .mface .mft{font-family:var(--serif);font-size:18.5px;font-weight:600;margin:6px 0 4px}
-.mface .mone{font-family:var(--serif);font-size:14.5px;color:var(--ink);line-height:1.65;margin:2px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--hairline)}
+.mface .mone{font-family:var(--serif);font-size:14.5px;color:var(--ink);line-height:1.65;margin:2px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--hairline);min-height:3.3em}
 .mface .mline{font-size:13px;line-height:1.75;margin-top:9px}
 .mface .msrc,.mcore .msrc{display:block;font-size:11px;color:var(--dim);margin-top:10px}
 .mgap{margin-top:14px;background:var(--ink);padding:16px 18px}
@@ -474,7 +475,10 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .combo b{color:var(--ink);font-weight:700}
 /* 인생 지도 */
 .lg-wrap{overflow-x:auto;margin:16px 0 4px}
-.lg-svg{display:block;width:100%;min-width:460px;height:auto}
+.lg-svg{display:block;width:100%;min-width:480px;height:auto}
+.lgstat{display:flex;align-items:center;gap:16px;margin-top:16px;border-top:1px solid var(--hairline);padding-top:14px}
+.lgstat .lgn{font-family:var(--serif);font-size:42px;font-weight:600;line-height:1;color:var(--nowgold);min-width:54px;text-align:center}
+.lgstat .lgt{font-size:12.5px;color:var(--muted);line-height:1.6}
 .daeun-list{margin-top:12px;display:flex;flex-direction:column}
 .daeun-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:8px 8px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--hairline)}
 .daeun-row .dage{min-width:66px;color:var(--dim);letter-spacing:.02em}
@@ -892,7 +896,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.9.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.9.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -2776,8 +2780,8 @@ function renderSynth(saju, astro, num) {
   inner.push(`일간 ${dk.k}(${dk.h}) — ${ILGAN_SHORT[dk.k]}. 곧 ${ILGAN_PLAIN[dk.k]}, 이것이 마음의 바탕 재료입니다.`);
   const innerSrc = '달 별자리' + (num.name ? ' + 이름의 모음' : '') + ' + 사주 일간';
   /* 각 면 한 줄 요약 — 세 체계 교집합으로 사람마다 다르게 */
-  const outerOne = `세상에는 ${TG_NICK[mTg]}의 얼굴로 서고${astro.rising ? `, ${SIGNS[astro.rising.sign].k}의 첫인상으로 다가가` : (num.name ? `, ${NUM_ESSENCE[num.name.personality].k}의 인상을 남기` : '')}는 사람.`;
-  const innerOne = `${SIGNS[astro.moon.sign].k} 달의 ${SIGN_ESSENCE[astro.moon.sign]}${num.name ? `, 속으로는 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망하는` : ''} — 그 바탕은 결국, ${ILGAN_PLAIN[dk.k]}.`;
+  const outerOne = `세상에는 ${TG_NICK[mTg]}의 얼굴로 서고, ${astro.rising ? `${SIGNS[astro.rising.sign].k}의 첫인상으로 다가가` : (num.name ? `${NUM_ESSENCE[num.name.personality].k}의 인상을 남기` : '차분히 다가가')}는 사람.`;
+  const innerOne = `속은 ${SIGNS[astro.moon.sign].k} 달의 ${SIGN_ESSENCE[astro.moon.sign]}${num.name ? `, ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망하는` : `, ${ILGAN_SHORT[dk.k]}의`} 사람.`;
   const coreText = `${ILGAN_SHORT[dk.k]}의 기질 위에 ${SIGNS[astro.sun.sign].k}의 정체성, 그리고 ${NUM_ESSENCE[num.lifePath].t}(${num.lifePath})의 인생 과제가 놓여 있습니다.`;
 
   /* 간극 읽기 — 겉/속 별자리 원소 + 일간 오행 + 명식 편중 + 이름수 낙차로 개인화 */
@@ -3884,48 +3888,52 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const valD = decades.reduce((a, b) => b.avg < a.avg ? b : a);
   const peakDaeunTg = tenGod(dayStem, mod(mStem + stepAt(peakD.d + 5), 10));
 
-  /* ---- 인생 차트 (Bar San 스타일 — 10년마다 운의 세기를 점 하나로) ---- */
-  const W = 640, rowH = 34, headTop = 42, padB = 10;
-  const H = headTop + decades.length * rowH + padB;
-  const xL = 132, xR = W - 24, lineW = xR - xL;
+  /* ---- 인생 항로 (옛 항해지도 — 가로=시간, 세로 위도=운의 세기) ---- */
+  const W = 660, H = 360;
+  const fx0 = 28, fy0 = 30, fx1 = W - 24, fy1 = H - 34;               // 지도 테두리
+  const px0 = fx0 + 42, px1 = fx1 - 22, py0 = fy0 + 34, py1 = fy1 - 30; // 항로 영역
+  const N = decades.length;
   const curDecade = Math.min(80, Math.max(10, Math.floor(age / 10) * 10));
-  const posOf = av => Math.max(0, Math.min(1, (av - 3) / 6));
-  const tickMarks = [0, .25, .5, .75, 1].map(t => {
-    const tx = (xL + t * lineW).toFixed(1);
-    return `<line x1="${tx}" y1="-4" x2="${tx}" y2="4" stroke="var(--hairline)" stroke-width="1"/>`;
-  }).join('');
-  let rowsSvg = '';
-  decades.forEach((r, i) => {
-    const y = headTop + i * rowH + rowH / 2;
-    const tg = tenGod(dayStem, mod(mStem + stepAt(r.d + 5), 10));
-    const isPeak = r.d === peakD.d && peakD.d !== valD.d;
-    const isNow = r.d === curDecade;
-    const dotColor = isPeak ? 'var(--accent)' : isNow ? 'var(--gold-soft)' : 'var(--ink)';
-    const dx = (xL + posOf(r.avg) * lineW).toFixed(1);
-    const tag = isPeak && isNow ? `<text x="${xR}" y="-9" text-anchor="end" font-size="9" font-weight="700" letter-spacing="1.5" fill="var(--accent)">PEAK · NOW</text>`
-      : isPeak ? `<text x="${xR}" y="-9" text-anchor="end" font-size="9" font-weight="700" letter-spacing="1.5" fill="var(--accent)">PEAK</text>`
-      : isNow ? `<text x="${xR}" y="-9" text-anchor="end" font-size="9" font-weight="700" letter-spacing="1.5" fill="var(--gold-soft)">NOW · ${age}세</text>` : '';
-    rowsSvg += `<g transform="translate(0,${y.toFixed(1)})">`
-      + `<text x="8" y="4.5" font-size="14.5" font-weight="600" fill="var(--ink)">${r.d}대</text>`
-      + `<text x="60" y="4" font-size="11" fill="var(--dim)">${TG_NICK[tg]}</text>`
-      + `<line x1="${xL}" y1="0" x2="${xR}" y2="0" stroke="var(--line)" stroke-width="1"/>`
-      + tickMarks
-      + `<rect x="${(dx - 4.5)}" y="-4.5" width="9" height="9" fill="${dotColor}"/>`
-      + tag + `</g>`;
+  const xAt = i => px0 + (N === 1 ? 0 : i / (N - 1)) * (px1 - px0);
+  const avgs = decades.map(d => d.avg);
+  const lo = Math.min(...avgs), hi = Math.max(...avgs), rng = (hi - lo) || 1;
+  const yAt = av => py1 - (av - lo) / rng * (py1 - py0);
+  /* 위도·경도 격자 */
+  let grid = '';
+  decades.forEach((d, i) => { const x = xAt(i).toFixed(1); grid += `<line x1="${x}" y1="${fy0}" x2="${x}" y2="${fy1}" stroke="var(--hairline)" stroke-width="1" stroke-dasharray="1 5"/>`; });
+  for (let g = 1; g <= 3; g++) { const y = (fy0 + g / 4 * (fy1 - fy0)).toFixed(1); grid += `<line x1="${fx0}" y1="${y}" x2="${fx1}" y2="${y}" stroke="var(--hairline)" stroke-width="1" stroke-dasharray="1 5"/>`; }
+  /* 항로 + 항구 */
+  const route = decades.map((d, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(d.avg).toFixed(1)}`).join(' ');
+  let ports = '';
+  decades.forEach((d, i) => {
+    const x = xAt(i), y = yAt(d.avg);
+    const isPeak = d.d === peakD.d && peakD.d !== valD.d, isNow = d.d === curDecade;
+    ports += `<text x="${x.toFixed(1)}" y="${(fy1 - 9).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--dim)">${d.d}대</text>`;
+    if (isPeak) ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="var(--accent)"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2 2"/><text x="${x.toFixed(1)}" y="${(y - 15).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1" fill="var(--accent)">정점 섬</text>`;
+    else if (isNow) ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="none" stroke="var(--nowgold)" stroke-width="1"/><rect x="${(x - 4.8).toFixed(1)}" y="${(y - 4.8).toFixed(1)}" width="9.6" height="9.6" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})" fill="var(--nowgold)"/><text x="${x.toFixed(1)}" y="${(y - 14).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1" fill="var(--nowgold)">지금 ${age}세</text>`;
+    else ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.4"/>`;
   });
-  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="10년(대)마다 운의 세기 차트">`
-    + `<text x="${xL}" y="26" font-size="9.5" letter-spacing="1.5" fill="var(--dim)">버티며 힘 기르는 때</text>`
-    + `<text x="${xR}" y="26" text-anchor="end" font-size="9.5" letter-spacing="1.5" fill="var(--dim)">기운이 미는 때</text>`
-    + rowsSvg + `</svg></div>`;
+  /* 나침반 */
+  const kx = fx1 - 28, ky = fy0 + 28, kr = 12;
+  const compass = `<g stroke="var(--dim)" stroke-width="1" fill="none"><line x1="${kx}" y1="${ky - kr}" x2="${kx}" y2="${ky + kr}"/><line x1="${kx - kr}" y1="${ky}" x2="${kx + kr}" y2="${ky}"/><path d="M${kx},${ky - kr} L${kx + 3.5},${ky} L${kx},${ky + kr} L${kx - 3.5},${ky} Z"/></g><text x="${kx}" y="${ky - kr - 3}" text-anchor="middle" font-size="8" fill="var(--dim)">N</text>`;
+  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="인생 항로 지도 — 10년마다의 운">`
+    + `<rect x="${fx0}" y="${fy0}" width="${fx1 - fx0}" height="${fy1 - fy0}" fill="none" stroke="var(--line)" stroke-width="1.2"/>`
+    + `<rect x="${fx0 + 3}" y="${fy0 + 3}" width="${fx1 - fx0 - 6}" height="${fy1 - fy0 - 6}" fill="none" stroke="var(--hairline)" stroke-width="1"/>`
+    + grid
+    + `<text x="${fx0 + 8}" y="${(py0 - 2).toFixed(1)}" font-size="9" letter-spacing="1" fill="var(--dim)">순풍</text>`
+    + `<text x="${fx0 + 8}" y="${(py1 + 12).toFixed(1)}" font-size="9" letter-spacing="1" fill="var(--dim)">역풍</text>`
+    + compass
+    + `<path d="${route}" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="2 3" stroke-linejoin="round"/>`
+    + ports + `</svg></div>`;
 
   const peakLine = peakD.d !== valD.d
     ? `<div class="combo" style="margin-top:12px"><b>한눈에 — 인생 피크는 ${peakD.d}대</b><br>${peakD.d}세부터의 10년, ${peakDaeunTg}(${TG_NICK[peakDaeunTg]}) 대운이 미는 <b>${THEMES[TG_THEME[peakDaeunTg]].name}</b>의 기운이 절정에 이릅니다 — 인생에서 가장 크게 벌이고 거두기 좋은 때입니다. 반대로 <b>${valD.d}대</b>는 곡선이 가장 낮게 흐르는 구간 — 새로 벌이기보다 힘을 아끼고 뿌리를 내리며 다음 상승을 준비하는 때입니다.</div>`
     : `<div class="combo" style="margin-top:12px"><b>한눈에 — 고르게 흐르는 인생</b><br>어느 10년이 유독 튀지 않고 전 생애가 비슷한 온도로 흐릅니다 — 큰 부침 없이 자기 페이스로 멀리 가는 유형입니다.</div>`;
-  $('#lifeGraph').innerHTML = `<h3>인생 흐름 — 10년마다의 운</h3>`
-    + `<p class="small">한 줄이 인생의 10년입니다. 점이 <b>오른쪽</b>에 있을수록 기운이 크게 미는 시기, <b>왼쪽</b>일수록 스스로 힘을 기르는 시기 — 옆의 작은 글자는 그 10년을 이끄는 대운의 기운입니다. <b style="color:var(--accent)">붉은 점(PEAK)</b>이 인생의 정점, <b style="color:var(--gold-soft)">금색 점(NOW)</b>이 지금입니다.</p>`
+  $('#lifeGraph').innerHTML = `<h3>인생 항로 — 지나온 길과 올 길</h3>`
+    + `<p class="small">당신의 인생을 하나의 항로로 그렸습니다. 가로는 시간(10~80대), 세로 위도는 그 10년의 운 — <b>위</b>로 오를수록 순풍, <b>아래</b>일수록 버티는 때입니다. 점선이 당신이 지나갈 항로, 매듭이 각 10년의 항구예요. <b style="color:var(--accent)">붉은 정점 섬</b>이 인생의 절정, <b style="color:var(--nowgold)">금색 지금 위치</b>가 현재입니다.</p>`
     + peakLine
     + svg
-    + `<p class="small" style="margin-top:8px">대운수 <b>${startAge}</b> — 당신의 큰 흐름은 ${startAge}세부터 10년마다 바뀝니다 (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준).</p>`;
+    + `<div class="lgstat"><span class="lgn">${startAge}</span><span class="lgt"><b>대운수 ${startAge} — 당신만의 중요한 숫자</b>입니다. 큰 흐름(대운)이 ${startAge}세부터 10년마다 바뀌니, 당신의 항로는 이 리듬으로 항구를 옮겨 갑니다. (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준)</span></div>`;
 
   /* 대운 국면 해설 */
   const nowIdx = phases.findIndex(p => age >= p.from && age <= p.to);
