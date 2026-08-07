@@ -851,7 +851,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.6.8</span><br>
+        <span style="letter-spacing:.2em">SAN v3.7.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1404,6 +1404,8 @@ const ILGAN_TEXT = {
   '계':'소리 없이 스며드는 봄비, 새벽이슬입니다. 감수성과 직관이 극도로 발달해 말하지 않은 것까지 느끼는 사람입니다. 조용하지만 물이 바위를 뚫듯, 부드러움으로 결국 원하는 곳까지 스며듭니다. 그 맑은 통찰이 이 사람의 힘입니다.'
 };
 const ILGAN_SHORT = {갑:'큰 나무의 곧은 추진',을:'덩굴의 유연한 생존력',병:'태양의 거침없는 표현',정:'촛불의 집중된 온기',무:'큰 산의 묵직한 신뢰',기:'밭흙의 조용한 성실',경:'무쇠의 결단',신:'보석의 예리한 완벽',임:'바다의 깊은 지혜',계:'이슬의 맑은 직관'};
+/* 시적 라벨을 처음 보는 사람도 이해하도록 — 비유 없는 일상어 풀이 */
+const ILGAN_PLAIN = {갑:'맨 앞에 서서 일을 시작하고 밀고 나가는 걸 좋아하고, 옳다고 믿으면 쉽게 굽히지 않는 사람', 을:'부드럽고 상냥해 보여도 속은 강해서, 상황에 맞춰 유연하게 대처하며 끝까지 원하는 방향으로 가는 사람', 병:'밝고 솔직해서 있는 것만으로 분위기를 환하게 만들고, 마음을 숨기지 않고 뒤끝도 없는 사람', 정:'겉은 따뜻하고 차분하지만 마음먹은 일이나 아끼는 사람에게는 은근히 깊고 오래 정성을 쏟는 사람', 무:'쉽게 흔들리거나 서두르지 않아 믿음직하고, 사람들 사이에서 갈등을 잘 다독여 주는 사람', 기:'티 내지 않고 묵묵히 챙기며 실속을 잘 차리고, 순해 보여도 지킬 선은 분명한 사람', 경:'한번 정하면 끝까지 밀어붙이는 결단력이 있고, 원칙과 의리를 중요하게 여기는 사람', 신:'감각이 섬세하고 깔끔해서 대충 넘기지 못하고, 끝까지 다듬어 완성도 높은 결과를 내는 사람', 임:'생각의 폭이 넓고 속이 깊어 좀처럼 흔들리지 않고, 조용히 흐르다 결정적일 때 큰 힘을 내는 사람', 계:'조용하지만 분위기와 사람 마음을 빠르게 알아채고, 서두르지 않고 원하는 걸 결국 이뤄내는 사람'};
 const TENGOD_DESC = {
   '비견':'나와 어깨를 나란히 하는 힘 · 자립과 주관','겁재':'경쟁 속에서 단련되는 힘 · 승부욕',
   '식신':'즐기며 만들어내는 힘 · 표현과 여유','상관':'틀을 깨는 힘 · 재치와 반골 기질',
@@ -1567,6 +1569,14 @@ const SUBCATS = [
 const EL_COLOR = ['초록', '빨강', '노랑', '흰색', '파랑'];
 const EL_DIR = ['동쪽', '남쪽', '중앙 · 가까운 곳', '서쪽', '북쪽'];
 const EL_NUM = ['3 · 8', '2 · 7', '5 · 10', '4 · 9', '1 · 6'];
+const EL_TASTE = ['신맛', '쓴맛', '단맛', '매운맛', '짠맛'];
+const EL_FOOD = [
+  ['푸른 잎채소 · 신 과일', '식초 · 레몬처럼 신 기운이 도는 음식'],   /* 목 */
+  ['쓴 나물 · 붉은 음식 · 따뜻한 국물', '쓴맛과 열이 도는 음식'],     /* 화 */
+  ['노랗고 단 곡물 · 뿌리채소', '단맛이 도는 담백한 음식'],           /* 토 */
+  ['흰 살코기 · 매콤한 음식', '매운맛과 흰빛이 도는 음식'],           /* 금 */
+  ['짭짤한 해물 · 검은 음식', '짠맛과 검푸른 빛이 도는 음식']         /* 수 */
+];
 
 /* ---------- 통합 성격 태그 ---------- */
 const TAG_TEXT = {
@@ -1770,6 +1780,18 @@ function whyBlock(ev, picks, polSum, total) {
     `이 답은 두 가지를 더해 나옵니다. 당신을 읽는 세 갈래(사주 · 별 · 생일 숫자)가 이 일을 밀어주는가, 그리고 당신 손이 뽑은 패가 밀어주는가.<br>` +
     `${saju}.<br>${astro}.<br>${num}.<br>${cards}.<br>${score}.<br>${decider}</div>`;
 }
+function infoWhyBlock(weak, R) {
+  const wel = ELEMENTS[weak];
+  const c = R.saju.counts;
+  const total = c.reduce((s, n) => s + n, 0);
+  const order = c.map((n, i) => ({i, n})).sort((a, b) => a.n - b.n);
+  const strongEl = ELEMENTS[order[order.length - 1].i];
+  return `<div class="combo"><b>왜 이 값이 나왔나 — 명식에서 읽습니다</b><br>` +
+    `행운의 색 · 방위 · 숫자 · 음식은 예/아니오가 아니라, 당신 사주 여덟 글자의 다섯 기운(목 · 화 · 토 · 금 · 수) 균형에서 나옵니다.<br>` +
+    `당신 명식의 기운 분포를 세어 보면 — ${ELEMENTS.map((e, i) => `${e.k}(${e.h}) ${c[i]}`).join(' · ')} (합 ${total}).<br>` +
+    `가장 옅은 기운은 <b>${wel.k}(${wel.h})</b>입니다 — 타고나길 이 자리가 비어 있습니다. 반대로 <b>${strongEl.k}(${strongEl.h})</b>은 넉넉합니다.<br>` +
+    `동양 오행에서 이런 값은 <b>모자란 기운을 채워 균형을 맞추는 것</b>이라, 넘치는 것이 아니라 비어 있는 ${wel.k} 기운의 색(${EL_COLOR[weak]}) · 방위(${EL_DIR[weak]}) · 수(${EL_NUM[weak]}) · 맛(${EL_TASTE[weak]})이 당신에게 길한 값이 됩니다.</div>`;
+}
 function detectCat(q) {
   let best = 'general', bestN = 0;
   for (const [k, c] of Object.entries(CATS)) {
@@ -1787,6 +1809,13 @@ function detectQType(q) {
     return {t:'choice'};
   }
   if (/중에?서?\s*(뭐|어느|어떤|누구|무엇)|둘\s*중/.test(q)) return {t:'choice'};
+  /* 정보를 묻는 물음 — 값으로 답한다 (예/아니오가 아니라 색·숫자·방위·음식) */
+  const asksColor = /(행운|럭키|lucky)[의\s]*(색|컬러)|무슨\s*(색|컬러|옷)|어떤\s*(색|컬러|옷)|(색깔?|컬러)\s*(뭐|알려|추천|좋)|뭔?\s*옷|옷\s*(뭐|뭘)|뭐\s*입|뭘\s*입/i.test(q);
+  const asksNum   = /(행운|럭키|lucky)[의\s]*(숫자|번호|넘버|number)|무슨\s*숫자|어떤\s*숫자|숫자\s*(뭐|알려|추천)/i.test(q);
+  const asksDir   = /(행운|럭키|lucky)[의\s]*방[위향]|길[한하]\s*방[위향]|어느\s*방[위향]|방위\s*(뭐|알려)/.test(q);
+  const asksFood  = /(뭐|뭘|무엇|모|뭔|메뉴)\s*먹|뭐먹|모먹|메뉴\s*(뭐|추천|알려)|(점심|저녁|아침|야식|간식|밥)\s*(뭐|뭘|메뉴|추천|먹|모)/.test(q);
+  if (asksColor || asksNum || asksDir || asksFood)
+    return {t:'info', k: asksColor ? 'color' : asksNum ? 'num' : asksDir ? 'dir' : 'food'};
   if (/언제|몇\s*[년월일주달살]|시기|타이밍/.test(q)) return {t:'when'};
   if (/어떻게|어떡|어떤\s|무엇을|뭘\s|뭐를|뭐가\s|왜\s|어디[로서에가]/.test(q)) return {t:'open'};
   const neg = /지\s*말까|말아야|안\s*\S+\s*(게|것이|편이)\s*(나을|낫|좋)/.test(q);
@@ -1836,11 +1865,22 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
     numLine = `올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 주제의 큰 문은 <b>${cat.nums[0]}</b>의 해에 더 활짝 열립니다. 지금은 그 준비 국면.`;
   }
 
-  /* 타이밍: 카테고리와 결이 맞는 첫 기간 */
-  const tp = f.periods.find(p => cat.themes.includes(p.theme));
-  const timing = tp
-    ? `언제가 좋은가 — 오늘 · 이번 주 · 이번 달 · 이번 분기 · 올해, 다섯 구간 중 <b>${PERIOD_META[tp.key].kr}</b>의 흐름(${THEMES[tp.theme].name})이 이 질문과 가장 잘 맞습니다.`
-    : `언제가 좋은가 — 오늘 · 이번 주 · 이번 달 · 이번 분기 · 올해, 다섯 구간을 살폈지만 이 질문에 "지금이다" 할 만한 구간은 아직 없습니다. 급하게 정하면 손해 보기 쉬운 때라는 뜻이니, 당분간은 결정 대신 준비에 시간을 쓰세요. 올해 운의 키워드가 「${THEMES[f.periods[4].theme].name}」이니, 그쪽에 가까운 준비일수록 흐름과 맞습니다.`;
+  /* 타이밍: 카테고리와 결이 맞는 구간 — 사람마다 다른 다섯 구간의 실제 결·개인 숫자·십성으로 개인화 */
+  const pnum = {day: f.PD, week: f.PW, month: f.PM, quarter: f.PQ, year: f.PY};
+  const numLabel = k => ({day:'일수', week:'주수', month:'월수', quarter:'분기수', year:'연수'})[k];
+  const pStamp = p => `개인 ${numLabel(p.key)} ${pnum[p.key]} · ${p.saju.tg}`;
+  const flowSig = f.periods.map(p => `${PERIOD_META[p.key].kr} ${THEMES[p.theme].name}`).join(' · ');
+  const matches = f.periods.filter(p => cat.themes.includes(p.theme));
+  const tp = matches.length ? matches[0] : null;
+  let timing;
+  if (tp) {
+    const others = matches.slice(1).map(p => PERIOD_META[p.key].kr);
+    timing = `언제가 좋은가 — 당신의 다섯 구간은 지금 「${flowSig}」의 결을 지납니다. 이 중 <b>${PERIOD_META[tp.key].kr}</b>(${pStamp(tp)})의 흐름(${THEMES[tp.theme].name})이 이 질문과 정면으로 맞습니다${others.length ? ` — ${others.join(' · ')}도 같은 결로 뒤를 받칩니다` : ''}. 여기서 움직이세요.`;
+  } else {
+    const dist = p => Math.min(...cat.themes.map(t => Math.abs(t - p.theme)));
+    const near = f.periods.slice().sort((a, b) => dist(a) - dist(b))[0];
+    timing = `언제가 좋은가 — 당신의 다섯 구간은 지금 「${flowSig}」의 결을 지납니다. 이 질문(${cat.label})과 정면으로 겹치는 창은 아직 없지만, 결이 가장 가까운 건 <b>${PERIOD_META[near.key].kr}</b>(${pStamp(near)})입니다 — 급하게 정하기보다 이 구간을 기점으로 준비를 쌓으세요. 올해 운의 큰 키워드는 「${THEMES[f.periods[4].theme].name}」이니, 그쪽에 가까운 준비일수록 흐름과 맞습니다.`;
+  }
 
   return {cat, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt}, sajuLine, astroLine, numLine, timing,
     tpKr: tp ? PERIOD_META[tp.key].kr : null, tpTheme: tp ? THEMES[tp.theme].name : null};
@@ -2360,6 +2400,36 @@ function finishDraw() {
       <span class="vd">열린 물음이라 예/아니오 대신 방향으로 답합니다 — 당신에게 ${relName}의 자리입니다</span></span>
     </div>`;
     advLine = `${relDesc}. 구체적인 '어떻게'는 세 패의 본문 — 특히 길목 자리(${picks[1].name}) — 에 있습니다.`;
+  } else if (qt.t === 'info') {
+    /* 행운의 색·숫자·방위 — 명식에서 가장 옅은 오행을 채우는 값으로 답한다 */
+    const wel = ELEMENTS[myWeak];
+    const INFO = {
+      color: {val: EL_COLOR[myWeak],
+        t: `당신의 행운색은 ${EL_COLOR[myWeak]}입니다`,
+        d: `명식에 가장 옅은 ${wel.k}(${wel.h}) 기운을 채우는 색 — 옷 · 소품 · 공간에 곁들이면 막힌 흐름이 트입니다`,
+        adv: `오늘 뽑은 세 패의 중심은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) 기운입니다 — ${EL_COLOR[myWeak]}을 바탕으로 두되 ${EL_COLOR[domEl]} 계열을 한 점 더하면 그날의 결까지 맞출 수 있습니다.`},
+      dir: {val: EL_DIR[myWeak],
+        t: `당신의 행운 방위는 ${EL_DIR[myWeak]}입니다`,
+        d: `${wel.k}(${wel.h})에 배속된 방위 — 자리를 고르거나 길을 정할 여지가 있을 때 이 방향을 등지지 말고 바라보세요`,
+        adv: `책상이나 잠자리의 머리를 ${EL_DIR[myWeak]} 쪽으로 두면 옅은 ${wel.k} 기운이 하루 내내 채워집니다.`},
+      num: {val: EL_NUM[myWeak],
+        t: `당신의 행운 숫자는 ${EL_NUM[myWeak]}입니다`,
+        d: `${wel.k}(${wel.h})에 배속된 수 — 번호 · 날짜 · 개수를 고를 여지가 있을 때 이 수에 손이 가면 흐름과 맞습니다`,
+        adv: `끝자리 패(${picks[2].name})가 마무리에 닿는 자리이니, 매듭지어야 할 일의 날짜를 ${EL_NUM[myWeak]}에 맞춰보세요.`},
+      food: {val: EL_TASTE[myWeak],
+        t: `오늘은 ${EL_TASTE[myWeak]}이 당신을 채웁니다`,
+        d: `명식에 가장 옅은 ${wel.k}(${wel.h}) 기운은 ${EL_TASTE[myWeak]}으로 보(補)합니다 — ${EL_FOOD[myWeak][0]} 쪽이 잘 맞습니다`,
+        adv: `끌리는 대로 고르되 ${EL_FOOD[myWeak][1]}에 손이 가면 몸과 흐름이 함께 편해집니다.`},
+    };
+    const inf = INFO[qt.k];
+    const vhStyle = inf.val.length > 4 ? ' style="font-size:20px;white-space:normal;line-height:1.2"' : '';
+    verdictHTML = `
+    <div class="averdict">
+      <span class="vh el-${wel.cls}"${vhStyle}>${inf.val}</span>
+      <span><span class="vt">${inf.t}</span><br>
+      <span class="vd">${inf.d}</span></span>
+    </div>`;
+    advLine = inf.adv;
   } else if (qt.neg) {
     const doIt = score >= 2;
     verdictHTML = `
@@ -2383,7 +2453,7 @@ function finishDraw() {
     <p class="aq">물음 · <b>${esc(q)}</b></p>
     ${verdictHTML}
     <span class="acat">${ev.cat.label}</span>
-    ${whyBlock(ev, picks, polSum, total)}
+    ${qt.t === 'info' ? infoWhyBlock(myWeak, R) : whyBlock(ev, picks, polSum, total)}
     <div class="spread3">${spots}</div>
     ${intro}
     ${passages}
@@ -2529,6 +2599,7 @@ function renderSynth(saju, astro, num) {
     `태어난 순간의 여덟 글자(사주)는 당신을 <b style="color:var(--gold-soft)">${ILGAN_SHORT[dk.k]}</b>${jRo(ILGAN_SHORT[dk.k])},<br>` +
     `태어난 날의 하늘(별자리)은 <b style="color:var(--gold-soft)">${SIGNS[astro.sun.sign].k}</b>${jRo(SIGNS[astro.sun.sign].k)},<br>` +
     `생년월일을 전부 더한 수(수비학)는 <b style="color:var(--gold-soft)">${lp.t}</b>${jRo(lp.t)} 읽었습니다.<br>` +
+    `<span style="display:block;margin-top:10px;font-size:13px;color:var(--muted);line-height:1.65">쉽게 말하면, 사주가 본 당신은 — ${ILGAN_PLAIN[dk.k]}.</span>` +
     `<span style="font-size:12px;color:var(--dim)">이 세 가지가 전부 겹치는 사람은 사실상 없습니다 — 이 리딩은 당신에게만 놓입니다.</span>`;
 
   /* 태그 투표 */
@@ -3106,7 +3177,9 @@ function renderSaju(s, time, inp, astro, num) {
   $('#ilganTitle').textContent = `일간 ${dk.k}(${dk.h}) — 당신이라는 재료`;
   const sunSign = astro.sun.sign;
   const [ilRel, ilRelDesc] = elRelation(ZOD2EL[sunSign % 4], dk.el);
-  $('#ilganDesc').innerHTML = ILGAN_TEXT[dk.k] +
+  $('#ilganDesc').innerHTML =
+    `<span style="display:block;margin-bottom:10px;color:var(--muted)">한마디로 — ${ILGAN_PLAIN[dk.k]}.</span>` +
+    ILGAN_TEXT[dk.k] +
     `<br><br><b style="color:var(--gold-soft)">같은 ${dk.k} 일간과 갈라지는 지점</b> — 태양 ${SIGNS[sunSign].k}의 ${ZOD_EL[sunSign % 4]} 기운은 이 일간에게 ${ilRel}의 자리입니다. ${ilRelDesc}. 여기에 라이프패스 ${num.lifePath}(${NUM_ESSENCE[num.lifePath].t})의 과제까지 얹히면, 같은 재료라도 당신만의 결로 구워집니다.`;
 
   const gods = new Set();
