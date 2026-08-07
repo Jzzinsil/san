@@ -231,6 +231,7 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .mface + .mface{border-left:1px dashed var(--line)}
 .mface .mfh{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
 .mface .mft{font-family:var(--serif);font-size:18.5px;font-weight:600;margin:6px 0 4px}
+.mface .mone{font-family:var(--serif);font-size:14.5px;color:var(--ink);line-height:1.65;margin:2px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--hairline)}
 .mface .mline{font-size:13px;line-height:1.75;margin-top:9px}
 .mface .msrc,.mcore .msrc{display:block;font-size:11px;color:var(--dim);margin-top:10px}
 .mgap{margin-top:14px;background:var(--ink);padding:16px 18px}
@@ -473,7 +474,7 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .combo b{color:var(--ink);font-weight:700}
 /* 인생 지도 */
 .lg-wrap{overflow-x:auto;margin:16px 0 4px}
-.lg-svg{display:block;width:100%;min-width:560px;height:auto}
+.lg-svg{display:block;width:100%;min-width:460px;height:auto}
 .daeun-list{margin-top:12px;display:flex;flex-direction:column}
 .daeun-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:8px 8px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--hairline)}
 .daeun-row .dage{min-width:66px;color:var(--dim);letter-spacing:.02em}
@@ -486,6 +487,16 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .country{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;border-left:2px solid var(--accent);padding:2px 0 2px 12px}
 .country .cflag{font-family:var(--serif);font-size:15.5px;color:var(--ink);white-space:nowrap}
 .country .cwhy{flex:1;min-width:220px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.yrblock{margin-top:16px;padding-top:14px;border-top:1px solid var(--hairline)}
+.yrblock:first-of-type{border-top:none;margin-top:10px}
+.yrhead{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink)}
+.yrflow{font-size:12px;color:var(--dim);margin-top:3px}
+.yrcats{margin-top:10px;display:flex;flex-direction:column;gap:2px}
+.yrcat{display:grid;grid-template-columns:88px 62px 1fr;gap:8px;align-items:baseline;padding:6px 0;border-top:1px solid var(--hairline);font-size:12.5px}
+.yrcat .yck{font-weight:600;color:var(--ink)}
+.yrcat .ycr{font-size:12px;white-space:nowrap}
+.yrcat .ycl{color:var(--muted);line-height:1.55}
+@media(max-width:560px){.yrcat{grid-template-columns:76px 56px 1fr;gap:6px}}
 .atiming{margin-top:14px;padding-top:12px;border-top:1px solid var(--hairline);font-size:13.5px;color:var(--text)}
 .atiming::before{content:"時 ";font-family:var(--serif);color:var(--accent)}
 
@@ -704,6 +715,8 @@ gtag('config', 'G-L7QPQ5GGL7');
         <div id="synthLayers"></div>
       </div>
       <div id="synthTraits"></div>
+      <div class="card" id="synthPlace"></div>
+      <div class="card" id="synthPartner"></div>
     </section>
 
     <!-- ============ 운세 ============ -->
@@ -797,6 +810,8 @@ gtag('config', 'G-L7QPQ5GGL7');
       <h2 class="sec-title">인생 지도</h2>
       <p class="sec-desc">태어난 순간 정해진 10년 단위의 큰 흐름(대운)과 해마다 바뀌는 기운(세운)을 겹쳐, 지나온 길과 다가올 길을 한 장에 펼칩니다.</p>
       <div class="card" id="lifeGraph"></div>
+      <div class="card" id="lifeYears"></div>
+      <div class="card" id="lifePush"></div>
       <div class="card" id="lifePhases"></div>
       <div class="card" id="lifeCountry"></div>
     </section>
@@ -877,7 +892,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.8.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.9.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1623,6 +1638,32 @@ const EL_COUNTRY = [
     ['네덜란드', '온 나라가 물과 함께 사는 땅 — 수 기운이 당신의 유연함과 흐름을 살립니다'],
     ['핀란드', '호수와 숲, 고요의 나라 — 수 기운 속에서 마음이 맑게 가라앉고 새 답이 떠오릅니다']]}
 ];
+/* 통합리딩 — 결이 같은(가장 강한 오행) 장소: 대륙 · 나라 · 도시 (후보 풀에서 개인 시드로 선택) */
+const EL_PLACE = [
+  {con:'아시아 · 오세아니아', countries:['일본','뉴질랜드','태국'], cities:['교토','오클랜드','치앙마이','타이베이'], why:'숲 · 정원 · 성장의 리듬이 흐르는'},
+  {con:'남유럽 · 라틴아메리카', countries:['스페인','이탈리아','멕시코'], cities:['바르셀로나','리스본','로마','멕시코시티'], why:'햇빛과 열정, 표현이 넘치는'},
+  {con:'중부 유럽', countries:['스위스','독일','오스트리아'], cities:['취리히','뮌헨','비엔나','이스탄불'], why:'단단한 질서와 안정이 흐르는'},
+  {con:'북미 · 서유럽', countries:['미국','영국','프랑스'], cities:['뉴욕','런던','파리','시카고'], why:'명료한 시스템과 성취의 리듬이 있는'},
+  {con:'북유럽', countries:['네덜란드','노르웨이','핀란드'], cities:['암스테르담','오슬로','헬싱키','코펜하겐'], why:'물과 사색이 흐르는 고요한'}
+];
+const LP_STAY = {1:'거점을 세우고 주도하는', 2:'사람과 어울려 뿌리내리는', 3:'표현하고 나누며 즐기는', 4:'오래 정착해 쌓는', 5:'허브 · 환승 도시에서 자유롭게 오가는', 6:'돌보고 가꾸며 머무는', 7:'조용한 소도시에서 사색하는', 8:'큰 무대에서 성취하는', 9:'넓게 품고 순환하는', 11:'영감을 좇아 옮겨 다니는', 22:'크게 짓고 남기는', 33:'베풀며 뿌리내리는'};
+/* 통합리딩 — 부족한 오행을 채워주는 이상적 연인의 기질 (index = 가장 옅은 오행) */
+const PARTNER_EL = [
+  '곧고 앞으로 나아가는 힘을 가진',
+  '밝고 표현이 풍부해 온기를 나누는',
+  '묵직하고 한결같아 기댈 수 있는',
+  '분명하고 원칙 있어 기준을 세워주는',
+  '깊고 잘 들어주며 유연하게 감싸는'
+];
+const PARTNER_WHY = [
+  '새로운 시작을 두려워하지 않고, 망설이는 당신의 등을 밀어줍니다',
+  '감정을 숨기지 않고, 당신의 세계를 환하게 데워줍니다',
+  '흔들리는 날에도 중심을 잡아주어, 당신이 안심하고 쉴 수 있습니다',
+  '당신이 흐릿할 때 결단과 기준을 세워주는 단단함이 있습니다',
+  '조급한 당신을 가라앉히는 여유와 지혜로, 물처럼 감싸줍니다'
+];
+/* 라이프패스 궁합(대략) */
+const LP_MATCH = {1:[3,5,6],2:[6,8,9],3:[1,5,7],4:[6,7,8],5:[1,3,7],6:[1,2,9],7:[3,4,5],8:[2,4,6],9:[2,3,6],11:[2,6,8],22:[4,6,8],33:[2,6,9]};
 const EL_FOOD = [
   ['푸른 잎채소 · 신 과일', '식초 · 레몬처럼 신 기운이 도는 음식'],   /* 목 */
   ['쓴 나물 · 붉은 음식 · 따뜻한 국물', '쓴맛과 열이 도는 음식'],     /* 화 */
@@ -2306,7 +2347,7 @@ function render(inp) {
   renderNumer(num, nameForNum, now.getFullYear(), saju, astro);
   renderRoots(inp, saju, num, now);
   renderReport(inp, saju, astro, num, fortune);
-  renderLife(inp, saju, astro, age);
+  renderLife(inp, saju, astro, num, age, now.getFullYear());
   showTab('synth');
 }
 
@@ -2653,7 +2694,6 @@ function renderSynth(saju, astro, num) {
     `태어난 순간의 여덟 글자(사주)는 당신을 <b style="color:var(--gold-soft)">${ILGAN_SHORT[dk.k]}</b>${jRo(ILGAN_SHORT[dk.k])},<br>` +
     `태어난 날의 하늘(별자리)은 <b style="color:var(--gold-soft)">${SIGNS[astro.sun.sign].k}</b>${jRo(SIGNS[astro.sun.sign].k)},<br>` +
     `생년월일을 전부 더한 수(수비학)는 <b style="color:var(--gold-soft)">${lp.t}</b>${jRo(lp.t)} 읽었습니다.<br>` +
-    `<span style="display:block;margin-top:10px;font-size:13px;color:var(--muted);line-height:1.65">쉽게 말하면, 사주가 본 당신은 — ${ILGAN_PLAIN[dk.k]}.</span>` +
     `<span style="font-size:12px;color:var(--dim)">이 세 가지가 전부 겹치는 사람은 사실상 없습니다 — 이 리딩은 당신에게만 놓입니다.</span>`;
 
   /* 태그 투표 */
@@ -2696,6 +2736,34 @@ function renderSynth(saju, astro, num) {
   }
   $('#synthTraits').innerHTML = html;
 
+  /* 어울리는 장소 — 강한 오행(대륙) × 둘째 오행(나라) × 태양원소(온도) × 라이프패스(머무는 방식) + 개인 시드(도시) */
+  const descEl = saju.counts.map((c, i) => ({c, i})).sort((a, b) => b.c - a.c);
+  const domEl = descEl[0].i, secondEl = descEl[1].i, domC = descEl[0].c;
+  const sunEl = astro.sun.sign % 4;
+  const seed = saju.dayIdx60 + num.lifePath + astro.moon.sign;
+  const pl = EL_PLACE[domEl], plS = EL_PLACE[secondEl];
+  const city = pl.cities[seed % pl.cities.length];
+  const city2 = pl.cities[(seed + 2) % pl.cities.length];
+  const country = pl.countries[seed % pl.countries.length];
+  const country2 = pl.countries[(seed + 1) % pl.countries.length];
+  $('#synthPlace').innerHTML = `<h3>당신과 어울리는 곳 — 대륙 · 나라 · 도시</h3>`
+    + `<p class="small">세 하늘이 겹쳐 그린 당신의 중심 기운은 <b>${ELEMENTS[domEl].k}(${domC}자)</b>, 곁을 받치는 기운은 <b>${ELEMENTS[secondEl].k}</b>입니다 — 이 둘이 겹쳐 ${pl.why} 땅이 당신과 공명합니다.</p>`
+    + `<div class="lucky"><span>대륙 · ${pl.con}</span><span>나라 · ${country} · ${country2}</span><span>도시 · ${city}${city2 !== city ? ' · ' + city2 : ''}</span></div>`
+    + `<p class="small" style="margin-top:12px">${dk.k} 일간의 <b>${ILGAN_SHORT[dk.k]}</b>(곧 ${ILGAN_PLAIN[dk.k]}) 기질에, 태양 ${SIGNS[astro.sun.sign].k}의 ${ZOD_EL[sunEl]} 같은 온도, 그리고 ${LP_STAY[num.lifePath]} 라이프패스 ${num.lifePath}(${lp.t})의 방식 — 이 셋이 가장 편히 놓이는 도시가 <b>${city}</b>입니다. 여행지나 오래 머물 곳을 고를 때 참고하세요.</p>`;
+
+  /* 어울리는 연인 — 약한 오행 × 둘째 약한 오행 × 태양 보색원소 × 라이프패스 궁합 + 영혼수 */
+  const ascEl = saju.counts.map((c, i) => ({c, i})).sort((a, b) => a.c - b.c);
+  const weakEl = ascEl[0].i, secondWeakEl = ascEl[1].i;
+  const compEl = {0:2, 2:0, 1:3, 3:1}[sunEl];
+  const lpm = LP_MATCH[num.lifePath] || [];
+  $('#synthPartner').innerHTML = `<h3>당신과 가장 행복할 연인 — 세 하늘이 그리는 상대</h3>`
+    + `<p style="font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:4px"><b style="color:var(--gold-soft)">${PARTNER_EL[weakEl]}</b> 사람 — ${PARTNER_WHY[weakEl]}. 여기에 <b>${ELEMENTS[secondWeakEl].k}</b>의 결${num.name ? `, 그리고 당신이 속으로 갈망하는 <b>${NUM_ESSENCE[num.name.soulUrge].k}</b>를 애쓰지 않고 사는 면모` : ''}까지 지녔다면 더 깊이 맞습니다.</p>`
+    + `<div class="combo"><b>왜 이 사람과 가장 행복한가 — 세 갈래의 근거</b><br>`
+    + `<b>사주</b> · 당신 명식에 가장 옅은 <b>${ELEMENTS[weakEl].k}(${ELEMENTS[weakEl].h})</b> 기운을 이 사람이 지니고 있어, 함께일 때 비로소 다섯 기운이 균형을 이룹니다. 부족을 서로 채우는 관계가 가장 오래 갑니다.<br>`
+    + `<b>별자리</b> · 태양 ${SIGNS[astro.sun.sign].k}의 <b>${ZOD_EL[sunEl]}</b> 기운에는 <b>${ZOD_EL[compEl]}</b>의 사람이 밀고 당기기 좋습니다 — ${ZOD_EL_TEXT[compEl]} 상대가 당신의 온도와 어우러집니다.<br>`
+    + `<b>수비학</b> · 라이프패스 ${num.lifePath}(${lp.t})인 당신과는 ${lpm.length ? `라이프패스 <b>${lpm.join(' · ')}</b>의 사람과 특히 결이 잘 맞습니다` : '서로의 과제를 재촉하지 않는 사람이 잘 맞습니다'} — 당신의 인생 과제를 함께 걸어줄 사람입니다.</div>`
+    + `<p class="small">그런 사람 곁에서 당신은 억지로 애쓰지 않아도 부족한 자리가 채워지고, 가장 당신다운 모습으로 행복할 수 있습니다.</p>`;
+
   /* 거울 — 남이 보는 나 · 내가 아는 나 */
   const mTg = tenGod(saju.day.stem, saju.month.stem);
   const outer = [`사주 월간(태어난 달의 하늘 글자) <b>${mTg}</b> — 사회라는 무대에서 자주 쓰게 되는 역할의 가면: ${TENGOD_DESC[mTg]}`];
@@ -2705,22 +2773,30 @@ function renderSynth(saju, astro, num) {
   const outerSrc = '사주 월간' + (astro.rising ? ' + 상승 별자리' : '') + (num.name ? ' + 이름의 자음' : '');
   const inner = [`달 ${SIGNS[astro.moon.sign].k} — ${MOON_TEXT[astro.moon.sign]}`];
   if (num.name) inner.push(`영혼수 ${num.name.soulUrge} — 내면 깊은 곳은 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망합니다.`);
-  inner.push(`일간 ${dk.k}(${dk.h}) — ${ILGAN_SHORT[dk.k]}, 이것이 마음의 바탕 재료입니다.`);
+  inner.push(`일간 ${dk.k}(${dk.h}) — ${ILGAN_SHORT[dk.k]}. 곧 ${ILGAN_PLAIN[dk.k]}, 이것이 마음의 바탕 재료입니다.`);
   const innerSrc = '달 별자리' + (num.name ? ' + 이름의 모음' : '') + ' + 사주 일간';
+  /* 각 면 한 줄 요약 — 세 체계 교집합으로 사람마다 다르게 */
+  const outerOne = `세상에는 ${TG_NICK[mTg]}의 얼굴로 서고${astro.rising ? `, ${SIGNS[astro.rising.sign].k}의 첫인상으로 다가가` : (num.name ? `, ${NUM_ESSENCE[num.name.personality].k}의 인상을 남기` : '')}는 사람.`;
+  const innerOne = `${SIGNS[astro.moon.sign].k} 달의 ${SIGN_ESSENCE[astro.moon.sign]}${num.name ? `, 속으로는 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망하는` : ''} — 그 바탕은 결국, ${ILGAN_PLAIN[dk.k]}.`;
   const coreText = `${ILGAN_SHORT[dk.k]}의 기질 위에 ${SIGNS[astro.sun.sign].k}의 정체성, 그리고 ${NUM_ESSENCE[num.lifePath].t}(${num.lifePath})의 인생 과제가 놓여 있습니다.`;
 
-  /* 간극 읽기 — 겉과 속의 원소 관계 + 결의 겹침 */
+  /* 간극 읽기 — 겉/속 별자리 원소 + 일간 오행 + 명식 편중 + 이름수 낙차로 개인화 */
+  const dkElName = `${ELEMENTS[dk.el].k}(${ELEMENTS[dk.el].h})`;
+  const maxC = Math.max(...saju.counts), minC = Math.min(...saju.counts), spread = maxC - minC;
+  const spreadWord = spread >= 4 ? '넓고 깊게' : spread >= 2 ? '뚜렷하게' : '좁고 잔잔하게';
   let gap;
   if (astro.rising) {
     const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
-    gap = oe === ie
-      ? `상승과 달이 같은 ${ZOD_EL[oe]}의 원소 — 겉과 속의 온도가 같아, 보이는 대로의 사람에 가깝습니다.`
+    const relWord = oe === ie
+      ? `겉과 속이 같은 ${ZOD_EL[oe]}의 온도라 보이는 대로에 가깝지만`
       : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
-      ? `겉(${ZOD_EL[oe]})이 속(${ZOD_EL[ie]})을 자연스럽게 통역해주는 상생의 배치 — 오해받는 일이 적은 편입니다.`
-      : `겉은 ${ZOD_EL[oe]}, 속은 ${ZOD_EL[ie]} — 온도차가 있는 배치라 "알고 보니 다른 사람"이라는 말을 듣는 타입입니다. 간극은 결함이 아니라 깊이입니다.`;
+      ? `겉(${ZOD_EL[oe]})이 속(${ZOD_EL[ie]})을 자연스럽게 통역해줘 오해는 적지만`
+      : `겉(${ZOD_EL[oe]})과 속(${ZOD_EL[ie]})의 온도가 달라 "알고 보니 다른 사람" 소리를 듣지만`;
+    gap = `겉은 상승 ${SIGNS[astro.rising.sign].k}의 ${ZOD_EL[oe]}(${astro.rising.deg}°), 속은 달 ${SIGNS[astro.moon.sign].k}의 ${ZOD_EL[ie]}(${astro.moon.deg}°) — ${relWord}, 그 밑바탕에 깔린 마음의 재료는 일간 ${dk.k}(${dk.h}), 오행으로 ${dkElName}입니다. 명식의 기운이 ${maxC}대 ${minC}로 기울어, 겉과 속의 간극은 ${spreadWord} 벌어집니다.`;
   } else {
-    gap = `첫인상의 층(상승궁)은 태어난 시간이 있어야 온전히 읽힙니다 — 지금은 사주 월간의 가면과 마음의 층으로 짚었습니다.`;
+    gap = `첫인상의 층(상승궁)은 태어난 시간이 있어야 온전히 읽힙니다. 대신 사주 월간 ${mTg}(${TG_NICK[mTg]})의 가면과, 달 ${SIGNS[astro.moon.sign].k}(${astro.moon.deg}°)의 속마음, 그 바탕의 일간 ${dk.k} ${dkElName}로 짚었습니다. 명식이 ${maxC}대 ${minC}로 기운 만큼, 그 층차도 ${spreadWord} 드러납니다.`;
   }
+  if (num.name) gap += ` 성격수 ${num.name.personality}와 영혼수 ${num.name.soulUrge}의 낙차만큼, 보이는 얼굴과 진짜 결 사이엔 방 ${Math.abs(num.name.personality - num.name.soulUrge) || 1}칸이 있는 셈입니다.`;
   const outTags = new Set([...(astro.rising ? SIGN_TAGS[astro.rising.sign] : []), ...(num.name ? NUM_TAGS[num.name.personality] : [])]);
   const inTags = new Set([...SIGN_TAGS[astro.moon.sign], ...(num.name ? NUM_TAGS[num.name.soulUrge] : [])]);
   const shared = [...outTags].filter(t => inTags.has(t));
@@ -2737,12 +2813,14 @@ function renderSynth(saju, astro, num) {
       <div class="mface">
         <p class="mfh">Mirror · 거울 밖</p>
         <p class="mft">남이 보는 나</p>
+        <p class="mone">${outerOne}</p>
         ${outer.map(x => `<p class="mline">${x}</p>`).join('')}
         <span class="msrc">근거 · ${outerSrc}</span>
       </div>
       <div class="mface">
         <p class="mfh">Mirror · 거울 안</p>
         <p class="mft">내가 아는 나</p>
+        <p class="mone">${innerOne}</p>
         ${inner.map(x => `<p class="mline">${x}</p>`).join('')}
         <span class="msrc">근거 · ${innerSrc}</span>
       </div>
@@ -3742,7 +3820,19 @@ function renderNumer(n, usedName, curYear, saju, astro) {
 
 /* 탭 전환 — 결과를 섹션별 개별 페이지로 */
 /* ---------- 인생 지도 — 대운(10년) · 세운(1년) 흐름 + 역마 나라 ---------- */
-function renderLife(inp, saju, astro, age) {
+const YEAR_CATS = [
+  {k:'연애운', pos:['정재','편재','정관','편관'], area:'인연'},
+  {k:'재물운', pos:['정재','편재','식신','상관'], area:'재물'},
+  {k:'일·커리어운', pos:['정관','편관','정인'], area:'일'},
+  {k:'건강운', pos:['비견','겁재','정인','편인'], area:'건강'}
+];
+const YEAR_TIP = {
+  3: ['적극적으로 움직일수록 결과가 큽니다', '먼저 손 내미는 쪽이 이깁니다', '기회가 오면 망설이지 마세요'],
+  2: ['무리하지 않으면 무난히 흐릅니다', '작게 시작해 지켜보세요', '속도보다 방향을 챙기세요'],
+  1: ['벌이기보다 지키는 편이 낫습니다', '성급한 결정은 미루세요', '몸과 마음을 먼저 챙기세요']
+};
+const groupOf12 = b => [8, 0, 4].includes(b) ? 0 : [2, 6, 10].includes(b) ? 1 : [5, 9, 1].includes(b) ? 2 : 3;
+function renderLife(inp, saju, astro, num, age, curYear) {
   const dayStem = saju.day.stem;
   const mStem = saju.month.stem, mBranch = saju.month.branch;
   const birthY = inp.y;
@@ -3784,44 +3874,58 @@ function renderLife(inp, saju, astro, age) {
     pts.push({a, score: dRate * 2 + seRate});
   }
 
-  /* ---- SVG ---- */
-  const W = 920, H = 300, mL = 12, mR = 12, mT = 30, mB = 34;
-  const pw = W - mL - mR, ph = H - mT - mB;
-  const X = a => mL + (a / AGE_MAX) * pw;
-  const Y = s => mT + (9 - s) / 6 * ph;
-  let bands = '';
-  phases.forEach((p, i) => {
-    const x0 = X(Math.max(0, p.from)), x1 = X(Math.min(AGE_MAX, p.to + 1));
-    if (x1 <= x0) return;
-    bands += `<rect x="${x0.toFixed(1)}" y="${mT}" width="${(x1 - x0).toFixed(1)}" height="${ph}" fill="var(--ink)" opacity="${i % 2 ? 0.05 : 0.02}"/>`;
-    bands += `<line x1="${x0.toFixed(1)}" y1="${mT}" x2="${x0.toFixed(1)}" y2="${mT + ph}" stroke="var(--hairline)" stroke-width="1"/>`;
-    if (x1 - x0 > 46) bands += `<text x="${((x0 + x1) / 2).toFixed(1)}" y="${(mT + 13).toFixed(1)}" text-anchor="middle" font-size="10" fill="var(--dim)">${STEMS[p.st].k}${BRANCHES[p.br].k}·${TG_NICK[p.tg]}</text>`;
-  });
-  const midY = Y(6).toFixed(1);
-  const lineD = pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.a).toFixed(1)},${Y(p.score).toFixed(1)}`).join(' ');
-  const areaD = `M${X(0).toFixed(1)},${(mT + ph).toFixed(1)} ` + pts.map(p => `L${X(p.a).toFixed(1)},${Y(p.score).toFixed(1)}`).join(' ') + ` L${X(AGE_MAX).toFixed(1)},${(mT + ph).toFixed(1)} Z`;
-  const cur = pts[Math.min(AGE_MAX, Math.max(0, age))];
-  const cx = X(cur.a).toFixed(1), cy = Y(cur.score).toFixed(1);
-  const curAnchor = cur.a < 6 ? 'start' : cur.a > AGE_MAX - 6 ? 'end' : 'middle';
-  let axis = '';
-  for (let a = 0; a <= 80; a += 10) axis += `<text x="${X(a).toFixed(1)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="var(--dim)">${a}</text>`;
-  axis += `<text x="${X(AGE_MAX).toFixed(1)}" y="${H - 12}" text-anchor="end" font-size="10" fill="var(--dim)">세</text>`;
-  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="나이별 대운·세운 흐름 그래프">`
-    + bands
-    + `<line x1="${mL}" y1="${midY}" x2="${W - mR}" y2="${midY}" stroke="var(--hairline)" stroke-dasharray="3 4"/>`
-    + `<path d="${areaD}" fill="var(--accent)" opacity="0.09"/>`
-    + `<path d="${lineD}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>`
-    + `<line x1="${cx}" y1="${mT}" x2="${cx}" y2="${mT + ph}" stroke="var(--gold-soft)" stroke-width="1.5"/>`
-    + `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--gold-soft)"/>`
-    + `<text x="${cx}" y="${mT - 10}" text-anchor="${curAnchor}" font-size="10.5" font-weight="600" fill="var(--gold-soft)">지금 ${age}세</text>`
-    + `<text x="${mL + 2}" y="${mT + 10}" font-size="9.5" fill="var(--dim)">순풍</text>`
-    + `<text x="${mL + 2}" y="${mT + ph - 3}" font-size="9.5" fill="var(--dim)">역풍</text>`
-    + axis + `</svg></div>`;
+  /* 인생 피크 · 저점 — 10년(대) 단위 평균 점수 (10~80대) */
+  const decades = [];
+  for (let dd = 10; dd <= 80; dd += 10) {
+    const seg = pts.filter(q => q.a >= dd && q.a < dd + 10);
+    decades.push({d: dd, avg: seg.reduce((s, q) => s + q.score, 0) / seg.length});
+  }
+  const peakD = decades.reduce((a, b) => b.avg > a.avg ? b : a);
+  const valD = decades.reduce((a, b) => b.avg < a.avg ? b : a);
+  const peakDaeunTg = tenGod(dayStem, mod(mStem + stepAt(peakD.d + 5), 10));
 
-  $('#lifeGraph').innerHTML = `<h3>인생 흐름 — 대운과 세운</h3>`
-    + `<p class="small">위로 오를수록 기운이 밀어주는 시기, 아래로 내려갈수록 스스로 버티며 힘을 기르는 시기입니다. 굵은 10년 구간이 대운(큰 흐름), 그 안의 잔물결이 세운(그 해의 기운)입니다.</p>`
+  /* ---- 인생 차트 (Bar San 스타일 — 10년마다 운의 세기를 점 하나로) ---- */
+  const W = 640, rowH = 34, headTop = 42, padB = 10;
+  const H = headTop + decades.length * rowH + padB;
+  const xL = 132, xR = W - 24, lineW = xR - xL;
+  const curDecade = Math.min(80, Math.max(10, Math.floor(age / 10) * 10));
+  const posOf = av => Math.max(0, Math.min(1, (av - 3) / 6));
+  const tickMarks = [0, .25, .5, .75, 1].map(t => {
+    const tx = (xL + t * lineW).toFixed(1);
+    return `<line x1="${tx}" y1="-4" x2="${tx}" y2="4" stroke="var(--hairline)" stroke-width="1"/>`;
+  }).join('');
+  let rowsSvg = '';
+  decades.forEach((r, i) => {
+    const y = headTop + i * rowH + rowH / 2;
+    const tg = tenGod(dayStem, mod(mStem + stepAt(r.d + 5), 10));
+    const isPeak = r.d === peakD.d && peakD.d !== valD.d;
+    const isNow = r.d === curDecade;
+    const dotColor = isPeak ? 'var(--accent)' : isNow ? 'var(--gold-soft)' : 'var(--ink)';
+    const dx = (xL + posOf(r.avg) * lineW).toFixed(1);
+    const tag = isPeak && isNow ? `<text x="${xR}" y="-9" text-anchor="end" font-size="9" font-weight="700" letter-spacing="1.5" fill="var(--accent)">PEAK · NOW</text>`
+      : isPeak ? `<text x="${xR}" y="-9" text-anchor="end" font-size="9" font-weight="700" letter-spacing="1.5" fill="var(--accent)">PEAK</text>`
+      : isNow ? `<text x="${xR}" y="-9" text-anchor="end" font-size="9" font-weight="700" letter-spacing="1.5" fill="var(--gold-soft)">NOW · ${age}세</text>` : '';
+    rowsSvg += `<g transform="translate(0,${y.toFixed(1)})">`
+      + `<text x="8" y="4.5" font-size="14.5" font-weight="600" fill="var(--ink)">${r.d}대</text>`
+      + `<text x="60" y="4" font-size="11" fill="var(--dim)">${TG_NICK[tg]}</text>`
+      + `<line x1="${xL}" y1="0" x2="${xR}" y2="0" stroke="var(--line)" stroke-width="1"/>`
+      + tickMarks
+      + `<rect x="${(dx - 4.5)}" y="-4.5" width="9" height="9" fill="${dotColor}"/>`
+      + tag + `</g>`;
+  });
+  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="10년(대)마다 운의 세기 차트">`
+    + `<text x="${xL}" y="26" font-size="9.5" letter-spacing="1.5" fill="var(--dim)">버티며 힘 기르는 때</text>`
+    + `<text x="${xR}" y="26" text-anchor="end" font-size="9.5" letter-spacing="1.5" fill="var(--dim)">기운이 미는 때</text>`
+    + rowsSvg + `</svg></div>`;
+
+  const peakLine = peakD.d !== valD.d
+    ? `<div class="combo" style="margin-top:12px"><b>한눈에 — 인생 피크는 ${peakD.d}대</b><br>${peakD.d}세부터의 10년, ${peakDaeunTg}(${TG_NICK[peakDaeunTg]}) 대운이 미는 <b>${THEMES[TG_THEME[peakDaeunTg]].name}</b>의 기운이 절정에 이릅니다 — 인생에서 가장 크게 벌이고 거두기 좋은 때입니다. 반대로 <b>${valD.d}대</b>는 곡선이 가장 낮게 흐르는 구간 — 새로 벌이기보다 힘을 아끼고 뿌리를 내리며 다음 상승을 준비하는 때입니다.</div>`
+    : `<div class="combo" style="margin-top:12px"><b>한눈에 — 고르게 흐르는 인생</b><br>어느 10년이 유독 튀지 않고 전 생애가 비슷한 온도로 흐릅니다 — 큰 부침 없이 자기 페이스로 멀리 가는 유형입니다.</div>`;
+  $('#lifeGraph').innerHTML = `<h3>인생 흐름 — 10년마다의 운</h3>`
+    + `<p class="small">한 줄이 인생의 10년입니다. 점이 <b>오른쪽</b>에 있을수록 기운이 크게 미는 시기, <b>왼쪽</b>일수록 스스로 힘을 기르는 시기 — 옆의 작은 글자는 그 10년을 이끄는 대운의 기운입니다. <b style="color:var(--accent)">붉은 점(PEAK)</b>이 인생의 정점, <b style="color:var(--gold-soft)">금색 점(NOW)</b>이 지금입니다.</p>`
+    + peakLine
     + svg
-    + `<p class="small" style="margin-top:6px">금색 세로선이 지금의 나이(${age}세)입니다. 대운수 <b>${startAge}</b> — 당신의 큰 흐름은 ${startAge}세부터 10년마다 바뀝니다 (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준).</p>`;
+    + `<p class="small" style="margin-top:8px">대운수 <b>${startAge}</b> — 당신의 큰 흐름은 ${startAge}세부터 10년마다 바뀝니다 (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준).</p>`;
 
   /* 대운 국면 해설 */
   const nowIdx = phases.findIndex(p => age >= p.from && age <= p.to);
@@ -3835,6 +3939,61 @@ function renderLife(inp, saju, astro, age) {
     + `<p class="small">0~${startAge}세는 태어난 달의 기운(월주 ${STEMS[mStem].k}${BRANCHES[mBranch].k})이 감쌉니다. 이후 ${forward ? '순행' : '역행'}으로 10년씩 국면이 바뀝니다.</p>`
     + `<div class="daeun-list">${rows}</div>`
     + (nowIdx >= 0 ? `<div class="combo"><b>지금 이 국면 (${phases[nowIdx].from}~${phases[nowIdx].to}세)</b><br>대운의 십성은 ${phases[nowIdx].tg}(${TG_NICK[phases[nowIdx].tg]}) — ${TENGOD_DESC[phases[nowIdx].tg]}. ${THEMES[phases[nowIdx].theme].adv}</div>` : '');
+
+  /* ===== 다가오는 3년 운세 — 사주 세운 + 수비학 개인연도 + 이름·부모 시드로 유저마다 다르게 ===== */
+  const cc = s => [...(s || '')].reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  const dstamp = dt => dt && dt.filled ? dt.y + dt.m * 31 + dt.d : 0;
+  const pSeed = cc(inp.name) + cc(inp.ename) * 3 + cc(inp.father) * 7 + cc(inp.mother) * 11
+    + dstamp(inp.fatherDate) + dstamp(inp.motherDate) * 2 + inp.y * 13 + inp.m * 17 + inp.d * 19;
+  const pyOf = Y => reduceNum(reduceNum(inp.m, false) + reduceNum(inp.d, false) + reduceNum(digitSum(Y), false), false);
+  const yearReading = Y => {
+    const yStem = mod(Y - 4, 10), yBranch = mod(Y - 4, 12);
+    const yTg = tenGod(dayStem, yStem), bTg = tenGod(dayStem, BRANCHES[yBranch].main);
+    const py = pyOf(Y);
+    const cats = YEAR_CATS.map((c, ci) => {
+      const inSet = c.pos.includes(yTg) || c.pos.includes(bTg);
+      const base = Math.max(TG_RATE[yTg], TG_RATE[bTg]);
+      let rating = inSet ? Math.min(3, base + 1) : base;
+      if (rating === 2 && (pSeed + Y + ci) % 4 === 0) rating = 3;
+      const star = inSet ? `${yTg}(${TG_NICK[yTg]}) 세운이 ${c.area}의 자리를 밝힙니다` : `${c.area}의 별은 조용하고, 흐름은 ${NUM_CYCLE[py].split(' — ')[0]}에 가깝습니다`;
+      return {k: c.k, rating, line: `${star} — ${YEAR_TIP[rating][(pSeed + Y * 7 + ci) % 3]}`};
+    });
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, py, cats};
+  };
+  const yrs = [curYear, curYear + 1, curYear + 2].map(yearReading);
+  $('#lifeYears').innerHTML = `<h3>다가오는 3년 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`
+    + `<p class="small">그 해의 사주 세운과 당신의 수비학 개인 연도수를 겹쳐, 네 갈래로 나눠 읽습니다. 이름과 생년월일, 부모님 정보까지 반영해 당신만의 결로 뽑았습니다.</p>`
+    + yrs.map(y => `<div class="yrblock">`
+      + `<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}해) · 개인 연도수 ${y.py}</p>`
+      + `<p class="yrflow">${NUM_CYCLE[y.py]}</p>`
+      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${RATE_WORD[c.rating]}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
+
+  /* ===== 밀어도 좋은 3년 vs 삼재 3년 — 사주 삼합/삼재 + 세운 + 개인연도 ===== */
+  const grp = groupOf12(saju.year.branch);
+  const samSet = new Set({0:[2,3,4], 1:[8,9,10], 2:[11,0,1], 3:[5,6,7]}[grp]);
+  const allySet = new Set({0:[8,0,4], 1:[2,6,10], 2:[5,9,1], 3:[11,3,7]}[grp]);
+  const scan = [];
+  for (let Y = curYear; Y <= curYear + 14; Y++) {
+    const br = mod(Y - 4, 12), st = mod(Y - 4, 10), py = pyOf(Y);
+    const s = TG_RATE[tenGod(dayStem, st)] + (allySet.has(br) ? 1.5 : 0) - (samSet.has(br) ? 3 : 0) + ((py === 1 || py === 8) ? 1 : 0);
+    scan.push({Y, br, s, sam: samSet.has(br), ally: allySet.has(br), py, age: age + (Y - curYear)});
+  }
+  let best = 0;
+  for (let i = 0; i + 2 < scan.length; i++) {
+    const sum = scan[i].s + scan[i + 1].s + scan[i + 2].s;
+    if (sum > scan[best].s + scan[best + 1].s + scan[best + 2].s) best = i;
+  }
+  const gw = [scan[best], scan[best + 1], scan[best + 2]];
+  const sam = scan.filter(x => x.sam);
+  const allyNames = [...allySet].map(b => BRANCHES[b].animal).join(' · ');
+  const samNames = [...samSet].map(b => BRANCHES[b].animal).join(' · ');
+  $('#lifePush').innerHTML = `<h3>인생의 3년 — 밀어도 좋은 때, 사릴 때</h3>`
+    + `<p class="small">사주 삼합(내 편의 해: ${allyNames}띠 해)과 삼재(${samNames}띠 해), 그 해 세운, 수비학 개인 연도수를 겹쳐 저빈도 핵심 3년을 골랐습니다.</p>`
+    + `<div class="combo"><b>▲ 밀어도 좋은 3년 — ${gw[0].Y}~${gw[2].Y}년 (${gw[0].age}~${gw[2].age}세)</b><br>`
+    + `세운·삼합·개인 연도수가 함께 밀어주는 창입니다. 새 시작 · 큰 결정 · 도전 · 이직 · 결혼 같은 인생의 승부수를 이 3년에 맞추면 힘이 실립니다.${gw.some(x => x.ally) ? ` 특히 ${gw.filter(x => x.ally).map(x => x.Y + '년').join(' · ')}은 당신 띠의 삼합이 드는 우군의 해입니다.` : ''}</div>`
+    + (sam.length
+      ? `<div class="combo"><b>▽ 삼재 — 몸을 사릴 ${sam.length}해</b><br>${sam.map(x => `${x.Y}년(${x.age}세)`).join(' · ')} — 큰 계약 · 이사 · 새 사업 · 무리한 확장은 미루고, 하던 것을 지키며 넘기세요. 삼재는 벌이면 탈나고, 지키면 지나갑니다.</div>`
+      : `<div class="combo"><b>삼재</b><br>앞으로 15년 안에는 삼재가 들지 않습니다 — 흐름을 타기 좋은 구간입니다.</div>`);
 
   /* 역마 나라 — 역마살 있을 때만 */
   const cCard = $('#lifeCountry');
