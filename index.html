@@ -471,6 +471,21 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .pb .pbx{color:var(--dim);font-size:12.5px}
 .combo{margin-top:14px;border-top:1px solid var(--hairline);padding-top:12px;font-size:13.5px;color:var(--muted)}
 .combo b{color:var(--ink);font-weight:700}
+/* 인생 지도 */
+.lg-wrap{overflow-x:auto;margin:16px 0 4px}
+.lg-svg{display:block;width:100%;min-width:560px;height:auto}
+.daeun-list{margin-top:12px;display:flex;flex-direction:column}
+.daeun-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:8px 8px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--hairline)}
+.daeun-row .dage{min-width:66px;color:var(--dim);letter-spacing:.02em}
+.daeun-row .dgz{font-family:var(--serif);font-size:14px;color:var(--ink)}
+.daeun-row .dtg{color:var(--ink);font-weight:600}
+.daeun-row .dnow{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.12em;color:#d9b96a}
+.daeun-row.on{background:var(--ink);border-color:var(--ink)}
+.daeun-row.on .dage,.daeun-row.on .dgz,.daeun-row.on .dtg,.daeun-row.on .dth{color:#f2ecdf}
+.country-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.country{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;border-left:2px solid var(--accent);padding:2px 0 2px 12px}
+.country .cflag{font-family:var(--serif);font-size:15.5px;color:var(--ink);white-space:nowrap}
+.country .cwhy{flex:1;min-width:220px;font-size:12.5px;color:var(--muted);line-height:1.6}
 .atiming{margin-top:14px;padding-top:12px;border-top:1px solid var(--hairline);font-size:13.5px;color:var(--text)}
 .atiming::before{content:"時 ";font-family:var(--serif);color:var(--accent)}
 
@@ -668,6 +683,7 @@ gtag('config', 'G-L7QPQ5GGL7');
       <a href="#saju" data-t="saju">사주</a>
       <a href="#astro" data-t="astro">별자리</a>
       <a href="#numer" data-t="numer">수비학</a>
+      <a href="#life" data-t="life">인생 지도</a>
       <a href="#roots" data-t="roots">뿌리</a>
       <a href="#gung" data-t="gung">궁합</a>
       <a href="#report" data-t="report">이달의 세화</a>
@@ -775,6 +791,16 @@ gtag('config', 'G-L7QPQ5GGL7');
       <div class="numgrid" id="numgrid"></div>
     </section>
 
+    <!-- ============ LIFE MAP ============ -->
+    <section class="reading" id="life">
+      <p class="sec-label">Life Map</p>
+      <h2 class="sec-title">인생 지도</h2>
+      <p class="sec-desc">태어난 순간 정해진 10년 단위의 큰 흐름(대운)과 해마다 바뀌는 기운(세운)을 겹쳐, 지나온 길과 다가올 길을 한 장에 펼칩니다.</p>
+      <div class="card" id="lifeGraph"></div>
+      <div class="card" id="lifePhases"></div>
+      <div class="card" id="lifeCountry"></div>
+    </section>
+
     <!-- ============ ROOTS ============ -->
     <section class="reading" id="roots">
       <p class="sec-label">Roots</p>
@@ -851,7 +877,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.7.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.8.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1572,6 +1598,31 @@ const EL_COLOR = ['초록', '빨강', '노랑', '흰색', '파랑'];
 const EL_DIR = ['동쪽', '남쪽', '중앙 · 가까운 곳', '서쪽', '북쪽'];
 const EL_NUM = ['3 · 8', '2 · 7', '5 · 10', '4 · 9', '1 · 6'];
 const EL_TASTE = ['신맛', '쓴맛', '단맛', '매운맛', '짠맛'];
+/* 역마 지지(인신사해) → 살아나는 이동 방위 */
+const YEOKMA_DIR = {2:'동북(艮)', 5:'동남(巽)', 8:'서남(坤)', 11:'서북(乾)'};
+/* 오행별 — 그 기운을 채워주는 나라 (역마 있는 사람에게 제안). index = 부족한 오행 */
+const EL_COUNTRY = [
+  {kw:'성장 · 배움 · 새 출발', list:[
+    ['일본', '가까운 동쪽의 나라, 숲과 정원의 문화가 깊습니다 — 나무(木)의 기운이 짙어 당신에게 옅은 성장·정돈의 힘을 채워줍니다'],
+    ['뉴질랜드', '국토 전체가 초록으로 뒤덮인 자연의 땅 — 목 기운 속에서 몸도 마음도 새로 자라기 좋습니다'],
+    ['캐나다', '끝없는 숲과 호수가 이어지는 대지 — 넓은 목의 기운이 막힌 답답함을 틔워줍니다']]},
+  {kw:'표현 · 열정 · 사교', list:[
+    ['스페인', '햇빛과 축제의 나라 — 뜨거운 불(火)의 기운이 당신의 표현력과 활기를 끌어올립니다'],
+    ['태국', '일 년 내내 따뜻한 남방의 땅 — 화 기운이 얼어붙은 마음을 데우고 사람과의 문을 엽니다'],
+    ['이탈리아', '태양과 정열, 예술의 나라 — 화 기운 속에서 감정과 재능이 밖으로 피어납니다']]},
+  {kw:'안정 · 중심 · 실속', list:[
+    ['스위스', '단단한 산과 질서의 나라 — 흙(土)의 기운이 흔들리던 중심을 잡아줍니다'],
+    ['독일', '뿌리 깊은 시스템과 견실함의 땅 — 토 기운이 당신에게 실속과 안정을 더합니다'],
+    ['터키', '동과 서가 만나는 대륙의 중심 — 토 기운이 흩어진 힘을 한데 모아줍니다']]},
+  {kw:'성취 · 결단 · 질서', list:[
+    ['미국', '기회와 경쟁, 성취의 나라 — 쇠(金)의 기운이 당신의 결단력과 커리어를 벼립니다'],
+    ['영국', '전통과 제도가 단단한 서방의 땅 — 금 기운이 원칙과 완성도를 높여줍니다'],
+    ['프랑스', '세련됨과 격식의 나라 — 금 기운 속에서 감각이 날카롭게 다듬어집니다']]},
+  {kw:'지혜 · 유연 · 사색', list:[
+    ['노르웨이', '피오르와 바다, 긴 밤의 북방 — 물(水)의 기운이 사색과 지혜를 깊게 합니다'],
+    ['네덜란드', '온 나라가 물과 함께 사는 땅 — 수 기운이 당신의 유연함과 흐름을 살립니다'],
+    ['핀란드', '호수와 숲, 고요의 나라 — 수 기운 속에서 마음이 맑게 가라앉고 새 답이 떠오릅니다']]}
+];
 const EL_FOOD = [
   ['푸른 잎채소 · 신 과일', '식초 · 레몬처럼 신 기운이 도는 음식'],   /* 목 */
   ['쓴 나물 · 붉은 음식 · 따뜻한 국물', '쓴맛과 열이 도는 음식'],     /* 화 */
@@ -2255,6 +2306,7 @@ function render(inp) {
   renderNumer(num, nameForNum, now.getFullYear(), saju, astro);
   renderRoots(inp, saju, num, now);
   renderReport(inp, saju, astro, num, fortune);
+  renderLife(inp, saju, astro, age);
   showTab('synth');
 }
 
@@ -3689,6 +3741,120 @@ function renderNumer(n, usedName, curYear, saju, astro) {
 }
 
 /* 탭 전환 — 결과를 섹션별 개별 페이지로 */
+/* ---------- 인생 지도 — 대운(10년) · 세운(1년) 흐름 + 역마 나라 ---------- */
+function renderLife(inp, saju, astro, age) {
+  const dayStem = saju.day.stem;
+  const mStem = saju.month.stem, mBranch = saju.month.branch;
+  const birthY = inp.y;
+
+  /* 대운 방향: 양남음녀 순행 · 음남양녀 역행 */
+  const yearYang = STEMS[saju.year.stem].yang;
+  const male = inp.gender === 'M';
+  const forward = (yearYang && male) || (!yearYang && !male);
+  const dir = forward ? 1 : -1;
+
+  /* 대운수: 입춘(태양황경 315°) 계열 절입 경계까지의 날수 ÷ 3. 경계는 황경 ≡ 15°(mod 30) */
+  const sl = ((astro.sun.long % 360) + 360) % 360;
+  const off = ((15 - sl) % 30 + 30) % 30;            // 다음 절입까지 남은 도수
+  const days = forward ? off / 0.98565 : (off === 0 ? 0 : (30 - off) / 0.98565);
+  const startAge = Math.max(1, Math.min(10, Math.round(days / 3)));
+
+  /* 나이별 대운 스텝(월주에서 ±) */
+  const stepAt = a => a < startAge ? 0 : dir * (Math.floor((a - startAge) / 10) + 1);
+
+  /* 대운 국면 목록 */
+  const phases = [];
+  for (let k = 0; ; k++) {
+    const from = startAge + k * 10;
+    if (from > 88) break;
+    const step = dir * (k + 1);
+    const st = mod(mStem + step, 10), br = mod(mBranch + step, 12);
+    const tg = tenGod(dayStem, st);
+    phases.push({from, to: from + 9, st, br, tg, rate: TG_RATE[tg], theme: TG_THEME[tg]});
+  }
+
+  /* 나이별 점수: 대운 십성(×2) + 세운 십성 → 3~9 */
+  const AGE_MAX = 85;
+  const pts = [];
+  for (let a = 0; a <= AGE_MAX; a++) {
+    const seStem = mod((birthY + a) - 4, 10);
+    const seRate = TG_RATE[tenGod(dayStem, seStem)];
+    const dStem = mod(mStem + stepAt(a), 10);
+    const dRate = TG_RATE[tenGod(dayStem, dStem)];
+    pts.push({a, score: dRate * 2 + seRate});
+  }
+
+  /* ---- SVG ---- */
+  const W = 920, H = 300, mL = 12, mR = 12, mT = 30, mB = 34;
+  const pw = W - mL - mR, ph = H - mT - mB;
+  const X = a => mL + (a / AGE_MAX) * pw;
+  const Y = s => mT + (9 - s) / 6 * ph;
+  let bands = '';
+  phases.forEach((p, i) => {
+    const x0 = X(Math.max(0, p.from)), x1 = X(Math.min(AGE_MAX, p.to + 1));
+    if (x1 <= x0) return;
+    bands += `<rect x="${x0.toFixed(1)}" y="${mT}" width="${(x1 - x0).toFixed(1)}" height="${ph}" fill="var(--ink)" opacity="${i % 2 ? 0.05 : 0.02}"/>`;
+    bands += `<line x1="${x0.toFixed(1)}" y1="${mT}" x2="${x0.toFixed(1)}" y2="${mT + ph}" stroke="var(--hairline)" stroke-width="1"/>`;
+    if (x1 - x0 > 46) bands += `<text x="${((x0 + x1) / 2).toFixed(1)}" y="${(mT + 13).toFixed(1)}" text-anchor="middle" font-size="10" fill="var(--dim)">${STEMS[p.st].k}${BRANCHES[p.br].k}·${TG_NICK[p.tg]}</text>`;
+  });
+  const midY = Y(6).toFixed(1);
+  const lineD = pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.a).toFixed(1)},${Y(p.score).toFixed(1)}`).join(' ');
+  const areaD = `M${X(0).toFixed(1)},${(mT + ph).toFixed(1)} ` + pts.map(p => `L${X(p.a).toFixed(1)},${Y(p.score).toFixed(1)}`).join(' ') + ` L${X(AGE_MAX).toFixed(1)},${(mT + ph).toFixed(1)} Z`;
+  const cur = pts[Math.min(AGE_MAX, Math.max(0, age))];
+  const cx = X(cur.a).toFixed(1), cy = Y(cur.score).toFixed(1);
+  const curAnchor = cur.a < 6 ? 'start' : cur.a > AGE_MAX - 6 ? 'end' : 'middle';
+  let axis = '';
+  for (let a = 0; a <= 80; a += 10) axis += `<text x="${X(a).toFixed(1)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="var(--dim)">${a}</text>`;
+  axis += `<text x="${X(AGE_MAX).toFixed(1)}" y="${H - 12}" text-anchor="end" font-size="10" fill="var(--dim)">세</text>`;
+  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="나이별 대운·세운 흐름 그래프">`
+    + bands
+    + `<line x1="${mL}" y1="${midY}" x2="${W - mR}" y2="${midY}" stroke="var(--hairline)" stroke-dasharray="3 4"/>`
+    + `<path d="${areaD}" fill="var(--accent)" opacity="0.09"/>`
+    + `<path d="${lineD}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>`
+    + `<line x1="${cx}" y1="${mT}" x2="${cx}" y2="${mT + ph}" stroke="var(--gold-soft)" stroke-width="1.5"/>`
+    + `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--gold-soft)"/>`
+    + `<text x="${cx}" y="${mT - 10}" text-anchor="${curAnchor}" font-size="10.5" font-weight="600" fill="var(--gold-soft)">지금 ${age}세</text>`
+    + `<text x="${mL + 2}" y="${mT + 10}" font-size="9.5" fill="var(--dim)">순풍</text>`
+    + `<text x="${mL + 2}" y="${mT + ph - 3}" font-size="9.5" fill="var(--dim)">역풍</text>`
+    + axis + `</svg></div>`;
+
+  $('#lifeGraph').innerHTML = `<h3>인생 흐름 — 대운과 세운</h3>`
+    + `<p class="small">위로 오를수록 기운이 밀어주는 시기, 아래로 내려갈수록 스스로 버티며 힘을 기르는 시기입니다. 굵은 10년 구간이 대운(큰 흐름), 그 안의 잔물결이 세운(그 해의 기운)입니다.</p>`
+    + svg
+    + `<p class="small" style="margin-top:6px">금색 세로선이 지금의 나이(${age}세)입니다. 대운수 <b>${startAge}</b> — 당신의 큰 흐름은 ${startAge}세부터 10년마다 바뀝니다 (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준).</p>`;
+
+  /* 대운 국면 해설 */
+  const nowIdx = phases.findIndex(p => age >= p.from && age <= p.to);
+  const rows = phases.filter(p => p.from <= AGE_MAX).map((p, i) => `<div class="daeun-row${i === nowIdx ? ' on' : ''}">`
+    + `<span class="dage">${p.from}~${p.to}세</span>`
+    + `<span class="dgz">${STEMS[p.st].k}${BRANCHES[p.br].k}</span>`
+    + `<span class="dtg">${p.tg}(${TG_NICK[p.tg]})</span>`
+    + `<span class="dth">${THEMES[p.theme].name} · ${RATE_WORD[p.rate]}</span>`
+    + `${i === nowIdx ? '<span class="dnow">지금</span>' : ''}</div>`).join('');
+  $('#lifePhases').innerHTML = `<h3>10년마다 바뀌는 큰 흐름 — 대운</h3>`
+    + `<p class="small">0~${startAge}세는 태어난 달의 기운(월주 ${STEMS[mStem].k}${BRANCHES[mBranch].k})이 감쌉니다. 이후 ${forward ? '순행' : '역행'}으로 10년씩 국면이 바뀝니다.</p>`
+    + `<div class="daeun-list">${rows}</div>`
+    + (nowIdx >= 0 ? `<div class="combo"><b>지금 이 국면 (${phases[nowIdx].from}~${phases[nowIdx].to}세)</b><br>대운의 십성은 ${phases[nowIdx].tg}(${TG_NICK[phases[nowIdx].tg]}) — ${TENGOD_DESC[phases[nowIdx].tg]}. ${THEMES[phases[nowIdx].theme].adv}</div>` : '');
+
+  /* 역마 나라 — 역마살 있을 때만 */
+  const cCard = $('#lifeCountry');
+  const sinsal = computeSinsal(saju);
+  if (!sinsal.some(x => x.key === 'yeokma')) { cCard.style.display = 'none'; cCard.innerHTML = ''; return; }
+  cCard.style.display = '';
+  const weak = saju.counts.indexOf(Math.min(...saju.counts));
+  const ec = EL_COUNTRY[weak];
+  const groupOf = b => [8, 0, 4].includes(b) ? 0 : [2, 6, 10].includes(b) ? 1 : [5, 9, 1].includes(b) ? 2 : 3;
+  const yTbl = [2, 8, 11, 5];
+  const targ = new Set([saju.year.branch, saju.day.branch].map(b => yTbl[groupOf(b)]));
+  const dirs = [...new Set([saju.year, saju.month, saju.day, saju.hour].filter(Boolean)
+    .map(p => p.branch).filter(b => targ.has(b)).map(b => YEOKMA_DIR[b]).filter(Boolean))];
+  const cList = ec.list.map(([c, why]) => `<div class="country"><span class="cflag">${c}</span><span class="cwhy">${why}</span></div>`).join('');
+  cCard.innerHTML = `<h3>당신과 맞는 나라 — 역마의 지도</h3>`
+    + `<p class="small">당신의 명식에는 <b>역마살(驛馬)</b>이 있습니다 — 한자리에 머물기보다 움직일 때 운이 열리는 사주입니다. ${dirs.length ? `특히 <b>${dirs.join(' · ')}</b> 방향의 이동이 당신의 역마를 살립니다.` : ''} 아래는 명식에 가장 옅은 <b>${ELEMENTS[weak].k}(${ELEMENTS[weak].h})</b> 기운 — ${ec.kw} — 을 채워주는 곳들입니다.</p>`
+    + `<div class="country-list">${cList}</div>`
+    + `<p class="small" style="margin-top:12px">여행이든 이주든 이 방향과 기운에 몸을 두면 막혔던 흐름이 트입니다. 반대로 억지로 한곳에 붙들리면 답답함이 병이 되는 사주이니, 움직임을 삶의 리듬으로 설계하세요.</p>`;
+}
+
 const tabLinks = document.querySelectorAll('.tabs a');
 function showTab(id) {
   document.querySelectorAll('section.reading').forEach(s => s.classList.toggle('active', s.id === id));
