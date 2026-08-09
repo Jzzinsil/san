@@ -928,7 +928,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.13.3</span><br>
+        <span style="letter-spacing:.2em">SAN v3.14.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -2792,15 +2792,241 @@ function renderHeadline(inp, saju, astro, num) {
 }
 
 /* ---- 통합 리딩 ---- */
+/* ===== SYNTH i18n (generated) ===== */
+const L = (ko, en) => LANG === 'en' ? en : ko;
+const D = (koObj, enObj, key) => (LANG === 'en' ? enObj : koObj)[key];
+
+/* ---- 12 zodiac signs, index-aligned to SIGNS ---- */
+const SIGNS_EN = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+
+/* ---- 5 elements, index-aligned to ELEMENTS (h kept as hanja) ---- */
+const ELEMENTS_EN = [
+  {k: 'Wood', h: '木'}, {k: 'Fire', h: '火'}, {k: 'Earth', h: '土'},
+  {k: 'Metal', h: '金'}, {k: 'Water', h: '水'}
+];
+const elK = i => LANG === 'en' ? ELEMENTS_EN[i].k : ELEMENTS[i].k;
+const signName = i => LANG === 'en' ? SIGNS_EN[i] : SIGNS[i].k;
+
+/* ---- Day Master short essence (keyed by Korean stem char, same keys as ILGAN_SHORT) ---- */
+const ILGAN_SHORT_EN = {
+  갑: 'the upright drive of a great tree', 을: 'the supple resilience of a vine',
+  병: 'the unbridled expression of the sun', 정: 'the focused warmth of a candle flame',
+  무: 'the steady trust of a great mountain', 기: 'the quiet diligence of field soil',
+  경: 'the decisiveness of raw iron', 신: 'the sharp perfectionism of a jewel',
+  임: 'the deep wisdom of the ocean', 계: 'the clear intuition of dew'
+};
+
+/* ---- Day Master plain everyday description (same keys as ILGAN_PLAIN) ---- */
+const ILGAN_PLAIN_EN = {
+  갑: 'someone who likes to step out front, start things and push them forward, and who does not easily bend once they believe they are right',
+  을: 'someone who looks soft and gentle but is strong inside, adapting flexibly to any situation while steadily heading toward what they want',
+  병: 'someone so bright and honest that their mere presence lights up the mood, who hides nothing and holds no grudges',
+  정: 'someone warm and calm on the surface who quietly pours deep, lasting devotion into the work and the people they cherish',
+  무: 'someone dependable who is not easily shaken or rushed, and who soothes conflicts between people well',
+  기: 'someone who quietly takes care of things without making a show of it, practical and level-headed, yet clear about the lines they will not cross',
+  경: 'someone with the resolve to push a decision through to the end, who values principle and loyalty',
+  신: 'someone with refined, tidy sensibilities who cannot let things slide, polishing everything to a high finish',
+  임: 'someone with broad, deep thinking who is rarely shaken, flowing quietly and summoning great force at the decisive moment',
+  계: 'someone quiet who quickly reads the mood and other people’s feelings, and who, without rushing, ends up getting what they want'
+};
+
+/* ---- Ten God descriptions (same keys as TENGOD_DESC) ---- */
+const TENGOD_DESC_EN = {
+  '비견': 'the strength of standing shoulder to shoulder with yourself · independence and conviction',
+  '겁재': 'strength forged through competition · a will to win',
+  '식신': 'the power to create while enjoying it · expression and ease',
+  '상관': 'the power to break the mold · wit and a rebellious streak',
+  '편재': 'wealth moved on a large scale · drive and sociability',
+  '정재': 'wealth built up steadily · diligence and management',
+  '편관': 'the force that pushes you hard · charisma and responsibility',
+  '정관': 'the force that sets you upright · honor and principle',
+  '편인': 'the power to take things in your own way · intuition and immersion',
+  '정인': 'the force that nurtures you · learning and stability'
+};
+
+/* ---- Ten God formal name for display (mTg), same keys as TENGOD_DESC/TG_NICK ---- */
+const TENGOD_NAME_EN = {
+  비견: 'Companion', 겁재: 'Rival', 식신: 'Creator', 상관: 'Performer',
+  편재: 'Indirect Wealth', 정재: 'Direct Wealth', 편관: 'Challenger', 정관: 'Authority',
+  편인: 'Indirect Resource', 정인: 'Direct Resource'
+};
+
+/* ---- Ten God nickname (same keys as TG_NICK) ---- */
+const TG_NICK_EN = {
+  비견: 'My Ally', 겁재: 'Rivalry', 식신: 'Creation', 상관: 'Expression',
+  편재: 'Big Fortune', 정재: 'Steady Wealth', 편관: 'Challenge', 정관: 'Recognition',
+  편인: 'Instinct', 정인: 'Benefactor'
+};
+
+/* ---- Moon-sign inner-emotion text, index-aligned to MOON_TEXT ---- */
+const MOON_TEXT_EN = [
+  'When a feeling arrives you catch fire at once, and when it passes you leave not even ash. Your heart has a short shelf life, but never a false note.',
+  'It takes you a long time to feel safe. But once your heart opens, it stays right there even as the seasons turn.',
+  'You only understand a feeling once you translate it into words. On tangled days, try talking it out to someone — or to paper.',
+  'The Moon is your home. Your emotional tides run high, but so does a rare gift for feeling another’s pain as your own.',
+  'Your heart lives on a stage. Feelings bloom when you are recognized, and slights are remembered long. Applaud yourself first.',
+  'You tame anxiety by tidying up. On a cluttered day, clearing your desk is your ritual for sorting your heart.',
+  'Conflict itself wounds you. For the sake of peace you keep putting your own feelings last. You know your “I’m fine” isn’t always true.',
+  'You keep your emotions in an underground vault. You feel everything and show nothing; only trust is the key to that vault.',
+  'You can’t hold heavy feelings for long. You air out your heart through laughter and motion. Sometimes, practice staying instead of fleeing.',
+  'You weigh efficiency even in emotion. Showing yourself falling apart is the hardest thing in the world. It’s okay to cry — that’s part of the work too.',
+  'You observe your feelings from one step back. Few realize that distance is not coldness but your own kind of care.',
+  'You are tuned to every sorrow in the world. Half your tears belong to others. Sometimes it’s okay to fold the antenna away.'
+];
+
+/* ---- Rising-sign first-impression text, index-aligned to RISING_TEXT ---- */
+const RISING_TEXT_EN = [
+  'First impression: a fastball. The moment you open the door, your energy has already arrived.',
+  'First impression: solid calm. An unhurried air builds trust before anything is said.',
+  'First impression: bright chatter. Your eyes smile first, and your words make the air feel lighter.',
+  'First impression: gentle caution. You’re shy, but the warmth beyond that wall seeps through.',
+  'First impression: the entrance itself. Even in silence, you draw every eye.',
+  'First impression: neatness. A tidy manner and observant eyes are read first.',
+  'First impression: graceful kindness. So evenly warm to everyone that it becomes almost mysterious.',
+  'First impression: quiet intensity. Few words, yet strangely unforgettable.',
+  'First impression: a wide-open smile. It erases the awkwardness of a first meeting in three seconds.',
+  'First impression: careful maturity. No idle talk, so your words carry weight.',
+  'First impression: an intriguing oddball. Something different in the air invites curiosity.',
+  'First impression: dreamy softness. A gaze with blurred edges disarms people.'
+];
+
+/* ---- Numerology essence (same keys as NUM_ESSENCE): t = archetype name, k = keywords ---- */
+const NUM_ESSENCE_EN = {
+  1: {t: 'Pioneer', k: 'beginnings · independence · will'},
+  2: {t: 'Mediator', k: 'harmony · intuition · connection'},
+  3: {t: 'Communicator', k: 'creation · language · joy'},
+  4: {t: 'Builder', k: 'order · diligence · foundation'},
+  5: {t: 'Free Spirit', k: 'change · adventure · sensation'},
+  6: {t: 'Guardian', k: 'responsibility · love · care'},
+  7: {t: 'Seeker', k: 'analysis · solitude · truth'},
+  8: {t: 'Achiever', k: 'power · abundance · realization'},
+  9: {t: 'Completer', k: 'embrace · ideals · completion'},
+  11: {t: 'Beacon of Intuition', k: 'inspiration · sensitivity · revelation'},
+  22: {t: 'Master Builder', k: 'the big picture · power to realize · legacy'},
+  33: {t: 'Master Teacher', k: 'devotion · healing · great love'}
+};
+
+/* ---- Element place, index-aligned to EL_PLACE. Countries/cities index-aligned so GEO_LL
+        can still be looked up via the Korean EL_PLACE at the same index. ---- */
+const EL_PLACE_EN = [
+  {con: 'Asia · Oceania', countries: ['Japan', 'New Zealand', 'Thailand'], cities: ['Kyoto', 'Auckland', 'Chiang Mai', 'Taipei'], why: 'where forests, gardens, and the rhythm of growth flow'},
+  {con: 'Southern Europe · Latin America', countries: ['Spain', 'Italy', 'Mexico'], cities: ['Barcelona', 'Lisbon', 'Rome', 'Mexico City'], why: 'brimming with sunlight, passion, and expression'},
+  {con: 'Central Europe', countries: ['Switzerland', 'Germany', 'Austria'], cities: ['Zurich', 'Munich', 'Vienna', 'Istanbul'], why: 'where firm order and stability flow'},
+  {con: 'North America · Western Europe', countries: ['USA', 'UK', 'France'], cities: ['New York', 'London', 'Paris', 'Chicago'], why: 'with clear systems and the rhythm of achievement'},
+  {con: 'Northern Europe', countries: ['Netherlands', 'Norway', 'Finland'], cities: ['Amsterdam', 'Oslo', 'Helsinki', 'Copenhagen'], why: 'serene, where water and contemplation flow'}
+];
+
+/* ---- Life Path "way of staying" (same keys as LP_STAY) ---- */
+const LP_STAY_EN = {
+  1: 'establishing a base and leading from it', 2: 'putting down roots among people',
+  3: 'expressing, sharing, and enjoying', 4: 'settling in for the long haul and building up',
+  5: 'moving freely through hub and transit cities', 6: 'staying to nurture and tend',
+  7: 'contemplating in quiet small towns', 8: 'achieving on a big stage',
+  9: 'embracing widely and circulating', 11: 'moving from place to place chasing inspiration',
+  22: 'building big and leaving a legacy', 33: 'putting down roots through giving'
+};
+
+/* ---- Ideal-partner temperament, index-aligned to PARTNER_EL (index = weakest element) ---- */
+const PARTNER_EL_EN = [
+  'someone with a straight, forward-driving strength',
+  'someone bright and expressive who shares warmth',
+  'someone steady and unwavering you can lean on',
+  'someone clear and principled who sets the standard',
+  'someone deep and attentive who wraps around you flexibly'
+];
+const PARTNER_WHY_EN = [
+  'unafraid of new beginnings, they give you a push when you hesitate',
+  'they hide no feelings and warm your world brightly',
+  'even on shaky days they hold the center, so you can rest at ease',
+  'they have the firmness to set decisions and standards when you feel blurred',
+  'with a calm and wisdom that settle your impatience, they wrap around you like water'
+];
+
+/* ---- Zodiac element (index-aligned to ZOD_EL: fire/earth/air/water) ---- */
+const ZOD_EL_EN = ['Fire', 'Earth', 'Air', 'Water'];
+const ZOD_EL_TEXT_EN = [
+  'running hot with drive and expression',
+  'rooted in reality and the senses',
+  'moved by ideas and relationships',
+  'flowing on feeling and intuition'
+];
+
+/* ---- Sign essence, index-aligned to SIGN_ESSENCE ---- */
+const SIGN_ESSENCE_EN = [
+  'directness and pioneering', 'sensuality and steadiness', 'curiosity and language',
+  'empathy and protection', 'expression and pride', 'analysis and order',
+  'balance and relationship', 'immersion and insight', 'expansion and freedom',
+  'achievement and endurance', 'difference and the future', 'imagination and compassion'
+];
+
+/* ---- Vote-tag display names (Korean tag key -> English label) ---- */
+const TAG_NAME_EN = {
+  '추진': 'Drive', '표현': 'Expression', '감성': 'Feeling', '분석': 'Analysis',
+  '안정': 'Stability', '자유': 'Freedom', '돌봄': 'Care', '성취': 'Achievement',
+  '직관': 'Intuition', '완벽': 'Perfection', '조화': 'Harmony', '개혁': 'Reform'
+};
+
+/* ---- Vote-tag body text (same keys as TAG_TEXT) ---- */
+const TAG_TEXT_EN = {
+  '추진': 'You are someone for whom sitting still is the hardest thing. Where there is no road you make one; at a closed door you try the handle first. This energy is most beautiful the moment it meets a direction.',
+  '표현': 'You are someone who has to let what’s inside out to feel alive. Words, writing, images — when expression is blocked, your heart aches first. The world remembers you by what you put out.',
+  '감성': 'You are someone who senses the world by temperature before logic. Your ability to read the faint currents others miss is a high-performance sense organ that goes by the name “sensitivity.”',
+  '분석': 'You are someone who verifies before believing and seeks to understand before liking. That gaze, which never takes the surface at face value, sees structures others cannot.',
+  '안정': 'You are someone who instinctively knows you can only leap far from solid ground. The power to build, protect, and carry on — unshowy, yet in the end everyone stands on the foundation you made.',
+  '자유': 'You are someone who withers the moment you are tied down. Novelty and change are not luxuries but survival conditions, and your life map looks less like a straight line than a sailing route.',
+  '돌봄': 'You are someone who makes the things beside you grow. People instinctively lean on you because they feel you are someone who protects.',
+  '성취': 'You are someone who cannot leave a dream as just a dream. Thoughts must become results, plans must take form. You hold a rare vessel for wielding worldly power.',
+  '직관': 'You are someone who knows many things you cannot explain. The answer arrives before logic does, and that hunch is right more often than the statistics. It is a sense you can trust.',
+  '완벽': 'You are someone for whom “good enough” is the hardest thing in the world. The standard you hold yourself to, the strictest of all, sometimes wears you out — but anything your hands touch always shows it.',
+  '조화': 'You are someone who cannot let something lopsided pass. Balance between people, of a space, of words — wherever you are, the place grows somehow more peaceful.',
+  '개혁': 'You are someone who cannot stand the phrase “that’s just how it is.” Your different angle of vision is not a flaw but a role, and the world changes little by little thanks to people like you.'
+};
+
+/* ---- System labels used by the "체계의 갈림" split block (sysOf still returns Korean) ---- */
+const SYS_EN = {'사주': 'Four Pillars', '수': 'Numerology', '별': 'Astrology'};
+
+/* ---- Translate a tagVotes source-chip string (built in Korean by tagVotes) to English.
+        The ORIGINAL Korean src is still what sysOf() parses; this only affects display. ---- */
+const SIGN_KO2EN = {
+  '양자리': 'Aries', '황소자리': 'Taurus', '쌍둥이자리': 'Gemini', '게자리': 'Cancer',
+  '사자자리': 'Leo', '처녀자리': 'Virgo', '천칭자리': 'Libra', '전갈자리': 'Scorpio',
+  '사수자리': 'Sagittarius', '염소자리': 'Capricorn', '물병자리': 'Aquarius', '물고기자리': 'Pisces'
+};
+const EL_KO2EN = {'목': 'Wood', '화': 'Fire', '토': 'Earth', '금': 'Metal', '수': 'Water'};
+function srcEN(s) {
+  if (LANG !== 'en') return s;
+  if (s.startsWith('사주 일간')) return 'Day Master ' + s.slice(6).trim();          // e.g. "갑甲" -> "Day Master 갑甲"
+  if (s.startsWith('오행의 중심')) {                                                  // "오행의 중심 목(木)"
+    const m = s.match(/오행의 중심 (.)\((.)\)/);
+    return m ? `Element core · ${EL_KO2EN[m[1]] || m[1]}(${m[2]})` : s;
+  }
+  if (s.startsWith('태양')) return 'Sun · ' + (SIGN_KO2EN[s.slice(3)] || s.slice(3));
+  if (s.startsWith('달 ')) return 'Moon · ' + (SIGN_KO2EN[s.slice(2)] || s.slice(2));
+  if (s.startsWith('상승')) return 'Rising · ' + (SIGN_KO2EN[s.slice(3)] || s.slice(3));
+  if (s.startsWith('라이프패스')) return 'Life Path ' + s.slice(6).trim();
+  if (s.startsWith('표현수')) return 'Expression ' + s.slice(4).trim();
+  return s;
+}
+
+/* ---- 통합 리딩 ---- */
 function renderSynth(saju, astro, num) {
   const dk = STEMS[saju.day.stem];
   const lp = NUM_ESSENCE[num.lifePath];
+  const lpEN = NUM_ESSENCE_EN[num.lifePath];
 
-  $('#synthOpen').innerHTML =
-    `태어난 순간의 여덟 글자(사주)는 당신을 <b style="color:var(--gold-soft)">${ILGAN_SHORT[dk.k]}</b>${jRo(ILGAN_SHORT[dk.k])},<br>` +
-    `태어난 날의 하늘(별자리)은 <b style="color:var(--gold-soft)">${SIGNS[astro.sun.sign].k}</b>${jRo(SIGNS[astro.sun.sign].k)},<br>` +
-    `생년월일을 전부 더한 수(수비학)는 <b style="color:var(--gold-soft)">${lp.t}</b>${jRo(lp.t)} 읽었습니다.<br>` +
-    `<span style="font-size:12px;color:var(--dim)">이 세 가지가 전부 겹치는 사람은 사실상 없습니다 — 이 리딩은 당신에게만 놓입니다.</span>`;
+  if (LANG === 'en') {
+    $('#synthOpen').innerHTML =
+      `The eight characters of your birth moment (Four Pillars) read you as <b style="color:var(--gold-soft)">${ILGAN_SHORT_EN[dk.k]}</b>,<br>` +
+      `the sky of your birth day (astrology) as <b style="color:var(--gold-soft)">${SIGNS_EN[astro.sun.sign]}</b>,<br>` +
+      `the number that sums your whole birth date (numerology) as <b style="color:var(--gold-soft)">the ${lpEN.t}</b>.<br>` +
+      `<span style="font-size:12px;color:var(--dim)">Almost no one overlaps on all three — this reading is laid out for you alone.</span>`;
+  } else {
+    $('#synthOpen').innerHTML =
+      `태어난 순간의 여덟 글자(사주)는 당신을 <b style="color:var(--gold-soft)">${ILGAN_SHORT[dk.k]}</b>${jRo(ILGAN_SHORT[dk.k])},<br>` +
+      `태어난 날의 하늘(별자리)은 <b style="color:var(--gold-soft)">${SIGNS[astro.sun.sign].k}</b>${jRo(SIGNS[astro.sun.sign].k)},<br>` +
+      `생년월일을 전부 더한 수(수비학)는 <b style="color:var(--gold-soft)">${lp.t}</b>${jRo(lp.t)} 읽었습니다.<br>` +
+      `<span style="font-size:12px;color:var(--dim)">이 세 가지가 전부 겹치는 사람은 사실상 없습니다 — 이 리딩은 당신에게만 놓입니다.</span>`;
+  }
 
   /* 태그 투표 */
   const {tally, sorted} = tagVotes(saju, astro, num);
@@ -2808,12 +3034,21 @@ function renderSynth(saju, astro, num) {
 
   let html = '';
   top.forEach(([tag, info], i) => {
-    html += `<div class="card trait">
+    if (LANG === 'en') {
+      html += `<div class="card trait">
+      <p class="tsub">${i === 0 ? 'The strongest crossing point' : 'The second crossing point'} · overlaps in ${info.n} places</p>
+      <p class="tname">${TAG_NAME_EN[tag]}</p>
+      <div class="srcchips">${info.srcs.map(s => `<span class="srcchip">${srcEN(s)}</span>`).join('')}</div>
+      <p>${TAG_TEXT_EN[tag]}</p>
+    </div>`;
+    } else {
+      html += `<div class="card trait">
       <p class="tsub">${i === 0 ? '가장 굵은 교차점' : '두 번째 교차점'} · ${info.n}곳에서 겹칩니다</p>
       <p class="tname">${tag}</p>
       <div class="srcchips">${info.srcs.map(s => `<span class="srcchip">${s}</span>`).join('')}</div>
       <p>${TAG_TEXT[tag]}</p>
     </div>`;
+    }
   });
 
   /* 내면의 긴장 */
@@ -2821,23 +3056,41 @@ function renderSynth(saju, astro, num) {
   const tension = TAG_OPPOSITES.find(([a, b]) => strong.includes(a) && strong.includes(b));
   if (tension) {
     const [a, b] = tension;
-    html += `<div class="card trait">
+    const chips = [...tally[a].srcs.slice(0, 2), ...tally[b].srcs.slice(0, 2)];
+    if (LANG === 'en') {
+      html += `<div class="card trait">
+      <p class="tsub">Inner amplitude</p>
+      <p class="tname" style="font-size:19px">${TAG_NAME_EN[a]} ↔ ${TAG_NAME_EN[b]}</p>
+      <div class="srcchips">${chips.map(s => `<span class="srcchip">${srcEN(s)}</span>`).join('')}</div>
+      <p>Within you, ${TAG_NAME_EN[a]} and ${TAG_NAME_EN[b]} live at once. ${srcEN(tally[a].srcs[0])} points to ${TAG_NAME_EN[a]}, ${srcEN(tally[b].srcs[0])} to ${TAG_NAME_EN[b]}. This is not contradiction but amplitude — the rhythm of swinging between two poles is what keeps you from being a monotone person.</p>
+    </div>`;
+    } else {
+      html += `<div class="card trait">
       <p class="tsub">내면의 진폭</p>
       <p class="tname" style="font-size:19px">${a} ↔ ${b}</p>
-      <div class="srcchips">${[...tally[a].srcs.slice(0,2), ...tally[b].srcs.slice(0,2)].map(s => `<span class="srcchip">${s}</span>`).join('')}</div>
+      <div class="srcchips">${chips.map(s => `<span class="srcchip">${s}</span>`).join('')}</div>
       <p>당신 안에는 ${a}과(와) ${b}이(가) 동시에 삽니다. ${tally[a].srcs[0]}은 ${a}을(를), ${tally[b].srcs[0]}은 ${b}을(를) 가리키죠. 모순이 아니라 진폭입니다 — 두 극 사이를 오가는 리듬이 당신을 단조롭지 않은 사람으로 만듭니다.</p>
     </div>`;
+    }
   }
   /* 체계의 갈림 — 두 교차점이 서로 다른 하늘에서만 보일 때 */
   if (top.length === 2) {
     const sysOf = s => (s.includes('사주') || s.includes('오행')) ? '사주' : (s.includes('라이프패스') || s.includes('표현수')) ? '수' : '별';
     const sA = new Set(top[0][1].srcs.map(sysOf)), sB = new Set(top[1][1].srcs.map(sysOf));
     if (![...sA].some(x => sB.has(x))) {
-      html += `<div class="card trait">
+      if (LANG === 'en') {
+        html += `<div class="card trait">
+        <p class="tsub">Where the systems diverge</p>
+        <p class="tname" style="font-size:18px">A different face seen by a different sky</p>
+        <p>「${TAG_NAME_EN[top[0][0]]}」 is visible only to ${[...sA].map(x => SYS_EN[x]).join(' · ')}, and 「${TAG_NAME_EN[top[1][0]]}」 only to ${[...sB].map(x => SYS_EN[x]).join(' · ')}. This is why an entirely different face can surface depending on the situation — not a contradiction, but different systems lighting up different layers of you.</p>
+      </div>`;
+      } else {
+        html += `<div class="card trait">
         <p class="tsub">체계의 갈림</p>
         <p class="tname" style="font-size:18px">다른 하늘이 보는 다른 얼굴</p>
         <p>「${top[0][0]}」은 ${[...sA].join(' · ')}의 눈에만, 「${top[1][0]}」은 ${[...sB].join(' · ')}의 눈에만 보입니다. 상황에 따라 전혀 다른 얼굴이 나오는 이유가 여기 있습니다 — 모순이 아니라, 서로 다른 체계가 당신의 다른 층을 비추고 있는 것입니다.</p>
       </div>`;
+      }
     }
   }
   $('#synthTraits').innerHTML = html;
@@ -2847,101 +3100,191 @@ function renderSynth(saju, astro, num) {
   const domEl = descEl[0].i, secondEl = descEl[1].i, domC = descEl[0].c;
   const sunEl = astro.sun.sign % 4;
   const seed = saju.dayIdx60 + num.lifePath + astro.moon.sign;
-  const pl = EL_PLACE[domEl], plS = EL_PLACE[secondEl];
-  const city = pl.cities[seed % pl.cities.length];
-  const city2 = pl.cities[(seed + 2) % pl.cities.length];
-  const country = pl.countries[seed % pl.countries.length];
-  const country2 = pl.countries[(seed + 1) % pl.countries.length];
+  const plKo = EL_PLACE[domEl], plSKo = EL_PLACE[secondEl];        // Korean data — for GEO_LL / MAP_SHAPES lookups
+  const pl = LANG === 'en' ? EL_PLACE_EN[domEl] : EL_PLACE[domEl]; // display (con / why / countries / cities)
+  /* index picks (lengths are identical between KO and EN arrays) */
+  const ci = seed % plKo.cities.length, ci2 = (seed + 2) % plKo.cities.length;
+  const coi = seed % plKo.countries.length, coi2 = (seed + 1) % plKo.countries.length;
+  const cityKo = plKo.cities[ci], cityKo2 = plKo.cities[ci2];
+  const city = pl.cities[ci], city2 = pl.cities[ci2];
+  const countryKo = plKo.countries[coi], countryKo2 = plKo.countries[coi2];
+  const country = pl.countries[coi], country2 = pl.countries[coi2];
   const cities = [];
-  const ciA = GEO_LL[city], ciB = GEO_LL[city2];
+  const ciA = GEO_LL[cityKo], ciB = GEO_LL[cityKo2];
   if (ciA) cities.push({name: city, lat: ciA[0], lon: ciA[1]});
-  if (ciB && city2 !== city) cities.push({name: city2, lat: ciB[0], lon: ciB[1]});
+  if (ciB && cityKo2 !== cityKo) cities.push({name: city2, lat: ciB[0], lon: ciB[1]});
   const conKeys = CONKEYS[domEl];
-  const hi = {conKeys, conLabel: pl.con, conPos: CONT_POS[conKeys[0]], countries: [...new Set([country, country2])], cities};
-  $('#synthPlace').innerHTML = `<h3>당신과 어울리는 곳 — 대륙 · 나라 · 도시</h3>`
-    + `<p class="small">세 하늘이 겹쳐 그린 당신의 중심 기운은 <b>${ELEMENTS[domEl].k}(${domC}자)</b>, 곁을 받치는 기운은 <b>${ELEMENTS[secondEl].k}</b>입니다 — 이 둘이 겹쳐 ${pl.why} 땅이 당신과 공명합니다.</p>`
-    + worldMapSVG(hi)
-    + `<div class="maplegend"><span><i style="background:var(--earth)"></i>대륙</span><span><i style="background:var(--accent)"></i>나라</span><span><i style="background:var(--water)"></i>도시</span></div>`
-    + `<div class="lucky"><span style="color:var(--earth);border-color:var(--earth)">대륙 : ${pl.con}</span><span style="color:var(--accent);border-color:var(--accent)">나라 : ${country} · ${country2}</span><span style="color:var(--water);border-color:var(--water)">도시 : ${city}${city2 !== city ? ' · ' + city2 : ''}</span></div>`
-    + `<p class="small" style="margin-top:12px">${dk.k} 일간의 <b>${ILGAN_SHORT[dk.k]}</b>(곧 ${ILGAN_PLAIN[dk.k]}) 기질에, 태양 ${SIGNS[astro.sun.sign].k}의 ${ZOD_EL[sunEl]} 같은 온도, 그리고 ${LP_STAY[num.lifePath]} 라이프패스 ${num.lifePath}(${lp.t})의 방식 — 이 셋이 가장 편히 놓이는 도시가 <b>${city}</b>입니다. 여행지나 오래 머물 곳을 고를 때 참고하세요.</p>`;
+  /* NOTE: hi.countries MUST stay Korean — worldMapSVG reads MAP_SHAPES.countries[ko] by these keys
+     for both the fill path and the on-map label. Only the legend/prose below use English names. */
+  const hi = {conKeys, conLabel: pl.con, conPos: CONT_POS[conKeys[0]], countries: [...new Set([countryKo, countryKo2])], cities};
+  if (LANG === 'en') {
+    $('#synthPlace').innerHTML = `<h3>Places that suit you — Continent · Country · City</h3>`
+      + `<p class="small">The center of your energy, drawn where three skies overlap, is <b>${elK(domEl)}(${domC} of 8)</b>, with <b>${elK(secondEl)}</b> supporting alongside — together they resonate with land ${pl.why}.</p>`
+      + worldMapSVG(hi)
+      + `<div class="maplegend"><span><i style="background:var(--earth)"></i>Continent</span><span><i style="background:var(--accent)"></i>Country</span><span><i style="background:var(--water)"></i>City</span></div>`
+      + `<div class="lucky"><span style="color:var(--earth);border-color:var(--earth)">Continent : ${pl.con}</span><span style="color:var(--accent);border-color:var(--accent)">Country : ${country} · ${country2}</span><span style="color:var(--water);border-color:var(--water)">City : ${city}${cityKo2 !== cityKo ? ' · ' + city2 : ''}</span></div>`
+      + `<p class="small" style="margin-top:12px">On the <b>${ILGAN_SHORT_EN[dk.k]}</b> temperament of the ${dk.h} Day Master (that is, ${ILGAN_PLAIN_EN[dk.k]}), the ${ZOD_EL_EN[sunEl]}-like temperature of the Sun in ${SIGNS_EN[astro.sun.sign]}, and the ${LP_STAY_EN[num.lifePath]} way of Life Path ${num.lifePath} (the ${lpEN.t}) — the city where these three rest most easily is <b>${city}</b>. Keep it in mind when choosing where to travel or where to settle for a while.</p>`;
+  } else {
+    $('#synthPlace').innerHTML = `<h3>당신과 어울리는 곳 — 대륙 · 나라 · 도시</h3>`
+      + `<p class="small">세 하늘이 겹쳐 그린 당신의 중심 기운은 <b>${ELEMENTS[domEl].k}(${domC}자)</b>, 곁을 받치는 기운은 <b>${ELEMENTS[secondEl].k}</b>입니다 — 이 둘이 겹쳐 ${pl.why} 땅이 당신과 공명합니다.</p>`
+      + worldMapSVG(hi)
+      + `<div class="maplegend"><span><i style="background:var(--earth)"></i>대륙</span><span><i style="background:var(--accent)"></i>나라</span><span><i style="background:var(--water)"></i>도시</span></div>`
+      + `<div class="lucky"><span style="color:var(--earth);border-color:var(--earth)">대륙 : ${pl.con}</span><span style="color:var(--accent);border-color:var(--accent)">나라 : ${country} · ${country2}</span><span style="color:var(--water);border-color:var(--water)">도시 : ${city}${city2 !== city ? ' · ' + city2 : ''}</span></div>`
+      + `<p class="small" style="margin-top:12px">${dk.k} 일간의 <b>${ILGAN_SHORT[dk.k]}</b>(곧 ${ILGAN_PLAIN[dk.k]}) 기질에, 태양 ${SIGNS[astro.sun.sign].k}의 ${ZOD_EL[sunEl]} 같은 온도, 그리고 ${LP_STAY[num.lifePath]} 라이프패스 ${num.lifePath}(${lp.t})의 방식 — 이 셋이 가장 편히 놓이는 도시가 <b>${city}</b>입니다. 여행지나 오래 머물 곳을 고를 때 참고하세요.</p>`;
+  }
 
   /* 어울리는 연인 — 약한 오행 × 둘째 약한 오행 × 태양 보색원소 × 라이프패스 궁합 + 영혼수 */
   const ascEl = saju.counts.map((c, i) => ({c, i})).sort((a, b) => a.c - b.c);
   const weakEl = ascEl[0].i, secondWeakEl = ascEl[1].i;
-  const compEl = {0:2, 2:0, 1:3, 3:1}[sunEl];
+  const compEl = {0: 2, 2: 0, 1: 3, 3: 1}[sunEl];
   const lpm = LP_MATCH[num.lifePath] || [];
-  $('#synthPartner').innerHTML = `<h3>당신과 가장 행복할 연인 — 세 하늘이 그리는 상대</h3>`
-    + `<div class="partner-art">${elArt(weakEl)}<span class="pacap">${ELEMENTS[weakEl].k}(${ELEMENTS[weakEl].h})의 기운을 지닌 사람</span></div>`
-    + `<p style="font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:4px"><b style="color:var(--gold-soft)">${PARTNER_EL[weakEl]}</b> 사람 — ${PARTNER_WHY[weakEl]}. 여기에 <b>${ELEMENTS[secondWeakEl].k}</b>의 결${num.name ? `, 그리고 당신이 속으로 갈망하는 <b>${NUM_ESSENCE[num.name.soulUrge].k}</b>를 애쓰지 않고 사는 면모` : ''}까지 지녔다면 더 깊이 맞습니다.</p>`
-    + `<div class="combo"><b>왜 이 사람과 가장 행복한가 — 세 갈래의 근거</b><br>`
-    + `<b>사주</b> · 당신 명식에 가장 옅은 <b>${ELEMENTS[weakEl].k}(${ELEMENTS[weakEl].h})</b> 기운을 이 사람이 지니고 있어, 함께일 때 비로소 다섯 기운이 균형을 이룹니다. 부족을 서로 채우는 관계가 가장 오래 갑니다.<br>`
-    + `<b>별자리</b> · 태양 ${SIGNS[astro.sun.sign].k}의 <b>${ZOD_EL[sunEl]}</b> 기운에는 <b>${ZOD_EL[compEl]}</b>의 사람이 밀고 당기기 좋습니다 — ${ZOD_EL_TEXT[compEl]} 상대가 당신의 온도와 어우러집니다.<br>`
-    + `<b>수비학</b> · 라이프패스 ${num.lifePath}(${lp.t})인 당신과는 ${lpm.length ? `라이프패스 <b>${lpm.join(' · ')}</b>의 사람과 특히 결이 잘 맞습니다` : '서로의 과제를 재촉하지 않는 사람이 잘 맞습니다'} — 당신의 인생 과제를 함께 걸어줄 사람입니다.</div>`
-    + `<p class="small">그런 사람 곁에서 당신은 억지로 애쓰지 않아도 부족한 자리가 채워지고, 가장 당신다운 모습으로 행복할 수 있습니다.</p>`;
+  if (LANG === 'en') {
+    $('#synthPartner').innerHTML = `<h3>The partner you'll be happiest with — the person three skies sketch</h3>`
+      + `<div class="partner-art">${elArt(weakEl)}<span class="pacap">Someone carrying the energy of ${elK(weakEl)}(${ELEMENTS[weakEl].h})</span></div>`
+      + `<p style="font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:4px"><b style="color:var(--gold-soft)">${PARTNER_EL_EN[weakEl]}</b> — ${PARTNER_WHY_EN[weakEl]}. If they also carry the grain of <b>${elK(secondWeakEl)}</b>${num.name ? `, and live out — effortlessly — the <b>${NUM_ESSENCE_EN[num.name.soulUrge].k}</b> you secretly long for` : ''}, the fit runs even deeper.</p>`
+      + `<div class="combo"><b>Why you're happiest with this person — three strands of reason</b><br>`
+      + `<b>Four Pillars</b> · This person carries the <b>${elK(weakEl)}(${ELEMENTS[weakEl].h})</b> energy that is faintest in your chart, so only together do the five energies come into balance. Relationships where each fills the other's lack last the longest.<br>`
+      + `<b>Astrology</b> · With the <b>${ZOD_EL_EN[sunEl]}</b> energy of your Sun in ${SIGNS_EN[astro.sun.sign]}, a <b>${ZOD_EL_EN[compEl]}</b> person pushes and pulls well — a partner who is ${ZOD_EL_TEXT_EN[compEl]} blends with your temperature.<br>`
+      + `<b>Numerology</b> · For you, Life Path ${num.lifePath} (the ${lpEN.t}), ${lpm.length ? `people of Life Path <b>${lpm.join(' · ')}</b> are an especially good match` : `someone who doesn't rush your tasks is a good match`} — someone to walk your life's work alongside you.</div>`
+      + `<p class="small">Beside such a person, the empty places fill without your forcing anything, and you can be happy as your most authentic self.</p>`;
+  } else {
+    $('#synthPartner').innerHTML = `<h3>당신과 가장 행복할 연인 — 세 하늘이 그리는 상대</h3>`
+      + `<div class="partner-art">${elArt(weakEl)}<span class="pacap">${ELEMENTS[weakEl].k}(${ELEMENTS[weakEl].h})의 기운을 지닌 사람</span></div>`
+      + `<p style="font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:4px"><b style="color:var(--gold-soft)">${PARTNER_EL[weakEl]}</b> 사람 — ${PARTNER_WHY[weakEl]}. 여기에 <b>${ELEMENTS[secondWeakEl].k}</b>의 결${num.name ? `, 그리고 당신이 속으로 갈망하는 <b>${NUM_ESSENCE[num.name.soulUrge].k}</b>를 애쓰지 않고 사는 면모` : ''}까지 지녔다면 더 깊이 맞습니다.</p>`
+      + `<div class="combo"><b>왜 이 사람과 가장 행복한가 — 세 갈래의 근거</b><br>`
+      + `<b>사주</b> · 당신 명식에 가장 옅은 <b>${ELEMENTS[weakEl].k}(${ELEMENTS[weakEl].h})</b> 기운을 이 사람이 지니고 있어, 함께일 때 비로소 다섯 기운이 균형을 이룹니다. 부족을 서로 채우는 관계가 가장 오래 갑니다.<br>`
+      + `<b>별자리</b> · 태양 ${SIGNS[astro.sun.sign].k}의 <b>${ZOD_EL[sunEl]}</b> 기운에는 <b>${ZOD_EL[compEl]}</b>의 사람이 밀고 당기기 좋습니다 — ${ZOD_EL_TEXT[compEl]} 상대가 당신의 온도와 어우러집니다.<br>`
+      + `<b>수비학</b> · 라이프패스 ${num.lifePath}(${lp.t})인 당신과는 ${lpm.length ? `라이프패스 <b>${lpm.join(' · ')}</b>의 사람과 특히 결이 잘 맞습니다` : '서로의 과제를 재촉하지 않는 사람이 잘 맞습니다'} — 당신의 인생 과제를 함께 걸어줄 사람입니다.</div>`
+      + `<p class="small">그런 사람 곁에서 당신은 억지로 애쓰지 않아도 부족한 자리가 채워지고, 가장 당신다운 모습으로 행복할 수 있습니다.</p>`;
+  }
 
   /* 거울 — 남이 보는 나 · 내가 아는 나 */
   const mTg = tenGod(saju.day.stem, saju.month.stem);
-  const outer = [`사주 월간(태어난 달의 하늘 글자) <b>${mTg}</b> — 사회라는 무대에서 자주 쓰게 되는 역할의 가면: ${TENGOD_DESC[mTg]}`];
-  if (astro.rising) outer.push(`상승 ${SIGNS[astro.rising.sign].k} — ${RISING_TEXT[astro.rising.sign]}`);
-  else outer.push(`상승궁 — 태어난 시간이 있어야 읽히는 첫인상의 층이라, 지금은 한 겹이 비어 있습니다.`);
-  if (num.name) outer.push(`성격수 ${num.name.personality} — 세상은 당신을 ${NUM_ESSENCE[num.name.personality].k}의 인상으로 기억합니다.`);
-  const outerSrc = '사주 월간' + (astro.rising ? ' + 상승 별자리' : '') + (num.name ? ' + 이름의 자음' : '');
-  const inner = [`달 ${SIGNS[astro.moon.sign].k} — ${MOON_TEXT[astro.moon.sign]}`];
-  if (num.name) inner.push(`영혼수 ${num.name.soulUrge} — 내면 깊은 곳은 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망합니다.`);
-  inner.push(`일간 ${dk.k}(${dk.h}) — ${ILGAN_SHORT[dk.k]}. 곧 ${ILGAN_PLAIN[dk.k]}, 이것이 마음의 바탕 재료입니다.`);
-  const innerSrc = '달 별자리' + (num.name ? ' + 이름의 모음' : '') + ' + 사주 일간';
-  /* 각 면 한 줄 요약 — 세 체계 교집합으로 사람마다 다르게 */
-  const outerOne = `겉은 ${TG_NICK[mTg]}의 얼굴, ${astro.rising ? `${SIGNS[astro.rising.sign].k}의 첫인상` : (num.name ? `${NUM_ESSENCE[num.name.personality].k}의 인상` : '차분한 첫인상')}.`;
-  const innerOne = `속은 ${SIGNS[astro.moon.sign].k} 달, ${num.name ? `${NUM_ESSENCE[num.name.soulUrge].k}를 갈망하는 마음` : `${SIGN_ESSENCE[astro.moon.sign]}의 마음`}.`;
-  const coreText = `${ILGAN_SHORT[dk.k]}의 기질 위에 ${SIGNS[astro.sun.sign].k}의 정체성, 그리고 ${NUM_ESSENCE[num.lifePath].t}(${num.lifePath})의 인생 과제가 놓여 있습니다.`;
+  let outer, inner, outerSrc, innerSrc, outerOne, innerOne, coreText;
+  if (LANG === 'en') {
+    outer = [`Month stem of the Four Pillars (the sky character of your birth month) <b>${TENGOD_NAME_EN[mTg]}</b> — the role-mask you most often wear on the stage of society: ${TENGOD_DESC_EN[mTg]}`];
+    if (astro.rising) outer.push(`Rising ${SIGNS_EN[astro.rising.sign]} — ${RISING_TEXT_EN[astro.rising.sign]}`);
+    else outer.push(`Rising sign — this first-impression layer can only be read with a birth time, so for now one layer is left blank.`);
+    if (num.name) outer.push(`Personality number ${num.name.personality} — the world remembers you with the impression of ${NUM_ESSENCE_EN[num.name.personality].k}.`);
+    outerSrc = 'Four Pillars month stem' + (astro.rising ? ' + Rising sign' : '') + (num.name ? ' + name consonants' : '');
+    inner = [`Moon ${SIGNS_EN[astro.moon.sign]} — ${MOON_TEXT_EN[astro.moon.sign]}`];
+    if (num.name) inner.push(`Soul Urge number ${num.name.soulUrge} — deep inside, you long for ${NUM_ESSENCE_EN[num.name.soulUrge].k}.`);
+    inner.push(`Day Master ${dk.h} — ${ILGAN_SHORT_EN[dk.k]}. That is, ${ILGAN_PLAIN_EN[dk.k]}; this is the base material of your heart.`);
+    innerSrc = 'Moon sign' + (num.name ? ' + name vowels' : '') + ' + Four Pillars Day Master';
+    outerOne = `Outside, the face of ${TG_NICK_EN[mTg]}, ${astro.rising ? `the first impression of ${SIGNS_EN[astro.rising.sign]}` : (num.name ? `the impression of ${NUM_ESSENCE_EN[num.name.personality].k}` : 'a calm first impression')}.`;
+    innerOne = `Inside, a ${SIGNS_EN[astro.moon.sign]} Moon, ${num.name ? `a heart that longs for ${NUM_ESSENCE_EN[num.name.soulUrge].k}` : `a heart of ${SIGN_ESSENCE_EN[astro.moon.sign]}`}.`;
+    coreText = `Upon the temperament of ${ILGAN_SHORT_EN[dk.k]} rests the identity of ${SIGNS_EN[astro.sun.sign]}, and the life task of the ${lpEN.t} (${num.lifePath}).`;
+  } else {
+    outer = [`사주 월간(태어난 달의 하늘 글자) <b>${mTg}</b> — 사회라는 무대에서 자주 쓰게 되는 역할의 가면: ${TENGOD_DESC[mTg]}`];
+    if (astro.rising) outer.push(`상승 ${SIGNS[astro.rising.sign].k} — ${RISING_TEXT[astro.rising.sign]}`);
+    else outer.push(`상승궁 — 태어난 시간이 있어야 읽히는 첫인상의 층이라, 지금은 한 겹이 비어 있습니다.`);
+    if (num.name) outer.push(`성격수 ${num.name.personality} — 세상은 당신을 ${NUM_ESSENCE[num.name.personality].k}의 인상으로 기억합니다.`);
+    outerSrc = '사주 월간' + (astro.rising ? ' + 상승 별자리' : '') + (num.name ? ' + 이름의 자음' : '');
+    inner = [`달 ${SIGNS[astro.moon.sign].k} — ${MOON_TEXT[astro.moon.sign]}`];
+    if (num.name) inner.push(`영혼수 ${num.name.soulUrge} — 내면 깊은 곳은 ${NUM_ESSENCE[num.name.soulUrge].k}를 갈망합니다.`);
+    inner.push(`일간 ${dk.k}(${dk.h}) — ${ILGAN_SHORT[dk.k]}. 곧 ${ILGAN_PLAIN[dk.k]}, 이것이 마음의 바탕 재료입니다.`);
+    innerSrc = '달 별자리' + (num.name ? ' + 이름의 모음' : '') + ' + 사주 일간';
+    outerOne = `겉은 ${TG_NICK[mTg]}의 얼굴, ${astro.rising ? `${SIGNS[astro.rising.sign].k}의 첫인상` : (num.name ? `${NUM_ESSENCE[num.name.personality].k}의 인상` : '차분한 첫인상')}.`;
+    innerOne = `속은 ${SIGNS[astro.moon.sign].k} 달, ${num.name ? `${NUM_ESSENCE[num.name.soulUrge].k}를 갈망하는 마음` : `${SIGN_ESSENCE[astro.moon.sign]}의 마음`}.`;
+    coreText = `${ILGAN_SHORT[dk.k]}의 기질 위에 ${SIGNS[astro.sun.sign].k}의 정체성, 그리고 ${NUM_ESSENCE[num.lifePath].t}(${num.lifePath})의 인생 과제가 놓여 있습니다.`;
+  }
 
   /* 간극 읽기 — 겉/속 별자리 원소 + 일간 오행 + 명식 편중 + 이름수 낙차로 개인화 */
-  const dkElName = `${ELEMENTS[dk.el].k}(${ELEMENTS[dk.el].h})`;
+  const dkElName = LANG === 'en' ? `${ELEMENTS_EN[dk.el].k}(${ELEMENTS[dk.el].h})` : `${ELEMENTS[dk.el].k}(${ELEMENTS[dk.el].h})`;
   const maxC = Math.max(...saju.counts), minC = Math.min(...saju.counts), spread = maxC - minC;
-  const spreadWord = spread >= 4 ? '넓고 깊게' : spread >= 2 ? '뚜렷하게' : '좁고 잔잔하게';
   let gap;
-  if (astro.rising) {
-    const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
-    const relWord = oe === ie
-      ? `겉과 속이 같은 ${ZOD_EL[oe]}의 온도라 보이는 대로에 가깝지만`
-      : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
-      ? `겉(${ZOD_EL[oe]})이 속(${ZOD_EL[ie]})을 자연스럽게 통역해줘 오해는 적지만`
-      : `겉(${ZOD_EL[oe]})과 속(${ZOD_EL[ie]})의 온도가 달라 "알고 보니 다른 사람" 소리를 듣지만`;
-    gap = `겉은 상승 ${SIGNS[astro.rising.sign].k}의 ${ZOD_EL[oe]}(${astro.rising.deg}°), 속은 달 ${SIGNS[astro.moon.sign].k}의 ${ZOD_EL[ie]}(${astro.moon.deg}°) — ${relWord}, 그 밑바탕에 깔린 마음의 재료는 일간 ${dk.k}(${dk.h}), 오행으로 ${dkElName}입니다. 명식의 기운이 ${maxC}대 ${minC}로 기울어, 겉과 속의 간극은 ${spreadWord} 벌어집니다.`;
+  if (LANG === 'en') {
+    const spreadWord = spread >= 4 ? 'wide and deep' : spread >= 2 ? 'markedly' : 'narrow and quiet';
+    if (astro.rising) {
+      const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
+      const relWord = oe === ie
+        ? `since your outside and inside share the same ${ZOD_EL_EN[oe]} temperature, you're close to what you appear, but`
+        : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
+        ? `since your outside (${ZOD_EL_EN[oe]}) naturally interprets your inside (${ZOD_EL_EN[ie]}), there's little misunderstanding, but`
+        : `since your outside (${ZOD_EL_EN[oe]}) and inside (${ZOD_EL_EN[ie]}) run at different temperatures, you get called "not who I thought," but`;
+      gap = `Outside is the ${ZOD_EL_EN[oe]} of Rising ${SIGNS_EN[astro.rising.sign]} (${astro.rising.deg}°), inside the ${ZOD_EL_EN[ie]} of the Moon in ${SIGNS_EN[astro.moon.sign]} (${astro.moon.deg}°) — ${relWord} the heart-material laid beneath it all is the Day Master ${dk.h}, in the five elements ${dkElName}. Your chart's energy tilts ${maxC} to ${minC}, so the gap between outside and inside opens ${spreadWord}.`;
+    } else {
+      gap = `The first-impression layer (Rising sign) can only be read in full with a birth time. Instead, I traced it through the mask of the Four Pillars month stem ${TENGOD_NAME_EN[mTg]} (${TG_NICK_EN[mTg]}), the inner heart of the Moon in ${SIGNS_EN[astro.moon.sign]} (${astro.moon.deg}°), and the Day Master ${dk.h} ${dkElName} beneath it. As the chart tilts ${maxC} to ${minC}, that layering, too, shows ${spreadWord}.`;
+    }
+    if (num.name) gap += ` By the drop between Personality number ${num.name.personality} and Soul Urge number ${num.name.soulUrge}, there are ${Math.abs(num.name.personality - num.name.soulUrge) || 1} rooms between the face you show and your true grain.`;
   } else {
-    gap = `첫인상의 층(상승궁)은 태어난 시간이 있어야 온전히 읽힙니다. 대신 사주 월간 ${mTg}(${TG_NICK[mTg]})의 가면과, 달 ${SIGNS[astro.moon.sign].k}(${astro.moon.deg}°)의 속마음, 그 바탕의 일간 ${dk.k} ${dkElName}로 짚었습니다. 명식이 ${maxC}대 ${minC}로 기운 만큼, 그 층차도 ${spreadWord} 드러납니다.`;
+    const spreadWord = spread >= 4 ? '넓고 깊게' : spread >= 2 ? '뚜렷하게' : '좁고 잔잔하게';
+    if (astro.rising) {
+      const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
+      const relWord = oe === ie
+        ? `겉과 속이 같은 ${ZOD_EL[oe]}의 온도라 보이는 대로에 가깝지만`
+        : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
+        ? `겉(${ZOD_EL[oe]})이 속(${ZOD_EL[ie]})을 자연스럽게 통역해줘 오해는 적지만`
+        : `겉(${ZOD_EL[oe]})과 속(${ZOD_EL[ie]})의 온도가 달라 "알고 보니 다른 사람" 소리를 듣지만`;
+      gap = `겉은 상승 ${SIGNS[astro.rising.sign].k}의 ${ZOD_EL[oe]}(${astro.rising.deg}°), 속은 달 ${SIGNS[astro.moon.sign].k}의 ${ZOD_EL[ie]}(${astro.moon.deg}°) — ${relWord}, 그 밑바탕에 깔린 마음의 재료는 일간 ${dk.k}(${dk.h}), 오행으로 ${dkElName}입니다. 명식의 기운이 ${maxC}대 ${minC}로 기울어, 겉과 속의 간극은 ${spreadWord} 벌어집니다.`;
+    } else {
+      gap = `첫인상의 층(상승궁)은 태어난 시간이 있어야 온전히 읽힙니다. 대신 사주 월간 ${mTg}(${TG_NICK[mTg]})의 가면과, 달 ${SIGNS[astro.moon.sign].k}(${astro.moon.deg}°)의 속마음, 그 바탕의 일간 ${dk.k} ${dkElName}로 짚었습니다. 명식이 ${maxC}대 ${minC}로 기운 만큼, 그 층차도 ${spreadWord} 드러납니다.`;
+    }
+    if (num.name) gap += ` 성격수 ${num.name.personality}와 영혼수 ${num.name.soulUrge}의 낙차만큼, 보이는 얼굴과 진짜 결 사이엔 방 ${Math.abs(num.name.personality - num.name.soulUrge) || 1}칸이 있는 셈입니다.`;
   }
-  if (num.name) gap += ` 성격수 ${num.name.personality}와 영혼수 ${num.name.soulUrge}의 낙차만큼, 보이는 얼굴과 진짜 결 사이엔 방 ${Math.abs(num.name.personality - num.name.soulUrge) || 1}칸이 있는 셈입니다.`;
   const outTags = new Set([...(astro.rising ? SIGN_TAGS[astro.rising.sign] : []), ...(num.name ? NUM_TAGS[num.name.personality] : [])]);
   const inTags = new Set([...SIGN_TAGS[astro.moon.sign], ...(num.name ? NUM_TAGS[num.name.soulUrge] : [])]);
   const shared = [...outTags].filter(t => inTags.has(t));
   const gapClose = astro.rising && astro.rising.sign % 4 === astro.moon.sign % 4;
-  const sharedLine = outTags.size && inTags.size
-    ? (shared.length
-      ? ` 그리고 「${shared[0]}」의 결만은 겉과 속 양쪽에 흐릅니다 — 숨겨도 새어 나오는 당신다움입니다.`
-      : gapClose
-      ? ` 다만 결의 무늬는 겉과 속이 다르게 짜여 있습니다 — 온도는 같아도, 무늬는 가까이서 봐야 보입니다.`
-      : ` 겉의 결과 속의 결이 하나도 겹치지 않습니다 — 오래 두고 봐야 진짜가 보이는 사람입니다.`)
-    : '';
-  $('#synthLayers').innerHTML = `
-    <div class="mfaces">
-      <div class="mface">
-        <p class="mfh">Mirror · 거울 밖</p>
-        <p class="mft">남이 보는 나</p>
-        <p class="mone">${outerOne}</p>
-        ${outer.map(x => `<p class="mline">${x}</p>`).join('')}
-        <span class="msrc">근거 · ${outerSrc}</span>
+  let sharedLine;
+  if (LANG === 'en') {
+    sharedLine = outTags.size && inTags.size
+      ? (shared.length
+        ? ` And the grain of 「${TAG_NAME_EN[shared[0]]}」 alone runs through both outside and inside — the you-ness that leaks out however you hide it.`
+        : gapClose
+        ? ` Still, the pattern of the grain is woven differently outside and inside — the temperature is the same, but the pattern only shows up close.`
+        : ` Not a single strand of the outer grain and the inner grain overlaps — you're someone whose truth only shows after long acquaintance.`)
+      : '';
+  } else {
+    sharedLine = outTags.size && inTags.size
+      ? (shared.length
+        ? ` 그리고 「${shared[0]}」의 결만은 겉과 속 양쪽에 흐릅니다 — 숨겨도 새어 나오는 당신다움입니다.`
+        : gapClose
+        ? ` 다만 결의 무늬는 겉과 속이 다르게 짜여 있습니다 — 온도는 같아도, 무늬는 가까이서 봐야 보입니다.`
+        : ` 겉의 결과 속의 결이 하나도 겹치지 않습니다 — 오래 두고 봐야 진짜가 보이는 사람입니다.`)
+      : '';
+  }
+  if (LANG === 'en') {
+    $('#synthLayers').innerHTML = `
+      <div class="mfaces">
+        <div class="mface">
+          <p class="mfh">Mirror · Outside</p>
+          <p class="mft">How others see me</p>
+          <p class="mone">${outerOne}</p>
+          ${outer.map(x => `<p class="mline">${x}</p>`).join('')}
+          <span class="msrc">Source · ${outerSrc}</span>
+        </div>
+        <div class="mface">
+          <p class="mfh">Mirror · Inside</p>
+          <p class="mft">How I know myself</p>
+          <p class="mone">${innerOne}</p>
+          ${inner.map(x => `<p class="mline">${x}</p>`).join('')}
+          <span class="msrc">Source · ${innerSrc}</span>
+        </div>
       </div>
-      <div class="mface">
-        <p class="mfh">Mirror · 거울 안</p>
-        <p class="mft">내가 아는 나</p>
-        <p class="mone">${innerOne}</p>
-        ${inner.map(x => `<p class="mline">${x}</p>`).join('')}
-        <span class="msrc">근거 · ${innerSrc}</span>
+      <div class="mgap"><p class="mgh">間 — Reading the gap</p><p>${gap}${sharedLine}</p></div>
+      <p class="mcore"><b>In between · Core</b> — ${coreText}<span class="msrc">Source · Four Pillars Day Master + Sun sign + Life Path</span></p>`;
+  } else {
+    $('#synthLayers').innerHTML = `
+      <div class="mfaces">
+        <div class="mface">
+          <p class="mfh">Mirror · 거울 밖</p>
+          <p class="mft">남이 보는 나</p>
+          <p class="mone">${outerOne}</p>
+          ${outer.map(x => `<p class="mline">${x}</p>`).join('')}
+          <span class="msrc">근거 · ${outerSrc}</span>
+        </div>
+        <div class="mface">
+          <p class="mfh">Mirror · 거울 안</p>
+          <p class="mft">내가 아는 나</p>
+          <p class="mone">${innerOne}</p>
+          ${inner.map(x => `<p class="mline">${x}</p>`).join('')}
+          <span class="msrc">근거 · ${innerSrc}</span>
+        </div>
       </div>
-    </div>
-    <div class="mgap"><p class="mgh">間 — 간극 읽기</p><p>${gap}${sharedLine}</p></div>
-    <p class="mcore"><b>그 사이 · 중심</b> — ${coreText}<span class="msrc">근거 · 사주 일간 + 태양 별자리 + 라이프패스</span></p>`;
+      <div class="mgap"><p class="mgh">間 — 간극 읽기</p><p>${gap}${sharedLine}</p></div>
+      <p class="mcore"><b>그 사이 · 중심</b> — ${coreText}<span class="msrc">근거 · 사주 일간 + 태양 별자리 + 라이프패스</span></p>`;
+  }
 }
 
 /* 월지(月支)별 그 달의 일반 성격 — 절기의 결, 모두에게 같은 층 */
