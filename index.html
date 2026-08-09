@@ -906,7 +906,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.11.5</span><br>
+        <span style="letter-spacing:.2em">SAN v3.11.6</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -3296,11 +3296,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
     </div>
     <p class="ftheme">시간대별 운세</p>
     <p class="fagree">하루를 열두 시진으로 나눠, 각 시진의 천간이 당신의 일간에게 어떤 기운인지 읽습니다.</p>
-    <div class="hourgrid">${hourRow(hours[nowIdx])}</div>
-    <details>
-      <summary>전체 12시진 펼치기</summary>
-      <div class="hourgrid">${hours.map(hourRow).join('')}</div>
-    </details>
+    <div class="hourgrid">${hours.map(hourRow).join('')}</div>
   </div>`;
 
   /* 이번 주 — 월~일 7일 등급 */
@@ -3325,10 +3321,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
     periodCard(f.periods[0], dayExtra) +
     hourCard +
     periodCard(f.periods[1], weekExtra) +
-    `<details class="fold">
-      <summary>이번 달 · 분기 · 올해 흐름 펼치기</summary>
-      ${f.periods.slice(2).map(p => periodCard(p)).join('')}
-    </details>`;
+    f.periods.slice(2).map(p => periodCard(p)).join('');
 }
 
 /* ---- 사주 ---- */
