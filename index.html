@@ -923,7 +923,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.12.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.12.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -1772,67 +1772,67 @@ const COMPAT_GROUP = n => { const r = n > 9 ? reduceNum(digitSum(n), false) : n;
 
 /* ---------- 신살 해석 ---------- */
 const SINSAL_TEXT = {
-  dohwa:   {name:'도화살', hanja:'桃花', type:'살',
+  dohwa:   {name:'도화살', hanja:'桃花', type:'살', tag:'끌어당기는 매력',
     desc:'사람을 끌어당기는 매력의 별. 어디서든 시선을 받는 기운이라 옛날엔 경계했지만, 지금 시대엔 인기 · 브랜딩 · 대중적 매력이라는 귀한 재능입니다.',
     many:'도화가 겹쳐 있어 그 자력이 매우 강합니다. 매력이 곧 직업적 무기가 될 수 있는 사주 — 다만 원치 않는 시선까지 끌 수 있으니 관계의 선을 스스로 정해두는 것이 좋습니다.'},
-  yeokma:  {name:'역마살', hanja:'驛馬', type:'살',
+  yeokma:  {name:'역마살', hanja:'驛馬', type:'살', tag:'움직일 때 열리는 운',
     desc:'한자리에 묶이지 않는 이동의 별. 이사 · 여행 · 해외 · 전직처럼 움직일 때 오히려 운이 열리는 사람입니다.',
     many:'역마가 겹쳐 있어 변화 자체가 삶의 리듬입니다. 정착을 강요당하면 답답해지는 사주 — 움직임을 억누르지 말고 계획된 이동으로 바꾸면 큰 힘이 됩니다.'},
-  hwagae:  {name:'화개살', hanja:'華蓋', type:'살',
+  hwagae:  {name:'화개살', hanja:'華蓋', type:'살', tag:'홀로 깊어지는 재능',
     desc:'홀로 깊어지는 예술과 정신의 별. 고독을 견디는 대신 남다른 창작 · 학문 · 영성의 재능을 받습니다.',
     many:'화개가 겹쳐 있어 혼자 있는 시간이 곧 재능의 발전소입니다. 외로움처럼 보이는 그 시간에 만들어진 것들이 결국 당신을 대표하게 됩니다.'},
-  jangseong:{name:'장성살', hanja:'將星', type:'길신',
+  jangseong:{name:'장성살', hanja:'將星', type:'길신', tag:'이끄는 리더 기운',
     desc:'무리를 이끄는 장군의 별. 통솔력 · 책임감 · 조직의 중심에 서는 기운으로, 결정하는 자리에 있을 때 가장 빛납니다.',
     many:'장성이 겹쳐 통솔의 기운이 매우 강합니다. 어디에 가든 결국 중심 자리로 밀려 올라가는 명식 — 이끄는 자리를 피하면 오히려 운이 갑갑해집니다.'},
-  banan:   {name:'반안살', hanja:'攀鞍', type:'길신',
+  banan:   {name:'반안살', hanja:'攀鞍', type:'길신', tag:'꾸준한 상승·출세',
     desc:'말안장에 오르는 출세의 별. 장성을 보좌하는 자리로, 승진 · 명예 · 안정적인 상승의 기운입니다.',
     many:'반안이 겹쳐 있어 오르는 운이 꾸준합니다. 화려한 도약보다 안장 위에서 버티는 지구력이 이 별의 방식입니다.'},
-  geopsal: {name:'겁살', hanja:'劫殺', type:'살',
+  geopsal: {name:'겁살', hanja:'劫殺', type:'살', tag:'잃고 다시 세우는 힘',
     desc:'빼앗기고 다시 세우는 별. 급격한 변화와 승부처가 잦지만, 위기 대응력과 재기의 힘을 함께 줍니다.',
     many:'겁살이 겹쳐 파고가 큽니다. 잃는 것을 두려워하기보다 다시 세우는 속도로 승부하는 사주입니다.'},
-  jaesal:  {name:'재살', hanja:'災殺', type:'살',
+  jaesal:  {name:'재살', hanja:'災殺', type:'살', tag:'견제 속 중심 자리',
     desc:'수옥살이라고도 하는 견제의 별. 구설과 경쟁의 한복판에 서기 쉽지만, 그만큼 판의 중심에 있다는 뜻이기도 합니다.',
     many:'재살이 겹쳐 견제를 받는 일이 잦습니다. 미움받을 용기가 필요한 자리에 자주 서지만, 그 자리가 곧 중요한 자리입니다.'},
-  cheonsal:{name:'천살', hanja:'天殺', type:'살',
+  cheonsal:{name:'천살', hanja:'天殺', type:'살', tag:'예상 밖의 시험',
     desc:'하늘이 내는 시험의 별. 예고 없는 변수 앞에서 겸손을 배우게 하지만, 통과할 때마다 그릇이 커집니다.',
     many:'천살이 겹쳐 예상 밖의 시험이 잦습니다. 통제할 수 없는 일과 싸우지 않는 법을 익히면, 이 별은 그릇을 키우는 스승이 됩니다.'},
-  jisal:   {name:'지살', hanja:'地殺', type:'살',
+  jisal:   {name:'지살', hanja:'地殺', type:'살', tag:'옮겨 다니며 자람',
     desc:'터전을 옮기며 자라는 별. 이동 · 이사 · 환경 변화 속에서 기회를 찾는 기운으로, 역마의 동생 격입니다.',
     many:'지살이 겹쳐 한곳에 오래 머물기 어려운 명식입니다. 옮겨 다닌 자리들이 전부 경력이 되는 사주 — 이동을 손해로 여기지 마세요.'},
-  wolsal:  {name:'월살', hanja:'月殺', type:'살',
+  wolsal:  {name:'월살', hanja:'月殺', type:'살', tag:'쉼이 필요한 방전',
     desc:'고갈의 별. 에너지가 새기 쉬워 쉼의 기술이 필요하지만, 비운 자리에 새것을 들이는 힘이기도 합니다.',
     many:'월살이 겹쳐 방전이 빠른 편입니다. 충전을 일정에 먼저 넣는 사람만이 이 별을 재생의 별로 씁니다.'},
-  mangsin: {name:'망신살', hanja:'亡身', type:'살',
+  mangsin: {name:'망신살', hanja:'亡身', type:'살', tag:'드러나며 단단해짐',
     desc:'체면을 잃어보는 별. 실수와 노출이 두렵지만, 바닥을 보인 뒤에 진짜 단단해지는 기운입니다.',
     many:'망신이 겹쳐 있어 드러나는 일을 피하기 어렵습니다. 감추는 데 쓰는 힘을 인정하는 데 쓰면, 이 별은 오히려 매력이 됩니다.'},
-  yukhae:  {name:'육해살', hanja:'六害', type:'살',
+  yukhae:  {name:'육해살', hanja:'六害', type:'살', tag:'챙겨줘도 서운한 관계',
     desc:'육해(六害)는 서로 은근히 손해를 끼치는 관계의 표식 — 남 좋은 일에 내 기운이 새기 쉬우니, 베풂에도 경계선이 필요합니다.',
     many:'육해(六害 — 챙겨줘도 서운함이 남기 쉬운 관계의 표식)가 겹쳐 있어, 잘해주고도 마음이 상하는 일이 잦습니다. 거절도 관계의 기술임을 받아들이면 소모가 절반으로 줄어듭니다.'},
-  yangin:  {name:'양인살', hanja:'羊刃', type:'살',
+  yangin:  {name:'양인살', hanja:'羊刃', type:'살', tag:'극단까지 미는 추진력',
     desc:'칼을 쥔 듯 강한 추진의 별. 극단까지 밀어붙이는 힘이라 다루기 어렵지만, 큰일을 해내는 사람들에게 흔한 표식입니다.',
     many:'양인이 겹쳐 힘이 매우 강합니다. 방향이 잡히면 누구보다 크게 이루지만, 방향을 잃으면 그 칼끝이 자신을 향할 수 있습니다. 힘을 쏟을 대상을 늘 정해두세요.'},
-  baekho:  {name:'백호살', hanja:'白虎', type:'살',
+  baekho:  {name:'백호살', hanja:'白虎', type:'살', tag:'위기에 강한 승부사',
     desc:'강렬하고 급한 에너지의 별. 전통에서는 사고수를 경계했지만, 현대적으로 읽으면 위기 앞에서 오히려 침착해지는 승부사의 기질입니다.',
     many:'백호가 겹쳐 에너지의 파고가 큽니다. 순간의 과속과 과로만 조심하면, 남들이 감당 못 하는 상황을 정면 돌파하는 힘이 됩니다.'},
-  goegang: {name:'괴강살', hanja:'魁罡', type:'살',
+  goegang: {name:'괴강살', hanja:'魁罡', type:'살', tag:'우두머리 카리스마',
     desc:'우두머리의 별. 총명함과 결단력, 극과 극을 오가는 카리스마를 줍니다. 평범한 자리보다 책임지는 자리에서 빛나는 표식입니다.',
     many:'괴강이 겹쳐 있는 드문 명식입니다. 스케일이 큰 만큼 기복도 커서, 자기만의 원칙이 흔들리지 않을 때 비로소 큰 그릇이 완성됩니다.'},
-  wonjin:  {name:'원진살', hanja:'元嗔', type:'살',
+  wonjin:  {name:'원진살', hanja:'元嗔', type:'살', tag:'미워도 못 끊는 애증',
     desc:'가까운 사이일수록 애증이 교차하는 기류. 미워하면서도 끊지 못하는 인연이 생기기 쉽습니다. 관계에 여백을 두는 법을 배우면 오히려 깊은 유대가 됩니다.',
     many:'원진의 기류가 여러 자리에 흐릅니다. 가장 가까운 사람과 부딪히기 쉬운 만큼, "거리를 두는 것도 사랑"이라는 감각이 인생의 중요한 기술이 됩니다.'},
-  gwimun:  {name:'귀문관살', hanja:'鬼門', type:'살',
+  gwimun:  {name:'귀문관살', hanja:'鬼門', type:'살', tag:'극도로 예민한 직관',
     desc:'신경이 극도로 예민해지는 직관의 별. 남이 못 느끼는 것을 느끼고, 꿈과 촉이 잘 맞습니다. 예민함을 소모가 아니라 감각으로 쓰는 것이 과제입니다.',
     many:'귀문이 겹쳐 있어 직관이 거의 안테나 수준입니다. 상담 · 예술 · 연구처럼 깊이 파는 일에서는 천재성이 되지만, 생각의 과열을 식혀줄 루틴이 꼭 필요합니다.'},
-  hongyeom:{name:'홍염살', hanja:'紅艶', type:'살',
+  hongyeom:{name:'홍염살', hanja:'紅艶', type:'살', tag:'가까이서 느껴지는 매력',
     desc:'은은하게 배어나는 매력의 별. 도화가 무대 위의 매력이라면 홍염은 가까이서 느껴지는 사적인 매력입니다. 인간관계에 온기를 더하는 재능입니다.',
     many:'홍염이 겹쳐 있어 다정함이 기본값입니다. 그 온기가 오해를 부르지 않도록, 마음의 표현에는 분명한 언어를 쓰는 것이 좋습니다.'},
-  gongmang:{name:'공망', hanja:'空亡', type:'살',
+  gongmang:{name:'공망', hanja:'空亡', type:'살', tag:'비워서 초연한 자리',
     desc:'비어 있는 자리의 표식. 해당 자리의 일이 손에 잘 안 잡히거나 집착이 덜해집니다. 비움은 결핍이 아니라 자유 — 그 영역에서 초연해지는 힘입니다.',
     many:'공망이 여러 자리에 들어 세속의 잣대에서 자유로운 사주입니다. 남들이 매달리는 것에 담담한 대신, 정신적인 가치에서 만족을 찾을 때 삶이 편안해집니다.'},
-  cheoneul:{name:'천을귀인', hanja:'天乙', type:'길신',
+  cheoneul:{name:'천을귀인', hanja:'天乙', type:'길신', tag:'위기의 귀인 복',
     desc:'가장 힘이 센 길신. 위기의 순간마다 도와주는 사람이 나타나는 별입니다. 인복이 명식에 새겨져 있습니다.',
     many:'천을귀인이 겹쳐 있는 복 많은 명식입니다. 혼자 버티지 마세요 — 손을 내밀면 잡아줄 사람이 반드시 나타나는 구조입니다.'},
-  munchang:{name:'문창귀인', hanja:'文昌', type:'길신',
+  munchang:{name:'문창귀인', hanja:'文昌', type:'길신', tag:'학문·글의 재능',
     desc:'글과 학문의 길신. 배우는 머리와 표현하는 손을 함께 줍니다. 시험 · 문서 · 창작의 운을 받쳐줍니다.',
     many:'문창이 겹쳐 있어 공부와 글이 평생의 무기입니다. 어떤 일을 하든 기록하고 정리하는 습관이 남들의 몇 배 성과로 돌아옵니다.'}
 };
@@ -2924,7 +2924,7 @@ function renderReport(inp, saju, astro, num, f) {
   const first = hp.elScore > hp.bs && hp.elScore > 0
     ? `${ELEMENTS[hp.domEl].k}(${ELEMENTS[hp.domEl].h}) 편중 — ${saju.total}글자 중 ${hp.maxC}자가 한 기운`
     : hp.bestS
-    ? `${SINSAL_TEXT[hp.bestS.key].name}(${SINSAL_TEXT[hp.bestS.key].hanja})${hp.bestS.count > 1 ? ' ×' + hp.bestS.count : ''} — 가장 짙은 ${SINSAL_TEXT[hp.bestS.key].type}`
+    ? `${SINSAL_TEXT[hp.bestS.key].name}(${SINSAL_TEXT[hp.bestS.key].tag})${hp.bestS.count > 1 ? ' ×' + hp.bestS.count : ''} — 가장 짙은 ${SINSAL_TEXT[hp.bestS.key].type}`
     : '맑은 명식 — 표식 없이 스스로 방향을 정하는 사주';
   const mTg = tenGod(saju.day.stem, saju.month.stem);
   let mirror;
@@ -2962,7 +2962,7 @@ function renderReport(inp, saju, astro, num, f) {
     ['재료', `일간 ${dk.k}(${dk.h}) · ${ILGAN_SHORT[dk.k]} · 중심 기운 ${ELEMENTS[dom].k}(${ELEMENTS[dom].h})${saju.counts[weak] === 0 ? ` · ${ELEMENTS[weak].k}(${ELEMENTS[weak].h}) 비어 있음` : ''}`],
     ['세 하늘', `태양 ${SIGNS[astro.sun.sign].k} · 달 ${SIGNS[astro.moon.sign].k} · ${astro.rising ? '상승 ' + SIGNS[astro.rising.sign].k : '상승 시간 미상'}`],
     ['수', `라이프패스 ${num.lifePath} ${NUM_ESSENCE[num.lifePath].t}${num.name ? ` · 표현 ${num.name.expression} · 영혼 ${num.name.soulUrge} · 성격 ${num.name.personality}` : ''}`],
-    ['표식', hp.sinsal.length ? hp.sinsal.map(x => `${SINSAL_TEXT[x.key].name}${x.count > 1 ? '×' + x.count : ''}`).join(' · ') : '없음 — 맑게 흐르는 명식'],
+    ['표식', hp.sinsal.length ? hp.sinsal.map(x => `${SINSAL_TEXT[x.key].name}(${SINSAL_TEXT[x.key].tag})${x.count > 1 ? '×' + x.count : ''}`).join(' · ') : '없음 — 맑게 흐르는 명식'],
     ['계절', `오늘 ${tsh(f.periods[0].theme)} · 이번 달 ${tsh(f.periods[2].theme)} · 올해 ${tsh(f.periods[4].theme)}`],
     ['행운', `${EL_COLOR[weak]} · ${EL_DIR[weak]} · 숫자 ${EL_NUM[weak]}`]
   ];
