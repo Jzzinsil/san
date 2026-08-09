@@ -530,6 +530,9 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
 #langBtn{position:fixed;top:14px;right:14px;z-index:50;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:6px 12px;cursor:pointer;border-radius:0}
 #langBtn:hover{background:var(--ink);color:#f2ecdf;border-color:var(--ink)}
 #langBtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lang-en .ko-only{display:none !important}
+.lang-en .en-only{display:block !important}
+.lang-en .name-row{grid-template-columns:1fr}
 
 @media (max-width:640px){
   .page-head{padding-top:52px}
@@ -586,17 +589,18 @@ gtag('config', 'G-L7QPQ5GGL7');
 
     <div class="fgroup" style="border-top:none;padding-top:0;margin-top:0">
       <p class="glabel" data-en="Name">이름</p>
-      <div class="frow">
-        <div class="field">
+      <div class="frow name-row">
+        <div class="field ko-only">
           <label for="name" data-en="Korean name">한글 이름</label>
           <input type="text" id="name" autocomplete="name" placeholder="김하늘" data-en-ph="Haneul Kim">
         </div>
         <div class="field">
-          <label for="ename" data-en-html="English name <span style=&quot;color:var(--dim)&quot;>(astrology · numerology)</span>">영문 이름 <span style="color:var(--dim)">(astrology · 수비학)</span></label>
+          <label for="ename" data-en-html="Name <span style=&quot;color:var(--dim)&quot;>(used for astrology · numerology)</span>">영문 이름 <span style="color:var(--dim)">(astrology · 수비학)</span></label>
           <input type="text" id="ename" placeholder="Haneul Kim">
         </div>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="Leave the English name blank and we'll romanize your Korean name automatically.">영문 이름을 비우면 한글 이름을 로마자로 자동 변환해 사용합니다.</p>
+      <p class="hint ko-only" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="Leave the English name blank and we'll romanize your Korean name automatically.">영문 이름을 비우면 한글 이름을 로마자로 자동 변환해 사용합니다.</p>
+      <p class="hint en-only" style="font-size:12px;color:var(--dim);margin-top:-6px;display:none">Just your name in the Latin alphabet is enough. Saju itself is read from your birth date, time, and place — the name is used only for numerology.</p>
       <div class="field" style="max-width:200px;margin-top:14px">
         <label for="gender" data-en="Gender">성별</label>
         <select id="gender">
@@ -928,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.14.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.14.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -2201,8 +2205,24 @@ const CITY_PRIORITY = ['서울', '부산', '인천', '대구', '대전', '광주
 let LANG = 'ko';
 try { LANG = localStorage.getItem('san_lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
 const COUNTRY_EN = {'대한민국':'South Korea','일본':'Japan','중국':'China','미국':'United States','캐나다':'Canada','영국':'United Kingdom','프랑스':'France','독일':'Germany','이탈리아':'Italy','스페인':'Spain','네덜란드':'Netherlands','러시아':'Russia','호주':'Australia','뉴질랜드':'New Zealand','베트남':'Vietnam','태국':'Thailand','필리핀':'Philippines','인도네시아':'Indonesia','싱가포르':'Singapore','말레이시아':'Malaysia','인도':'India','아랍에미리트':'United Arab Emirates','튀르키예':'Türkiye','브라질':'Brazil','멕시코':'Mexico','아르헨티나':'Argentina'};
+const CITY_EN = {
+  '도쿄':'Tokyo','오사카':'Osaka','나고야':'Nagoya','후쿠오카':'Fukuoka','삿포로':'Sapporo','오키나와':'Okinawa',
+  '베이징':'Beijing','상하이':'Shanghai','광저우':'Guangzhou','선전':'Shenzhen','칭다오':'Qingdao','하얼빈':'Harbin','홍콩':'Hong Kong','타이베이':'Taipei',
+  '뉴욕':'New York','로스앤젤레스':'Los Angeles','샌프란시스코':'San Francisco','시애틀':'Seattle','시카고':'Chicago','댈러스':'Dallas','휴스턴':'Houston','애틀랜타':'Atlanta','워싱턴 D.C.':'Washington D.C.','보스턴':'Boston','호놀룰루':'Honolulu',
+  '토론토':'Toronto','밴쿠버':'Vancouver','몬트리올':'Montreal','캘거리':'Calgary',
+  '런던':'London','맨체스터':'Manchester','에든버러':'Edinburgh',
+  '파리':'Paris','리옹':'Lyon','마르세유':'Marseille',
+  '베를린':'Berlin','뮌헨':'Munich','프랑크푸르트':'Frankfurt','함부르크':'Hamburg',
+  '로마':'Rome','밀라노':'Milan','마드리드':'Madrid','바르셀로나':'Barcelona','암스테르담':'Amsterdam',
+  '모스크바':'Moscow','블라디보스토크':'Vladivostok',
+  '시드니':'Sydney','멜버른':'Melbourne','브리즈번':'Brisbane','퍼스':'Perth','오클랜드':'Auckland',
+  '하노이':'Hanoi','호치민':'Ho Chi Minh City','다낭':'Da Nang','방콕':'Bangkok','치앙마이':'Chiang Mai',
+  '마닐라':'Manila','세부':'Cebu','자카르타':'Jakarta','발리(덴파사르)':'Bali (Denpasar)','싱가포르':'Singapore','쿠알라룸푸르':'Kuala Lumpur',
+  '뉴델리':'New Delhi','뭄바이':'Mumbai','두바이':'Dubai','아부다비':'Abu Dhabi','이스탄불':'Istanbul',
+  '상파울루':'São Paulo','리우데자네이루':'Rio de Janeiro','멕시코시티':'Mexico City','부에노스아이레스':'Buenos Aires'
+};
 const _titleCase = s => s.replace(/\b[a-z]/g, c => c.toUpperCase());
-const cityEn = x => _titleCase(romanize(x.replace(/\([^)]*\)/g, '').trim()).toLowerCase());
+const cityEn = x => CITY_EN[x] || _titleCase(romanize(x.replace(/\([^)]*\)/g, '').trim()).toLowerCase());
 const geoLabel = (x, isCountry) => LANG === 'en' ? (isCountry ? (COUNTRY_EN[x] || x) : cityEn(x)) : x;
 const TT = (ko, en) => LANG === 'en' ? en : ko;
 function cityOptions(cities) {
@@ -4552,6 +4572,7 @@ showTab('synth');
 /* ---------- 언어 토글 (KO ⇄ EN) — data-en / data-en-ph / data-en-html 기반 (LANG은 위에서 선언) ---------- */
 function applyLang() {
   document.documentElement.setAttribute('lang', LANG);
+  document.body.classList.toggle('lang-en', LANG === 'en');
   try { if (typeof fillCountries === 'function') { fillCountries(); fillCities(); } } catch (e) {}
   try { if (typeof gFillCountries === 'function') { gFillCountries(); gFillCities(); } } catch (e) {}
   document.querySelectorAll('[data-en]').forEach(el => {
