@@ -585,114 +585,114 @@ gtag('config', 'G-L7QPQ5GGL7');
     <p class="fsub" data-en="Your chart (명식) maps the moment you were born into characters and stars. The more you enter, the sharper the cross-reading of all three systems.">명식(命式) — 태어난 순간을 글자와 별로 옮긴 당신의 지도입니다. 자세히 넣을수록 세 체계의 교차 해석이 정밀해집니다</p>
 
     <div class="fgroup" style="border-top:none;padding-top:0;margin-top:0">
-      <p class="glabel">이름</p>
+      <p class="glabel" data-en="Name">이름</p>
       <div class="frow">
         <div class="field">
-          <label for="name">한글 이름</label>
-          <input type="text" id="name" autocomplete="name" placeholder="김하늘">
+          <label for="name" data-en="Korean name">한글 이름</label>
+          <input type="text" id="name" autocomplete="name" placeholder="김하늘" data-en-ph="Haneul Kim">
         </div>
         <div class="field">
-          <label for="ename">영문 이름 <span style="color:var(--dim)">(astrology · 수비학)</span></label>
+          <label for="ename" data-en-html="English name <span style=&quot;color:var(--dim)&quot;>(astrology · numerology)</span>">영문 이름 <span style="color:var(--dim)">(astrology · 수비학)</span></label>
           <input type="text" id="ename" placeholder="Haneul Kim">
         </div>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">영문 이름을 비우면 한글 이름을 로마자로 자동 변환해 사용합니다.</p>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="Leave the English name blank and we'll romanize your Korean name automatically.">영문 이름을 비우면 한글 이름을 로마자로 자동 변환해 사용합니다.</p>
       <div class="field" style="max-width:200px;margin-top:14px">
-        <label for="gender">성별</label>
+        <label for="gender" data-en="Gender">성별</label>
         <select id="gender">
-          <option value="">선택 안 함</option>
-          <option value="F">여성</option>
-          <option value="M">남성</option>
+          <option value="" data-en="Prefer not to say">선택 안 함</option>
+          <option value="F" data-en="Female">여성</option>
+          <option value="M" data-en="Male">남성</option>
         </select>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:6px;word-break:keep-all">장성(이끄는 별) · 도화(끌어당기는 별) 같은 타고난 표식을 풀 때 반영됩니다.</p>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:6px;word-break:keep-all" data-en="Used to read innate markers like Jangseong (the leader star) and Dohwa (the charm star), and to set the direction of your luck cycles.">장성(이끄는 별) · 도화(끌어당기는 별) 같은 타고난 표식을 풀 때 반영됩니다.</p>
     </div>
 
     <div class="fgroup">
-      <p class="glabel">태어난 순간</p>
+      <p class="glabel" data-en="Birth moment">태어난 순간</p>
       <div class="field">
-        <label for="dateNum">생년월일 — 숫자 8자리</label>
+        <label for="dateNum" data-en="Date of birth — 8 digits">생년월일 — 숫자 8자리</label>
         <div class="dselrow2">
-          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19980801" maxlength="10" aria-describedby="err" aria-label="생년월일 숫자 8자리">
+          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19980801" data-en-ph="e.g. 19980801" maxlength="10" aria-describedby="err" aria-label="생년월일 숫자 8자리">
           <select id="cal" aria-label="양력·음력 선택">
-            <option value="solar">양력</option>
-            <option value="lunar">음력 (평달)</option>
-            <option value="lunarLeap">음력 (윤달)</option>
+            <option value="solar" data-en="Solar">양력</option>
+            <option value="lunar" data-en="Lunar">음력 (평달)</option>
+            <option value="lunarLeap" data-en="Lunar (leap)">음력 (윤달)</option>
           </select>
         </div>
-        <p class="hint">숫자만 쭉 치면 됩니다 — 1998.08.01처럼 자동으로 정리돼요.</p>
-        <p class="err" id="err" role="alert">생년월일을 입력해주세요.</p>
+        <p class="hint" data-en="Just type the digits — it formats itself, like 1998.08.01.">숫자만 쭉 치면 됩니다 — 1998.08.01처럼 자동으로 정리돼요.</p>
+        <p class="err" id="err" role="alert" data-en="Please enter your date of birth.">생년월일을 입력해주세요.</p>
       </div>
       <div class="field">
-        <label for="time">태어난 시간 — 숫자 4자리</label>
-        <input type="text" id="time" inputmode="numeric" placeholder="예: 1830 (오후 6시 30분)" maxlength="5" style="max-width:220px">
-        <label class="check"><input type="checkbox" id="notime"> 태어난 시간을 몰라요</label>
-        <p class="hint">시간까지 알면 첫인상 자리(상승 별자리)와 시간의 기둥까지 더 깊게 읽을 수 있어요.</p>
+        <label for="time" data-en="Time of birth — 4 digits">태어난 시간 — 숫자 4자리</label>
+        <input type="text" id="time" inputmode="numeric" placeholder="예: 1830 (오후 6시 30분)" data-en-ph="e.g. 1830 (6:30 pm)" maxlength="5" style="max-width:220px">
+        <label class="check"><input type="checkbox" id="notime"> <span data-en="I don't know my birth time">태어난 시간을 몰라요</span></label>
+        <p class="hint" data-en="With the time, we can also read your rising sign (first impression) and the hour pillar — a deeper layer.">시간까지 알면 첫인상 자리(상승 별자리)와 시간의 기둥까지 더 깊게 읽을 수 있어요.</p>
       </div>
     </div>
 
     <div class="fgroup">
-      <p class="glabel">태어난 곳</p>
+      <p class="glabel" data-en="Birthplace">태어난 곳</p>
       <div class="frow">
         <div class="field">
-          <label for="country">나라</label>
+          <label for="country" data-en="Country">나라</label>
           <select id="country"></select>
         </div>
         <div class="field">
-          <label for="city">도시</label>
+          <label for="city" data-en="City">도시</label>
           <select id="city"></select>
         </div>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">목록에 없으면 가장 가까운 큰 도시를 고르세요. 태어난 곳에 따라 그 순간의 하늘이 달라져 계산에 쓰입니다.</p>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="Not listed? Pick the nearest big city. Your birthplace changes the sky at that moment, which we use in the calculation.">목록에 없으면 가장 가까운 큰 도시를 고르세요. 태어난 곳에 따라 그 순간의 하늘이 달라져 계산에 쓰입니다.</p>
     </div>
 
     <div class="fgroup">
-      <p class="glabel">뿌리 — 부모님 (선택)</p>
+      <p class="glabel" data-en="Roots — Parents (optional)">뿌리 — 부모님 (선택)</p>
       <div class="frow parentrow">
         <div class="field">
-          <label for="father">아버지 성함</label>
-          <input type="text" id="father" placeholder="김영호">
+          <label for="father" data-en="Father's name">아버지 성함</label>
+          <input type="text" id="father" placeholder="김영호" data-en-ph="Youngho Kim">
         </div>
         <div class="field">
-          <label for="fatherNum">아버지 생년월일</label>
-          <input type="text" id="fatherNum" inputmode="numeric" placeholder="예: 19680312" maxlength="10" aria-label="아버지 생년월일 숫자 8자리">
+          <label for="fatherNum" data-en="Father's date of birth">아버지 생년월일</label>
+          <input type="text" id="fatherNum" inputmode="numeric" placeholder="예: 19680312" data-en-ph="e.g. 19680312" maxlength="10" aria-label="아버지 생년월일 숫자 8자리">
         </div>
         <div class="field">
-          <label for="fatherCal">달력</label>
-          <select id="fatherCal"><option value="solar">양력</option><option value="lunar">음력</option><option value="lunarLeap">음력 윤달</option></select>
+          <label for="fatherCal" data-en="Calendar">달력</label>
+          <select id="fatherCal"><option value="solar" data-en="Solar">양력</option><option value="lunar" data-en="Lunar">음력</option><option value="lunarLeap" data-en="Lunar (leap)">음력 윤달</option></select>
         </div>
       </div>
       <div class="frow parentrow">
         <div class="field">
-          <label for="mother">어머니 성함</label>
-          <input type="text" id="mother" placeholder="장수현">
+          <label for="mother" data-en="Mother's name">어머니 성함</label>
+          <input type="text" id="mother" placeholder="장수현" data-en-ph="Suhyun Jang">
         </div>
         <div class="field">
-          <label for="motherNum">어머니 생년월일</label>
-          <input type="text" id="motherNum" inputmode="numeric" placeholder="예: 19710624" maxlength="10" aria-label="어머니 생년월일 숫자 8자리">
+          <label for="motherNum" data-en="Mother's date of birth">어머니 생년월일</label>
+          <input type="text" id="motherNum" inputmode="numeric" placeholder="예: 19710624" data-en-ph="e.g. 19710624" maxlength="10" aria-label="어머니 생년월일 숫자 8자리">
         </div>
         <div class="field">
-          <label for="motherCal">달력</label>
-          <select id="motherCal"><option value="solar">양력</option><option value="lunar">음력</option><option value="lunarLeap">음력 윤달</option></select>
+          <label for="motherCal" data-en="Calendar">달력</label>
+          <select id="motherCal"><option value="solar" data-en="Solar">양력</option><option value="lunar" data-en="Lunar">음력</option><option value="lunarLeap" data-en="Lunar (leap)">음력 윤달</option></select>
         </div>
       </div>
-      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px">성함만 넣어도 리딩이 가능합니다. 생년월일까지 넣으면 부모님에게 물려받은 기운과 두 분과의 관계까지 깊게 읽습니다.</p>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="A name alone is enough. Add birth dates too, and we read the energy you inherited and your relationship with each parent more deeply.">성함만 넣어도 리딩이 가능합니다. 생년월일까지 넣으면 부모님에게 물려받은 기운과 두 분과의 관계까지 깊게 읽습니다.</p>
     </div>
 
     <button type="submit" class="btn" data-en="Start Reading">리딩 시작</button>
 
     <div style="margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px">
-      <label class="check" style="margin:0"><input type="checkbox" id="remember"> 이 브라우저에 입력 정보 기억하기 <span style="color:var(--dim)">(내 기기에만 저장 · 서버 전송 없음)</span></label>
-      <button type="button" id="forget" style="display:none;background:none;border:none;padding:0;font:inherit;font-size:12px;color:var(--dim);text-decoration:underline;cursor:pointer">저장된 정보 지우기</button>
+      <label class="check" style="margin:0"><input type="checkbox" id="remember"> <span data-en="Remember my inputs in this browser">이 브라우저에 입력 정보 기억하기</span> <span style="color:var(--dim)" data-en="(stored on this device only · never sent to a server)">(내 기기에만 저장 · 서버 전송 없음)</span></label>
+      <button type="button" id="forget" style="display:none;background:none;border:none;padding:0;font:inherit;font-size:12px;color:var(--dim);text-decoration:underline;cursor:pointer" data-en="Clear saved info">저장된 정보 지우기</button>
     </div>
 
     <div class="privacy">
-      <p class="ptitle">개인정보 안내</p>
-      <p>입력하신 모든 정보(이름 · 생년월일 · 출생 시간 · 출생지 · 성별 · 가족 정보)는 별도의 가입 절차 없이 지금 사용 중인 브라우저 안에서만 계산에 사용됩니다. 이 <b>리딩 정보는 서버로 전송되거나 수집 · 기록되지 않고</b>, 제3자에게 제공되지 않습니다. 기본적으로 페이지를 닫거나 새로고침하면 입력 내용은 즉시 사라집니다. 「이 브라우저에 입력 정보 기억하기」를 직접 켠 경우에만 입력값이 지금 사용 중인 브라우저 안에 저장되며(이 경우에도 서버 전송은 없습니다), 「저장된 정보 지우기」로 언제든 삭제할 수 있습니다. 다만 <b>방문 통계 확인을 위해 Google Analytics를 사용</b>하며, 이 과정에서 접속 기기 · 방문 경로 같은 익명 방문 데이터와 쿠키가 수집될 수 있습니다 — <b>당신이 입력한 생년월일 · 이름 등 리딩 정보는 여기에 포함되지 않습니다.</b> 리딩 결과는 오락 및 참고 목적으로만 제공됩니다.</p>
+      <p class="ptitle" data-en="Privacy">개인정보 안내</p>
+      <p data-en-html="Everything you enter (name · date of birth · birth time · birthplace · gender · family info) is used only inside the browser you're using right now, with no sign-up. This <b>reading data is never sent to a server, collected, or logged</b>, and is never shared with third parties. By default it disappears the moment you close or refresh the page. Only if you turn on «Remember my inputs in this browser» is it stored on this device (still never sent to a server), and you can delete it anytime with «Clear saved info». That said, we <b>use Google Analytics to see visit statistics</b>, which may collect anonymous visit data and cookies such as device and referral path — <b>the birth date, name, and other reading data you enter are not included in this.</b> Readings are provided for entertainment and reference only.">입력하신 모든 정보(이름 · 생년월일 · 출생 시간 · 출생지 · 성별 · 가족 정보)는 별도의 가입 절차 없이 지금 사용 중인 브라우저 안에서만 계산에 사용됩니다. 이 <b>리딩 정보는 서버로 전송되거나 수집 · 기록되지 않고</b>, 제3자에게 제공되지 않습니다. 기본적으로 페이지를 닫거나 새로고침하면 입력 내용은 즉시 사라집니다. 「이 브라우저에 입력 정보 기억하기」를 직접 켠 경우에만 입력값이 지금 사용 중인 브라우저 안에 저장되며(이 경우에도 서버 전송은 없습니다), 「저장된 정보 지우기」로 언제든 삭제할 수 있습니다. 다만 <b>방문 통계 확인을 위해 Google Analytics를 사용</b>하며, 이 과정에서 접속 기기 · 방문 경로 같은 익명 방문 데이터와 쿠키가 수집될 수 있습니다 — <b>당신이 입력한 생년월일 · 이름 등 리딩 정보는 여기에 포함되지 않습니다.</b> 리딩 결과는 오락 및 참고 목적으로만 제공됩니다.</p>
     </div>
   </form>
 
-  <p class="epi page-epi">사람들은 높은 산과 바다의 큰 물결과 별들의 길을 보러 떠나면서,<br>정작 자기 자신은 지나쳐 간다.<span class="src">— 1,600년 전의 어느 고백에서</span></p>
+  <p class="epi page-epi" data-en-html="People set out to marvel at mountain heights, the great waves of the sea, the long courses of rivers, the paths of the stars —<br>and pass themselves by without wondering.<span class=&quot;src&quot;>— from a confession 1,600 years ago</span>">사람들은 높은 산과 바다의 큰 물결과 별들의 길을 보러 떠나면서,<br>정작 자기 자신은 지나쳐 간다.<span class="src">— 1,600년 전의 어느 고백에서</span></p>
 
   <div id="loading" role="status" aria-live="polite">
     <div class="lmark" aria-hidden="true">山</div>
@@ -921,14 +921,14 @@ gtag('config', 'G-L7QPQ5GGL7');
     </section>
 
     <footer>
-      <p class="epi" style="margin:0 auto 20px;text-align:center">사람은 자기 안에, 자기가 다 알지 못하는 넓이를 가지고 있다.<br>이 리딩이 그 넓이의 한 조각을 비추었기를.</p>
+      <p class="epi" style="margin:0 auto 20px;text-align:center" data-en-html="Each person holds within themselves a vastness they don't fully know.<br>May this reading have lit one corner of it.">사람은 자기 안에, 자기가 다 알지 못하는 넓이를 가지고 있다.<br>이 리딩이 그 넓이의 한 조각을 비추었기를.</p>
       <p>
-        절기의 경계는 하늘에서 해가 지나는 자리(태양 황경 — 입춘은 315°)로, 시주는 출생 도시의 경도와 해시계의 계절 오차(균시차)까지 반영한 실제 태양의 시간(진태양시)으로 계산합니다.<br>
-        천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
-        입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
-        이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        방문 통계 수집을 위해 Google Analytics를 사용합니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.13.0</span><br>
+        <span data-en="Solar-term boundaries are set by the sun's ecliptic longitude (Ipchun = 315°); the hour pillar uses true solar time, adjusting for your birth city's longitude and the seasonal sundial offset (equation of time).">절기의 경계는 하늘에서 해가 지나는 자리(태양 황경 — 입춘은 315°)로, 시주는 출생 도시의 경도와 해시계의 계절 오차(균시차)까지 반영한 실제 태양의 시간(진태양시)으로 계산합니다.</span><br>
+        <span data-en="Celestial positions are approximate, so results near a boundary time may differ. Births in regions/periods with daylight saving time can be off by an hour.">천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.</span><br>
+        <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
+        <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
+        <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
+        <span style="letter-spacing:.2em">SAN v3.13.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
