@@ -928,7 +928,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.13.2</span><br>
+        <span style="letter-spacing:.2em">SAN v3.13.3</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -2198,21 +2198,33 @@ const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',
 
 /* 나라/도시 셀렉트 — 큰 도시를 위로, 나머지는 가나다순 그대로 */
 const CITY_PRIORITY = ['서울', '부산', '인천', '대구', '대전', '광주', '수원', '울산', '용인', '고양', '창원', '성남'];
+let LANG = 'ko';
+try { LANG = localStorage.getItem('san_lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
+const COUNTRY_EN = {'대한민국':'South Korea','일본':'Japan','중국':'China','미국':'United States','캐나다':'Canada','영국':'United Kingdom','프랑스':'France','독일':'Germany','이탈리아':'Italy','스페인':'Spain','네덜란드':'Netherlands','러시아':'Russia','호주':'Australia','뉴질랜드':'New Zealand','베트남':'Vietnam','태국':'Thailand','필리핀':'Philippines','인도네시아':'Indonesia','싱가포르':'Singapore','말레이시아':'Malaysia','인도':'India','아랍에미리트':'United Arab Emirates','튀르키예':'Türkiye','브라질':'Brazil','멕시코':'Mexico','아르헨티나':'Argentina'};
+const _titleCase = s => s.replace(/\b[a-z]/g, c => c.toUpperCase());
+const cityEn = x => _titleCase(romanize(x.replace(/\([^)]*\)/g, '').trim()).toLowerCase());
+const geoLabel = (x, isCountry) => LANG === 'en' ? (isCountry ? (COUNTRY_EN[x] || x) : cityEn(x)) : x;
+const TT = (ko, en) => LANG === 'en' ? en : ko;
 function cityOptions(cities) {
   const names = Object.keys(cities);
+  const opt = x => `<option value="${x}">${geoLabel(x, false)}</option>`;
   const pri = CITY_PRIORITY.filter(n => names.includes(n));
-  if (pri.length < 2) return names.map(x => `<option>${x}</option>`).join('');
+  if (pri.length < 2) return names.map(opt).join('');
   const rest = names.filter(n => !pri.includes(n));
-  return pri.map(x => `<option>${x}</option>`).join('')
-    + '<option disabled>──────────</option>'
-    + rest.map(x => `<option>${x}</option>`).join('');
+  return pri.map(opt).join('') + '<option disabled>──────────</option>' + rest.map(opt).join('');
 }
 const countrySel = $('#country'), citySel = $('#city');
-countrySel.innerHTML = Object.keys(GEO).map(c => `<option>${c}</option>`).join('');
-function fillCities(){
-  citySel.innerHTML = cityOptions(GEO[countrySel.value].cities);
+function fillCountries() {
+  const cur = countrySel.value;
+  countrySel.innerHTML = Object.keys(GEO).map(c => `<option value="${c}"${c === cur ? ' selected' : ''}>${geoLabel(c, true)}</option>`).join('');
 }
-countrySel.addEventListener('change', fillCities);
+function fillCities() {
+  const cur = citySel.value;
+  citySel.innerHTML = cityOptions(GEO[countrySel.value].cities);
+  if (cur && GEO[countrySel.value].cities[cur]) citySel.value = cur;
+}
+fillCountries();
+countrySel.addEventListener('change', () => fillCities());
 fillCities();
 
 /* 연 → 월 → 일 셀렉트 채우기 */
@@ -2247,12 +2259,18 @@ const readTime4 = id => {
 
 /* 궁합 상대 지역 셀렉트 */
 const gCountrySel = $('#gCountry'), gCitySel = $('#gCity');
-gCountrySel.innerHTML = Object.keys(GEO).map(c => `<option>${c}</option>`).join('');
-function fillGCities() {
-  gCitySel.innerHTML = cityOptions(GEO[gCountrySel.value].cities);
+function gFillCountries() {
+  const cur = gCountrySel.value;
+  gCountrySel.innerHTML = Object.keys(GEO).map(c => `<option value="${c}"${c === cur ? ' selected' : ''}>${geoLabel(c, true)}</option>`).join('');
 }
-gCountrySel.addEventListener('change', fillGCities);
-fillGCities();
+function gFillCities() {
+  const cur = gCitySel.value;
+  gCitySel.innerHTML = cityOptions(GEO[gCountrySel.value].cities);
+  if (cur && GEO[gCountrySel.value].cities[cur]) gCitySel.value = cur;
+}
+gFillCountries();
+gCountrySel.addEventListener('change', () => gFillCities());
+gFillCities();
 function getGeo(){
   const c = GEO[countrySel.value];
   const arr = c.cities[citySel.value];
@@ -2314,25 +2332,25 @@ $('#form').addEventListener('submit', e => {
     : lunarToSolar(t.y, t.m, t.d, calv === 'lunarLeap');
 
   const raw = readNum8('dateNum');
-  if (!raw.filled) { showErr('생년월일을 숫자 8자리로 입력해주세요 — 예: 19980801.'); return; }
+  if (!raw.filled) { showErr(TT('생년월일을 숫자 8자리로 입력해주세요 — 예: 19980801.', 'Please enter your date of birth as 8 digits — e.g. 19980801.')); return; }
   const cal = $('#cal').value;
   const solar = toSolar(raw, cal);
   if (!solar) { showErr(cal === 'solar' ? '존재하지 않는 날짜입니다.' : cal === 'lunarLeap' ? '그 해에는 해당 윤달이 없습니다. 달력 선택을 확인해주세요.' : '음력에 없는 날짜입니다.'); return; }
   const {y, m, d} = solar;
 
   const fRaw = readNum8('fatherNum'), mRaw = readNum8('motherNum');
-  if (fRaw.touched && !fRaw.filled) { showErr('아버지 생년월일을 숫자 8자리로 입력해주세요 — 예: 19650208.'); return; }
-  if (mRaw.touched && !mRaw.filled) { showErr('어머니 생년월일을 숫자 8자리로 입력해주세요 — 예: 19670521.'); return; }
+  if (fRaw.touched && !fRaw.filled) { showErr(TT('아버지 생년월일을 숫자 8자리로 입력해주세요 — 예: 19650208.', "Enter father's date of birth as 8 digits — e.g. 19650208.")); return; }
+  if (mRaw.touched && !mRaw.filled) { showErr(TT('어머니 생년월일을 숫자 8자리로 입력해주세요 — 예: 19670521.', "Enter mother's date of birth as 8 digits — e.g. 19670521.")); return; }
   const fDate = fRaw.filled ? toSolar(fRaw, $('#fatherCal').value) : null;
   const mDate = mRaw.filled ? toSolar(mRaw, $('#motherCal').value) : null;
-  if (fRaw.filled && !fDate) { showErr('아버지 생년월일이 올바르지 않습니다.'); return; }
-  if (mRaw.filled && !mDate) { showErr('어머니 생년월일이 올바르지 않습니다.'); return; }
+  if (fRaw.filled && !fDate) { showErr(TT('아버지 생년월일이 올바르지 않습니다.', "Father's date of birth is invalid.")); return; }
+  if (mRaw.filled && !mDate) { showErr(TT('어머니 생년월일이 올바르지 않습니다.', "Mother's date of birth is invalid.")); return; }
   err.style.display = 'none';
 
   let time = null;
   if (!$('#notime').checked) {
     time = readTime4('time');
-    if (time === false) { showErr('태어난 시간은 숫자 4자리로 입력해주세요 — 예: 0930, 1830. 모르면 「몰라요」에 체크하세요.'); return; }
+    if (time === false) { showErr(TT('태어난 시간은 숫자 4자리로 입력해주세요 — 예: 0930, 1830. 모르면 「몰라요」에 체크하세요.', 'Enter birth time as 4 digits — e.g. 0930, 1830. If unknown, check «I don\'t know».')); return; }
   }
   const input = {
     y, m, d, time,
@@ -2355,7 +2373,7 @@ $('#form').addEventListener('submit', e => {
   $('#result').style.display = 'none';
   scrollTo({top: 0, behavior: 'auto'});
 
-  const steps = ['사주를 세우는 중', '별을 읽는 중', '수를 놓는 중', '세 하늘을 겹치는 중'];
+  const steps = LANG === 'en' ? ['Building your chart', 'Reading the stars', 'Laying out the numbers', 'Overlaying the three skies'] : ['사주를 세우는 중', '별을 읽는 중', '수를 놓는 중', '세 하늘을 겹치는 중'];
   let si = 0;
   $('#loadingText').textContent = steps[0];
   const ticker = reduced ? null : setInterval(() => {
@@ -4188,11 +4206,11 @@ function showTab(id) {
 tabLinks.forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.t); }));
 showTab('synth');
 
-/* ---------- 언어 토글 (KO ⇄ EN) — data-en / data-en-ph / data-en-html 기반 ---------- */
-let LANG = 'ko';
-try { LANG = localStorage.getItem('san_lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
+/* ---------- 언어 토글 (KO ⇄ EN) — data-en / data-en-ph / data-en-html 기반 (LANG은 위에서 선언) ---------- */
 function applyLang() {
   document.documentElement.setAttribute('lang', LANG);
+  try { if (typeof fillCountries === 'function') { fillCountries(); fillCities(); } } catch (e) {}
+  try { if (typeof gFillCountries === 'function') { gFillCountries(); gFillCities(); } } catch (e) {}
   document.querySelectorAll('[data-en]').forEach(el => {
     if (el.dataset.ko === undefined) el.dataset.ko = el.textContent;
     el.textContent = LANG === 'en' ? el.dataset.en : el.dataset.ko;
