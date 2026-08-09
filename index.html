@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.15.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.16.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -1348,9 +1348,9 @@ function computeNumerology(y, m, d, nameForNum, currentYear) {
   return {
     lifePath, birthday, personalYear,
     trail: {y: `${y}${chain(y, ry)}`,
-            m: `${m}월${m === rm ? '' : chain(m, rm)}`,
-            d: `${d}일${d === rd ? '' : chain(d, rd)}`,
-            sum: `${ry}(연) + ${rm}(월) + ${rd}(일) = ${ry + rm + rd}${ry + rm + rd !== lifePath ? chain(ry + rm + rd, lifePath) : ''}`},
+            m: `${m}${L('월', '')}${m === rm ? '' : chain(m, rm)}`,
+            d: `${d}${L('일', '')}${d === rd ? '' : chain(d, rd)}`,
+            sum: `${ry}${L('(연)', ' (year)')} + ${rm}${L('(월)', ' (month)')} + ${rd}${L('(일)', ' (day)')} = ${ry + rm + rd}${ry + rm + rd !== lifePath ? chain(ry + rm + rd, lifePath) : ''}`},
     name: nameNumbers(nameForNum)
   };
 }
@@ -4008,11 +4008,11 @@ const PILL_LABEL_EN = {'시주': 'Hour', '일주': 'Day', '월주': 'Month', '�
 
 /* ---- elRelation() result → English name + desc (keyed by the Korean group it returns) ---- */
 const EL_REL_EN = {
-  '비겁': {name: 'a companion (비겁)', desc: 'an energy that stands on your side — feel free to take the lead rather than lean on others'},
-  '식상': {name: 'output (식상)', desc: 'an energy that flows out of you — it loosens the more you make, speak, and express'},
-  '재성': {name: 'wealth (재성)', desc: 'an energy you can gather in — as much as you move, it comes to hand'},
-  '관성': {name: 'authority (관성)', desc: 'an energy that tightens around you — a burden, but pass through it and your standing rises'},
-  '인성': {name: 'resource (인성)', desc: 'an energy that fills you — don’t be afraid to receive help and learning'}
+  '비겁': {name: 'a companion (比劫)', desc: 'an energy that stands on your side — feel free to take the lead rather than lean on others'},
+  '식상': {name: 'output (食傷)', desc: 'an energy that flows out of you — it loosens the more you make, speak, and express'},
+  '재성': {name: 'wealth (財星)', desc: 'an energy you can gather in — as much as you move, it comes to hand'},
+  '관성': {name: 'authority (官星)', desc: 'an energy that tightens around you — a burden, but pass through it and your standing rises'},
+  '인성': {name: 'resource (印星)', desc: 'an energy that fills you — don’t be afraid to receive help and learning'}
 };
 
 /* FUNCTION */
@@ -4214,6 +4214,33 @@ const PARENT_TEXT = {
 const JIJI_HAP = [[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
 const JIJI_CHUNG = [[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]];
 
+/* NEW-EN-DATA — parent/relationship prose for renderRoots (EN).
+   Keys are the 5 ten-god groups: 비겁 / 식상 / 재성 / 관성 / 인성.
+   REL_PAIR_EN & GRP_NICK_EN may also be defined by the compatibility tab;
+   defined here too — dedupe at integration. */
+const GRP_NICK_EN = {
+  비겁: 'peer & rival current',
+  식상: 'the current where I give',
+  재성: 'the current we build together',
+  관성: 'the current that keeps me sharp',
+  인성: 'the current that replenishes me'
+};
+const PARENT_TEXT_EN = {
+  비겁: 'Energy of the same current as yours. Less a parent than a peer standing side by side — you understand each other well, but in shared territory neither yields easily. A respectful distance is the art of this bond.',
+  식상: 'Energy of the seat where you give. Before them you become the one who expresses, tends, and provides. A current where the child cares for the parent — tenderness and burden arrive together, and so does deep affection.',
+  재성: 'Energy you handle and answer for. You learned a sense of reality, resourcefulness, and the solid things of the world from this bond. Less a bond to lean on than one to get things done together.',
+  관성: 'Energy that tempers you. They may have been a difficult, careful presence, but that weight set your stature. The task is not to strive for approval, but to know you have already passed.',
+  인성: 'Energy that replenishes you. Learning, protection, and stability flow in from this bond. A seat you may lean on — you need feel no guilt in receiving help.'
+};
+const REL_PAIR_EN = {
+  비겁: 'A side-by-side bond. Friend and rival at once — you understand each other best, yet clash the moment you want the same thing.',
+  식상: 'A bond where you become the giver. Before this person you want to express, to tend, to make them laugh.',
+  재성: 'A bond you build together. It grows steadiest when you make and answer for something side by side.',
+  관성: 'A bond that keeps you on edge. Not wholly comfortable, but this person raises your stature.',
+  인성: 'A bond that lets you rest. Near them you are replenished — a relationship you may lean on.'
+};
+
+/* ---- 뿌리 (부모님) ---- */
 function renderRoots(inp, mySaju, myNum, now) {
   const body = $('#rootsBody');
   const myDay = mySaju.day;
@@ -4221,12 +4248,12 @@ function renderRoots(inp, mySaju, myNum, now) {
   const pairMatch = (pairs, a, b) => pairs.some(([x, z]) => (a === x && b === z) || (a === z && b === x));
 
   const parents = [
-    {role: '아버지', pos: '연주 — 뿌리의 자리', name: inp.father, date: inp.fatherDate},
-    {role: '어머니', pos: '월주 — 자라난 자리', name: inp.mother, date: inp.motherDate}
+    {role: L('아버지', 'Father'), pos: L('연주 — 뿌리의 자리', 'Year Pillar — the seat of your roots'), name: inp.father, date: inp.fatherDate},
+    {role: L('어머니', 'Mother'), pos: L('월주 — 자라난 자리', 'Month Pillar — the ground you grew in'), name: inp.mother, date: inp.motherDate}
   ].filter(p => p.name || p.date);
 
   if (!parents.length) {
-    body.innerHTML = `<div class="card"><p class="small">입력 폼의 「뿌리 — 부모님」에 성함이나 생년월일을 넣으면 이 자리에서 물려받은 기운을 읽어드립니다. 성함만 넣으면 이름의 수를, 생년월일까지 넣으면 부모님 사주와의 십성 관계 · 오행 보완 · 일지 합충까지 봅니다. 「다시 보기」로 돌아가 입력할 수 있습니다.</p></div>`;
+    body.innerHTML = `<div class="card"><p class="small">${L('입력 폼의 「뿌리 — 부모님」에 성함이나 생년월일을 넣으면 이 자리에서 물려받은 기운을 읽어드립니다. 성함만 넣으면 이름의 수를, 생년월일까지 넣으면 부모님 사주와의 십성 관계 · 오행 보완 · 일지 합충까지 봅니다. 「다시 보기」로 돌아가 입력할 수 있습니다.', 'Add a name or birth date under 「Roots — Parents」 in the form, and I will read the energy you inherited here. With just a name, I read the number of the name; with a birth date too, I read the Ten-God relationship with your parent\'s Four Pillars, the five-element complement, and the day-branch harmony/clash. Go back via 「Review」 to enter it.')}</p></div>`;
     return;
   }
 
@@ -4241,43 +4268,51 @@ function renderRoots(inp, mySaju, myNum, now) {
       const pdk = STEMS[ps.day.stem];
       const tg = tenGod(myDay.stem, ps.day.stem);
       const grp = TG_GROUP[tg];
-      const sign = SIGNS[Math.floor(sunLongitude(julianDate(p.date.y, p.date.m, p.date.d, 3, 0)) / 30)];
+      const signIdx = Math.floor(sunLongitude(julianDate(p.date.y, p.date.m, p.date.d, 3, 0)) / 30);
+      const sign = SIGNS[signIdx];
       const lp = computeNumerology(p.date.y, p.date.m, p.date.d, p.name || '', now.getFullYear()).lifePath;
-      html += `<div class="chips" style="justify-content:flex-start;margin:0 0 14px">
+      html += L(`<div class="chips" style="justify-content:flex-start;margin:0 0 14px">
         <span class="chip">일간 <b>${pdk.k}(${pdk.h})</b></span>
         <span class="chip"><b>${BRANCHES[ps.year.branch].animal}</b>띠</span>
         <span class="chip">태양 <b>${sign.k}</b></span>
         <span class="chip">라이프패스 <b>${lp}</b></span>
-      </div>`;
-      html += `<p>당신의 일간에게 <b style="color:var(--gold-soft)">${tg}(${grp})</b> — ${PARENT_TEXT[grp]}</p>`;
+      </div>`, `<div class="chips" style="justify-content:flex-start;margin:0 0 14px">
+        <span class="chip">Day Master <b>${pdk.h}</b></span>
+        <span class="chip"><b>${ANIMALS_EN[ps.year.branch]}</b> zodiac</span>
+        <span class="chip">Sun <b>${signName(signIdx)}</b></span>
+        <span class="chip">Life Path <b>${lp}</b></span>
+      </div>`);
+      html += L(`<p>당신의 일간에게 <b style="color:var(--gold-soft)">${tg}(${grp})</b> — ${PARENT_TEXT[grp]}</p>`, `<p>To your Day Master, this brings <b style="color:var(--gold-soft)">${TENGOD_NAME_EN[tg]} (${GRP_NICK_EN[grp]})</b> — ${PARENT_TEXT_EN[grp]}</p>`);
       if (pdk.el === weak && mySaju.counts[weak] === 0)
-        html += `<p class="small" style="margin-top:10px">이 분의 오행 ${ELEMENTS[pdk.el].k}(${ELEMENTS[pdk.el].h})은 당신의 명식에서 비어 있는 기운입니다 — 곁에 있는 것만으로 당신의 빈 자리를 채워주는 존재입니다.</p>`;
+        html += L(`<p class="small" style="margin-top:10px">이 분의 오행 ${ELEMENTS[pdk.el].k}(${ELEMENTS[pdk.el].h})은 당신의 명식에서 비어 있는 기운입니다 — 곁에 있는 것만으로 당신의 빈 자리를 채워주는 존재입니다.</p>`, `<p class="small" style="margin-top:10px">Their element, ${ELEMENTS_EN[pdk.el].k}(${ELEMENTS[pdk.el].h}), is the very energy missing from your chart — simply by being near, they fill your empty seat.</p>`);
       else if (pdk.el === STEMS[myDay.stem].el)
-        html += `<p class="small" style="margin-top:10px">일간 오행이 당신과 같은 ${ELEMENTS[pdk.el].k}(${ELEMENTS[pdk.el].h})입니다 — 닮아서 편하고, 닮아서 부딪히는 사이입니다.</p>`;
+        html += L(`<p class="small" style="margin-top:10px">일간 오행이 당신과 같은 ${ELEMENTS[pdk.el].k}(${ELEMENTS[pdk.el].h})입니다 — 닮아서 편하고, 닮아서 부딪히는 사이입니다.</p>`, `<p class="small" style="margin-top:10px">Their Day-Master element is the same as yours, ${ELEMENTS_EN[pdk.el].k}(${ELEMENTS[pdk.el].h}) — alike enough to be at ease, alike enough to clash.</p>`);
       if (pairMatch(JIJI_HAP, myDay.branch, ps.day.branch))
-        html += `<p class="small" style="margin-top:10px">두 분의 일지가 합(合)을 이룹니다 — 말하지 않아도 통하는 자리가 있습니다.</p>`;
+        html += L(`<p class="small" style="margin-top:10px">두 분의 일지가 합(合)을 이룹니다 — 말하지 않아도 통하는 자리가 있습니다.</p>`, `<p class="small" style="margin-top:10px">Your day branches form a harmony (合) — there is a place where you understand each other without words.</p>`);
       else if (pairMatch(JIJI_CHUNG, myDay.branch, ps.day.branch))
-        html += `<p class="small" style="margin-top:10px">두 분의 일지가 충(沖)입니다 — 가깝지만 자주 부딪히는 결. 적당한 거리가 애정을 지킵니다.</p>`;
-      html += `<p class="small" style="margin-top:10px">라이프패스 ${lp} — 당신(${myNum.lifePath})과 ${COMPAT_GROUP(lp) === COMPAT_GROUP(myNum.lifePath) ? '같은 결에 속합니다. 같은 방향을 보는 수입니다.' : '다른 결에 속합니다. 서로 없는 것을 채워주는 수입니다.'}</p>`;
+        html += L(`<p class="small" style="margin-top:10px">두 분의 일지가 충(沖)입니다 — 가깝지만 자주 부딪히는 결. 적당한 거리가 애정을 지킵니다.</p>`, `<p class="small" style="margin-top:10px">Your day branches are in clash (沖) — close, yet often colliding. A measured distance keeps the affection safe.</p>`);
+      const sameLp = COMPAT_GROUP(lp) === COMPAT_GROUP(myNum.lifePath);
+      html += `<p class="small" style="margin-top:10px">${L(`라이프패스 ${lp} — 당신(${myNum.lifePath})과 ${sameLp ? '같은 결에 속합니다. 같은 방향을 보는 수입니다.' : '다른 결에 속합니다. 서로 없는 것을 채워주는 수입니다.'}`, `Life Path ${lp} — with you (${myNum.lifePath}), ${sameLp ? 'it belongs to the same current: numbers that look the same way.' : 'it belongs to a different current: numbers that fill what the other lacks.'}`)}</p>`;
     } else {
       const nn = nameNumbers(p.name);
       if (nn) {
-        html += `<p>표현수 <b style="color:var(--gold-soft)">${nn.expression}</b> · ${NUM_ESSENCE[nn.expression].t} — ${NUM_ESSENCE[nn.expression].k}의 기운이 ${p.pos.split(' — ')[0]}에 흐릅니다.</p>
-        <p class="small" style="margin-top:10px">생년월일까지 입력하면 십성 관계 · 오행 보완 · 일지 합충까지 깊게 읽을 수 있습니다.</p>`;
+        html += L(`<p>표현수 <b style="color:var(--gold-soft)">${nn.expression}</b> · ${NUM_ESSENCE[nn.expression].t} — ${NUM_ESSENCE[nn.expression].k}의 기운이 ${p.pos.split(' — ')[0]}에 흐릅니다.</p>
+        <p class="small" style="margin-top:10px">생년월일까지 입력하면 십성 관계 · 오행 보완 · 일지 합충까지 깊게 읽을 수 있습니다.</p>`, `<p>Expression number <b style="color:var(--gold-soft)">${nn.expression}</b> · ${NUM_ESSENCE_EN[nn.expression].t} — the energy of ${NUM_ESSENCE_EN[nn.expression].k} flows through the ${p.pos.split(' — ')[0]}.</p>
+        <p class="small" style="margin-top:10px">Enter the birth date too and I can read the Ten-God relationship, five-element complement, and day-branch harmony/clash in depth.</p>`);
       } else {
-        html += `<p class="small">이름을 로마자로 변환할 수 없어 수를 계산하지 못했습니다.</p>`;
+        html += L(`<p class="small">이름을 로마자로 변환할 수 없어 수를 계산하지 못했습니다.</p>`, `<p class="small">The name could not be converted to romanization, so no number could be calculated.</p>`);
       }
     }
     cards.push(html + `</div>`);
   }
 
-  if (pSajus['아버지'] && pSajus['어머니']) {
-    const fe = STEMS[pSajus['아버지'].day.stem].el, me = STEMS[pSajus['어머니'].day.stem].el;
-    const rel = fe === me ? `같은 ${ELEMENTS[fe].k}(${ELEMENTS[fe].h}) 오행 — 같은 방향을 보는 두 기둥입니다.`
-      : (fe + 1) % 5 === me ? `아버지의 ${ELEMENTS[fe].k}이 어머니의 ${ELEMENTS[me].k}을 살립니다(상생) — 기운이 아버지에게서 어머니 쪽으로 흐릅니다.`
-      : (me + 1) % 5 === fe ? `어머니의 ${ELEMENTS[me].k}이 아버지의 ${ELEMENTS[fe].k}을 살립니다(상생) — 기운이 어머니에게서 아버지 쪽으로 흐릅니다.`
-      : `서로 견제하는 오행(상극)입니다 — 팽팽한 만큼 서로를 단련시킨 두 기둥입니다.`;
-    cards.push(`<div class="card"><h3>두 기둥 사이</h3><p class="small">${rel}</p><p class="small" style="margin-top:8px">그 사이에서 태어난 당신의 뿌리는 ${fe === me ? '한 갈래로 깊게' : '두 갈래로 넓게'} 내렸습니다.</p></div>`);
+  if (pSajus[L('아버지', 'Father')] && pSajus[L('어머니', 'Mother')]) {
+    const fe = STEMS[pSajus[L('아버지', 'Father')].day.stem].el, me = STEMS[pSajus[L('어머니', 'Mother')].day.stem].el;
+    const rel = fe === me ? L(`같은 ${ELEMENTS[fe].k}(${ELEMENTS[fe].h}) 오행 — 같은 방향을 보는 두 기둥입니다.`, `The same ${ELEMENTS_EN[fe].k}(${ELEMENTS[fe].h}) element — two pillars looking the same way.`)
+      : (fe + 1) % 5 === me ? L(`아버지의 ${ELEMENTS[fe].k}이 어머니의 ${ELEMENTS[me].k}을 살립니다(상생) — 기운이 아버지에게서 어머니 쪽으로 흐릅니다.`, `Father's ${ELEMENTS_EN[fe].k} gives life to Mother's ${ELEMENTS_EN[me].k} (generating) — energy flows from Father toward Mother.`)
+      : (me + 1) % 5 === fe ? L(`어머니의 ${ELEMENTS[me].k}이 아버지의 ${ELEMENTS[fe].k}을 살립니다(상생) — 기운이 어머니에게서 아버지 쪽으로 흐릅니다.`, `Mother's ${ELEMENTS_EN[me].k} gives life to Father's ${ELEMENTS_EN[fe].k} (generating) — energy flows from Mother toward Father.`)
+      : L(`서로 견제하는 오행(상극)입니다 — 팽팽한 만큼 서로를 단련시킨 두 기둥입니다.`, `Elements that check each other (controlling) — as taut as they are, two pillars that tempered each other.`);
+    cards.push(`<div class="card"><h3>${L('두 기둥 사이', 'Between the Two Pillars')}</h3><p class="small">${rel}</p><p class="small" style="margin-top:8px">${L(`그 사이에서 태어난 당신의 뿌리는 ${fe === me ? '한 갈래로 깊게' : '두 갈래로 넓게'} 내렸습니다.`, `Born between them, your roots reached down ${fe === me ? 'deep along a single line' : 'wide along two lines'}.`)}</p></div>`);
   }
   body.innerHTML = cards.join('');
 }
@@ -4555,35 +4590,95 @@ const PLANET_META = [
   ['pluto', '♇', '명왕성', '깊은 변형']
 ];
 
+/* NEW-EN-DATA — consts renderAstro needs that don't yet exist in EN.
+   REUSE (already defined elsewhere, do NOT recreate): SIGNS_EN, signName,
+   SIGN_ESSENCE_EN, ZOD_EL_EN, ZOD_EL_TEXT_EN, MOON_TEXT_EN, RISING_TEXT_EN,
+   EL_REL_EN, ELEMENTS_EN, L. */
+
+/* ---- Sun-sign identity text, index-aligned to SUN_TEXT ---- */
+const SUN_TEXT_EN = [
+  'You are one who begins. A flame never asks where it will leap. Your clumsy charge straight ahead is your most honest language.',
+  'You are one who keeps. You trust only what is built slowly, and you do not easily leave a place once you have taken root. The world of the senses is your temple.',
+  'You were born with two minds. Curiosity is your identity, and words are the hands with which you touch the world. Boredom is your only enemy.',
+  'You are one who holds. Beneath your shell you carry an ocean of feeling. The refuge you build becomes, for someone, the whole world.',
+  'You were born to shine. The stage is everywhere, and your sincerity is always greater than your splendor. The sun rises even without applause.',
+  'You are one who refines. Not perfection but a relentless pursuit of “better” is your way of loving. You are someone who knows that God is in the details.',
+  'You are one who makes balance. You believe beauty and fairness are the same word. Your task is to take everyone’s side without losing your own place.',
+  'You are one who digs deep. You do not trust the surface, and you will not begin unless it is all or nothing. Your silence is not indifference but temperature.',
+  'You are one who departs. The moment you see the horizon, you tie your laces. Freedom is not a hobby to you but oxygen.',
+  'You are one who climbs. Like a goat scaling a winter mountain, you beat time with quiet persistence. Even at the summit, you look to the next peak.',
+  'You come from the future. When everyone looks one way, your gaze turned elsewhere is your coordinate. Difference is not a flaw but a mission.',
+  'You are one without borders. Others’ feelings seep in past your skin. That permeability is not a weakness but your deepest gift.'
+];
+
+/* ---- Sun-sign one-line plain summary, index-aligned to SIGN_PLAIN ---- */
+const SIGN_PLAIN_EN = [
+  'someone who acts the moment they decide, and starts anew by facing things honestly even when clumsy',
+  'someone who builds slowly without rushing, and holds to the end whatever they once decide',
+  'someone full of curiosity and quick with words, who keeps learning new things and cannot bear boredom',
+  'someone warm-hearted and deeply feeling, who gently embraces and protects the people they cherish',
+  'someone who wants to shine before others and gives their whole heart to whatever they do',
+  'someone who attends to the smallest details and keeps refining to become better',
+  'someone who leans to no one side and treasures fairness and harmony',
+  'someone who looks past appearances and digs to the end, pouring their whole heart in once drawn',
+  'someone who hates being tied to one place and longs to set off freely for somewhere new',
+  'someone who endures quietly through hardship and climbs steadily toward a goal, step by step',
+  'someone who thinks differently, looking elsewhere alone when everyone else looks the same way',
+  'someone tender-hearted who feels others’ emotions keenly and takes their troubles as their own'
+];
+
+/* ---- Zodiac modality name, index-aligned to ZOD_MOD (활동/고정/변통궁) ---- */
+const ZOD_MOD_EN = ['Cardinal', 'Fixed', 'Mutable'];
+
+/* ---- Zodiac modality text, index-aligned to ZOD_MOD_TEXT ---- */
+const ZOD_MOD_TEXT_EN = [
+  'the power to start and open',
+  'the power to hold and complete',
+  'the power to adapt and connect'
+];
+
+/* ---- Planet name + role, keyed by PLANET_META key: [name, role] ---- */
+const PLANET_META_EN = {
+  mercury: ['Mercury', 'thought · speech'],
+  venus:   ['Venus', 'love · taste'],
+  mars:    ['Mars', 'drive · desire'],
+  jupiter: ['Jupiter', 'expansion · fortune'],
+  saturn:  ['Saturn', 'responsibility · discipline'],
+  uranus:  ['Uranus', 'upheaval'],
+  neptune: ['Neptune', 'dreams · ideals'],
+  pluto:   ['Pluto', 'deep transformation']
+};
+
+/* FUNCTION */
 function renderAstro(a, geo, ename, saju) {
-  $('#astroDesc').textContent = `${geo.name}의 하늘 기준` + (ename ? ` · ${ename.toUpperCase()}` : '') + ' — 태양은 정체성, 달은 마음, 상승궁은 세상이 처음 보는 당신.';
+  $('#astroDesc').textContent = L(`${geo.name}의 하늘 기준`, `Based on the sky over ${geo.name}`) + (ename ? ` · ${ename.toUpperCase()}` : '') + L(' — 태양은 정체성, 달은 마음, 상승궁은 세상이 처음 보는 당신.', ' — the Sun is identity, the Moon the heart, the Rising the you the world first sees.');
   const adk = STEMS[saju.day.stem];
   const [sunRel] = elRelation(ZOD2EL[a.sun.sign % 4], adk.el);
-  const sunCross = ` 같은 ${SIGNS[a.sun.sign].k} 태양이라도 놓이는 명식마다 다르게 탑니다 — ${adk.k}(${adk.h}) 일간인 당신에게 이 태양은 ${sunRel}의 결, ${REL_HINT[sunRel]}입니다.`;
+  const sunCross = L(` 같은 ${SIGNS[a.sun.sign].k} 태양이라도 놓이는 명식마다 다르게 탑니다 — ${adk.k}(${adk.h}) 일간인 당신에게 이 태양은 ${sunRel}의 결, ${REL_HINT[sunRel]}입니다.`, ` The same ${SIGNS_EN[a.sun.sign]} Sun rides differently on every chart it lands in — for you, a ${adk.h} Day Master, this Sun carries the grain of ${EL_REL_EN[sunRel].name}, ${EL_REL_EN[sunRel].desc}.`);
   const cards = [
-    {role:'SUN · 태양', s: a.sun, text: SUN_TEXT, note: null},
-    {role:'MOON · 달', s: a.moon, text: MOON_TEXT, note: a.timeKnown ? null : '정오 기준 근사 — 경계일엔 이웃 별자리일 수 있어요.'},
-    {role:'RISING · 상승', s: a.rising, text: RISING_TEXT, note: a.rising ? geo.name + ' 기준' : null}
+    {role: L('SUN · 태양', 'SUN · Sun'), s: a.sun, text: L(SUN_TEXT, SUN_TEXT_EN), note: null},
+    {role: L('MOON · 달', 'MOON · Moon'), s: a.moon, text: L(MOON_TEXT, MOON_TEXT_EN), note: a.timeKnown ? null : L('정오 기준 근사 — 경계일엔 이웃 별자리일 수 있어요.', 'Noon-based approximation — on a cusp day it may be the neighboring sign.')},
+    {role: L('RISING · 상승', 'RISING · Rising'), s: a.rising, text: L(RISING_TEXT, RISING_TEXT_EN), note: a.rising ? L(geo.name + ' 기준', `based on ${geo.name}`) : null}
   ];
   $('#big3').innerHTML = cards.map(c => {
     if (!c.s) return `<div class="astro-card"><p class="role">${c.role}</p>
-      <p class="glyph">?</p><p class="sign">시간 미상</p>
-      <p class="desc">상승 별자리는 태어난 시간이 있어야 계산할 수 있어요. 출생 시간은 분 단위로 지평선을 바꿉니다.</p></div>`;
+      <p class="glyph">?</p><p class="sign">${L('시간 미상', 'Time unknown')}</p>
+      <p class="desc">${L('상승 별자리는 태어난 시간이 있어야 계산할 수 있어요. 출생 시간은 분 단위로 지평선을 바꿉니다.', 'The Rising sign can only be calculated with a birth time. Even a minute shifts the horizon.')}</p></div>`;
     const sg = SIGNS[c.s.sign];
     return `<div class="astro-card">
       <p class="role">${c.role}</p>
       <p class="glyph" aria-hidden="true">${sg.g}</p>
-      <p class="sign">${sg.k}</p>
-      <p class="deg">${c.s.deg}° · ${ZOD_EL[c.s.sign % 4]} · ${ZOD_MOD[c.s.sign % 3]}${c.note ? '<br>' + c.note : ''}</p>
-      <p class="desc">${c.role.startsWith('SUN') ? `<span style="color:var(--muted)">한마디로 — ${SIGN_PLAIN[c.s.sign]}.</span><br>` : ''}${c.text[c.s.sign]}${c.role.startsWith('SUN') ? sunCross : ''}</p>
+      <p class="sign">${signName(c.s.sign)}</p>
+      <p class="deg">${c.s.deg}° · ${L(ZOD_EL[c.s.sign % 4], ZOD_EL_EN[c.s.sign % 4])} · ${L(ZOD_MOD[c.s.sign % 3], ZOD_MOD_EN[c.s.sign % 3])}${c.note ? '<br>' + c.note : ''}</p>
+      <p class="desc">${c.role.startsWith('SUN') ? `<span style="color:var(--muted)">${L('한마디로 — ' + SIGN_PLAIN[c.s.sign] + '.', 'In a word — ' + SIGN_PLAIN_EN[c.s.sign] + '.')}</span><br>` : ''}${c.text[c.s.sign]}${c.role.startsWith('SUN') ? sunCross : ''}</p>
     </div>`;
   }).join('');
 
   /* 네이탈 차트 — 전 행성 배치 + 원소·특질 균형 */
   const bodies = [
-    {g:'☉', n:'태양', role:'정체성', s: a.sun},
-    {g:'☽', n:'달', role:'마음', s: a.moon},
-    ...PLANET_META.map(([k, g, n, role]) => ({g, n, role, s: a.planets[k]}))
+    {g:'☉', n:L('태양', 'Sun'), role:L('정체성', 'identity'), s: a.sun},
+    {g:'☽', n:L('달', 'Moon'), role:L('마음', 'heart'), s: a.moon},
+    ...PLANET_META.map(([k, g, n, role]) => ({g, n:L(n, PLANET_META_EN[k][0]), role:L(role, PLANET_META_EN[k][1]), s: a.planets[k]}))
   ];
   const elCnt = [0, 0, 0, 0], modCnt = [0, 0, 0];
   bodies.forEach(b => { elCnt[b.s.sign % 4]++; modCnt[b.s.sign % 3]++; });
@@ -4592,70 +4687,100 @@ function renderAstro(a, geo, ename, saju) {
     <div class="prow">
       <span class="pg" aria-hidden="true">${b.g}</span>
       <span class="pn">${b.n} <i>${b.role}</i></span>
-      <span class="ps">${SIGNS[b.s.sign].k} ${b.s.deg}°</span>
-      <span class="pe">${SIGN_ESSENCE[b.s.sign]}의 결</span>
+      <span class="ps">${signName(b.s.sign)} ${b.s.deg}°</span>
+      <span class="pe">${L(`${SIGN_ESSENCE[b.s.sign]}의 결`, `a grain of ${SIGN_ESSENCE_EN[b.s.sign]}`)}</span>
     </div>`).join('');
   $('#natalCard').innerHTML = `
-    <h3>네이탈 차트 — 태어난 순간의 하늘 지도</h3>
-    <p class="small" style="margin-bottom:12px">열 개의 별이 어느 별자리를 지나고 있었는지 — 각 별은 삶의 다른 영역을 맡습니다.</p>
+    <h3>${L('네이탈 차트 — 태어난 순간의 하늘 지도', 'Natal chart — the sky map of your birth moment')}</h3>
+    <p class="small" style="margin-bottom:12px">${L('열 개의 별이 어느 별자리를 지나고 있었는지 — 각 별은 삶의 다른 영역을 맡습니다.', 'Which sign each of the ten bodies was passing through — each governs a different area of life.')}</p>
     <div class="natal">${rows}</div>
-    <div class="combo"><b>원소 균형</b> — 불 ${elCnt[0]} · 흙 ${elCnt[1]} · 바람 ${elCnt[2]} · 물 ${elCnt[3]}<br>
-      ${ZOD_EL[topEl]}의 별이 가장 많습니다. ${ZOD_EL_TEXT[topEl]} 차트입니다.</div>
-    <div class="combo"><b>특질(기수) 균형</b> — 활동궁 ${modCnt[0]} · 고정궁 ${modCnt[1]} · 변통궁 ${modCnt[2]}<br>
-      ${ZOD_MOD[topMod]}이 우세합니다 — ${ZOD_MOD_TEXT[topMod]}이 이 차트의 기본 동작입니다.</div>
-    <p class="small" style="margin-top:10px;color:var(--dim)">천왕성 · 해왕성 · 명왕성은 느리게 움직이는 세대 행성이라, 비슷한 시기에 태어난 사람들과 자리를 공유합니다.</p>`;
+    <div class="combo"><b>${L('원소 균형', 'Element balance')}</b> — ${L(`불 ${elCnt[0]} · 흙 ${elCnt[1]} · 바람 ${elCnt[2]} · 물 ${elCnt[3]}`, `Fire ${elCnt[0]} · Earth ${elCnt[1]} · Air ${elCnt[2]} · Water ${elCnt[3]}`)}<br>
+      ${L(`${ZOD_EL[topEl]}의 별이 가장 많습니다. ${ZOD_EL_TEXT[topEl]} 차트입니다.`, `You have the most ${ZOD_EL_EN[topEl]} bodies — a chart ${ZOD_EL_TEXT_EN[topEl]}.`)}</div>
+    <div class="combo"><b>${L('특질(기수) 균형', 'Modality balance')}</b> — ${L(`활동궁 ${modCnt[0]} · 고정궁 ${modCnt[1]} · 변통궁 ${modCnt[2]}`, `Cardinal ${modCnt[0]} · Fixed ${modCnt[1]} · Mutable ${modCnt[2]}`)}<br>
+      ${L(`${ZOD_MOD[topMod]}이 우세합니다 — ${ZOD_MOD_TEXT[topMod]}이 이 차트의 기본 동작입니다.`, `${ZOD_MOD_EN[topMod]} dominates — ${ZOD_MOD_TEXT_EN[topMod]} is this chart’s default motion.`)}</div>
+    <p class="small" style="margin-top:10px;color:var(--dim)">${L('천왕성 · 해왕성 · 명왕성은 느리게 움직이는 세대 행성이라, 비슷한 시기에 태어난 사람들과 자리를 공유합니다.', 'Uranus, Neptune, and Pluto are slow-moving generational planets, so you share their placements with everyone born around the same time.')}</p>`;
 }
 
 /* ---- 수비학 ---- */
+/* NEW-EN-DATA */
+const LIFEPATH_TEXT_EN = {
+  1:'You were born unafraid to walk a road alone. You draw strength from a path you make yourself rather than one others laid, so your life\'s task is not "how to follow" but "how to lead without growing lonely." You carry the energy of beginnings — learn to finish, and you are complete.',
+  2:'You were born a connector. You read the faint differences in temperature between people, between hearts, so conflict eases from your presence alone. Your task is to consider yourself as much as you consider others — your "sensitivity" is not a flaw to fix but an instrument.',
+  3:'You were born to express. In speech, writing, laughter — in any form — you feel alive when you bring out what is inside. Your brightness is not lightness but a gift. Your task is to gather your scattered talents into one and push a single thing to the end.',
+  4:'You were born a builder. Your magic is the diligence of laying one brick at a time rather than a dazzling leap, and in the end people stand on the solid things you make. Your task is to forgive the world outside your plans — sometimes collapse, too, is part of the design.',
+  5:'You were born to experience. Stability without freedom and change is a prison to you, so even if life turns direction many times, that is not failure but a voyage. Your task is to learn that freedom and responsibility are not enemies — a ship with an anchor sails farther.',
+  6:'You were born a caretaker. You find deep satisfaction in protecting and nurturing what you love, and people instinctively lean on you. Your task is to tell responsibility apart from sacrifice — a love that empties you to fill others does not last.',
+  7:'You were born to question. You have a mind that digs beneath the visible, and time alone is not loneliness but recharging — you trust the signal of your own inner world over the world\'s noise. Your task is to share what you have understood with the world.',
+  8:'You were born to realize. You carry a vessel made to handle worldly power — the force that turns dreams into form and result rather than leaving them as dreams. Your task is direction, not the scale of power — never forget what you are trying to win for, and you achieve greatly.',
+  9:'You were born to embrace. You hold a compassion that crosses borders and self-interest, and you live a life unusually full of endings and farewells. That is not loss but your role. Your task is to embrace the whole world while still claiming your own share of happiness.',
+  11:'You were born to feel — Master Number 11. You arrive by intuition at answers others reach by calculation. Your sensitive nerves are the price of a high-performance antenna. Your task is to carry the inspiration you receive out into the world without fear — when you light up, the room brightens.',
+  22:'You were born to build big — Master Number 22. You hold the rare combination of not stopping at dreaming an ideal but being able to raise it as a structure in the real world. Your task is not to be overwhelmed by that weight — even a great bridge begins with a single brick.',
+  33:'You were born to love — Master Number 33. Teaching, healing, and lifting others up is the theme of your life. Many become better versions of themselves by passing through you. Your task is to put your own name on the list of those you care for.'
+};
+const NUM_PLAIN_EN = {
+  1:'someone who walks paths others haven\'t, unafraid to start fresh even on their own',
+  2:'someone who softly untangles quarrels between people and is good at connecting one to another',
+  3:'someone most alive when unspooling their own thoughts through speech, writing, or laughter',
+  4:'someone good at making anything sturdy, stacking it up one careful step at a time',
+  5:'someone who comes alive experiencing new things and moving freely rather than staying in one place',
+  6:'someone who naturally looks after and cares for the people and things they hold dear',
+  7:'someone who loves thinking deeply and digging in alone, wanting the real reason behind the surface',
+  8:'someone who turns what they set their mind to into real results, spending their strength on achieving big',
+  9:'someone who embraces people with a broad heart and wraps up well what needs finishing',
+  11:'someone who catches the answer by feel before others do, reacting sensitively even to small things',
+  22:'someone with the power to actually build the big dreams others only keep in their heads',
+  33:'someone who teaches people and soothes aching hearts, giving of what is theirs without reserve'
+};
+
 function renderNumer(n, usedName, curYear, saju, astro) {
-  const lp = NUM_ESSENCE[n.lifePath];
+  const lp = LANG === 'en' ? NUM_ESSENCE_EN[n.lifePath] : NUM_ESSENCE[n.lifePath];
   const ndk = STEMS[saju.day.stem];
   $('#lifepath').innerHTML = `
-    <p class="lrole">LIFE PATH · 인생 경로수</p>
+    <p class="lrole">${L('LIFE PATH · 인생 경로수', 'LIFE PATH')}</p>
     <p class="lnum">${n.lifePath}</p>
     <p class="ltitle">${lp.t}</p>
     <p class="lrole" style="letter-spacing:.14em">${lp.k}</p>
-    <p style="font-size:12px;color:var(--dim);margin-top:10px">생년월일 숫자를 전부 더해 나온 수 — 평생 되풀이되는 인생 숙제의 번호라고 생각하면 됩니다.</p>
-    <p style="margin-bottom:10px;color:var(--muted)">이 번호를 한마디로 하면 — ${NUM_PLAIN[n.lifePath]}.</p>
-    <p>${LIFEPATH_TEXT[n.lifePath]}</p>
-    <p class="small" style="margin-top:12px">같은 ${n.lifePath}번 길을 걷는 사람은 많지만, ${ILGAN_SHORT[ndk.k]}(${ndk.k} 일간)과 ${SIGNS[astro.sun.sign].k}의 온도로 이 길을 걷는 것은 당신의 방식입니다 — 리딩의 다른 장과 겹쳐 읽어야 온전한 지도가 됩니다.</p>
+    <p style="font-size:12px;color:var(--dim);margin-top:10px">${L('생년월일 숫자를 전부 더해 나온 수 — 평생 되풀이되는 인생 숙제의 번호라고 생각하면 됩니다.', 'The number you get by summing every digit of your birth date — think of it as the number of the life-lesson that repeats for a lifetime.')}</p>
+    <p style="margin-bottom:10px;color:var(--muted)">${L(`이 번호를 한마디로 하면 — ${NUM_PLAIN[n.lifePath]}.`, `In a word, this number means — ${NUM_PLAIN_EN[n.lifePath]}.`)}</p>
+    <p>${L(LIFEPATH_TEXT[n.lifePath], LIFEPATH_TEXT_EN[n.lifePath])}</p>
+    <p class="small" style="margin-top:12px">${L(`같은 ${n.lifePath}번 길을 걷는 사람은 많지만, ${ILGAN_SHORT[ndk.k]}(${ndk.k} 일간)과 ${SIGNS[astro.sun.sign].k}의 온도로 이 길을 걷는 것은 당신의 방식입니다 — 리딩의 다른 장과 겹쳐 읽어야 온전한 지도가 됩니다.`, `Many walk this same path ${n.lifePath}, but walking it with the temperature of ${ILGAN_SHORT_EN[ndk.k]} (Day Master ${ndk.h}) and ${signName(astro.sun.sign)} is your own way — it becomes a whole map only when read alongside the other chapters of your reading.`)}</p>
     <details style="max-width:560px;margin:26px auto 0;text-align:left">
-      <summary>계산 과정</summary>
-      <div class="math"><span style="color:var(--dim)">자리 숫자를 한 자리가 될 때까지 계속 더하는 방식입니다.</span><br>연도 ${n.trail.y}<br>월 ${n.trail.m} &nbsp;·&nbsp; 일 ${n.trail.d}<br>${n.trail.sum}${[11,22,33].includes(n.lifePath) ? ' <b style="color:var(--gold-soft)">(11 · 22 · 33은 특별한 마스터 수라 더 줄이지 않습니다)</b>' : ''}</div>
+      <summary>${L('계산 과정', 'How it\'s calculated')}</summary>
+      <div class="math"><span style="color:var(--dim)">${L('자리 숫자를 한 자리가 될 때까지 계속 더하는 방식입니다.', 'You keep summing the digits until a single digit remains.')}</span><br>${L('연도', 'Year')} ${n.trail.y}<br>${L('월', 'Month')} ${n.trail.m} &nbsp;·&nbsp; ${L('일', 'Day')} ${n.trail.d}<br>${n.trail.sum}${[11,22,33].includes(n.lifePath) ? L(' <b style="color:var(--gold-soft)">(11 · 22 · 33은 특별한 마스터 수라 더 줄이지 않습니다)</b>', ' <b style="color:var(--gold-soft)">(11 · 22 · 33 are special master numbers, so they aren\'t reduced further)</b>') : ''}</div>
     </details>`;
 
   const cards = [];
-  cards.push({role:'BIRTHDAY · 생일수', num: n.birthday,
-    desc:'태어난 날이 주는 재능 한 조각. 인생 경로수를 보조하는 도구입니다.',
-    trail:`태어난 일 → ${n.birthday}`});
-  cards.push({role:`PERSONAL YEAR · ${curYear}년 개인 연도수`, num: n.personalYear,
-    desc: NUM_CYCLE[n.personalYear] + '.',
-    trail:`월 + 일 + ${curYear} → ${n.personalYear} (9년 주기)`});
+  cards.push({role: L('BIRTHDAY · 생일수', 'BIRTHDAY'), num: n.birthday,
+    desc: L('태어난 날이 주는 재능 한 조각. 인생 경로수를 보조하는 도구입니다.', 'One shard of talent given by the day you were born — a tool that supports the Life Path number.'),
+    trail: L(`태어난 일 → ${n.birthday}`, `Day of birth → ${n.birthday}`)});
+  cards.push({role: L(`PERSONAL YEAR · ${curYear}년 개인 연도수`, `PERSONAL YEAR · ${curYear}`), num: n.personalYear,
+    desc: (LANG === 'en' ? NUM_CYCLE_EN[n.personalYear] : NUM_CYCLE[n.personalYear]) + '.',
+    trail: L(`월 + 일 + ${curYear} → ${n.personalYear} (9년 주기)`, `Month + Day + ${curYear} → ${n.personalYear} (9-year cycle)`)});
 
   if (n.name) {
-    cards.push({role:'EXPRESSION · 표현수', num: n.name.expression,
-      desc:`이름 전체의 진동 — 세상에 드러나는 당신의 재능과 방식. ${NUM_ESSENCE[n.name.expression].k}의 언어로 말하는 사람입니다.`,
-      trail:`${n.name.roman} 전체 합 ${n.name.sums.all} → ${n.name.expression}`});
-    cards.push({role:'SOUL URGE · 영혼수', num: n.name.soulUrge,
-      desc:`이름의 모음 — 아무에게도 말하지 않은 마음 깊은 곳의 갈망. 당신의 내면은 ${NUM_ESSENCE[n.name.soulUrge].k}를 원합니다.`,
-      trail:`모음(A E I O U) 합 ${n.name.sums.vow} → ${n.name.soulUrge}`});
-    cards.push({role:'PERSONALITY · 성격수', num: n.name.personality,
-      desc:`이름의 자음 — 타인이 처음 보는 당신의 겉모습. 세상은 당신을 ${NUM_ESSENCE[n.name.personality].k}의 인상으로 기억합니다.`,
-      trail:`자음 합 ${n.name.sums.con} → ${n.name.personality}`});
+    cards.push({role: L('EXPRESSION · 표현수', 'EXPRESSION'), num: n.name.expression,
+      desc: L(`이름 전체의 진동 — 세상에 드러나는 당신의 재능과 방식. ${NUM_ESSENCE[n.name.expression].k}의 언어로 말하는 사람입니다.`, `The vibration of your whole name — the talent and manner you show the world. You speak in the language of ${NUM_ESSENCE_EN[n.name.expression].k}.`),
+      trail: L(`${n.name.roman} 전체 합 ${n.name.sums.all} → ${n.name.expression}`, `${n.name.roman} full sum ${n.name.sums.all} → ${n.name.expression}`)});
+    cards.push({role: L('SOUL URGE · 영혼수', 'SOUL URGE'), num: n.name.soulUrge,
+      desc: L(`이름의 모음 — 아무에게도 말하지 않은 마음 깊은 곳의 갈망. 당신의 내면은 ${NUM_ESSENCE[n.name.soulUrge].k}를 원합니다.`, `The vowels of your name — the deep-down longing you tell no one. Inside, you want ${NUM_ESSENCE_EN[n.name.soulUrge].k}.`),
+      trail: L(`모음(A E I O U) 합 ${n.name.sums.vow} → ${n.name.soulUrge}`, `Vowels (A E I O U) sum ${n.name.sums.vow} → ${n.name.soulUrge}`)});
+    cards.push({role: L('PERSONALITY · 성격수', 'PERSONALITY'), num: n.name.personality,
+      desc: L(`이름의 자음 — 타인이 처음 보는 당신의 겉모습. 세상은 당신을 ${NUM_ESSENCE[n.name.personality].k}의 인상으로 기억합니다.`, `The consonants of your name — the outward look others first see. The world remembers you with the impression of ${NUM_ESSENCE_EN[n.name.personality].k}.`),
+      trail: L(`자음 합 ${n.name.sums.con} → ${n.name.personality}`, `Consonants sum ${n.name.sums.con} → ${n.name.personality}`)});
   }
 
   $('#numgrid').innerHTML = cards.map(c => `
     <div class="numcard">
       <p class="nrole">${c.role}</p>
-      <div class="nrow"><span class="nnum">${c.num}</span><span class="nkey">${NUM_ESSENCE[c.num].t}</span></div>
+      <div class="nrow"><span class="nnum">${c.num}</span><span class="nkey">${L(NUM_ESSENCE[c.num].t, NUM_ESSENCE_EN[c.num].t)}</span></div>
       <p class="ndesc">${c.desc}</p>
       <p class="ntrail">${c.trail}</p>
     </div>`).join('') +
     (!n.name ? `<div class="numcard"><p class="nrole">NAME NUMBERS</p>
-      <p class="ndesc" style="margin-top:14px">이름을 입력하면 표현수 · 영혼수 · 성격수까지 계산해 드려요.</p></div>` : '') +
-    (n.name ? `<div class="numcard"><p class="nrole">사용된 이름 표기</p>
+      <p class="ndesc" style="margin-top:14px">${L('이름을 입력하면 표현수 · 영혼수 · 성격수까지 계산해 드려요.', 'Enter your name and I\'ll also calculate your Expression, Soul Urge, and Personality numbers.')}</p></div>` : '') +
+    (n.name ? `<div class="numcard"><p class="nrole">${L('사용된 이름 표기', 'NAME AS USED')}</p>
       <p class="ndesc" style="margin-top:14px;font-size:15px;letter-spacing:.14em">${n.name.roman}</p>
-      <p class="ntrail">${/[가-힣]/.test(usedName) ? '한글은 국어의 로마자 표기법을 단순 적용했습니다. 평소 쓰는 영문 표기가 있다면 영문 이름 칸에 직접 넣어보세요 — 수가 달라질 수 있습니다.' : '입력하신 영문 이름 기준입니다.'}</p></div>` : '');
+      <p class="ntrail">${/[가-힣]/.test(usedName) ? L('한글은 국어의 로마자 표기법을 단순 적용했습니다. 평소 쓰는 영문 표기가 있다면 영문 이름 칸에 직접 넣어보세요 — 수가 달라질 수 있습니다.', 'Korean was romanized by a simple application of the standard romanization rules. If you usually use a different English spelling, enter it directly in the English-name field — the numbers may change.') : L('입력하신 영문 이름 기준입니다.', 'Based on the English name you entered.')}</p></div>` : '');
 }
 
 /* 탭 전환 — 결과를 섹션별 개별 페이지로 */
