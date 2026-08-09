@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.16.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.17.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -2444,15 +2444,18 @@ function render(inp) {
   $('#sumEname').textContent = (name && ename) ? ename.toUpperCase() : '';
   const dayGz = STEMS[saju.day.stem].k + BRANCHES[saju.day.branch].k;
   const yearGz = STEMS[saju.year.stem].k + BRANCHES[saju.year.branch].k;
+  const dayGzH = STEMS[saju.day.stem].h + BRANCHES[saju.day.branch].h;
+  const yearGzH = STEMS[saju.year.stem].h + BRANCHES[saju.year.branch].h;
+  const fpChip = `${STEMS[saju.year.stem].h}${BRANCHES[saju.year.branch].h}·${STEMS[saju.month.stem].h}${BRANCHES[saju.month.branch].h}·${STEMS[saju.day.stem].h}${BRANCHES[saju.day.branch].h} ${SIGNS[astro.sun.sign].g}${astro.sun.deg}°·${num.lifePath}`;
   $('#sumChips').innerHTML = [
-    `${y}. ${m}. ${d}.` + (time ? ` ${String(time.h).padStart(2,'0')}:${String(time.m).padStart(2,'0')}` : '') + (inp.lunarInput ? ' · 음력입력' : ''),
+    `${y}. ${m}. ${d}.` + (time ? ` ${String(time.h).padStart(2,'0')}:${String(time.m).padStart(2,'0')}` : '') + (inp.lunarInput ? L(' · 음력입력', ' · lunar input') : ''),
     geo.name,
-    `만 <b>${age}세</b> · 세는 <b>${koreanAge}세</b>`,
-    `<b>${BRANCHES[saju.year.branch].animal}</b>띠 (${yearGz}년)`,
-    `태양 <b>${SIGNS[astro.sun.sign].k}</b>`,
-    `<b>${dayGz}</b>일주`,
-    `라이프패스 <b>${num.lifePath}</b>`,
-    `나의 지문(사주·태양·수 한 줄) <b>${STEMS[saju.year.stem].h}${BRANCHES[saju.year.branch].h}·${STEMS[saju.month.stem].h}${BRANCHES[saju.month.branch].h}·${STEMS[saju.day.stem].h}${BRANCHES[saju.day.branch].h} ${SIGNS[astro.sun.sign].g}${astro.sun.deg}°·${num.lifePath}</b>`
+    L(`만 <b>${age}세</b> · 세는 <b>${koreanAge}세</b>`, `Age <b>${age}</b> · Korean age <b>${koreanAge}</b>`),
+    L(`<b>${BRANCHES[saju.year.branch].animal}</b>띠 (${yearGz}년)`, `Year of the <b>${ANIMALS_EN[saju.year.branch]}</b> (${yearGzH})`),
+    L(`태양 <b>${SIGNS[astro.sun.sign].k}</b>`, `Sun <b>${SIGNS_EN[astro.sun.sign]}</b>`),
+    L(`<b>${dayGz}</b>일주`, `<b>${dayGzH}</b> Day Pillar`),
+    L(`라이프패스 <b>${num.lifePath}</b>`, `Life Path <b>${num.lifePath}</b>`),
+    L(`나의 지문(사주·태양·수 한 줄) <b>${fpChip}</b>`, `My fingerprint (Four Pillars · Sun · Number) <b>${fpChip}</b>`)
   ].map(c => `<span class="chip">${c}</span>`).join('');
 
   /* 질문 답변용 상태 저장 */
@@ -2768,47 +2771,126 @@ function tagVotes(saju, astro, num) {
   return {tally, sorted};
 }
 
+/* NEW-EN-DATA */
+
+/* --- Element-concentration line (index-aligned to OHAENG_MUCH, 0..4 = Wood/Fire/Earth/Metal/Water) --- */
+const OHAENG_MUCH_EN = {
+  0: 'Wood (木) is strong. As much as the force to stretch outward overflows, the restraint of choosing a direction is what turns this energy into talent.',
+  1: 'Fire (火) is strong. As much as burning expression and passion overflow, knowing how to spend the embers sparingly keeps you shining brightly for a long time.',
+  2: 'Earth (土) is strong. As much as a weighty steadiness overflows, the courage to come down the mountain and move now and then opens new doors.',
+  3: 'Metal (金) is strong. As much as sharp decisiveness overflows, you need the generosity not to turn the blade inward.',
+  4: 'Water (水) is strong. As much as deep wisdom and flexibility overflow, the execution of stepping out of the sea of thought to plant your feet is the key.'
+};
+
+/* --- Headline "first word" prose (same keys as HEADLINE_FIRST; D = default, F = female variant where the KO has one) --- */
+const HEADLINE_FIRST_EN = {
+  jangseong: {
+    D: 'The owner of this chart is not a follower but a leader. The General Star is the star of the general who commands the ranks — fortune opens when you stand where decisions are made, and this chart only chafes when it quietly slots into a board someone else has laid out.',
+    F: 'The owner of this chart is not a follower but a leader. The General Star is the star of the general who commands the ranks — fortune opens when you stand where decisions are made, and this chart only chafes when it quietly slots into a board someone else has laid out. Traditional fortune-telling shunned a woman’s General Star as "too forceful," but that was merely the language of an age that gave women no seat to lead from. Today this star reads as the career power that grips the board, the force of becoming an organization’s center — an energy to use, not one to suppress.'},
+  goegang: {
+    D: 'The star of the chieftain shows first. Brilliance and decisiveness, a charisma that swings between extremes — a chart that shines in seats of responsibility rather than ordinary ones.',
+    F: 'The star of the chieftain shows first. Tradition shunned a woman’s Goegang, but that is an old saying — today it reads as a star of the brilliance and decisiveness that drives the board. A chart that shines in seats of responsibility rather than ordinary ones.'},
+  yangin: {D: 'Someone born gripping a blade. The star of drive that pushes to the extreme is read first — once a direction is set, it accomplishes more greatly than anyone, so where the blade’s edge points is everything in this chart.'},
+  baekho: {D: 'A star of intense energy shows first. The temperament of a contender who grows calmer in the face of crisis — breaking head-on through situations others cannot handle is this chart’s way.'},
+  dohwa: {D: 'Someone whom every gaze lands on first, wherever they are. Peach Blossom is the star of magnetic charm — once guarded against, but now read first as a talent for popularity, branding, and drawing people in.'},
+  yeokma: {D: 'A chart that will not be tied to one place is read first. Someone for whom fortune opens through motion — relocation, travel, changing careers — for whom settling is not the goal and voyaging is the constitution.'},
+  hwagae: {D: 'A star that deepens in solitude shows first. A chart granted the gifts of creation, scholarship, and spirit in exchange for enduring loneliness — time alone is this chart’s powerhouse.'},
+  gwimun: {D: 'An antenna that senses what others cannot is read first. Sensitivity is not a flaw but this chart’s sense organ — a star that turns into genius in work that digs deep.'},
+  cheoneul: {D: 'A chart engraved with the blessing of people. The most powerful benevolent star, the Cheoneul Nobleman — a structure where, at every moment of crisis, someone appears to help is the base color of this chart.'},
+  gongmang: {D: 'The mark of emptiness shows first. A seat that grows calm toward what others cling to — not a lack but an energy of freedom, a chart whose life eases when it finds its satisfaction in spiritual values.'}
+};
+
+/* --- Month general-character line (index-aligned to MONTH_CHAR, branch index 0..11 = 子..亥) --- */
+const MONTH_CHAR_EN = ['the month when night runs deepest', 'the month winter ripens', 'the month spring opens its door', 'the month buds break open', 'the month spring ripens', 'the month summer enters', 'the month the sun stands highest', 'the month summer ripens', 'the month autumn enters', 'the month the harvest clears', 'the month autumn ripens', 'the month winter enters'];
+
+/* --- Sehwa hero character (keyed by KO ten-god, same keys as SEHWA_CHAR; [name, desc]; the hanja glyph is shared with SEHWA_CHAR) --- */
+const SEHWA_CHAR_EN = {
+  '비견': ['Standing', 'the month of standing unshaken'],
+  '겁재': ['Boldness', 'the month of advancing boldly'],
+  '식신': ['Abundance', 'the month of filling up amply'],
+  '상관': ['Color', 'the month of showing your colors'],
+  '편재': ['Wealth', 'the month opportunity flows'],
+  '정재': ['Fruit', 'the month of gathering fruit'],
+  '편관': ['Fortitude', 'the month of holding firm'],
+  '정관': ['Nobility', 'the month your standing rises'],
+  '편인': ['Wisdom', 'the month wisdom brightens'],
+  '정인': ['Virtue', 'the month blessings gather']
+};
+
+/* --- Pillar-position label -> English (mirrors the local posEN inside renderSaju). Module-level so renderHeadline can use it. --- */
+const posEN = w => w.replace(/연지/g, 'Year branch').replace(/월지/g, 'Month branch').replace(/일지/g, 'Day branch').replace(/시지/g, 'Hour branch')
+  .replace(/연주/g, 'Year pillar').replace(/월주/g, 'Month pillar').replace(/일주/g, 'Day pillar').replace(/시주/g, 'Hour pillar');
+
+/* --- English "gyeol" phrase forms (parallel to gyeolForms; a,b are already English tag labels; no KO particles) --- */
+const gyeolFormsEN = [
+  (a, b) => `${a} as footing, toward ${b}`,
+  (a, b) => `between ${a} and ${b}`,
+  (a, b) => `${a} ripened by ${b}`,
+  (a, b) => `${b} upon ${a}`,
+  (a, b) => `from ${a} to ${b}`,
+  (a, b) => `${a} that knows ${b}`
+];
+
 function renderHeadline(inp, saju, astro, num) {
   const el = $('#headline');
   const dk = STEMS[saju.day.stem];
-  const lensLine = `당신의 세 줄 요약 — 타고난 기질은 <b>${ILGAN_SHORT[dk.k]}</b>(사주), 세상을 사는 얼굴은 <b>${SIGNS[astro.sun.sign].k}</b>(별자리), 평생의 큰 숙제는 <b>${NUM_ESSENCE[num.lifePath].t}</b>(수비학)`;
+  const lensLine = L(
+    `당신의 세 줄 요약 — 타고난 기질은 <b>${ILGAN_SHORT[dk.k]}</b>(사주), 세상을 사는 얼굴은 <b>${SIGNS[astro.sun.sign].k}</b>(별자리), 평생의 큰 숙제는 <b>${NUM_ESSENCE[num.lifePath].t}</b>(수비학)`,
+    `Your three-line summary — your innate temperament is <b>${ILGAN_SHORT_EN[dk.k]}</b> (Four Pillars), the face you live the world by is <b>${SIGNS_EN[astro.sun.sign]}</b> (astrology), your lifelong task is <b>${NUM_ESSENCE_EN[num.lifePath].t}</b> (numerology)`);
   const shell = (hanja, name, badge, where, bodyHtml) => `<div class="card headline">
-    <p class="hl-label">첫 마디</p>
+    <p class="hl-label">${L('첫 마디', 'First Word')}</p>
     <div class="hl-main">
       <span class="hl-hanja">${hanja}</span>
       <div><p class="hl-name">${name} <span class="ss-count">${badge}</span></p><p class="hl-where">${where}</p></div>
     </div>
     ${bodyHtml}
-    <div class="hl-lens">${lensLine}. 아래의 모든 풀이는 방금 읽은 「${name.replace(/ ×\d+$/, '')}」 이야기를 바탕에 두고 이어집니다.</div>
+    <div class="hl-lens">${lensLine}${L(`. 아래의 모든 풀이는 방금 읽은 「${name.replace(/ ×\d+$/, '')}」 이야기를 바탕에 두고 이어집니다.`, `. Every reading below builds on the story of 「${name.replace(/ ×\d+$/, '')}」 you just read.`)}</div>
   </div>`;
 
   const {bestS, bs, elScore, domEl, maxC} = headlinePick(saju);
 
   if (elScore > bs && elScore > 0) {
     const e = ELEMENTS[domEl];
-    el.innerHTML = shell(e.h, `${e.k}(${e.h}) 편중`, '구조', `${saju.total}글자 중 ${maxC}자`,
-      `<p>이 사주는 표식보다 쏠림이 먼저 보입니다. ${saju.total}글자 가운데 ${maxC}자가 ${e.k}(${e.h}) — 명식의 비중이 한쪽으로 크게 기울어 있습니다. ${OHAENG_MUCH[domEl]}</p>
-      <p class="small" style="margin-top:10px"><b>왜 이것부터 읽는가</b> — 개별 표식보다 기운의 배분이 삶의 결을 먼저 결정하는 명식이기 때문입니다. 아래 오행 균형 카드에서 전체 배분을 확인하세요.</p>`);
+    el.innerHTML = shell(e.h,
+      L(`${e.k}(${e.h}) 편중`, `${ELEMENTS_EN[domEl].k} (${e.h}) concentration`),
+      L('구조', 'Structure'),
+      L(`${saju.total}글자 중 ${maxC}자`, `${maxC} of ${saju.total} characters`),
+      `<p>${L(`이 사주는 표식보다 쏠림이 먼저 보입니다. ${saju.total}글자 가운데 ${maxC}자가 ${e.k}(${e.h}) — 명식의 비중이 한쪽으로 크게 기울어 있습니다. ${OHAENG_MUCH[domEl]}`, `In this chart, the tilt shows before any mark. Of ${saju.total} characters, ${maxC} are ${ELEMENTS_EN[domEl].k} (${e.h}) — the chart’s weight leans heavily to one side. ${OHAENG_MUCH_EN[domEl]}`)}</p>
+      <p class="small" style="margin-top:10px"><b>${L('왜 이것부터 읽는가', 'Why read this first')}</b> — ${L('개별 표식보다 기운의 배분이 삶의 결을 먼저 결정하는 명식이기 때문입니다. 아래 오행 균형 카드에서 전체 배분을 확인하세요.', 'because in this chart the distribution of energy, more than any single mark, decides the grain of life first. See the full distribution in the Five-Element balance card below.')}</p>`);
     return;
   }
 
   if (!bestS) {
-    el.innerHTML = shell('淸', '맑은 명식', '구조', '표식 없음',
-      `<p>뚜렷한 신살 없이 맑게 흐르는 사주입니다. 극단으로 끌려가는 힘이 적어, 삶의 방향을 스스로 정하는 폭이 넓은 명식 — 그래서 이 사주는 표식이 아니라 일간부터 읽습니다. 당신의 일간은 ${dk.k}(${dk.h}), ${ILGAN_SHORT[dk.k]}입니다.</p>`);
+    el.innerHTML = shell('淸',
+      L('맑은 명식', 'Clear Chart'),
+      L('구조', 'Structure'),
+      L('표식 없음', 'No marks'),
+      `<p>${L(`뚜렷한 신살 없이 맑게 흐르는 사주입니다. 극단으로 끌려가는 힘이 적어, 삶의 방향을 스스로 정하는 폭이 넓은 명식 — 그래서 이 사주는 표식이 아니라 일간부터 읽습니다. 당신의 일간은 ${dk.k}(${dk.h}), ${ILGAN_SHORT[dk.k]}입니다.`, `A chart that flows clear, without any pronounced sinsal. Little force drags you to extremes, so it is a chart with wide room to set your own direction in life — which is why we read it not from marks but from the Day Master. Your Day Master is ${dk.h}, ${ILGAN_SHORT_EN[dk.k]}.`)}</p>`);
     return;
   }
 
   const st = SINSAL_TEXT[bestS.key];
+  const stE = SINSAL_TEXT_EN[bestS.key];
   const ff = HEADLINE_FIRST[bestS.key];
-  const first = ff ? ((inp.gender === 'F' && ff.F) || (inp.gender === 'M' && ff.M) || ff.D) : st.desc;
+  const ffE = HEADLINE_FIRST_EN[bestS.key];
+  const firstKo = ff ? ((inp.gender === 'F' && ff.F) || (inp.gender === 'M' && ff.M) || ff.D) : st.desc;
+  const firstEn = ffE ? ((inp.gender === 'F' && ffE.F) || (inp.gender === 'M' && ffE.M) || ffE.D) : stE.desc;
+  const first = L(firstKo, firstEn);
   const inDay = bestS.where.some(s => s.includes('일'));
-  const reason = (bestS.count > 1 ? `같은 표식이 ${bestS.count}곳에 겹쳐 있고, ` : '')
-    + (inDay ? '나 자신을 뜻하는 일주 자리에 닿아 있어' : '명식의 뿌리 자리에 새겨져 있어')
-    + ' 이 사주에서 가장 도드라지는 글자가 됩니다. 나머지 글자들이 이 별의 영향 아래에서 읽히기 때문에, 이 별부터 읽습니다.';
-  el.innerHTML = shell(st.hanja, `${st.name}${bestS.count > 1 ? ' ×' + bestS.count : ''}`, st.type, bestS.where.join(' · '),
+  const reason = L(
+    (bestS.count > 1 ? `같은 표식이 ${bestS.count}곳에 겹쳐 있고, ` : '')
+      + (inDay ? '나 자신을 뜻하는 일주 자리에 닿아 있어' : '명식의 뿌리 자리에 새겨져 있어')
+      + ' 이 사주에서 가장 도드라지는 글자가 됩니다. 나머지 글자들이 이 별의 영향 아래에서 읽히기 때문에, 이 별부터 읽습니다.',
+    (bestS.count > 1 ? `The same mark overlaps in ${bestS.count} places, and ` : '')
+      + (inDay ? 'it touches the Day-Pillar seat that stands for you yourself, ' : 'it is engraved at the root seat of the chart, ')
+      + 'making it the most prominent character in this chart. Because the remaining characters are read under this star’s influence, we read this star first.');
+  el.innerHTML = shell(st.hanja,
+    L(`${st.name}${bestS.count > 1 ? ' ×' + bestS.count : ''}`, `${stE.name}${bestS.count > 1 ? ' ×' + bestS.count : ''}`),
+    L(st.type, stE.typeLabel),
+    L(bestS.where.join(' · '), bestS.where.map(posEN).join(' · ')),
     `<p>${first}</p>
-    ${bestS.count > 1 ? `<p class="small" style="margin-top:10px">${st.many}</p>` : ''}
-    <p class="small" style="margin-top:10px"><b>왜 이것부터 읽는가</b> — ${reason}</p>`);
+    ${bestS.count > 1 ? `<p class="small" style="margin-top:10px">${L(st.many, stE.many)}</p>` : ''}
+    <p class="small" style="margin-top:10px"><b>${L('왜 이것부터 읽는가', 'Why read this first')}</b> — ${reason}</p>`);
 }
 
 /* ---- 통합 리딩 ---- */
@@ -3315,21 +3397,27 @@ function renderReport(inp, saju, astro, num, f) {
   const dk = STEMS[saju.day.stem];
   const hp = headlinePick(saju);
   const first = hp.elScore > hp.bs && hp.elScore > 0
-    ? `${ELEMENTS[hp.domEl].k}(${ELEMENTS[hp.domEl].h}) 편중 — ${saju.total}글자 중 ${hp.maxC}자가 한 기운`
+    ? L(`${ELEMENTS[hp.domEl].k}(${ELEMENTS[hp.domEl].h}) 편중 — ${saju.total}글자 중 ${hp.maxC}자가 한 기운`,
+        `${ELEMENTS_EN[hp.domEl].k} (${ELEMENTS[hp.domEl].h}) concentration — ${hp.maxC} of ${saju.total} characters are one energy`)
     : hp.bestS
-    ? `${SINSAL_TEXT[hp.bestS.key].name}(${SINSAL_TEXT[hp.bestS.key].tag})${hp.bestS.count > 1 ? ' ×' + hp.bestS.count : ''} — 가장 짙은 ${SINSAL_TEXT[hp.bestS.key].type}`
-    : '맑은 명식 — 표식 없이 스스로 방향을 정하는 사주';
+    ? L(`${SINSAL_TEXT[hp.bestS.key].name}(${SINSAL_TEXT[hp.bestS.key].tag})${hp.bestS.count > 1 ? ' ×' + hp.bestS.count : ''} — 가장 짙은 ${SINSAL_TEXT[hp.bestS.key].type}`,
+        `${SINSAL_TEXT_EN[hp.bestS.key].name} (${SINSAL_TEXT_EN[hp.bestS.key].tag})${hp.bestS.count > 1 ? ' ×' + hp.bestS.count : ''} — the densest ${SINSAL_TEXT_EN[hp.bestS.key].typeLabel}`)
+    : L('맑은 명식 — 표식 없이 스스로 방향을 정하는 사주', 'Clear chart — one that sets its own direction, without marks');
   const mTg = tenGod(saju.day.stem, saju.month.stem);
   let mirror;
   if (astro.rising) {
     const oe = astro.rising.sign % 4, ie = astro.moon.sign % 4;
     mirror = oe === ie
-      ? `겉과 속이 같은 ${ZOD_EL[oe]}의 온도 — 보이는 대로의 사람`
+      ? L(`겉과 속이 같은 ${ZOD_EL[oe]}의 온도 — 보이는 대로의 사람`,
+          `Outside and inside share the ${ZOD_EL_EN[oe]} temperature — a person just as they appear`)
       : ((oe === 0 && ie === 2) || (oe === 2 && ie === 0) || (oe === 1 && ie === 3) || (oe === 3 && ie === 1))
-      ? `겉 ${ZOD_EL[oe]} · 속 ${ZOD_EL[ie]} — 겉이 속을 통역하는 상생의 배치`
-      : `겉 ${ZOD_EL[oe]} · 속 ${ZOD_EL[ie]} — "알고 보니 다른 사람" 타입`;
+      ? L(`겉 ${ZOD_EL[oe]} · 속 ${ZOD_EL[ie]} — 겉이 속을 통역하는 상생의 배치`,
+          `Outside ${ZOD_EL_EN[oe]} · inside ${ZOD_EL_EN[ie]} — a generative layout where the outside interprets the inside`)
+      : L(`겉 ${ZOD_EL[oe]} · 속 ${ZOD_EL[ie]} — "알고 보니 다른 사람" 타입`,
+          `Outside ${ZOD_EL_EN[oe]} · inside ${ZOD_EL_EN[ie]} — the "turns out to be someone else" type`);
   } else {
-    mirror = `겉 월간 ${mTg}의 가면 · 속 달 ${SIGNS[astro.moon.sign].k} — 출생 시간이 있어야 온전히 읽힙니다`;
+    mirror = L(`겉 월간 ${mTg}의 가면 · 속 달 ${SIGNS[astro.moon.sign].k} — 출생 시간이 있어야 온전히 읽힙니다`,
+      `Outside the mask of the month stem ${TENGOD_NAME_EN[mTg]} · inside the ${SIGNS_EN[astro.moon.sign]} Moon — fully read only with a birth time`);
   }
   const tv = tagVotes(saju, astro, num).sorted;
   const top = tv[0];
@@ -3344,52 +3432,74 @@ function renderReport(inp, saju, astro, num, f) {
     (a, b) => `${a}에서 ${b}까지`,
     (a, b) => `${b}${jEul(b)} 아는 ${a}`
   ];
-  const gyeol = gyeolForms[(saju.dayIdx60 + num.lifePath + astro.moon.sign) % gyeolForms.length](lineTag, lineTag2);
+  const gyeolIdx = (saju.dayIdx60 + num.lifePath + astro.moon.sign) % gyeolForms.length;
+  const gyeol = L(
+    gyeolForms[gyeolIdx](lineTag, lineTag2),
+    gyeolFormsEN[gyeolIdx](TAG_NAME_EN[lineTag] || lineTag, TAG_NAME_EN[lineTag2] || lineTag2));
   const weak = saju.counts.indexOf(Math.min(...saju.counts));
   const dom = saju.counts.indexOf(Math.max(...saju.counts));
-  const tsh = t => THEMES[t].name.split(' · ')[0];
+  const tsh = t => L(THEMES[t].name, THEMES_EN[t].name).split(' · ')[0];
   const rows = [
-    ['첫 마디', first],
-    ['거울', mirror],
-    ['굵은 결', `「${top[0]}」 — ${top[1].n}곳의 하늘이 같은 말을 합니다`],
-    ['재료', `일간 ${dk.k}(${dk.h}) · ${ILGAN_SHORT[dk.k]} · 중심 기운 ${ELEMENTS[dom].k}(${ELEMENTS[dom].h})${saju.counts[weak] === 0 ? ` · ${ELEMENTS[weak].k}(${ELEMENTS[weak].h}) 비어 있음` : ''}`],
-    ['세 하늘', `태양 ${SIGNS[astro.sun.sign].k} · 달 ${SIGNS[astro.moon.sign].k} · ${astro.rising ? '상승 ' + SIGNS[astro.rising.sign].k : '상승 시간 미상'}`],
-    ['수', `라이프패스 ${num.lifePath} ${NUM_ESSENCE[num.lifePath].t}${num.name ? ` · 표현 ${num.name.expression} · 영혼 ${num.name.soulUrge} · 성격 ${num.name.personality}` : ''}`],
-    ['표식', hp.sinsal.length ? hp.sinsal.map(x => `${SINSAL_TEXT[x.key].name}(${SINSAL_TEXT[x.key].tag})${x.count > 1 ? '×' + x.count : ''}`).join(' · ') : '없음 — 맑게 흐르는 명식'],
-    ['계절', `오늘 ${tsh(f.periods[0].theme)} · 이번 달 ${tsh(f.periods[2].theme)} · 올해 ${tsh(f.periods[4].theme)}`],
-    ['행운', `${EL_COLOR[weak]} · ${EL_DIR[weak]} · 숫자 ${EL_NUM[weak]}`]
+    [L('첫 마디', 'First Word'), first],
+    [L('거울', 'Mirror'), mirror],
+    [L('굵은 결', 'Bold Grain'), L(`「${top[0]}」 — ${top[1].n}곳의 하늘이 같은 말을 합니다`, `「${TAG_NAME_EN[top[0]] || top[0]}」 — ${top[1].n} skies say the same thing`)],
+    [L('재료', 'Material'), L(
+      `일간 ${dk.k}(${dk.h}) · ${ILGAN_SHORT[dk.k]} · 중심 기운 ${ELEMENTS[dom].k}(${ELEMENTS[dom].h})${saju.counts[weak] === 0 ? ` · ${ELEMENTS[weak].k}(${ELEMENTS[weak].h}) 비어 있음` : ''}`,
+      `Day Master ${dk.h} · ${ILGAN_SHORT_EN[dk.k]} · center energy ${ELEMENTS_EN[dom].k} (${ELEMENTS[dom].h})${saju.counts[weak] === 0 ? ` · ${ELEMENTS_EN[weak].k} (${ELEMENTS[weak].h}) empty` : ''}`)],
+    [L('세 하늘', 'Three Skies'), L(
+      `태양 ${SIGNS[astro.sun.sign].k} · 달 ${SIGNS[astro.moon.sign].k} · ${astro.rising ? '상승 ' + SIGNS[astro.rising.sign].k : '상승 시간 미상'}`,
+      `Sun ${SIGNS_EN[astro.sun.sign]} · Moon ${SIGNS_EN[astro.moon.sign]} · ${astro.rising ? 'Rising ' + SIGNS_EN[astro.rising.sign] : 'Rising — time unknown'}`)],
+    [L('수', 'Numbers'), L(
+      `라이프패스 ${num.lifePath} ${NUM_ESSENCE[num.lifePath].t}${num.name ? ` · 표현 ${num.name.expression} · 영혼 ${num.name.soulUrge} · 성격 ${num.name.personality}` : ''}`,
+      `Life Path ${num.lifePath} ${NUM_ESSENCE_EN[num.lifePath].t}${num.name ? ` · Expression ${num.name.expression} · Soul ${num.name.soulUrge} · Personality ${num.name.personality}` : ''}`)],
+    [L('표식', 'Marks'), hp.sinsal.length
+      ? L(hp.sinsal.map(x => `${SINSAL_TEXT[x.key].name}(${SINSAL_TEXT[x.key].tag})${x.count > 1 ? '×' + x.count : ''}`).join(' · '),
+          hp.sinsal.map(x => `${SINSAL_TEXT_EN[x.key].name} (${SINSAL_TEXT_EN[x.key].tag})${x.count > 1 ? ' ×' + x.count : ''}`).join(' · '))
+      : L('없음 — 맑게 흐르는 명식', 'None — a chart that flows clear')],
+    [L('계절', 'Seasons'), L(
+      `오늘 ${tsh(f.periods[0].theme)} · 이번 달 ${tsh(f.periods[2].theme)} · 올해 ${tsh(f.periods[4].theme)}`,
+      `Today ${tsh(f.periods[0].theme)} · This month ${tsh(f.periods[2].theme)} · This year ${tsh(f.periods[4].theme)}`)],
+    [L('행운', 'Fortune'), L(
+      `${EL_COLOR[weak]} · ${EL_DIR[weak]} · 숫자 ${EL_NUM[weak]}`,
+      `${EL_COLOR_EN[weak]} · ${EL_DIR_EN[weak]} · Number ${EL_NUM[weak]}`)]
   ];
-  const adv = THEMES[f.periods[4].theme].adv;
-  const nameLine = inp.name || inp.ename || '이름 없는 별';
+  const adv = L(THEMES[f.periods[4].theme].adv, THEMES_EN[f.periods[4].theme].adv);
+  const nameLine = inp.name || inp.ename || L('이름 없는 별', 'An unnamed star');
   const metaLine = `${inp.y}. ${inp.m}. ${inp.d}.${inp.time ? ` ${String(inp.time.h).padStart(2, '0')}:${String(inp.time.m).padStart(2, '0')}` : ''} · ${inp.geo.name}`;
-  const fpLine = `${STEMS[saju.day.stem].k}${BRANCHES[saju.day.branch].k}일주 × 태양 ${SIGNS[astro.sun.sign].k} ${astro.sun.deg}° × 라이프패스 ${num.lifePath}`;
+  const fpLine = L(
+    `${STEMS[saju.day.stem].k}${BRANCHES[saju.day.branch].k}일주 × 태양 ${SIGNS[astro.sun.sign].k} ${astro.sun.deg}° × 라이프패스 ${num.lifePath}`,
+    `${STEMS[saju.day.stem].h}${BRANCHES[saju.day.branch].h} Day Pillar × Sun ${SIGNS_EN[astro.sun.sign]} ${astro.sun.deg}° × Life Path ${num.lifePath}`);
   window.REPORT = {rows, adv, nameLine, metaLine, fpLine,
     tal: {
       stemH: dk.h, branchH: BRANCHES[saju.day.branch].h,
-      ilju: `${dk.h}${BRANCHES[saju.day.branch].h} · ${dk.k}${BRANCHES[saju.day.branch].k}`,
-      zodK: SIGNS[astro.sun.sign].k, sunDeg: astro.sun.deg, moonK: SIGNS[astro.moon.sign].k,
-      lp: num.lifePath, lpT: NUM_ESSENCE[num.lifePath].t,
-      domEl: dom, counts: saju.counts.slice(), lineTag, gyeol,
-      line: `${ILGAN_SHORT[dk.k]} · ${SIGN_ESSENCE[astro.sun.sign]}의 온도 · ${NUM_ESSENCE[num.lifePath].t}의 길`,
+      ilju: L(`${dk.h}${BRANCHES[saju.day.branch].h} · ${dk.k}${BRANCHES[saju.day.branch].k}`, `${dk.h}${BRANCHES[saju.day.branch].h}`),
+      zodK: L(SIGNS[astro.sun.sign].k, SIGNS_EN[astro.sun.sign]), sunDeg: astro.sun.deg, moonK: L(SIGNS[astro.moon.sign].k, SIGNS_EN[astro.moon.sign]),
+      lp: num.lifePath, lpT: L(NUM_ESSENCE[num.lifePath].t, NUM_ESSENCE_EN[num.lifePath].t),
+      domEl: dom, counts: saju.counts.slice(), lineTag: L(lineTag, TAG_NAME_EN[lineTag] || lineTag), gyeol,
+      line: L(
+        `${ILGAN_SHORT[dk.k]} · ${SIGN_ESSENCE[astro.sun.sign]}의 온도 · ${NUM_ESSENCE[num.lifePath].t}의 길`,
+        `${ILGAN_SHORT_EN[dk.k]} · the temperature of ${SIGN_ESSENCE_EN[astro.sun.sign]} · the path of ${NUM_ESSENCE_EN[num.lifePath].t}`),
       month: (() => {
         const nowM = new Date();
         const mp = f.periods[2];
         const EN = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+        const koHero = SEHWA_CHAR[mp.saju.tg];
+        const enHero = SEHWA_CHAR_EN[mp.saju.tg];
         return {i: nowM.getMonth() + 1, year: nowM.getFullYear(), en: EN[nowM.getMonth()],
-                gz: mp.saju.gz, tg: mp.saju.tg, pm: f.PM, house: mp.astro.house,
-                themeName: THEMES[mp.theme].name.split(' · ')[0],
-                gzChar: MONTH_CHAR[f.today.month.branch],
-                hero: SEHWA_CHAR[mp.saju.tg],
-                tgHint: (TENGOD_FORTUNE[mp.saju.tg] || '').split(' — ')[0]};
+                gz: L(mp.saju.gz, gzEN(mp.saju.gz)), tg: L(mp.saju.tg, TENGOD_NAME_EN[mp.saju.tg]), pm: f.PM, house: mp.astro.house,
+                themeName: L(THEMES[mp.theme].name, THEMES_EN[mp.theme].name).split(' · ')[0],
+                gzChar: L(MONTH_CHAR[f.today.month.branch], MONTH_CHAR_EN[f.today.month.branch]),
+                hero: (LANG === 'en' && enHero) ? [koHero[0], enHero[0], enHero[1]] : koHero,
+                tgHint: L((TENGOD_FORTUNE[mp.saju.tg] || '').split(' — ')[0], (TENGOD_FORTUNE_EN[mp.saju.tg] || '').split(' — ')[0])};
       })()
     }};
   const nextM = new Date().getMonth() + 2;
   const nx = $('#sehwaNext');
-  if (nx) nx.textContent = `세화는 달마다 새로 그려집니다 — 다음 세화는 ${nextM > 12 ? 1 : nextM}월 1일에 열립니다.`;
+  if (nx) nx.textContent = L(`세화는 달마다 새로 그려집니다 — 다음 세화는 ${nextM > 12 ? 1 : nextM}월 1일에 열립니다.`, `The Sehwa is drawn anew each month — the next one opens on the 1st of ${MONTH_EN[nextM > 12 ? 1 : nextM]}.`);
   const pv = $('#sehwaPrev');
   if (pv) (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { // 세리프 폰트 로드 후 그리기
     const c = buildSehwaCanvas();
-    if (c) pv.innerHTML = `<img src="${c.toDataURL('image/jpeg', .85)}" alt="이달의 세화 미리보기" style="width:min(250px,72%);border:1px solid var(--hairline);box-shadow:0 14px 44px rgba(43,39,33,.14)"><p style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-top:10px">이 그림 한 장이 저장됩니다</p>`;
+    if (c) pv.innerHTML = `<img src="${c.toDataURL('image/jpeg', .85)}" alt="${L('이달의 세화 미리보기', 'This month’s Sehwa preview')}" style="width:min(250px,72%);border:1px solid var(--hairline);box-shadow:0 14px 44px rgba(43,39,33,.14)"><p style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-top:10px">${L('이 그림 한 장이 저장됩니다', 'This single image is what gets saved')}</p>`;
   });
   $('#reportCard').innerHTML = `
     <div class="rephead">
@@ -3511,7 +3621,7 @@ function buildSehwaCanvas() {
   });
   x.strokeStyle = FAINT; x.beginPath(); x.moveTo(bx + bp, yD); x.lineTo(bx + bw - bp, yD); x.stroke();
   x.fillStyle = INK; x.font = `600 10px ${MONO}`; sp(1.5);
-  x.fillText(`「${T.gyeol || T.lineTag}」의 결`, bx + bp, yF);
+  x.fillText(L(`「${T.gyeol || T.lineTag}」의 결`, `Grain of 「${T.gyeol || T.lineTag}」`), bx + bp, yF);
   x.textAlign = 'right'; x.fillText('SAN', bx + bw - bp, yF); sp(0);
   /* 이달 블록 (우상단) — 매달 새로 그려지는 부분: 달의 일반 성격 + 나의 월운 */
   if (M) {
@@ -3519,11 +3629,11 @@ function buildSehwaCanvas() {
     x.fillStyle = pal[4]; x.font = `700 9.5px ${MONO}`; sp(3);
     x.fillText(`${M.en} · EDITION ${String(M.i).padStart(2, '0')}`, W - m, by + 16); sp(0);
     x.fillStyle = INK; x.font = `500 14px ${serifV}`;
-    x.fillText(`${M.gz}월 — ${M.gzChar}`, W - m, by + 46);
+    x.fillText(L(`${M.gz}월 — ${M.gzChar}`, `${M.gz} — ${M.gzChar}`), W - m, by + 46);
     x.fillStyle = DIM; x.font = `500 11.5px ${serifV}`;
-    x.fillText(`당신에게는 ${M.tg}의 달 — ${M.tgHint}`, W - m, by + 70);
-    x.fillText(`행운 수 ${M.pm} · 태양은 당신의 ${M.house}번째 자리`, W - m, by + 92);
-    x.fillText(`이달의 결 「${M.themeName}」`, W - m, by + 114);
+    x.fillText(L(`당신에게는 ${M.tg}의 달 — ${M.tgHint}`, `Your month of ${M.tg} — ${M.tgHint}`), W - m, by + 70);
+    x.fillText(L(`행운 수 ${M.pm} · 태양은 당신의 ${M.house}번째 자리`, `Lucky number ${M.pm} · Sun in your house ${M.house}`), W - m, by + 92);
+    x.fillText(L(`이달의 결 「${M.themeName}」`, `This month’s grain 「${M.themeName}」`), W - m, by + 114);
     x.textAlign = 'left';
   }
   /* 히어로 — 이달의 길자 한 글자를 오브제처럼, 십성 따라 달마다 바뀜 */
@@ -3535,7 +3645,7 @@ function buildSehwaCanvas() {
   x.fillText(hero ? hero[0] : T.stemH, cx, 700);
   x.restore();
   x.fillStyle = DIM;
-  if (hero) { x.font = `500 14.5px ${serifV}`; sp(2); x.fillText(`이달의 길자 「${hero[1]}」 — ${hero[2]}`, cx, 758); sp(0); }
+  if (hero) { x.font = `500 14.5px ${serifV}`; sp(2); x.fillText(L(`이달의 길자 「${hero[1]}」 — ${hero[2]}`, `This month’s character 「${hero[1]}」 — ${hero[2]}`), cx, 758); sp(0); }
   else { x.font = `500 26px ${serifV}`; sp(8); x.fillText(T.branchH, cx, 764); sp(0); }
   /* 나를 표현하는 한 줄 */
   x.fillStyle = '#6d6555'; sp(1);
