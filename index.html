@@ -511,6 +511,9 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .yrcat .ycr{font-size:12px;white-space:nowrap}
 .yrcat .ycl{color:var(--muted);line-height:1.55}
 @media(max-width:560px){.yrcat{grid-template-columns:76px 56px 1fr;gap:6px}}
+.qstrip{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 4px}
+.qstrip .qseg{font-size:12px;color:var(--muted)}
+.qstrip .qseg b{color:var(--ink);font-weight:600;margin-right:2px}
 .atiming{margin-top:14px;padding-top:12px;border-top:1px solid var(--hairline);font-size:13.5px;color:var(--text)}
 .atiming::before{content:"時 ";font-family:var(--serif);color:var(--accent)}
 
@@ -814,6 +817,14 @@ gtag('config', 'G-L7QPQ5GGL7');
       <p class="sec-label">Numerology</p>
       <h2 class="sec-title">수비학</h2>
       <p class="sec-desc">피타고라스는 만물이 수(數)라고 했습니다. 생년월일과 이름을 한 자리 수로 환원해 읽습니다.</p>
+      <div class="card">
+        <h3>수비학이란 — 처음 보는 분을 위해</h3>
+        <p class="small" style="margin-top:8px"><b>한 줄 요약</b> — 숫자마다 고유한 성질이 있다고 보고, 당신의 <b>생년월일과 이름을 숫자로 바꿔</b> 타고난 기질과 인생의 흐름을 읽는 서양의 상징 체계입니다. 사주가 동양의 언어라면, 수비학은 같은 질문을 <b>숫자로 답하는 서양의 언어</b>예요.</p>
+        <div class="combo"><b>어디서 · 언제 시작됐나</b><br>뿌리는 <b>고대 그리스, 기원전 6세기의 수학자이자 철학자 피타고라스</b>입니다. "직각삼각형 정리"로 유명한 그 사람이죠. 그는 "세상의 근원은 수"라 보고 숫자에 성질과 의미를 부여했습니다. 더 거슬러 올라가면 바빌로니아 · 이집트에도 숫자로 뜻을 읽는 전통이 있었고, 오늘날 쓰는 <b>피타고라스식 수비학</b>은 20세기 초 서양에서 지금의 형태로 정리됐습니다.</div>
+        <div class="combo"><b>무엇을 알 수 있나</b><br>· <b>라이프패스(인생 경로수)</b> — 생년월일을 다 더해 나온 수. 타고난 기질과 <b>평생 되풀이되는 인생 숙제</b>를 봅니다.<br>· <b>이름의 수</b> — 표현수(드러나는 재능) · 영혼수(속마음의 갈망) · 성격수(남에게 보이는 인상).<br>· <b>개인 연도수</b> — 그 해에 흐르는 기운(9년 한 주기로 순환).</div>
+        <div class="combo"><b>근거와 원리 — 어떻게 나오나</b><br>방법은 단순합니다. 숫자를 <b>한 자리가 될 때까지 계속 더하는</b> 것. 예를 들어 1990년 6월 15일이면 각 자리를 더해 한 자리로 줄입니다(1+9+9+0 … → 최종 한 자리). 그렇게 나온 <b>1~9의 숫자마다 정해진 성질</b>(1=시작·독립, 2=조화·연결 …)로 사람을 읽습니다. 단, <b>11 · 22 · 33은 마스터 넘버</b>라 더 줄이지 않고 특별하게 봅니다.</div>
+        <p class="small" style="color:var(--dim)">과학적 인과가 아니라 <b>별자리처럼 상징으로 읽는 자기 이해의 도구</b>입니다 — 정답이 아니라, 나를 비춰 보는 하나의 거울로 참고하세요.</p>
+      </div>
       <div class="lifepath" id="lifepath"></div>
       <div class="numgrid" id="numgrid"></div>
     </section>
@@ -824,6 +835,7 @@ gtag('config', 'G-L7QPQ5GGL7');
       <h2 class="sec-title">인생 지도</h2>
       <p class="sec-desc">태어난 순간 정해진 10년 단위의 큰 흐름(대운)과 해마다 바뀌는 기운(세운)을 겹쳐, 지나온 길과 다가올 길을 한 장에 펼칩니다.</p>
       <div class="card" id="lifeGraph"></div>
+      <div class="card" id="lifePast"></div>
       <div class="card" id="lifeYears"></div>
       <div class="card" id="lifePush"></div>
       <div class="card" id="lifePhases"></div>
@@ -906,7 +918,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         천체 위치는 근사 계산이라 경계 시각 부근에서는 실제와 다를 수 있습니다. 서머타임 시행 지역·기간 출생은 1시간 차이가 날 수 있어요.<br>
         입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.<br>
         이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.<br>
-        <span style="letter-spacing:.2em">SAN v3.11.6</span><br>
+        <span style="letter-spacing:.2em">SAN v3.12.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again">다시 보기</button>
@@ -3892,6 +3904,11 @@ const YEAR_TIP = {
   2: ['무리하지 않으면 무난히 흐릅니다', '작게 시작해 지켜보세요', '속도보다 방향을 챙기세요'],
   1: ['벌이기보다 지키는 편이 낫습니다', '성급한 결정은 미루세요', '몸과 마음을 먼저 챙기세요']
 };
+const PAST_TIP = {
+  3: ['크게 벌이고 거둔 해였을 것입니다', '기회를 잡았다면 성과가 컸던 때입니다', '흐름이 크게 밀어준 시기였습니다'],
+  2: ['큰 굴곡 없이 무난히 흘러간 해였습니다', '천천히 다지며 지나온 시기입니다', '눈에 띄진 않아도 쌓인 게 있던 때입니다'],
+  1: ['버티며 힘을 기른 해였을 것입니다', '새로 벌이기보다 지키던 시기입니다', '고비를 넘기며 뿌리를 내린 때입니다']
+};
 const groupOf12 = b => [8, 0, 4].includes(b) ? 0 : [2, 6, 10].includes(b) ? 1 : [5, 9, 1].includes(b) ? 2 : 3;
 function renderLife(inp, saju, astro, num, age, curYear) {
   const dayStem = saju.day.stem;
@@ -4048,6 +4065,36 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     });
     return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, py, cats};
   };
+  /* 지난 3년 회고 — 세운 + 개인연도수 + 실제 분기별 월운 */
+  const yearReadingPast = Y => {
+    const yStem = mod(Y - 4, 10), yBranch = mod(Y - 4, 12);
+    const yTg = tenGod(dayStem, yStem), bTg = tenGod(dayStem, BRANCHES[yBranch].main);
+    const py = pyOf(Y);
+    const cats = YEAR_CATS.map((c, ci) => {
+      const inSet = c.pos.includes(yTg) || c.pos.includes(bTg);
+      const base = Math.max(TG_RATE[yTg], TG_RATE[bTg]);
+      let rating = inSet ? Math.min(3, base + 1) : base;
+      if (rating === 2 && (pSeed + Y + ci) % 4 === 0) rating = 3;
+      const star = inSet ? `${yTg}(${TG_NICK[yTg]}) 세운이 ${c.area}의 자리를 밝혔습니다` : `${c.area}의 별은 조용했고, 흐름은 ${NUM_CYCLE[py].split(' — ')[0]}에 가까웠습니다`;
+      return {k: c.k, rating, line: `${star} — ${PAST_TIP[rating][(pSeed + Y * 7 + ci) % 3]}`};
+    });
+    const qr = [2, 5, 8, 11].map((mm, qi) => {
+      const s = computeSaju(Y, mm, 15, null);
+      const tg = tenGod(dayStem, s.month.stem);
+      return {q: qi + 1, rate: TG_RATE[tg]};
+    });
+    const strongQ = qr.reduce((a, b) => b.rate > a.rate ? b : a);
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, py, cats, qr, strongQ, yTheme: TG_THEME[yTg]};
+  };
+  const past = [curYear - 3, curYear - 2, curYear - 1].map(yearReadingPast);
+  $('#lifePast').innerHTML = `<h3>지난 3년 회고 — ${curYear - 3} · ${curYear - 2} · ${curYear - 1}</h3>`
+    + `<p class="small">다가올 3년과 견주어 보시라고, 지난 3년도 똑같은 방식(사주 세운 · 개인 연도수 · 분기별 월운)으로 되짚었습니다. 실제 그때가 어땠는지 맞춰 보면, 앞으로 3년의 신뢰도도 가늠할 수 있어요.</p>`
+    + past.map(y => `<div class="yrblock">`
+      + `<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}해) · 개인 연도수 ${y.py}</p>`
+      + `<p class="yrflow">${NUM_CYCLE[y.py]} — 그 해 큰 결은 <b>${THEMES[y.yTheme].name}</b>, 특히 <b>${y.strongQ.q}분기</b>에 기운이 가장 셌습니다.</p>`
+      + `<div class="qstrip">${y.qr.map(q => `<span class="qseg"><b>${q.q}분기</b> <span class="hr${q.rate}">${RATE_ICON[q.rate]} ${RATE_WORD[q.rate]}</span></span>`).join('')}</div>`
+      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${RATE_WORD[c.rating]}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
+
   const yrs = [curYear, curYear + 1, curYear + 2].map(yearReading);
   $('#lifeYears').innerHTML = `<h3>다가오는 3년 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`
     + `<p class="small">그 해의 사주 세운과 당신의 수비학 개인 연도수를 겹쳐, 네 갈래로 나눠 읽습니다. 이름과 생년월일, 부모님 정보까지 반영해 당신만의 결로 뽑았습니다.</p>`
