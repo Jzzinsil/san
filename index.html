@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.14.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.15.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -3602,48 +3602,185 @@ $('#saveReport').addEventListener('click', () => {
 });
 
 /* ---- 교차 운세 ---- */
+/* NEW-EN-DATA */
+/* --- Cross-fortune theme keywords + advice (same keys 1-9 as THEMES). Names keep the ' · ' separator so .split(' · ')[0] still yields the short keyword. --- */
+const THEMES_EN = {
+  1: {name: 'Beginnings · Challenge', adv: "Take the first step you've put off. A clumsy start beats a perfect plan."},
+  2: {name: 'Relationship · Cooperation', adv: "Don't strain alone. The key to this season is held not by you but by the person beside you."},
+  3: {name: 'Expression · Creation', adv: "Make it, say it, show it. Fortune moves as much as you bring out what's inside."},
+  4: {name: 'Stability · Substance', adv: "Solid over showy. Tidying, saving, routine — the dull work becomes the greatest fortune."},
+  5: {name: 'Change · Movement', adv: "Don't cling to the familiar spot. A shake-up is not a crisis but a signal to change direction."},
+  6: {name: 'Responsibility · Care', adv: "Take on the responsibility given to you head-on. What you protect now becomes your honor."},
+  7: {name: 'Learning · Inner Life', adv: "Time to slow down and add depth. Study, rest, and listen to the voice within."},
+  8: {name: 'Achievement · Harvest', adv: "A season to reap. Show your results with confidence and ask for your fair share."},
+  9: {name: 'Closure · Transition', adv: "Don't force-hold what is ending. The next season enters through the space you clear."}
+};
+
+/* --- Numerology personal-cycle lines (same keys 1-9 as NUM_CYCLE) --- */
+const NUM_CYCLE_EN = {
+  1: 'The seed current — a tailwind blows on everything newly begun',
+  2: 'The waiting current — don\'t rush; tend to relationships and trust',
+  3: 'The expression current — the more you make, speak, and enjoy, the more doors open',
+  4: 'The foundation current — fortune lies in putting down roots, not in show',
+  5: 'The change current — even an unexpected turn is itself the path',
+  6: 'The care current — the people close to you and what you\'re responsible for take center',
+  7: 'The inward current — the study and reflection that deepen you are what remain',
+  8: 'The harvest current — what you\'ve built returns as results and reward',
+  9: 'The closing current — empty what must be emptied, and the next door appears'
+};
+
+/* --- Ten God fortune line (same 10 Korean keys as TENGOD_FORTUNE) --- */
+const TENGOD_FORTUNE_EN = {
+  '비견': 'A good time to push ahead on your own strength — taking the lead beats collaborating',
+  '겁재': 'Competition and variables attach themselves — go careful with gambles and spending',
+  '식신': 'Energy for making and enjoying — the more your hands move, the more it becomes fortune',
+  '상관': 'You want to shake up the framework — let ideas shine, but polish your words',
+  '편재': 'Opportunity and money move on a large scale — the wider your reach, the better',
+  '정재': 'Energy that piles up steadily — management and substance are the answer',
+  '편관': 'Pressure and challenge come in — don\'t dodge them, meet them head-on',
+  '정관': 'Recognition and responsibility are handed to you — keep to principle and honor follows',
+  '편인': 'Thought grows deeper — good for learning and recharging',
+  '정인': 'Benefactors and support come in — accept the help'
+};
+
+/* --- Transit house meaning (index-aligned to HOUSE_FORTUNE, [0]='') --- */
+const HOUSE_FORTUNE_EN = ['',
+  'the house where the spotlight turns on you yourself',
+  'the house of building up what you own and your resources',
+  'the house of words · learning · nearby movement',
+  'the house of tending home and the roots of the heart',
+  'the house of creation, excitement, and play',
+  'the house of ordering work and health routines',
+  'the house of relationships and partnership',
+  'the house of deep change and reckoning',
+  'the house of far places and great learning',
+  'the house where career and achievement are lit up',
+  'the house of companions and future plans',
+  'the house of rest and inner sorting'];
+
+/* --- Rate word (same keys as RATE_WORD) --- */
+const RATE_WORD_EN = {3: 'Good', 2: 'Fair', 1: 'Caution'};
+
+/* --- Sub-category scores: key (label) + tier lines. Index-aligned to SUBCATS
+       (재물 · 애정 · 직장 · 건강 · 대인). Only key + lines are read in English;
+       tg/themes stay in the Korean SUBCATS which still drives scoring. --- */
+const SUBCATS_EN = [
+  {key: 'Wealth', lines: {
+    3: 'The door for income is open. Settle deferred accounts and negotiations today.',
+    2: 'Quiet, with no big gains or losses. Holding on is the same as earning.',
+    1: 'A day to plug the leaks first. Avoid impulse buys, co-signing, and spur-of-the-moment investing.'}},
+  {key: 'Love', lines: {
+    3: 'The path where hearts pass runs smooth. A word offered first comes back as a good answer.',
+    2: 'An easy flow. Match the other person\'s pace and nothing goes wrong.',
+    1: 'A day misunderstandings arise easily. Don\'t put unconfirmed guesses into words.'}},
+  {key: 'Work', lines: {
+    3: 'You land in a spot where results stand out. Don\'t defer reports and proposals — do them today.',
+    2: 'A day when holding your assigned work is enough. Better not to start something new.',
+    1: 'Easy to clash with superiors and rules. Today, going around beats going straight through.'}},
+  {key: 'Health', lines: {
+    3: 'A day your condition backs you up. A good time to start the workout you\'ve put off.',
+    2: 'Calm as long as you don\'t overdo it. Keep your sleep rhythm.',
+    1: 'A day energy leaks easily. Cut back on overwork and late appointments.'}},
+  {key: 'Social', lines: {
+    3: 'A day a benefactor brushes past. Don\'t brush off the messages that come in.',
+    2: 'A day better spent narrow and deep than wide.',
+    1: 'Words are easily twisted. Go easy on categorical statements.'}}
+];
+
+/* --- Lucky color / direction (index-aligned to EL_COLOR / EL_DIR; EL_NUM stays numeric) --- */
+const EL_COLOR_EN = ['Green', 'Red', 'Yellow', 'White', 'Blue'];
+const EL_DIR_EN = ['East', 'South', 'Center · nearby', 'West', 'North'];
+
+/* --- Period date-label helpers --- */
+const MONTH_EN = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+const WEEKDAY_EN = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+/* --- 12 double-hours named by their branch animal (index-aligned to BRANCHES) --- */
+const ANIMALS_EN = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake',
+  'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+
+/* --- Transiting body name (values of p.astro.who) --- */
+const PLANET_EN = {'달': 'The Moon', '태양': 'The Sun', '목성': 'Jupiter'};
+
+/* --- Per-period Korean labels carried on f.periods, keyed by p.key --- */
+const SAJU_LABEL_EN = {
+  day: "today's day pillar", week: "the midweek (Wednesday) day pillar",
+  month: "this month's pillar", quarter: "the season's energy", year: "this year's grand pillar"
+};
+const NUM_LABEL_EN = {
+  day: 'personal day number', week: 'personal week number', month: 'personal month number',
+  quarter: 'personal quarter number', year: 'personal year number'
+};
+
+/* --- Season name (values of SEASONS) for the quarter ganzhi string --- */
+const SEASON_EN = {'봄': 'Spring', '여름': 'Summer', '가을': 'Autumn', '겨울': 'Winter'};
+
+/* --- Korean stem/branch syllable → hanja, so a ganzhi like "갑자" renders as "甲子" in English --- */
+const STEM_K2H_EN = {갑: '甲', 을: '乙', 병: '丙', 정: '丁', 무: '戊', 기: '己', 경: '庚', 신: '辛', 임: '壬', 계: '癸'};
+const BR_K2H_EN = {자: '子', 축: '丑', 인: '寅', 묘: '卯', 진: '辰', 사: '巳', 오: '午', 미: '未', 신: '申', 유: '酉', 술: '戌', 해: '亥'};
+/* p.saju.gz is either a 2-syllable ganzhi ("갑자") or, for the quarter, "season(element)" ("봄(목)"). */
+const gzEN = (gz, key) => {
+  if (key === 'quarter') {
+    const mm = gz.match(/^(.+?)\((.+?)\)$/);
+    return mm ? `${SEASON_EN[mm[1]] || mm[1]} (${EL_KO2EN[mm[2]] || mm[2]})` : gz;
+  }
+  return (STEM_K2H_EN[gz[0]] || gz[0]) + (BR_K2H_EN[gz[1]] || gz[1]);
+};
+
+/* FUNCTION */
 function renderFortune(f, now, natalSaju, natalTGs) {
   const y = now.getFullYear(), m = now.getMonth() + 1, d = now.getDate();
   const dayStem = natalSaju.day.stem;
   const t = f.today; // 오늘의 사주(일진)
   const dateLabel = {
-    day: `${y}. ${m}. ${d}.`, week: `${m}월 ${f.weekOfMonth}째 주`,
-    month: `${m}월`, quarter: `${f.quarter}분기`, year: `${y}년`
+    day: `${y}. ${m}. ${d}.`,
+    week: L(`${m}월 ${f.weekOfMonth}째 주`, `Week ${f.weekOfMonth} of ${MONTH_EN[m]}`),
+    month: L(`${m}월`, MONTH_EN[m]),
+    quarter: L(`${f.quarter}분기`, `Q${f.quarter}`),
+    year: L(`${y}년`, `${y}`)
   };
   const TENSION_THEMES = [[1,9],[4,5],[3,7],[6,5]];
   const inTension = (a, b) => TENSION_THEMES.some(([x, z]) => (a === x && b === z) || (a === z && b === x));
-  const tn = t => THEMES[t].name;
-  const tShort = t => THEMES[t].name.split(' · ')[0];
+  const tn = t => L(THEMES[t].name, THEMES_EN[t].name);
+  const tShort = t => (LANG === 'en' ? THEMES_EN[t].name : THEMES[t].name).split(' · ')[0];
   const periodCard = (p, extra = '') => {
     const th = THEMES[p.theme];
+    const gzD = LANG === 'en' ? gzEN(p.saju.gz, p.key) : p.saju.gz;
     let agreeLine, splitHtml = '';
-    if (p.agree === 3) agreeLine = '세 체계가 한목소리를 냅니다.';
+    if (p.agree === 3) agreeLine = L('세 체계가 한목소리를 냅니다.', 'All three systems speak with one voice.');
     else if (p.agree === 2) {
-      agreeLine = '세 체계 중 두 곳이 같은 방향을 가리킵니다.';
+      agreeLine = L('세 체계 중 두 곳이 같은 방향을 가리킵니다.', 'Two of the three systems point the same way.');
       const diss = [['사주', p.saju.theme], ['별', p.astro.theme], ['수', p.num.theme]].find(([, t]) => t !== p.theme);
-      if (diss) splitHtml = `<p class="fsplit"><b>갈림 읽기</b> — ${diss[0]}만 <b>${tn(diss[1])}</b>을 가리킵니다. ${inTension(p.theme, diss[1])
+      if (diss) splitHtml = L(
+        `<p class="fsplit"><b>갈림 읽기</b> — ${diss[0]}만 <b>${tn(diss[1])}</b>을 가리킵니다. ${inTension(p.theme, diss[1])
         ? `큰 흐름과 반대로 당기는 기운이니 하루를 둘로 나누세요. 큰 줄기는 ${tShort(p.theme)}으로 가되, ${diss[0]}가 짚는 ${tShort(diss[1])}의 일을 먼저 짧게 정리하고 출발하면 둘 다 삽니다.`
-        : `어긋남이 아니라 방식의 제안입니다. ${tShort(p.theme)}을 하되, ${tShort(diss[1])}의 태도로 하라는 뜻으로 읽으세요.`}</p>`;
+        : `어긋남이 아니라 방식의 제안입니다. ${tShort(p.theme)}을 하되, ${tShort(diss[1])}의 태도로 하라는 뜻으로 읽으세요.`}</p>`,
+        `<p class="fsplit"><b>Where they split</b> — only ${SYS_EN[diss[0]]} points to <b>${tn(diss[1])}</b>. ${inTension(p.theme, diss[1])
+        ? `This pulls against the main current, so split your day in two. Keep the main thread on ${tShort(p.theme)}, but first briefly settle the ${tShort(diss[1])} matters that ${SYS_EN[diss[0]]} flags before you set out, and both survive.`
+        : `This isn't a mismatch but a suggestion of method. Do ${tShort(p.theme)}, but read it as a call to carry it out with the attitude of ${tShort(diss[1])}.`}</p>`);
     } else {
-      agreeLine = '세 시계가 서로 다른 시간을 가리킵니다 — 갈림 자체가 이 시기의 정보입니다.';
-      splitHtml = `<p class="fsplit"><b>갈림 읽기</b> — 현실의 일(사주)은 <b>${tn(p.saju.theme)}</b>, 바깥의 흐름(별)은 <b>${tn(p.astro.theme)}</b>, 안의 주기(수)는 <b>${tn(p.num.theme)}</b>. 하나로 합치려 하지 말고 영역을 나누세요 — 일과 현실은 ${tShort(p.saju.theme)}의 결로, 사람과 기회는 ${tShort(p.astro.theme)}의 결로, 마음의 페이스는 ${tShort(p.num.theme)}의 결로 따로 운용하는 것이 이 시기의 정답입니다.</p>`;
+      agreeLine = L('세 시계가 서로 다른 시간을 가리킵니다 — 갈림 자체가 이 시기의 정보입니다.', 'The three clocks tell different times — the divergence itself is the information of this period.');
+      splitHtml = L(
+        `<p class="fsplit"><b>갈림 읽기</b> — 현실의 일(사주)은 <b>${tn(p.saju.theme)}</b>, 바깥의 흐름(별)은 <b>${tn(p.astro.theme)}</b>, 안의 주기(수)는 <b>${tn(p.num.theme)}</b>. 하나로 합치려 하지 말고 영역을 나누세요 — 일과 현실은 ${tShort(p.saju.theme)}의 결로, 사람과 기회는 ${tShort(p.astro.theme)}의 결로, 마음의 페이스는 ${tShort(p.num.theme)}의 결로 따로 운용하는 것이 이 시기의 정답입니다.</p>`,
+        `<p class="fsplit"><b>Where they split</b> — real-world matters (Four Pillars) point to <b>${tn(p.saju.theme)}</b>, the outer current (Astrology) to <b>${tn(p.astro.theme)}</b>, and the inner cycle (Numerology) to <b>${tn(p.num.theme)}</b>. Don't try to fold them into one — divide by domain: run work and reality in the key of ${tShort(p.saju.theme)}, people and opportunity in the key of ${tShort(p.astro.theme)}, and your inner pace in the key of ${tShort(p.num.theme)}. Running them separately is the right answer for this period.</p>`);
     }
     return `<div class="fcard">
       <div class="fhead">
-        <span class="fperiod">${PERIOD_META[p.key].label} · ${PERIOD_META[p.key].kr}</span>
+        <span class="fperiod">${PERIOD_META[p.key].label}${L(` · ${PERIOD_META[p.key].kr}`, '')}</span>
         <span class="fdate">${dateLabel[p.key]}</span>
       </div>
-      <p class="ftheme">${th.name}</p>
-      <p class="fadvice">${THEMES[p.theme].adv}</p>
+      <p class="ftheme">${L(th.name, THEMES_EN[p.theme].name)}</p>
+      <p class="fadvice">${L(THEMES[p.theme].adv, THEMES_EN[p.theme].adv)}</p>
       <p class="fagree">${agreeLine}</p>
       ${splitHtml}
       ${extra}
       <details>
-        <summary>세 하늘의 근거</summary>
+        <summary>${L('세 하늘의 근거', 'How the three skies read it')}</summary>
         <div class="fev">
-          <div class="frow"><span class="fsys">사주</span><span class="ftxt">${p.saju.label} <b>${p.saju.gz}</b> — 당신에게 <b>${tgLabel(p.saju.tg)}</b>의 기운이 들어옵니다. ${TENGOD_FORTUNE[p.saju.tg]}</span></div>
-          <div class="frow"><span class="fsys">별</span><span class="ftxt">지금 ${p.astro.who}은 당신의 <b>‘${HOUSE_FORTUNE[p.astro.house]}’</b>를 지나는 중입니다 (${SIGNS[p.astro.sign].k}).</span></div>
-          <div class="frow"><span class="fsys">수</span><span class="ftxt">${p.num.label} <b>${p.num.n}</b> — ${NUM_CYCLE[Math.min(p.num.n, 9)]}</span></div>
+          <div class="frow"><span class="fsys">${L('사주', 'Four Pillars')}</span><span class="ftxt">${L(`${p.saju.label} <b>${p.saju.gz}</b> — 당신에게 <b>${tgLabel(p.saju.tg)}</b>의 기운이 들어옵니다. ${TENGOD_FORTUNE[p.saju.tg]}`, `${SAJU_LABEL_EN[p.key]} <b>${gzD}</b> — the energy of <b>${TG_NICK_EN[p.saju.tg]} (${TENGOD_NAME_EN[p.saju.tg]})</b> enters you. ${TENGOD_FORTUNE_EN[p.saju.tg]}`)}</span></div>
+          <div class="frow"><span class="fsys">${L('별', 'Astrology')}</span><span class="ftxt">${L(`지금 ${p.astro.who}은 당신의 <b>‘${HOUSE_FORTUNE[p.astro.house]}’</b>를 지나는 중입니다 (${SIGNS[p.astro.sign].k}).`, `${PLANET_EN[p.astro.who]} is now passing through your <b>‘${HOUSE_FORTUNE_EN[p.astro.house]}’</b> (${signName(p.astro.sign)}).`)}</span></div>
+          <div class="frow"><span class="fsys">${L('수', 'Numerology')}</span><span class="ftxt">${L(`${p.num.label} <b>${p.num.n}</b> — ${NUM_CYCLE[Math.min(p.num.n, 9)]}`, `${NUM_LABEL_EN[p.key]} <b>${p.num.n}</b> — ${NUM_CYCLE_EN[Math.min(p.num.n, 9)]}`)}</span></div>
         </div>
       </details>
     </div>`;
@@ -3667,7 +3804,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
   const hours = Array.from({length: 12}, (_, i) => {
     const st = mod((t.day.stem % 5) * 2 + i, 10);
     const tg = tenGod(dayStem, st);
-    return {i, name: BRANCHES[i].k + '시', tg, rate: TG_RATE[tg],
+    return {i, name: L(BRANCHES[i].k + '시', ANIMALS_EN[i]), tg, rate: TG_RATE[tg],
             range: `${String((23 + i * 2) % 24).padStart(2, '0')}:00–${String((1 + i * 2) % 24).padStart(2, '0')}:00`};
   });
   const nowIdx = Math.floor(mod(now.getHours() * 60 + now.getMinutes() + 60, 1440) / 120);
@@ -3676,7 +3813,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
         <span class="hname">${h.name}</span>
         <span class="htime">${h.range}</span>
         <span class="hrate hr${h.rate}">${RATE_ICON[h.rate]}</span>
-        <span class="hline"><b>${TG_NICK[h.tg]}</b> · ${TENGOD_FORTUNE[h.tg]}</span>
+        <span class="hline"><b>${L(TG_NICK[h.tg], TG_NICK_EN[h.tg])}</b> · ${L(TENGOD_FORTUNE[h.tg], TENGOD_FORTUNE_EN[h.tg])}</span>
       </div>`;
   const good = hours.filter(h => h.rate === 3);
   const luckyHour = good.length ? good[t.dayIdx60 % good.length] : hours[nowIdx];
@@ -3684,28 +3821,28 @@ function renderFortune(f, now, natalSaju, natalTGs) {
   /* 행운 — 명식에서 부족한 오행을 채우는 색·방위·숫자 */
   const weak = natalSaju.counts.indexOf(Math.min(...natalSaju.counts));
   const dayExtra = `
-    <div class="subgrid">${subs.map(s => `
+    <div class="subgrid">${subs.map((s, i) => `
       <div class="subcat">
-        <p class="scname">${s.sc.key}운</p>
+        <p class="scname">${L(s.sc.key + '운', SUBCATS_EN[i].key)}</p>
         <p class="scscore">${s.score}</p>
         <div class="scbar"><i style="width:${s.score}%"></i></div>
       </div>`).join('')}</div>
-    <div class="sublines">${subs.map(s =>
-      `<p><b>${s.sc.key} ${s.score} · ${RATE_WORD[s.tier]}</b> — ${s.sc.lines[s.tier]}</p>`).join('')}</div>
+    <div class="sublines">${subs.map((s, i) =>
+      `<p><b>${L(s.sc.key, SUBCATS_EN[i].key)} ${s.score} · ${L(RATE_WORD[s.tier], RATE_WORD_EN[s.tier])}</b> — ${L(s.sc.lines[s.tier], SUBCATS_EN[i].lines[s.tier])}</p>`).join('')}</div>
     <div class="lucky">
-      <span>행운의 색 · ${EL_COLOR[weak]}</span>
-      <span>방위 · ${EL_DIR[weak]}</span>
-      <span>숫자 · ${EL_NUM[weak]}</span>
-      <span>길한 시간 · ${luckyHour.name} ${luckyHour.range}</span>
+      <span>${L('행운의 색', 'Lucky color')} · ${L(EL_COLOR[weak], EL_COLOR_EN[weak])}</span>
+      <span>${L('방위', 'Direction')} · ${L(EL_DIR[weak], EL_DIR_EN[weak])}</span>
+      <span>${L('숫자', 'Numbers')} · ${EL_NUM[weak]}</span>
+      <span>${L('길한 시간', 'Lucky hour')} · ${luckyHour.name} ${luckyHour.range}</span>
     </div>`;
 
   const hourCard = `<div class="fcard">
     <div class="fhead">
-      <span class="fperiod">HOURLY · 시간대별</span>
-      <span class="fdate">오늘 일진 ${STEMS[t.day.stem].k}${BRANCHES[t.day.branch].k} 기준</span>
+      <span class="fperiod">HOURLY${L(' · 시간대별', '')}</span>
+      <span class="fdate">${L(`오늘 일진 ${STEMS[t.day.stem].k}${BRANCHES[t.day.branch].k} 기준`, `Based on today's day pillar ${STEMS[t.day.stem].h}${BRANCHES[t.day.branch].h}`)}</span>
     </div>
-    <p class="ftheme">시간대별 운세</p>
-    <p class="fagree">하루를 열두 시진으로 나눠, 각 시진의 천간이 당신의 일간에게 어떤 기운인지 읽습니다.</p>
+    <p class="ftheme">${L('시간대별 운세', 'Hourly fortune')}</p>
+    <p class="fagree">${L('하루를 열두 시진으로 나눠, 각 시진의 천간이 당신의 일간에게 어떤 기운인지 읽습니다.', "Dividing the day into twelve double-hours, we read what each hour's heavenly stem brings to your Day Master.")}</p>
     <div class="hourgrid">${hours.map(hourRow).join('')}</div>
   </div>`;
 
@@ -3715,8 +3852,8 @@ function renderFortune(f, now, natalSaju, natalTGs) {
     const dt = new Date(mon); dt.setDate(mon.getDate() + i);
     const s = computeSaju(dt.getFullYear(), dt.getMonth() + 1, dt.getDate(), null);
     const tg = tenGod(dayStem, s.day.stem);
-    return {label: '월화수목금토일'[i], date: `${dt.getMonth() + 1}/${dt.getDate()}`,
-            rate: TG_RATE[tg], kw: THEMES[TG_THEME[tg]].name.split(' · ')[0],
+    return {label: L('월화수목금토일'[i], WEEKDAY_EN[i]), date: `${dt.getMonth() + 1}/${dt.getDate()}`,
+            rate: TG_RATE[tg], kw: (LANG === 'en' ? THEMES_EN[TG_THEME[tg]].name : THEMES[TG_THEME[tg]].name).split(' · ')[0],
             today: dt.getFullYear() === y && dt.getMonth() + 1 === m && dt.getDate() === d};
   });
   const weekExtra = `<div class="weekgrid">${weekDays.map(w => `
@@ -3735,72 +3872,264 @@ function renderFortune(f, now, natalSaju, natalTGs) {
 }
 
 /* ---- 사주 ---- */
+/* NEW-EN-DATA */
+
+/* ---- Five-element balance reading, index-aligned to EL_MEANING/EL_STRONG_SHORT/EL_WEAK_SHORT/EL_TRAIT_TYPE/EL_NEED ---- */
+const EL_MEANING_EN = [
+  'growth · beginning · the force that reaches forward (wood)',
+  'expression · passion · the force that shines out (fire)',
+  'stability · center · the force that endures and holds (earth)',
+  'decision · principle · the force that cuts and refines (metal)',
+  'wisdom · flexibility · the force that seeps and flows (water)'
+];
+const EL_STRONG_SHORT_EN = [
+  'abundant drive that takes the lead, but prone to impatience',
+  'strong passion and expression, dazzling yet quick to tire',
+  'weighty and stable, but slow to change',
+  'firm and principled, but prone to stubbornness',
+  'deep in thought, but action can run late'
+];
+const EL_WEAK_SHORT_EN = [
+  'weak in starting and pushing, so easy to put off — take the first step deliberately',
+  'clumsy at expression, so easy to bottle up — let your feelings out',
+  'the center shakes easily, so routine and a stable base matter especially',
+  'dull at cutting and closing, so set your own standards and deadlines',
+  'short on rest and reflection, so make time to stop on purpose'
+];
+const EL_TRAIT_TYPE_EN = [
+  'a forward-reaching, driving type',
+  'a bright, passionate, expressive type',
+  'a steady type that holds the center',
+  'a decisive type that clearly cuts and closes',
+  'a deeply reflective, wise type'
+];
+const EL_NEED_EN = [
+  'the drive of a fresh start',
+  'expression that draws feelings out',
+  'a stable base and routine',
+  'decision and your own standards',
+  'time for rest and reflection'
+];
+
+/* ---- Day Master long portrait (same keys as ILGAN_TEXT: Korean stem char) ---- */
+const ILGAN_TEXT_EN = {
+  '갑': 'A great tree growing straight toward the sky. You are born with the power to begin and the drive to push forward, and a straight pride that would sooner break than bend. Someone who ends up leading without being asked — yet when you learn suppleness, that great height casts its shade even farther.',
+  '을': 'A vine and a wildflower that find a path even through cracks in the rock. Soft but never weak, you bend to fit the setting yet ultimately grow in the direction you want. A delicacy that reads people’s hearts is your weapon, and that supple will to survive outlasts any hardness.',
+  '병': 'The midday sun. An energy of diffusion that lights its surroundings by mere presence, with a passion and expressiveness that show no matter how you try to hide them. Fair and free of grudges, yet in illuminating everything you sometimes miss your own shadow. Light is warmer when spent sparingly.',
+  '정': 'A candle flame, moonlight, growing clearer in the dark. Rather than lighting the whole world like the sun, you light one person, one task, deeply and warmly. Gentle on the surface, you carry within a wick that does not easily go out, and that focused warmth draws people to you.',
+  '무': 'A great, unmoving mountain. With weighty trust and an embracing nature, you are someone people lean on, not easily shaken and never rushed. Superb at holding the center and mediating, yet a mountain rarely moves itself, so you can be a beat slow before change.',
+  '기': 'The rich soil of a fertile field that makes all things grow. You hold, nurture, and quietly secure the substance of life — a realistic embrace that makes no show. Mild as you seem, you know the boundaries of your own field precisely, and that quiet diligence ends up yielding the greatest harvest.',
+  '경': 'Unrefined iron, the raw ore of a rocky peak. A person of decisiveness, principle, and loyalty, you push through to the end once you decide. Your clean, blade-like way of cutting can draw misunderstanding, but like iron that hardens under the hammer, hardship only completes you.',
+  '신': 'A finished jewel and a keen blade. Born with refined, sophisticated senses and a relentless pursuit of perfection. Strictest with yourself and quick to spot others’ flaws, yet whatever that sharpness polishes always shines.',
+  '임': 'A great sea that takes in every river. Large in scale and wise, you do not easily reveal what you hold within. You flow flexibly, yet once you surge, nothing can stop you. Only those who know the depths ever see this sea’s true face.',
+  '계': 'Spring rain and dawn dew that seep in without a sound. Sensitivity and intuition so developed that you feel even what is left unsaid. Quiet, yet like water boring through rock, by softness you seep all the way to where you want to be. That clear insight is your strength.'
+};
+
+/* ---- Sinsal text (same keys as SINSAL_TEXT). type kept as '살'/'길신' for class/filter parity;
+        typeLabel gives the English badge word. hanja kept. ---- */
+const SINSAL_TEXT_EN = {
+  dohwa:    {name: 'Peach Blossom', hanja: '桃花', type: '살', typeLabel: 'Shadow', tag: 'magnetic charm',
+    desc: 'A star of magnetism that draws people in. An energy that catches every eye — once guarded against, but in this era a precious talent for popularity, branding, and mass appeal.',
+    many: 'Peach Blossom overlaps, so its pull is very strong. A chart where charm itself can become a professional weapon — just set your own boundaries in relationships, since it can draw unwanted attention too.'},
+  yeokma:   {name: 'Post Horse', hanja: '驛馬', type: '살', typeLabel: 'Shadow', tag: 'fortune that opens in motion',
+    desc: 'A star of movement that will not be tied to one place. Someone for whom fortune opens through motion — relocating, travel, going abroad, changing careers.',
+    many: 'Post Horse overlaps, so change itself is the rhythm of your life. A chart that suffocates when forced to settle — don’t suppress the motion; turn it into planned movement and it becomes great strength.'},
+  hwagae:   {name: 'Canopy', hanja: '華蓋', type: '살', typeLabel: 'Shadow', tag: 'talent that deepens in solitude',
+    desc: 'A star of art and spirit that deepens in solitude. In exchange for enduring loneliness, you receive rare gifts of creation, scholarship, and spirituality.',
+    many: 'Canopy overlaps, so time alone is the powerhouse of your talent. What you make in those hours that look like loneliness ends up representing you.'},
+  jangseong:{name: 'General Star', hanja: '將星', type: '길신', typeLabel: 'Blessing', tag: 'leading energy',
+    desc: 'The general’s star that leads the ranks. An energy of command, responsibility, and standing at an organization’s center — you shine most where decisions are made.',
+    many: 'General Star overlaps, so the energy of command is very strong. A chart pushed to the center wherever it goes — avoid the leading seat and your fortune only tightens.'},
+  banan:    {name: 'Mounting Saddle', hanja: '攀鞍', type: '길신', typeLabel: 'Blessing', tag: 'a steady rise',
+    desc: 'A star of advancement, mounting the saddle. As aide to the General Star, it brings promotion, honor, and a stable, steady rise.',
+    many: 'Mounting Saddle overlaps, so the rising fortune is steady. This star’s way is endurance in the saddle rather than a flashy leap.'},
+  geopsal:  {name: 'Robbery Star', hanja: '劫殺', type: '살', typeLabel: 'Shadow', tag: 'losing and rebuilding',
+    desc: 'A star of being stripped and rebuilding. Sharp changes and turning points come often, but it also grants crisis-response and the power to rise again.',
+    many: 'Robbery Star overlaps, so the swings run large. A chart that competes on the speed of rebuilding rather than fearing loss.'},
+  jaesal:   {name: 'Disaster Star', hanja: '災殺', type: '살', typeLabel: 'Shadow', tag: 'the center amid checks',
+    desc: 'A star of restraint, also called the Prison star. You easily stand amid gossip and rivalry, but that also means you stand at the center of the board.',
+    many: 'Disaster Star overlaps, so you often draw checks. You frequently stand where it takes courage to be disliked — but that seat is the important one.'},
+  cheonsal: {name: 'Heaven Star', hanja: '天殺', type: '살', typeLabel: 'Shadow', tag: 'unforeseen tests',
+    desc: 'A star of heaven-sent trials. It teaches humility before unannounced variables, but each time you pass, your vessel grows.',
+    many: 'Heaven Star overlaps, so unforeseen tests come often. Learn not to fight what you cannot control, and this star becomes a teacher that enlarges your vessel.'},
+  jisal:    {name: 'Earth Star', hanja: '地殺', type: '살', typeLabel: 'Shadow', tag: 'growth by moving',
+    desc: 'A star that grows by relocating its ground. An energy that finds opportunity in movement, relocation, and changing surroundings — a younger sibling of the Post Horse.',
+    many: 'Earth Star overlaps, so a chart that struggles to stay long in one place. Every place you move becomes career — don’t treat moving as a loss.'},
+  wolsal:   {name: 'Moon Star', hanja: '月殺', type: '살', typeLabel: 'Shadow', tag: 'a drain that needs rest',
+    desc: 'A star of depletion. Energy leaks easily, so you need the skill of rest — yet it is also the power to bring in the new where you have emptied out.',
+    many: 'Moon Star overlaps, so you drain quickly. Only those who schedule recharging first can use this as a star of renewal.'},
+  mangsin:  {name: 'Self-Undoing', hanja: '亡身', type: '살', typeLabel: 'Shadow', tag: 'strengthened by exposure',
+    desc: 'A star of losing face. Mistakes and exposure feel frightening, but you truly harden only after you have shown your bottom.',
+    many: 'Self-Undoing overlaps, so exposure is hard to avoid. Spend on acknowledgment the effort you would spend on hiding, and this star becomes charm instead.'},
+  yukhae:   {name: 'Six Harms', hanja: '六害', type: '살', typeLabel: 'Shadow', tag: 'thanks that still leaves hurt',
+    desc: 'Six Harms is the mark of a relationship that quietly costs both sides — your energy leaks into someone else’s gain, so even giving needs a boundary.',
+    many: 'Six Harms (the mark of a bond where care still leaves resentment) overlaps, so you often feel hurt despite treating others well. Accept that saying no is also a relationship skill, and the drain halves.'},
+  yangin:   {name: 'Blade', hanja: '羊刃', type: '살', typeLabel: 'Shadow', tag: 'drive pushed to the extreme',
+    desc: 'A star of fierce drive, as if gripping a blade. Hard to handle because it pushes to the extreme, yet a common mark among those who accomplish great things.',
+    many: 'Blade overlaps, so the force is very strong. Once aimed you achieve more than anyone; lose the aim and that edge can turn on yourself. Always keep a target to pour the force into.'},
+  baekho:   {name: 'White Tiger', hanja: '白虎', type: '살', typeLabel: 'Shadow', tag: 'a fighter strong in crisis',
+    desc: 'A star of intense, urgent energy. Tradition warned of accidents, but read in modern terms it is the temperament of a fighter who grows calmer in a crisis.',
+    many: 'White Tiger overlaps, so the energy swings hard. Guard only against a moment’s overspeed and overwork, and it becomes the force to break head-on through what others cannot handle.'},
+  goegang:  {name: 'Commander', hanja: '魁罡', type: '살', typeLabel: 'Shadow', tag: 'a chief’s charisma',
+    desc: 'A star of the chief. It grants brilliance, decisiveness, and a charisma that swings between extremes. A mark that shines in seats of responsibility rather than ordinary ones.',
+    many: 'A rare chart in which Commander overlaps. As large as the scale is, so are the swings — only when your own principles stay unshaken is the great vessel completed.'},
+  wonjin:   {name: 'Resentment', hanja: '元嗔', type: '살', typeLabel: 'Shadow', tag: 'love-hate you can’t cut',
+    desc: 'A current where love and hate cross the closer the bond. Ties you resent yet cannot cut form easily. Learn to leave space in a relationship and it deepens instead.',
+    many: 'The Resentment current runs through several positions. Since you clash easily with those closest to you, the sense that "keeping distance is also love" becomes an important life skill.'},
+  gwimun:   {name: 'Ghost Gate', hanja: '鬼門', type: '살', typeLabel: 'Shadow', tag: 'extremely keen intuition',
+    desc: 'A star of intuition where the nerves grow extremely keen. You feel what others cannot, and your dreams and hunches often hit. The task is to use that sensitivity as perception, not depletion.',
+    many: 'Ghost Gate overlaps, so your intuition is nearly an antenna. In deep-diving work — counseling, art, research — it becomes genius, but you absolutely need routines to cool the overheating of thought.'},
+  hongyeom: {name: 'Rosy Charm', hanja: '紅艶', type: '살', typeLabel: 'Shadow', tag: 'charm felt up close',
+    desc: 'A star of charm that seeps out softly. If Peach Blossom is charm on a stage, Rosy Charm is a private charm felt up close. A talent that adds warmth to relationships.',
+    many: 'Rosy Charm overlaps, so tenderness is your default. So that warmth doesn’t cause misunderstanding, use clear words when you express your heart.'},
+  gongmang: {name: 'Void', hanja: '空亡', type: '살', typeLabel: 'Shadow', tag: 'detachment through emptiness',
+    desc: 'A mark of the empty seat. Matters of that position don’t come easily to hand, or hold less grip on you. Emptiness is not lack but freedom — the power to stay detached in that domain.',
+    many: 'Void falls in several positions, a chart free from worldly measures. Calm about what others cling to, you find ease when you seek satisfaction in spiritual values.'},
+  cheoneul: {name: 'Heavenly Noble', hanja: '天乙', type: '길신', typeLabel: 'Blessing', tag: 'benefactor luck in crisis',
+    desc: 'The strongest lucky star. A star where someone appears to help at every moment of crisis. Good fortune with people is carved into the chart.',
+    many: 'A blessed chart in which Heavenly Noble overlaps. Don’t endure alone — reach out and someone is sure to take your hand.'},
+  munchang: {name: 'Literary Star', hanja: '文昌', type: '길신', typeLabel: 'Blessing', tag: 'a gift for learning and words',
+    desc: 'A lucky star of writing and learning. It grants both a learning mind and an expressive hand, backing luck in exams, documents, and creation.',
+    many: 'Literary Star overlaps, so study and writing are lifelong weapons. Whatever you do, a habit of recording and organizing returns as many times the results others get.'}
+};
+
+/* ---- Solar-term names (same keys as JIE_NAMES values: Korean term) ---- */
+const JIE_NAMES_EN = {
+  '입춘': 'Start of Spring', '경칩': 'Awakening of Insects', '청명': 'Clear and Bright',
+  '입하': 'Start of Summer', '망종': 'Grain in Ear', '소서': 'Minor Heat',
+  '입추': 'Start of Autumn', '백로': 'White Dew', '한로': 'Cold Dew',
+  '입동': 'Start of Winter', '대설': 'Major Snow', '소한': 'Minor Cold'
+};
+
+/* ---- Zodiac animals, index-aligned to BRANCHES.animal ---- */
+
+/* ---- Pillar labels (same keys as cols[].label) ---- */
+const PILL_LABEL_EN = {'시주': 'Hour', '일주': 'Day', '월주': 'Month', '연주': 'Year'};
+
+/* ---- elRelation() result → English name + desc (keyed by the Korean group it returns) ---- */
+const EL_REL_EN = {
+  '비겁': {name: 'a companion (비겁)', desc: 'an energy that stands on your side — feel free to take the lead rather than lean on others'},
+  '식상': {name: 'output (식상)', desc: 'an energy that flows out of you — it loosens the more you make, speak, and express'},
+  '재성': {name: 'wealth (재성)', desc: 'an energy you can gather in — as much as you move, it comes to hand'},
+  '관성': {name: 'authority (관성)', desc: 'an energy that tightens around you — a burden, but pass through it and your standing rises'},
+  '인성': {name: 'resource (인성)', desc: 'an energy that fills you — don’t be afraid to receive help and learning'}
+};
+
+/* FUNCTION */
 function renderSaju(s, time, inp, astro, num) {
-  $('#sajuDesc').textContent = `태어난 순간을 네 개의 기둥, 여덟 글자로 새긴 동양의 천문 — ${s.jieName} 절기, ${STEMS[s.year.stem].k}${BRANCHES[s.year.branch].k}년의 하늘입니다. 각 기둥의 큰 글자 위가 하늘, 아래가 땅의 글자이고, 작은 글씨는 그 글자가 당신에게 하는 역할입니다.`;
+  $('#sajuDesc').textContent = LANG === 'en'
+    ? `The Eastern astronomy that carves your birth moment into four pillars and eight characters — the sky of the ${JIE_NAMES_EN[s.jieName]} solar term, of the year ${STEMS[s.year.stem].h}${BRANCHES[s.year.branch].h}. In each pillar the upper large character is Heaven and the lower is Earth, and the small text is the role that character plays for you.`
+    : `태어난 순간을 네 개의 기둥, 여덟 글자로 새긴 동양의 천문 — ${s.jieName} 절기, ${STEMS[s.year.stem].k}${BRANCHES[s.year.branch].k}년의 하늘입니다. 각 기둥의 큰 글자 위가 하늘, 아래가 땅의 글자이고, 작은 글씨는 그 글자가 당신에게 하는 역할입니다.`;
 
   const cols = [
     {label:'시주', p: s.hour}, {label:'일주', p: s.day},
     {label:'월주', p: s.month}, {label:'연주', p: s.year}
   ];
   $('#pillars').innerHTML = cols.map(c => {
-    if (!c.p) return `<div class="pillar"><p class="plabel">${c.label}</p><p class="none">시간<br>미상</p></div>`;
+    if (!c.p) return `<div class="pillar"><p class="plabel">${L(c.label, PILL_LABEL_EN[c.label])}</p><p class="none">${L('시간<br>미상', 'time<br>unknown')}</p></div>`;
     const st = STEMS[c.p.stem], br = BRANCHES[c.p.branch];
     const tgS = c.label === '일주' ? '일간 · 나' : tenGod(s.day.stem, c.p.stem);
     const tgB = tenGod(s.day.stem, br.main);
+    const plabel = L(c.label, PILL_LABEL_EN[c.label]);
+    const tgTop = tgS === '일간 · 나'
+      ? L(tgS, 'Day Master · You')
+      : (LANG === 'en' ? (TG_NICK_EN[tgS] || tgS) : (TG_NICK[tgS] || tgS));
+    const krStem = LANG === 'en'
+      ? `${st.yang ? 'Yang' : 'Yin'} ${ELEMENTS_EN[st.el].k}`
+      : `${st.k} · ${ELEMENTS[st.el].k}`;
+    const krBranch = LANG === 'en'
+      ? `${br.yang ? 'Yang' : 'Yin'} ${ELEMENTS_EN[br.el].k}${c.label === '연주' ? ' · ' + ANIMALS_EN[c.p.branch] : ''}`
+      : `${br.k} · ${ELEMENTS[br.el].k}${c.label === '연주' ? ' · ' + br.animal : ''}`;
+    const tgBot = LANG === 'en' ? (TG_NICK_EN[tgB] || tgB) : (TG_NICK[tgB] || tgB);
     return `<div class="pillar">
-      <p class="plabel">${c.label}</p>
-      <p class="tg">${tgS === '일간 · 나' ? tgS : TG_NICK[tgS] || tgS}</p>
+      <p class="plabel">${plabel}</p>
+      <p class="tg">${tgTop}</p>
       <p class="hanja ${elCls(st.el)}">${st.h}</p>
-      <p class="kr">${st.k} · ${ELEMENTS[st.el].k}</p>
+      <p class="kr">${krStem}</p>
       <div class="rule"></div>
       <p class="hanja ${elCls(br.el)}">${br.h}</p>
-      <p class="kr">${br.k} · ${ELEMENTS[br.el].k}${c.label === '연주' ? ' · ' + br.animal : ''}</p>
-      <p class="tg">${TG_NICK[tgB] || tgB}</p>
+      <p class="kr">${krBranch}</p>
+      <p class="tg">${tgBot}</p>
     </div>`;
   }).join('');
 
   const max = Math.max(...s.counts, 1);
   $('#ohaengBars').innerHTML = ELEMENTS.map((e, i) => `
     <div class="obar">
-      <span class="oname ${elCls(i)}">${e.k} ${e.h}</span>
+      <span class="oname ${elCls(i)}">${LANG === 'en' ? ELEMENTS_EN[i].k : e.k} ${e.h}</span>
       <div class="otrack"><div class="ofill bg-${e.cls}" style="width:${s.counts[i] / max * 100}%"></div></div>
       <span class="ocount">${s.counts[i]}</span>
     </div>`).join('');
 
   const strongV = Math.max(...s.counts), weakV = Math.min(...s.counts);
   const strongI = s.counts.indexOf(strongV), weakI = s.counts.indexOf(weakV);
-  const statusOf = c => c === 0 ? '없음' : c === 1 ? '옅음' : c >= 3 ? '강함' : '보통';
-  const effectOf = (i, c) => c === 0 ? EL_WEAK_SHORT[i] : c >= 3 ? EL_STRONG_SHORT[i] : (c === 1 ? '옅게 자리합니다' : '무난히 자리합니다');
-  let oc = `오행은 세상을 이루는 <b>다섯 기운</b>입니다 — 목(성장) · 화(표현) · 토(안정) · 금(결단) · 수(지혜). 태어난 여덟 글자에 이 다섯이 얼마나 담겼는지가 당신의 <b>타고난 성향</b>을 만듭니다.<br><br>`;
-  oc += ELEMENTS.map((e, i) => `<b class="${elCls(i)}">${e.k}(${e.h}) ${s.counts[i]} · ${statusOf(s.counts[i])}</b> — ${EL_MEANING[i]}. ${effectOf(i, s.counts[i])}.`).join('<br>');
-  oc += `<br><br><b>종합 — 당신의 성향</b><br>`;
-  if (strongV === weakV) {
-    oc += `다섯 기운이 고르게 흐르는 <b>균형형</b>입니다. 어느 쪽에도 크게 치우치지 않아 환경에 맞춰 여러 얼굴을 쓸 수 있고, 그 중심축은 일간 <b>${STEMS[s.day.stem].k}(${STEMS[s.day.stem].h})</b>가 잡아줍니다.`;
+  const statusOf = c => LANG === 'en'
+    ? (c === 0 ? 'none' : c === 1 ? 'faint' : c >= 3 ? 'strong' : 'moderate')
+    : (c === 0 ? '없음' : c === 1 ? '옅음' : c >= 3 ? '강함' : '보통');
+  const effectOf = (i, c) => LANG === 'en'
+    ? (c === 0 ? EL_WEAK_SHORT_EN[i] : c >= 3 ? EL_STRONG_SHORT_EN[i] : (c === 1 ? 'sits faintly' : 'sits comfortably'))
+    : (c === 0 ? EL_WEAK_SHORT[i] : c >= 3 ? EL_STRONG_SHORT[i] : (c === 1 ? '옅게 자리합니다' : '무난히 자리합니다'));
+  let oc;
+  if (LANG === 'en') {
+    oc = `The five elements are the <b>five energies</b> that make up the world — Wood (growth) · Fire (expression) · Earth (stability) · Metal (decision) · Water (wisdom). How much of each fills your eight birth characters shapes your <b>innate disposition</b>.<br><br>`;
+    oc += ELEMENTS.map((e, i) => `<b class="${elCls(i)}">${ELEMENTS_EN[i].k}(${e.h}) ${s.counts[i]} · ${statusOf(s.counts[i])}</b> — ${EL_MEANING_EN[i]}. ${effectOf(i, s.counts[i])}.`).join('<br>');
+    oc += `<br><br><b>Overall — your disposition</b><br>`;
+    if (strongV === weakV) {
+      oc += `A <b>balanced type</b> in which the five energies flow evenly. With no strong tilt in any direction, you can wear many faces to fit the setting, and that central axis is held by your Day Master <b>${STEMS[s.day.stem].h}</b>.`;
+    } else {
+      oc += `Your strongest energy, <b class="${elCls(strongI)}">${ELEMENTS_EN[strongI].k}(${strongV})</b>, represents you — your innate temperament is <b>${EL_TRAIT_TYPE_EN[strongI]}</b>. Conversely your faintest, <b class="${elCls(weakI)}">${ELEMENTS_EN[weakI].k}(${weakV})</b>, is ${weakV === 0 ? 'empty' : 'weak'}, so you need <b>${EL_NEED_EN[weakI]}</b> — the disposition finds its balance when you fill this consciously.`;
+    }
+    if (!time) oc += `<br><br>※ Based on 6 characters, without the hour pillar. Knowing your birth time makes this more precise.`;
   } else {
-    oc += `가장 강한 <b class="${elCls(strongI)}">${ELEMENTS[strongI].k}(${strongV})</b> 기운이 당신을 대표합니다 — 타고난 기질은 <b>${EL_TRAIT_TYPE[strongI]}</b>. 반대로 가장 옅은 <b class="${elCls(weakI)}">${ELEMENTS[weakI].k}(${weakV})</b>는 ${weakV === 0 ? '비어 있어' : '약해'}, <b>${EL_NEED[weakI]}</b> — 이 부분을 의식적으로 채울 때 성향의 균형이 잡힙니다.`;
+    oc = `오행은 세상을 이루는 <b>다섯 기운</b>입니다 — 목(성장) · 화(표현) · 토(안정) · 금(결단) · 수(지혜). 태어난 여덟 글자에 이 다섯이 얼마나 담겼는지가 당신의 <b>타고난 성향</b>을 만듭니다.<br><br>`;
+    oc += ELEMENTS.map((e, i) => `<b class="${elCls(i)}">${e.k}(${e.h}) ${s.counts[i]} · ${statusOf(s.counts[i])}</b> — ${EL_MEANING[i]}. ${effectOf(i, s.counts[i])}.`).join('<br>');
+    oc += `<br><br><b>종합 — 당신의 성향</b><br>`;
+    if (strongV === weakV) {
+      oc += `다섯 기운이 고르게 흐르는 <b>균형형</b>입니다. 어느 쪽에도 크게 치우치지 않아 환경에 맞춰 여러 얼굴을 쓸 수 있고, 그 중심축은 일간 <b>${STEMS[s.day.stem].k}(${STEMS[s.day.stem].h})</b>가 잡아줍니다.`;
+    } else {
+      oc += `가장 강한 <b class="${elCls(strongI)}">${ELEMENTS[strongI].k}(${strongV})</b> 기운이 당신을 대표합니다 — 타고난 기질은 <b>${EL_TRAIT_TYPE[strongI]}</b>. 반대로 가장 옅은 <b class="${elCls(weakI)}">${ELEMENTS[weakI].k}(${weakV})</b>는 ${weakV === 0 ? '비어 있어' : '약해'}, <b>${EL_NEED[weakI]}</b> — 이 부분을 의식적으로 채울 때 성향의 균형이 잡힙니다.`;
+    }
+    if (!time) oc += `<br><br>※ 시주가 빠진 6글자 기준입니다. 태어난 시간을 알면 더 정확해집니다.`;
   }
-  if (!time) oc += `<br><br>※ 시주가 빠진 6글자 기준입니다. 태어난 시간을 알면 더 정확해집니다.`;
   $('#ohaengComment').innerHTML = oc;
 
   const dk = STEMS[s.day.stem];
-  $('#ilganTitle').textContent = `일간 ${dk.k}(${dk.h}) — 당신이라는 재료`;
+  $('#ilganTitle').textContent = LANG === 'en'
+    ? `Day Master ${dk.h} — the raw material that is you`
+    : `일간 ${dk.k}(${dk.h}) — 당신이라는 재료`;
   const sunSign = astro.sun.sign;
   const [ilRel, ilRelDesc] = elRelation(ZOD2EL[sunSign % 4], dk.el);
-  $('#ilganDesc').innerHTML =
-    `<span style="display:block;margin-bottom:10px;color:var(--muted)">한마디로 — ${ILGAN_PLAIN[dk.k]}.</span>` +
-    ILGAN_TEXT[dk.k] +
-    `<br><br><b style="color:var(--gold-soft)">같은 ${dk.k} 일간과 갈라지는 지점</b> — 태양 ${SIGNS[sunSign].k}의 ${ZOD_EL[sunSign % 4]} 기운은 이 일간에게 ${ilRel}의 자리입니다. ${ilRelDesc}. 여기에 라이프패스 ${num.lifePath}(${NUM_ESSENCE[num.lifePath].t})의 과제까지 얹히면, 같은 재료라도 당신만의 결로 구워집니다.`;
+  if (LANG === 'en') {
+    const rel = EL_REL_EN[ilRel];
+    $('#ilganDesc').innerHTML =
+      `<span style="display:block;margin-bottom:10px;color:var(--muted)">In a word — ${ILGAN_PLAIN_EN[dk.k]}.</span>` +
+      ILGAN_TEXT_EN[dk.k] +
+      `<br><br><b style="color:var(--gold-soft)">Where you diverge from others with the same ${dk.h} Day Master</b> — the ${ZOD_EL_EN[sunSign % 4]} energy of your Sun in ${SIGNS_EN[sunSign]} sits as ${rel.name} to this Day Master. ${rel.desc}. Add the task of Life Path ${num.lifePath} (the ${NUM_ESSENCE_EN[num.lifePath].t}), and the same material is fired into a grain all your own.`;
+  } else {
+    $('#ilganDesc').innerHTML =
+      `<span style="display:block;margin-bottom:10px;color:var(--muted)">한마디로 — ${ILGAN_PLAIN[dk.k]}.</span>` +
+      ILGAN_TEXT[dk.k] +
+      `<br><br><b style="color:var(--gold-soft)">같은 ${dk.k} 일간과 갈라지는 지점</b> — 태양 ${SIGNS[sunSign].k}의 ${ZOD_EL[sunSign % 4]} 기운은 이 일간에게 ${ilRel}의 자리입니다. ${ilRelDesc}. 여기에 라이프패스 ${num.lifePath}(${NUM_ESSENCE[num.lifePath].t})의 과제까지 얹히면, 같은 재료라도 당신만의 결로 구워집니다.`;
+  }
 
   const gods = new Set();
   [s.year, s.month, s.hour].filter(Boolean).forEach(p => gods.add(tenGod(s.day.stem, p.stem)));
-  const godLines = [...gods].map(g => `<b style="color:var(--gold-soft)">${g}(${TG_NICK[g]})</b> — ${TENGOD_DESC[g]}`).join('<br>');
-  $('#sajuMath').innerHTML =
-    `입춘 ${s.ipchun} 기준 → <b>${STEMS[s.year.stem].k}${BRANCHES[s.year.branch].k}년</b> (연주)<br>` +
-    `${s.jieName}(${s.jieDate}) 이후 → ${s.monthNum}번째 달, <b>${STEMS[s.month.stem].k}${BRANCHES[s.month.branch].k}월</b> (월주)<br>` +
-    `60갑자 순환 ${s.dayIdx60 + 1}번째 → <b>${STEMS[s.day.stem].k}${BRANCHES[s.day.branch].k}일</b> (일주)` +
-    (s.lateNight ? ' · 야자시(밤 11시대)로 다음 날 일진 적용' : '') + '<br>' +
-    (s.hour ? `진태양시 보정: 경도 ${s.corrMin >= 0 ? '+' : ''}${s.corrMin}분 · 균시차 ${s.eot >= 0 ? '+' : ''}${s.eot}분 → <b>${STEMS[s.hour.stem].k}${BRANCHES[s.hour.branch].k}시</b> (시주)<br>` : '') +
-    `<br>사주에 드러난 십성 —<br>${godLines || '일간 외 천간 없음'}`;
+  const godLines = [...gods].map(g => LANG === 'en'
+    ? `<b style="color:var(--gold-soft)">${TENGOD_NAME_EN[g]} (${TG_NICK_EN[g]})</b> — ${TENGOD_DESC_EN[g]}`
+    : `<b style="color:var(--gold-soft)">${g}(${TG_NICK[g]})</b> — ${TENGOD_DESC[g]}`).join('<br>');
+  $('#sajuMath').innerHTML = LANG === 'en'
+    ? `From Ipchun (Start of Spring) ${s.ipchun} → <b>${STEMS[s.year.stem].h}${BRANCHES[s.year.branch].h}</b> year (Year pillar)<br>` +
+      `After ${JIE_NAMES_EN[s.jieName]} (${s.jieDate}) → month #${s.monthNum}, <b>${STEMS[s.month.stem].h}${BRANCHES[s.month.branch].h}</b> month (Month pillar)<br>` +
+      `#${s.dayIdx60 + 1} in the 60-gapja cycle → <b>${STEMS[s.day.stem].h}${BRANCHES[s.day.branch].h}</b> day (Day pillar)` +
+      (s.lateNight ? ' · late-night hour (11 pm range) applies the next day’s day-pillar' : '') + '<br>' +
+      (s.hour ? `True solar time correction: longitude ${s.corrMin >= 0 ? '+' : ''}${s.corrMin} min · equation of time ${s.eot >= 0 ? '+' : ''}${s.eot} min → <b>${STEMS[s.hour.stem].h}${BRANCHES[s.hour.branch].h}</b> hour (Hour pillar)<br>` : '') +
+      `<br>Ten Gods present in the chart —<br>${godLines || 'no heavenly stems besides the Day Master'}`
+    : `입춘 ${s.ipchun} 기준 → <b>${STEMS[s.year.stem].k}${BRANCHES[s.year.branch].k}년</b> (연주)<br>` +
+      `${s.jieName}(${s.jieDate}) 이후 → ${s.monthNum}번째 달, <b>${STEMS[s.month.stem].k}${BRANCHES[s.month.branch].k}월</b> (월주)<br>` +
+      `60갑자 순환 ${s.dayIdx60 + 1}번째 → <b>${STEMS[s.day.stem].k}${BRANCHES[s.day.branch].k}일</b> (일주)` +
+      (s.lateNight ? ' · 야자시(밤 11시대)로 다음 날 일진 적용' : '') + '<br>' +
+      (s.hour ? `진태양시 보정: 경도 ${s.corrMin >= 0 ? '+' : ''}${s.corrMin}분 · 균시차 ${s.eot >= 0 ? '+' : ''}${s.eot}분 → <b>${STEMS[s.hour.stem].k}${BRANCHES[s.hour.branch].k}시</b> (시주)<br>` : '') +
+      `<br>사주에 드러난 십성 —<br>${godLines || '일간 외 천간 없음'}`;
 
   /* 신살 */
   const sinsal = computeSinsal(s);
@@ -3808,16 +4137,45 @@ function renderSaju(s, time, inp, astro, num) {
     const sals = sinsal.filter(x => SINSAL_TEXT[x.key].type === '살');
     const goods = sinsal.filter(x => SINSAL_TEXT[x.key].type === '길신');
     const strongest = sals.length ? sals[0] : sinsal[0];
-    const st = SINSAL_TEXT[strongest.key];
-    let intro = `이 사주에는 ${sinsal.length}가지 표식이 새겨져 있습니다`;
-    if (sals.length && goods.length) intro += ` — 살 ${sals.length}개, 길신 ${goods.length}개.`;
-    else intro += '.';
-    intro += ` 가장 짙은 것은 <b style="color:var(--gold-soft)">${st.name}(${st.hanja})${strongest.count > 1 ? ' ×' + strongest.count : ''}</b>입니다.`;
-    if (!time) intro += ' <span style="color:var(--dim)">(시주 제외 6글자 기준)</span>';
-    $('#sinsalIntro').innerHTML = intro;
-    $('#sinsalList').innerHTML = sinsal.map(x => {
-      const t = SINSAL_TEXT[x.key];
-      return `<div class="ss-item">
+    if (LANG === 'en') {
+      const posEN = w => w.replace(/연지/g, 'Year branch').replace(/월지/g, 'Month branch').replace(/일지/g, 'Day branch').replace(/시지/g, 'Hour branch')
+        .replace(/연주/g, 'Year pillar').replace(/월주/g, 'Month pillar').replace(/일주/g, 'Day pillar').replace(/시주/g, 'Hour pillar');
+      const st = SINSAL_TEXT_EN[strongest.key];
+      let intro = `This chart bears ${sinsal.length} mark${sinsal.length > 1 ? 's' : ''}`;
+      if (sals.length && goods.length) intro += ` — ${sals.length} shadow star${sals.length > 1 ? 's' : ''}, ${goods.length} lucky star${goods.length > 1 ? 's' : ''}.`;
+      else intro += '.';
+      intro += ` The strongest is <b style="color:var(--gold-soft)">${st.name}(${st.hanja})${strongest.count > 1 ? ' ×' + strongest.count : ''}</b>.`;
+      if (!time) intro += ' <span style="color:var(--dim)">(based on 6 characters, hour pillar excluded)</span>';
+      $('#sinsalIntro').innerHTML = intro;
+      $('#sinsalList').innerHTML = sinsal.map(x => {
+        const t = SINSAL_TEXT_EN[x.key];
+        const good = SINSAL_TEXT[x.key].type === '길신';
+        return `<div class="ss-item">
+        <div class="ss-badge">
+          <p class="ss-hanja ${good ? 'good' : 'sal'}">${t.hanja}</p>
+          <p class="ss-type">${t.typeLabel}</p>
+        </div>
+        <div>
+          <div class="ss-head">
+            <span class="ss-name">${t.name}</span>
+            ${x.count > 1 ? `<span class="ss-count">×${x.count} overlap</span>` : ''}
+            <span class="ss-where">${x.where.map(posEN).join(' · ')}</span>
+          </div>
+          <p class="ss-desc">${x.count > 1 ? t.many : t.desc}</p>
+        </div>
+      </div>`;
+      }).join('');
+    } else {
+      const st = SINSAL_TEXT[strongest.key];
+      let intro = `이 사주에는 ${sinsal.length}가지 표식이 새겨져 있습니다`;
+      if (sals.length && goods.length) intro += ` — 살 ${sals.length}개, 길신 ${goods.length}개.`;
+      else intro += '.';
+      intro += ` 가장 짙은 것은 <b style="color:var(--gold-soft)">${st.name}(${st.hanja})${strongest.count > 1 ? ' ×' + strongest.count : ''}</b>입니다.`;
+      if (!time) intro += ' <span style="color:var(--dim)">(시주 제외 6글자 기준)</span>';
+      $('#sinsalIntro').innerHTML = intro;
+      $('#sinsalList').innerHTML = sinsal.map(x => {
+        const t = SINSAL_TEXT[x.key];
+        return `<div class="ss-item">
         <div class="ss-badge">
           <p class="ss-hanja ${t.type === '길신' ? 'good' : 'sal'}">${t.hanja}</p>
           <p class="ss-type">${t.type}</p>
@@ -3831,9 +4189,12 @@ function renderSaju(s, time, inp, astro, num) {
           <p class="ss-desc">${x.count > 1 ? t.many : t.desc}</p>
         </div>
       </div>`;
-    }).join('');
+      }).join('');
+    }
   } else {
-    $('#sinsalIntro').innerHTML = `일주 ${STEMS[s.day.stem].k}${BRANCHES[s.day.branch].k} — 이 사주에는 뚜렷하게 드러난 신살이 없습니다. 표식 없이 맑은 명식 — 극단으로 끌려가는 힘이 적어, 삶의 방향을 스스로 정하는 폭이 넓다는 뜻이기도 합니다. 그 자유의 방향타는 일간의 결, 곧 ${ILGAN_SHORT[STEMS[s.day.stem].k]}이 쥐고 있습니다.` + (!time ? ' <span style="color:var(--dim)">(시주 제외 6글자 기준)</span>' : '');
+    $('#sinsalIntro').innerHTML = LANG === 'en'
+      ? `Day pillar ${STEMS[s.day.stem].h}${BRANCHES[s.day.branch].h} — this chart shows no pronounced sinsal. A clear chart without marks — little force dragging you to extremes, which also means a wide berth to set your own direction in life. The rudder of that freedom is held by the grain of your Day Master — ${ILGAN_SHORT_EN[STEMS[s.day.stem].k]}.` + (!time ? ' <span style="color:var(--dim)">(based on 6 characters, hour pillar excluded)</span>' : '')
+      : `일주 ${STEMS[s.day.stem].k}${BRANCHES[s.day.branch].k} — 이 사주에는 뚜렷하게 드러난 신살이 없습니다. 표식 없이 맑은 명식 — 극단으로 끌려가는 힘이 적어, 삶의 방향을 스스로 정하는 폭이 넓다는 뜻이기도 합니다. 그 자유의 방향타는 일간의 결, 곧 ${ILGAN_SHORT[STEMS[s.day.stem].k]}이 쥐고 있습니다.` + (!time ? ' <span style="color:var(--dim)">(시주 제외 6글자 기준)</span>' : '');
     $('#sinsalList').innerHTML = '';
   }
 
