@@ -762,7 +762,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <form id="askForm">
           <label for="askInput" style="display:block;font-size:13.5px;font-weight:600;color:var(--muted);margin-bottom:8px">질문</label>
           <div class="askrow">
-            <input type="text" id="askInput" placeholder="예) 올해 이직해도 될까요? / 그 사람과 잘될까요?" autocomplete="off">
+            <input type="text" id="askInput" placeholder="예) 올해 이직해도 될까요? / 그 사람과 잘될까요?" data-en-ph="e.g. Should I change jobs this year? / Will it work out with them?" autocomplete="off">
             <button type="submit" class="askbtn">패 펼치기</button>
           </div>
         </form>
@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.17.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.18.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -1883,46 +1883,61 @@ const VERDICTS = {
 };
 /* 판정 문구 고유화 — 근거 기둥(명식·별·수)과 뽑힌 패 이름·결로 문장을 조립 */
 function verdictLines(score, ev, picks, polSum) {
-  const kw1 = c => c.kw.split(' · ')[0];
+  const kw1 = c => cardKw1(c);
+  const nm  = c => cardName(c);
   const up = picks.filter(c => c.pol > 0), down = picks.filter(c => c.pol < 0);
   const gate = picks[1], last = picks[2];
-  const pillars = [ev.pts.saju ? '명식' : '', ev.pts.astro ? '별' : '', ev.pts.num ? '수' : ''].filter(Boolean);
-  const missing = ['명식', '별', '수'].filter(p => !pillars.includes(p));
+  const pillars = [ev.pts.saju ? L('명식','the chart') : '', ev.pts.astro ? L('별','the stars') : '', ev.pts.num ? L('수','the numbers') : ''].filter(Boolean);
+  const missing = [L('명식','the chart'), L('별','the stars'), L('수','the numbers')].filter((p, i) => ![ev.pts.saju, ev.pts.astro, ev.pts.num][i]);
+  const join = arr => LANG === 'en' ? arr.join(' · ') : arr.join('·');
   if (score === 3) {
     const lead = up[0] || picks[0];
     return {
-      t: `「${lead.name}」 패가 앞장섭니다 — 지금`,
+      t: L(`「${lead.name}」 패가 앞장섭니다 — 지금`, `The 「${nm(lead)}」 card leads — now`),
       d: pillars.length === 3
-        ? `타고난 기운도, 하늘의 때도, 숫자의 흐름도 같은 방향인데 손까지 밀어주는 패를 뽑았습니다 — 이렇게 다 겹치는 때는 드뭅니다`
-        : `${pillars.join('·')}${jIga(pillars[pillars.length-1])} 밀어주는 위에, 손이 뽑은 밀어주는 패 ${up.length}장이 얹혔습니다`,
-      adv: `이번에는 고민을 더 늘리지 말고 움직일 차례입니다. 뽑힌 「${lead.name}」 패의 뜻은 ${kw1(lead)} — ${ev.cat.micro} 시작하세요.`
+        ? L(`타고난 기운도, 하늘의 때도, 숫자의 흐름도 같은 방향인데 손까지 밀어주는 패를 뽑았습니다 — 이렇게 다 겹치는 때는 드뭅니다`,
+            `your innate energy, the timing of the sky, and the current of the numbers all point one way — and your hand drew pushing cards on top. Times when everything overlaps like this are rare`)
+        : L(`${pillars.join('·')}${jIga(pillars[pillars.length-1])} 밀어주는 위에, 손이 뽑은 밀어주는 패 ${up.length}장이 얹혔습니다`,
+            `on top of ${join(pillars)} pushing, your hand laid down ${up.length} pushing card${up.length>1?'s':''}`),
+      adv: L(`이번에는 고민을 더 늘리지 말고 움직일 차례입니다. 뽑힌 「${lead.name}」 패의 뜻은 ${kw1(lead)} — ${ev.cat.micro} 시작하세요.`,
+             `This time, stop adding worry and move. The 「${nm(lead)}」 card you drew means ${kw1(lead)} — ${ev.catEN.micro}.`)
     };
   }
   if (score === 2) {
     const cond = down[0] || (gate.pol <= 0 ? gate : null);
     return {
-      t: cond ? `다만 「${cond.name}」${jIga(cond.name)} 짚는 매듭부터` : `다만 ${missing.join('·')}의 때를 기다리며 천천히`,
-      d: `방향은 맞습니다 — ${cond
-        ? `${pillars.length ? pillars.join('·') + '의 근거가 받치지만, ' : ''}「${cond.name}」(${kw1(cond)})${jIga(cond.name)} 먼저 풀어야 할 일 하나를 조건으로 겁니다`
-        : `${missing.join('·')}의 근거가 아직 옅으니 가볍게 시작하세요`}`,
+      t: cond ? L(`다만 「${cond.name}」${jIga(cond.name)} 짚는 매듭부터`, `But start from the knot the 「${nm(cond)}」 card points to`)
+              : L(`다만 ${missing.join('·')}의 때를 기다리며 천천히`, `But go slowly, waiting on the timing of ${join(missing)}`),
+      d: L(`방향은 맞습니다 — ${cond
+            ? `${pillars.length ? pillars.join('·') + '의 근거가 받치지만, ' : ''}「${cond.name}」(${kw1(cond)})${jIga(cond.name)} 먼저 풀어야 할 일 하나를 조건으로 겁니다`
+            : `${missing.join('·')}의 근거가 아직 옅으니 가볍게 시작하세요`}`,
+           `The direction is right — ${cond
+            ? `${pillars.length ? join(pillars) + ' back it, but ' : ''}「${nm(cond)}」 (${kw1(cond)}) sets one thing to resolve first as its condition`
+            : `the evidence of ${join(missing)} is still thin, so begin lightly`}`),
       adv: cond
-        ? `해도 됩니다. 단, 「${cond.name}」${jIga(cond.name)} 말하는 ${kw1(cond)}의 과제를 먼저 정리하고 움직이세요.`
-        : `해도 됩니다. 크게 걸기보다 작게 시작해 근거가 차오르길 기다리세요.`
+        ? L(`해도 됩니다. 단, 「${cond.name}」${jIga(cond.name)} 말하는 ${kw1(cond)}의 과제를 먼저 정리하고 움직이세요.`,
+            `You may. Only settle the ${kw1(cond)} task the 「${nm(cond)}」 card names first, then move.`)
+        : L(`해도 됩니다. 크게 걸기보다 작게 시작해 근거가 차오르길 기다리세요.`,
+            `You may. Rather than betting big, start small and wait for the evidence to fill in.`)
     };
   }
   if (score === 1) {
     const drag = down[0] || [...picks].sort((a, b) => a.pol - b.pol)[0];
     return {
-      t: `「${drag.name}」 패가 때를 미룹니다`,
-      d: `${missing.length ? `${missing.join('·')}의 근거가 비어 있고` : '근거는 모였지만'} 패의 결도 ${polSum < 0 ? '역풍' : '잔잔한 편'}입니다 — 능력이 아니라 때의 문제`,
-      adv: `접으라는 뜻이 아닙니다. ${ev.tpKr ? `결이 맞는 「${ev.tpKr}」에 다시 물으세요` : '아래의 시기를 보고 다시 물으세요'}.`
+      t: L(`「${drag.name}」 패가 때를 미룹니다`, `The 「${nm(drag)}」 card pushes the timing back`),
+      d: L(`${missing.length ? `${missing.join('·')}의 근거가 비어 있고` : '근거는 모였지만'} 패의 결도 ${polSum < 0 ? '역풍' : '잔잔한 편'}입니다 — 능력이 아니라 때의 문제`,
+           `${missing.length ? `the evidence of ${join(missing)} is empty, and` : 'the evidence is gathered, but'} the grain of the cards is also ${polSum < 0 ? 'a headwind' : 'on the quiet side'} — a matter of timing, not ability`),
+      adv: L(`접으라는 뜻이 아닙니다. ${ev.tpKr ? `결이 맞는 「${ev.tpKr}」에 다시 물으세요` : '아래의 시기를 보고 다시 물으세요'}.`,
+             `This does not mean give up. ${ev.tpKr ? `Ask again in 「${ev.tpKr}」, when the grain aligns` : 'Read the timing below and ask again'}.`)
     };
   }
   const block = down[0] || last;
   return {
-    t: `「${block.name}」 패가 길을 돌려세웁니다`,
-    d: `${missing.length === 3 ? '명식·별·수 모두 이 방향엔 조용하고' : `${missing.join('·')}의 근거가 비고`} ${polSum < 0 ? `패의 결까지 역풍(${polSum})` : '패도 이 길을 밀어주지 않습니다'} — 시기가 아니라 방향의 문제입니다`,
-    adv: `지금 계획대로 밀면 비용이 큽니다. 끝자리 패 「${last.name}」 — ${kw1(last)} 쪽에서 방향을 다시 고르세요.`
+    t: L(`「${block.name}」 패가 길을 돌려세웁니다`, `The 「${nm(block)}」 card turns the road around`),
+    d: L(`${missing.length === 3 ? '명식·별·수 모두 이 방향엔 조용하고' : `${missing.join('·')}의 근거가 비고`} ${polSum < 0 ? `패의 결까지 역풍(${polSum})` : '패도 이 길을 밀어주지 않습니다'} — 시기가 아니라 방향의 문제입니다`,
+         `${missing.length === 3 ? 'chart, stars, and numbers are all quiet on this direction' : `the evidence of ${join(missing)} is empty`}, and ${polSum < 0 ? `even the cards' grain is a headwind (${polSum})` : 'the cards do not push this road either'} — a matter of direction, not timing`),
+    adv: L(`지금 계획대로 밀면 비용이 큽니다. 끝자리 패 「${last.name}」 — ${kw1(last)} 쪽에서 방향을 다시 고르세요.`,
+           `Push the current plan and the cost is high. Re-choose your direction from the end card 「${nm(last)}」 — ${kw1(last)}.`)
   };
 }
 /* 왜 이 답인가 — 판정의 셈법을 일반인의 말로 풀어주는 블록.
@@ -1930,55 +1945,84 @@ function verdictLines(score, ev, picks, polSum) {
    원칙(일반인 독자 감사 반영): 미설명 단어 금지 · 실제 점수 공개 · 패 이름엔 뜻 병기 · 무엇이 답을 결정했는지 명시 */
 function whyBlock(ev, picks, polSum, total) {
   const up = picks.filter(c => c.pol > 0), down = picks.filter(c => c.pol < 0);
-  const kw1 = c => c.kw.split(' · ')[0];
+  const kw1 = c => cardKw1(c);
   const saju = ev.pts.saju >= 2
-    ? `<b>사주</b>는 두 겹으로 밀어줍니다 — 타고난 사주에 ${ev.cat.grant}이 갖춰져 있고, 올해 들어온 운까지 같은 방향입니다`
+    ? L(`<b>사주</b>는 두 겹으로 밀어줍니다 — 타고난 사주에 ${ev.cat.grant}이 갖춰져 있고, 올해 들어온 운까지 같은 방향입니다`,
+        `<b>The Four Pillars</b> push in two layers — your natal chart already holds ${ev.catEN.grant}, and this year's incoming luck runs the same way`)
     : ev.pts.saju === 1
-    ? `<b>사주</b>는 절반만 밀어줍니다 — 타고난 그릇과 올해의 운 중 한쪽만 준비된 상태입니다`
-    : `<b>사주</b>는 조용합니다 — 타고난 사주도 올해의 운도 이 주제를 특별히 밀지 않습니다`;
+    ? L(`<b>사주</b>는 절반만 밀어줍니다 — 타고난 그릇과 올해의 운 중 한쪽만 준비된 상태입니다`,
+        `<b>The Four Pillars</b> push only halfway — only one of the innate vessel and this year's luck is ready`)
+    : L(`<b>사주</b>는 조용합니다 — 타고난 사주도 올해의 운도 이 주제를 특별히 밀지 않습니다`,
+        `<b>The Four Pillars</b> are quiet — neither your natal chart nor this year's luck particularly pushes this theme`);
   const astro = ev.pts.astro
-    ? `<b>별</b>은 밀어줍니다 — 지금 행성 하나가 당신 하늘의 「${ev.cat.label}」 영역을 지나는 중입니다`
-    : `<b>별</b>은 조용합니다 — 당신 하늘의 「${ev.cat.label}」 영역을 지금 지나는 행성이 없습니다`;
+    ? L(`<b>별</b>은 밀어줍니다 — 지금 행성 하나가 당신 하늘의 「${ev.cat.label}」 영역을 지나는 중입니다`,
+        `<b>The stars</b> push — a planet is now passing through the 「${ev.catEN.label}」 area of your sky`)
+    : L(`<b>별</b>은 조용합니다 — 당신 하늘의 「${ev.cat.label}」 영역을 지금 지나는 행성이 없습니다`,
+        `<b>The stars</b> are quiet — no planet is now passing through the 「${ev.catEN.label}」 area of your sky`);
   const num = ev.pts.num
-    ? `<b>생일 숫자</b>는 밀어줍니다 — 생년월일로 계산한 지금의 흐름이 이 주제와 같은 방향입니다`
-    : `<b>생일 숫자</b>는 조용합니다 — 생년월일로 계산한 흐름으로는 아직 이 주제의 때가 아닙니다`;
-  const nm = a => a.map(c => `${c.name}=${kw1(c)}`).join(', ');
-  const cards = `<b>패</b> — 당신 손이 뽑은 세 장은 ${
-    up.length && down.length ? `밀어주는 패 ${up.length}장(${nm(up)})과 막아서는 패 ${down.length}장(${nm(down)})이 섞였습니다`
-    : up.length ? `밀어주는 패 ${up.length}장(${nm(up)})${up.length < 3 ? ', 나머지는 중립' : ''}입니다`
-    : down.length ? `막아서는 패 ${down.length}장(${nm(down)})${down.length < 3 ? ', 나머지는 중립' : ''}입니다`
-    : `셋 다 밀지도 막지도 않는 중립입니다`}`;
+    ? L(`<b>생일 숫자</b>는 밀어줍니다 — 생년월일로 계산한 지금의 흐름이 이 주제와 같은 방향입니다`,
+        `<b>Your birth numbers</b> push — the current flow figured from your birth date runs the same way as this theme`)
+    : L(`<b>생일 숫자</b>는 조용합니다 — 생년월일로 계산한 흐름으로는 아직 이 주제의 때가 아닙니다`,
+        `<b>Your birth numbers</b> are quiet — by the flow figured from your birth date, it is not yet this theme's time`);
+  const nm = a => a.map(c => `${cardName(c)}=${kw1(c)}`).join(', ');
+  const cards = L(`<b>패</b> — 당신 손이 뽑은 세 장은 ${
+      up.length && down.length ? `밀어주는 패 ${up.length}장(${nm(up)})과 막아서는 패 ${down.length}장(${nm(down)})이 섞였습니다`
+      : up.length ? `밀어주는 패 ${up.length}장(${nm(up)})${up.length < 3 ? ', 나머지는 중립' : ''}입니다`
+      : down.length ? `막아서는 패 ${down.length}장(${nm(down)})${down.length < 3 ? ', 나머지는 중립' : ''}입니다`
+      : `셋 다 밀지도 막지도 않는 중립입니다`}`,
+    `<b>The cards</b> — the three your hand drew are ${
+      up.length && down.length ? `a mix of ${up.length} pushing card${up.length>1?'s':''} (${nm(up)}) and ${down.length} blocking card${down.length>1?'s':''} (${nm(down)})`
+      : up.length ? `${up.length} pushing card${up.length>1?'s':''} (${nm(up)})${up.length < 3 ? ', the rest neutral' : ''}`
+      : down.length ? `${down.length} blocking card${down.length>1?'s':''} (${nm(down)})${down.length < 3 ? ', the rest neutral' : ''}`
+      : `all three neutral — neither pushing nor blocking`}`);
   const sum = total >= 3
-    ? '또렷한 순풍입니다. 가장 밝은 답이 나온 이유입니다'
+    ? L('또렷한 순풍입니다. 가장 밝은 답이 나온 이유입니다', 'a clear tailwind. This is why the brightest answer came out')
     : total >= 1
-    ? '약한 순풍입니다. 답이 긍정이되 조건이 붙은 이유입니다'
+    ? L('약한 순풍입니다. 답이 긍정이되 조건이 붙은 이유입니다', 'a faint tailwind. This is why the answer is positive but conditional')
     : total >= -1
-    ? '순풍이라 하기엔 부족합니다. 답이 신중한 쪽으로 나온 이유입니다'
-    : '역풍입니다. 답이 말리는 쪽으로 나온 이유입니다';
-  const score = `점수로 보면 — 하늘의 응원 <b>${ev.ev}점</b>(4점 만점, 2점이 보통 수준), 패의 방향 <b>${polSum > 0 ? '+' : ''}${polSum}</b>(3장 합계). 보통과의 차이를 더하면 <b>${total > 0 ? '+' : ''}${total}</b> — ${sum}`;
+    ? L('순풍이라 하기엔 부족합니다. 답이 신중한 쪽으로 나온 이유입니다', 'too little to call a tailwind. This is why the answer came out cautious')
+    : L('역풍입니다. 답이 말리는 쪽으로 나온 이유입니다', 'a headwind. This is why the answer came out discouraging');
+  const score = L(`점수로 보면 — 하늘의 응원 <b>${ev.ev}점</b>(4점 만점, 2점이 보통 수준), 패의 방향 <b>${polSum > 0 ? '+' : ''}${polSum}</b>(3장 합계). 보통과의 차이를 더하면 <b>${total > 0 ? '+' : ''}${total}</b> — ${sum}`,
+    `In numbers — the sky's support <b>${ev.ev}</b> (out of 4, with 2 the ordinary level), the cards' direction <b>${polSum > 0 ? '+' : ''}${polSum}</b> (sum of the three). Add the gap from ordinary and you get <b>${total > 0 ? '+' : ''}${total}</b> — ${sum}`);
   const sc = t => t >= 3 ? 3 : t >= 1 ? 2 : t >= -1 ? 1 : 0;
   const baseScore = sc(ev.ev - 2), fullScore = sc(total);
+  const VD = LANG === 'en' ? VERDICTS_EN : VERDICTS;
   const decider = baseScore === fullScore
-    ? '패를 빼고 하늘만 봐도 같은 답이 나옵니다 — 그만큼 오늘의 패운에 흔들리지 않는 판정입니다.'
-    : `이번 답의 결정타는 당신 손이었습니다 — 하늘만 보면 「${VERDICTS[baseScore].t}」였는데, 뽑은 패가 답을 「${VERDICTS[fullScore].t}」 쪽으로 옮겼습니다.`;
-  return `<div class="combo"><b>왜 이 답이 나왔나 — 하나씩 보면</b><br>` +
-    `이 답은 두 가지를 더해 나옵니다. 당신을 읽는 세 갈래(사주 · 별 · 생일 숫자)가 이 일을 밀어주는가, 그리고 당신 손이 뽑은 패가 밀어주는가.<br>` +
+    ? L('패를 빼고 하늘만 봐도 같은 답이 나옵니다 — 그만큼 오늘의 패운에 흔들리지 않는 판정입니다.',
+        'Take the cards away and the sky alone gives the same answer — that steady against the luck of today\'s draw.')
+    : L(`이번 답의 결정타는 당신 손이었습니다 — 하늘만 보면 「${VERDICTS[baseScore].t}」였는데, 뽑은 패가 답을 「${VERDICTS[fullScore].t}」 쪽으로 옮겼습니다.`,
+        `The decider this time was your hand — the sky alone read 「${VERDICTS_EN[baseScore].t}」, but the cards you drew moved the answer toward 「${VERDICTS_EN[fullScore].t}」.`);
+  return `<div class="combo"><b>${L('왜 이 답이 나왔나 — 하나씩 보면','Why this answer — piece by piece')}</b><br>` +
+    L(`이 답은 두 가지를 더해 나옵니다. 당신을 읽는 세 갈래(사주 · 별 · 생일 숫자)가 이 일을 밀어주는가, 그리고 당신 손이 뽑은 패가 밀어주는가.`,
+      `This answer comes from adding two things: whether the three that read you (Four Pillars · stars · birth numbers) push this matter, and whether the cards your hand drew push it.`) + `<br>` +
     `${saju}.<br>${astro}.<br>${num}.<br>${cards}.<br>${score}.<br>${decider}</div>`;
 }
 function infoWhyBlock(weak, R) {
-  const wel = ELEMENTS[weak];
+  const wel = ELEMENTS[weak], welK = elK(weak);
   const c = R.saju.counts;
   const total = c.reduce((s, n) => s + n, 0);
   const order = c.map((n, i) => ({i, n})).sort((a, b) => a.n - b.n);
-  const strongEl = ELEMENTS[order[order.length - 1].i];
-  return `<div class="combo"><b>왜 이 값이 나왔나 — 명식에서 읽습니다</b><br>` +
-    `행운의 색 · 방위 · 숫자 · 음식은 예/아니오가 아니라, 당신 사주 여덟 글자의 다섯 기운(목 · 화 · 토 · 금 · 수) 균형에서 나옵니다.<br>` +
-    `당신 명식의 기운 분포를 세어 보면 — ${ELEMENTS.map((e, i) => `${e.k}(${e.h}) ${c[i]}`).join(' · ')} (합 ${total}).<br>` +
-    `가장 옅은 기운은 <b>${wel.k}(${wel.h})</b>입니다 — 타고나길 이 자리가 비어 있습니다. 반대로 <b>${strongEl.k}(${strongEl.h})</b>은 넉넉합니다.<br>` +
-    `동양 오행에서 이런 값은 <b>모자란 기운을 채워 균형을 맞추는 것</b>이라, 넘치는 것이 아니라 비어 있는 ${wel.k} 기운의 색(${EL_COLOR[weak]}) · 방위(${EL_DIR[weak]}) · 수(${EL_NUM[weak]}) · 맛(${EL_TASTE[weak]})이 당신에게 길한 값이 됩니다.</div>`;
+  const strongI = order[order.length - 1].i;
+  return `<div class="combo"><b>${L('왜 이 값이 나왔나 — 명식에서 읽습니다','Why this value — read from your chart')}</b><br>` +
+    L(`행운의 색 · 방위 · 숫자 · 음식은 예/아니오가 아니라, 당신 사주 여덟 글자의 다섯 기운(목 · 화 · 토 · 금 · 수) 균형에서 나옵니다.`,
+      `Lucky color · direction · number · food are not yes/no answers — they come from the balance of the five energies (Wood · Fire · Earth · Metal · Water) in the eight characters of your chart.`) + `<br>` +
+    L(`당신 명식의 기운 분포를 세어 보면 — ${ELEMENTS.map((e, i) => `${e.k}(${e.h}) ${c[i]}`).join(' · ')} (합 ${total}).`,
+      `Counting the energy spread in your chart — ${ELEMENTS.map((e, i) => `${ELEMENTS_EN[i].k}(${e.h}) ${c[i]}`).join(' · ')} (total ${total}).`) + `<br>` +
+    L(`가장 옅은 기운은 <b>${wel.k}(${wel.h})</b>입니다 — 타고나길 이 자리가 비어 있습니다. 반대로 <b>${ELEMENTS[strongI].k}(${ELEMENTS[strongI].h})</b>은 넉넉합니다.`,
+      `The faintest energy is <b>${welK}(${wel.h})</b> — this seat is empty by birth. Conversely <b>${elK(strongI)}(${ELEMENTS[strongI].h})</b> is ample.`) + `<br>` +
+    L(`동양 오행에서 이런 값은 <b>모자란 기운을 채워 균형을 맞추는 것</b>이라, 넘치는 것이 아니라 비어 있는 ${wel.k} 기운의 색(${EL_COLOR[weak]}) · 방위(${EL_DIR[weak]}) · 수(${EL_NUM[weak]}) · 맛(${EL_TASTE[weak]})이 당신에게 길한 값이 됩니다.`,
+      `In the Eastern five elements such a value means <b>filling the lacking energy to restore balance</b> — so not the overflowing one, but the empty ${welK} energy's color (${EL_COLOR_EN[weak]}) · direction (${EL_DIR_EN[weak]}) · number (${EL_NUM[weak]}) · taste (${EL_TASTE_EN[weak]}) become the fortunate values for you.`) + `</div>`;
 }
 function detectCat(q) {
   let best = 'general', bestN = 0;
+  if (LANG === 'en') {
+    const lc = q.toLowerCase();
+    for (const [k, c] of Object.entries(CAT_EN)) {
+      const n = c.keys.filter(w => lc.includes(w)).length;
+      if (n > bestN) { best = k; bestN = n; }
+    }
+    return best;
+  }
   for (const [k, c] of Object.entries(CATS)) {
     const n = c.keys.filter(w => q.includes(w)).length;
     if (n > bestN) { best = k; bestN = n; }
@@ -1987,6 +2031,36 @@ function detectCat(q) {
 }
 /* 질문 유형 감지 — yesno(기본) · neg(하지 말까) · choice(갈림길) · when(시기) · open(열린 물음) */
 function detectQType(q) {
+  if (LANG === 'en') {
+    /* choice — "A or B", "A vs B" */
+    const sp = q.split(/\s+(?:or|vs\.?)\s+/i);
+    if (sp.length >= 2 && sp[0].trim() && sp[1].trim()) {
+      const a = sp[0].replace(/^\s*(?:should i|shall i|is it better to|do i|will i|can i)\s*/i, '').trim();
+      const b = sp[sp.length - 1]
+        .replace(/[?？.!]+\s*$/, '')
+        .replace(/\s*(?:which\s+(?:is|one is)?\s*better|which\s+is\s+right|is\s+better|better|the\s+better\s+choice)\s*$/i, '')
+        .trim();
+      if (a && b) return {t:'choice', a, b};
+      return {t:'choice'};
+    }
+    if (/\bwhich\s+(?:one|of|is better|should i)|between\s+.+\s+and\b|either\s+.+\s+or\b/i.test(q)) return {t:'choice'};
+    /* info — value answers (color / number / direction / food) */
+    const asksColor = /(lucky|luck|good|which|what)\s+colou?r|colou?r\s+(?:should|to|for|is)|what\s+(?:should i|to)\s+wear|what\s+.*\bwear\b/i.test(q);
+    const asksNum   = /(lucky|luck|good|which|what)\s+number|number\s+(?:should|to|is|for)/i.test(q);
+    const asksDir   = /(lucky|luck|good|which|what)\s+direction|direction\s+(?:should|to|is|for)|which\s+way\s+(?:is|should)/i.test(q);
+    const asksFood  = /what\s+(?:should i|to|do i)\s*(?:eat|order|have)|what\s+(?:for|to eat)\b|what\s+.*\b(?:eat|lunch|dinner|breakfast|meal|menu)\b|(?:lunch|dinner|breakfast|meal|menu)\s+(?:idea|suggestion|recommend)/i.test(q);
+    if (asksColor || asksNum || asksDir || asksFood)
+      return {t:'info', k: asksColor ? 'color' : asksNum ? 'num' : asksDir ? 'dir' : 'food'};
+    /* when — timing */
+    if (/\bwhen\b|what\s+time|how\s+(?:long|soon)|which\s+(?:month|year|day|season)|by\s+when/i.test(q)) return {t:'when'};
+    /* open — how / what / why / where (not yes/no) */
+    if (/\bhow\b|\bwhat\b|\bwhy\b|\bwhere\b|which\s+way/i.test(q)) return {t:'open'};
+    /* neg — "should I not …", "shouldn't I …", "is it bad to …" */
+    const neg = /should\s+i\s+not\b|shouldn'?t\s+i\b|should\s+i\s+(?:avoid|skip|stop|drop|quit)\b|is\s+it\s+bad\s+to\b|better\s+not\s+to\b|had\s+i\s+better\s+not\b/i.test(q);
+    return {t:'yesno', neg};
+  }
+
+  /* ---------- original KO logic (byte-identical) ---------- */
   const sp = q.split(/\s*(?:아니면|[vV][sS])\s*/);
   if (sp.length >= 2 && sp[0].trim() && sp[1].trim()) {
     const b = sp[1].replace(/\s*(?:중에?서?)?\s*(?:어디가|뭐가|어느\s*쪽|어떤\s*게|누가)?\s*(?:나아|나을까|나은가|낫나|좋을까|좋아|좋은가|맞을까|할까)?\s*[?？.!\s]*$/, '').trim();
@@ -1994,7 +2068,6 @@ function detectQType(q) {
     return {t:'choice'};
   }
   if (/중에?서?\s*(뭐|어느|어떤|누구|무엇)|둘\s*중/.test(q)) return {t:'choice'};
-  /* 정보를 묻는 물음 — 값으로 답한다 (예/아니오가 아니라 색·숫자·방위·음식) */
   const asksColor = /(행운|럭키|lucky)[의\s]*(색|컬러)|무슨\s*(색|컬러|옷)|어떤\s*(색|컬러|옷)|(색깔?|컬러)\s*(뭐|알려|추천|좋)|뭔?\s*옷|옷\s*(뭐|뭘)|뭐\s*입|뭘\s*입/i.test(q);
   const asksNum   = /(행운|럭키|lucky)[의\s]*(숫자|번호|넘버|number)|무슨\s*숫자|어떤\s*숫자|숫자\s*(뭐|알려|추천)/i.test(q);
   const asksDir   = /(행운|럭키|lucky)[의\s]*방[위향]|길[한하]\s*방[위향]|어느\s*방[위향]|방위\s*(뭐|알려)/.test(q);
@@ -2006,26 +2079,37 @@ function detectQType(q) {
   const neg = /지\s*말까|말아야|안\s*\S+\s*(게|것이|편이)\s*(나을|낫|좋)/.test(q);
   return {t:'yesno', neg};
 }
-function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근거 수집
-  const cat = CATS[detectCat(q)];
+function gatherEvidence(q, R) {
+  const catKey = detectCat(q);
+  const cat = CATS[catKey];
+  const catEN = CAT_EN[catKey];
   const f = R.fortune;
   const yearTG = f.periods[4].saju.tg, monthTG = f.periods[2].saju.tg;
+  const tgL = tg => L(tgLabel(tg), tgLabelEN(tg));
+  const themeName = t => L(THEMES[t].name, THEMES_EN[t].name);
+  const periodName = k => L(PERIOD_META[k].kr, PERIOD_EN[k]);
 
   /* 사주 근거 */
   const natalMatch = cat.tg.find(g => R.natalTGs.has(g));
-  const flow = [{tg: yearTG, label:'올해 들어온 운'}, {tg: monthTG, label:'이번 달의 운'}].find(x => cat.tg.includes(x.tg));
+  const flowKo = [{tg: yearTG, label:'올해 들어온 운'}, {tg: monthTG, label:'이번 달의 운'}].find(x => cat.tg.includes(x.tg));
+  const flowEnLabel = { '올해 들어온 운':"this year's incoming luck", '이번 달의 운':"this month's luck" };
   let sajuLine, sajuPt = 0;
-  if (natalMatch && flow) { sajuPt = 2;
-    sajuLine = `타고난 사주에 <b>${natalMatch}</b>(${cat.grant})${jIga(natalMatch)} 있고, ${flow.label}도 <b>${tgLabel(flow.tg)}</b>으로 같은 방향입니다 — 안(타고난 것)이 준비되고 밖(지금 운)이 밀어주는 모양새.`;
+  if (natalMatch && flowKo) { sajuPt = 2;
+    sajuLine = L(`타고난 사주에 <b>${natalMatch}</b>(${cat.grant})${jIga(natalMatch)} 있고, ${flowKo.label}도 <b>${tgLabel(flowKo.tg)}</b>으로 같은 방향입니다 — 안(타고난 것)이 준비되고 밖(지금 운)이 밀어주는 모양새.`,
+      `Your natal chart holds <b>${TENGOD_NAME_EN[natalMatch]}</b> (${catEN.grant}), and ${flowEnLabel[flowKo.label]} runs the same way as <b>${tgLabelEN(flowKo.tg)}</b> — the inside (what you were born with) is ready and the outside (present luck) pushes.`);
   } else if (natalMatch) { sajuPt = 1;
-    sajuLine = `타고난 사주에 <b>${natalMatch}</b>${jIga(natalMatch)} 있어 ${cat.grant}은 갖춰져 있습니다. 다만 올해 운이 미는 방향은 <b>${tgLabel(yearTG)}</b> 쪽이라, 준비는 됐는데 바람은 다른 데서 부는 상태입니다.`;
-  } else if (flow) { sajuPt = 1;
-    sajuLine = `타고난 사주에 ${cat.grant}이 뚜렷하진 않지만, ${flow.label}인 <b>${tgLabel(flow.tg)}</b>이 그 기운을 채워주는 중 — 타고나지 않았어도 지금은 운이 문을 열어주는 시기입니다.`;
+    sajuLine = L(`타고난 사주에 <b>${natalMatch}</b>${jIga(natalMatch)} 있어 ${cat.grant}은 갖춰져 있습니다. 다만 올해 운이 미는 방향은 <b>${tgLabel(yearTG)}</b> 쪽이라, 준비는 됐는데 바람은 다른 데서 부는 상태입니다.`,
+      `Your natal chart holds <b>${TENGOD_NAME_EN[natalMatch]}</b>, so ${catEN.grant} is in place. Only, the direction this year's luck pushes is <b>${tgLabelEN(yearTG)}</b> — you are ready, but the wind blows from elsewhere.`);
+  } else if (flowKo) { sajuPt = 1;
+    sajuLine = L(`타고난 사주에 ${cat.grant}이 뚜렷하진 않지만, ${flowKo.label}인 <b>${tgLabel(flowKo.tg)}</b>이 그 기운을 채워주는 중 — 타고나지 않았어도 지금은 운이 문을 열어주는 시기입니다.`,
+      `Your natal chart does not hold ${catEN.grant} distinctly, but ${flowEnLabel[flowKo.label]}, <b>${tgLabelEN(flowKo.tg)}</b>, is filling that energy in — even unborn to it, this is a time luck opens the door.`);
   } else {
-    sajuLine = `타고난 사주에도, 올해 들어온 운에도 이 방향의 기운이 옅습니다. 억지로 밀기보다 이번 달의 큰 흐름(<b>${THEMES[f.periods[2].theme].name}</b>)을 먼저 타는 편이 낫습니다.`;
+    sajuLine = L(`타고난 사주에도, 올해 들어온 운에도 이 방향의 기운이 옅습니다. 억지로 밀기보다 이번 달의 큰 흐름(<b>${THEMES[f.periods[2].theme].name}</b>)을 먼저 타는 편이 낫습니다.`,
+      `Neither your natal chart nor this year's incoming luck holds much of this energy. Rather than forcing it, better to ride this month's larger current (<b>${THEMES_EN[f.periods[2].theme].name}</b>) first.`);
   }
 
   /* 별 근거 */
+  const whoEn = {'달':'the Moon','태양':'the Sun','목성':'Jupiter'};
   const transits = [
     {who:'달', house: f.periods[0].astro.house},
     {who:'태양', house: f.periods[2].astro.house},
@@ -2034,41 +2118,51 @@ function gatherEvidence(q, R) { // R = window.READING → 명식·현재 운 근
   const hit = transits.find(t => cat.houses.includes(t.house));
   let astroLine, astroPt = 0;
   if (hit) { astroPt = 1;
-    astroLine = `지금 <b>${hit.who}</b>이 하늘 열두 자리 중 당신의 <b>${hit.house}번째 자리</b>를 지나고 있습니다 — ${HOUSE_FORTUNE[hit.house]}. 이 질문이 하늘에서도 조명되는 중입니다.`;
+    astroLine = L(`지금 <b>${hit.who}</b>이 하늘 열두 자리 중 당신의 <b>${hit.house}번째 자리</b>를 지나고 있습니다 — ${HOUSE_FORTUNE[hit.house]}. 이 질문이 하늘에서도 조명되는 중입니다.`,
+      `Right now <b>${whoEn[hit.who]}</b> is passing through your <b>${hit.house}th</b> of the sky's twelve houses — ${HOUSE_FORTUNE_EN[hit.house]}. This question is lit up in the sky too.`);
   } else {
     const jup = transits[2];
-    astroLine = `하늘을 열두 자리로 나눌 때 이 주제가 깃드는 자리(${cat.houses.join('·')}번째)는 지금 고요합니다. 대신 목성이 <b>${jup.house}번째 자리</b>에 머물러 ${HOUSE_FORTUNE[jup.house]}에 순풍이 붑니다.`;
+    astroLine = L(`하늘을 열두 자리로 나눌 때 이 주제가 깃드는 자리(${cat.houses.join('·')}번째)는 지금 고요합니다. 대신 목성이 <b>${jup.house}번째 자리</b>에 머물러 ${HOUSE_FORTUNE[jup.house]}에 순풍이 붑니다.`,
+      `Divide the sky into twelve houses and the seat this theme lives in (the ${cat.houses.join(' & ')}) is quiet now. Instead Jupiter rests in your <b>${jup.house}th house</b>, so a tailwind blows on ${HOUSE_FORTUNE_EN[jup.house]}.`);
   }
 
   /* 수 근거 */
   let numLine, numPt = 0;
   if (cat.nums.includes(f.PY)) { numPt = 1;
-    numLine = `올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 질문과 정확히 같은 결의 해입니다.`;
+    numLine = L(`올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 질문과 정확히 같은 결의 해입니다.`,
+      `Your number this year, the personal year (birth month + day + this year) <b>${f.PY}</b> — ${NUM_CYCLE_EN[f.PY]}. A year of exactly the same grain as this question.`);
   } else if (cat.nums.includes(f.PM)) { numPt = 1;
-    numLine = `이번 달 개인 월수 <b>${f.PM}</b> — ${NUM_CYCLE[f.PM]}. 이 질문과 같은 결의 달입니다.`;
+    numLine = L(`이번 달 개인 월수 <b>${f.PM}</b> — ${NUM_CYCLE[f.PM]}. 이 질문과 같은 결의 달입니다.`,
+      `This month's personal month <b>${f.PM}</b> — ${NUM_CYCLE_EN[f.PM]}. A month of the same grain as this question.`);
   } else {
-    numLine = `올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 주제의 큰 문은 <b>${cat.nums[0]}</b>의 해에 더 활짝 열립니다. 지금은 그 준비 국면.`;
+    numLine = L(`올해 당신의 수, 개인 연수(생월·생일에 올해를 더한 수) <b>${f.PY}</b> — ${NUM_CYCLE[f.PY]}. 이 주제의 큰 문은 <b>${cat.nums[0]}</b>의 해에 더 활짝 열립니다. 지금은 그 준비 국면.`,
+      `Your number this year, the personal year (birth month + day + this year) <b>${f.PY}</b> — ${NUM_CYCLE_EN[f.PY]}. The big door for this theme opens wider in a <b>${cat.nums[0]}</b> year. For now, the preparation phase.`);
   }
 
-  /* 타이밍: 카테고리와 결이 맞는 구간 — 사람마다 다른 다섯 구간의 실제 결·개인 숫자·십성으로 개인화 */
+  /* 타이밍 */
   const pnum = {day: f.PD, week: f.PW, month: f.PM, quarter: f.PQ, year: f.PY};
-  const numLabel = k => ({day:'일수', week:'주수', month:'월수', quarter:'분기수', year:'연수'})[k];
-  const pStamp = p => `개인 ${numLabel(p.key)} ${pnum[p.key]} · ${p.saju.tg}`;
-  const flowSig = f.periods.map(p => `${PERIOD_META[p.key].kr} ${THEMES[p.theme].name}`).join(' · ');
+  const numLabelKo = k => ({day:'일수', week:'주수', month:'월수', quarter:'분기수', year:'연수'})[k];
+  const numLabelEn = k => ({day:'day-number', week:'week-number', month:'month-number', quarter:'quarter-number', year:'year-number'})[k];
+  const pStamp = p => L(`개인 ${numLabelKo(p.key)} ${pnum[p.key]} · ${p.saju.tg}`,
+                        `personal ${numLabelEn(p.key)} ${pnum[p.key]} · ${TENGOD_NAME_EN[p.saju.tg]}`);
+  const flowSig = f.periods.map(p => `${periodName(p.key)} ${themeName(p.theme)}`).join(' · ');
   const matches = f.periods.filter(p => cat.themes.includes(p.theme));
   const tp = matches.length ? matches[0] : null;
   let timing;
   if (tp) {
-    const others = matches.slice(1).map(p => PERIOD_META[p.key].kr);
-    timing = `언제가 좋은가 — 당신의 다섯 구간은 지금 「${flowSig}」의 결을 지납니다. 이 중 <b>${PERIOD_META[tp.key].kr}</b>(${pStamp(tp)})의 흐름(${THEMES[tp.theme].name})이 이 질문과 정면으로 맞습니다${others.length ? ` — ${others.join(' · ')}도 같은 결로 뒤를 받칩니다` : ''}. 여기서 움직이세요.`;
+    const others = matches.slice(1).map(p => periodName(p.key));
+    timing = L(`언제가 좋은가 — 당신의 다섯 구간은 지금 「${flowSig}」의 결을 지납니다. 이 중 <b>${PERIOD_META[tp.key].kr}</b>(${pStamp(tp)})의 흐름(${THEMES[tp.theme].name})이 이 질문과 정면으로 맞습니다${others.length ? ` — ${others.join(' · ')}도 같은 결로 뒤를 받칩니다` : ''}. 여기서 움직이세요.`,
+      `When is good — your five stretches now pass through the grain of 「${flowSig}」. Of these, the flow of <b>${PERIOD_EN[tp.key]}</b> (${pStamp(tp)}), namely ${THEMES_EN[tp.theme].name}, meets this question head-on${others.length ? ` — ${others.join(' · ')} back it with the same grain` : ''}. Move here.`);
   } else {
     const dist = p => Math.min(...cat.themes.map(t => Math.abs(t - p.theme)));
     const near = f.periods.slice().sort((a, b) => dist(a) - dist(b))[0];
-    timing = `언제가 좋은가 — 당신의 다섯 구간은 지금 「${flowSig}」의 결을 지납니다. 이 질문(${cat.label})과 정면으로 겹치는 창은 아직 없지만, 결이 가장 가까운 건 <b>${PERIOD_META[near.key].kr}</b>(${pStamp(near)})입니다 — 급하게 정하기보다 이 구간을 기점으로 준비를 쌓으세요. 올해 운의 큰 키워드는 「${THEMES[f.periods[4].theme].name}」이니, 그쪽에 가까운 준비일수록 흐름과 맞습니다.`;
+    timing = L(`언제가 좋은가 — 당신의 다섯 구간은 지금 「${flowSig}」의 결을 지납니다. 이 질문(${cat.label})과 정면으로 겹치는 창은 아직 없지만, 결이 가장 가까운 건 <b>${PERIOD_META[near.key].kr}</b>(${pStamp(near)})입니다 — 급하게 정하기보다 이 구간을 기점으로 준비를 쌓으세요. 올해 운의 큰 키워드는 「${THEMES[f.periods[4].theme].name}」이니, 그쪽에 가까운 준비일수록 흐름과 맞습니다.`,
+      `When is good — your five stretches now pass through the grain of 「${flowSig}」. There is no window that overlaps this question (${catEN.label}) head-on yet, but the closest grain is <b>${PERIOD_EN[near.key]}</b> (${pStamp(near)}) — rather than deciding in a rush, build your preparation from this stretch. This year's big keyword is 「${THEMES_EN[f.periods[4].theme].name}」, so the nearer your prep is to that, the better it fits the flow.`);
   }
 
-  return {cat, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt}, sajuLine, astroLine, numLine, timing,
-    tpKr: tp ? PERIOD_META[tp.key].kr : null, tpTheme: tp ? THEMES[tp.theme].name : null};
+  return {cat, catKey, catEN, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt},
+    sajuLine, astroLine, numLine, timing,
+    tpKr: tp ? periodName(tp.key) : null, tpTheme: tp ? themeName(tp.theme) : null};
 }
 
 /* ---------- 열두 패 (카드 덱) ---------- */
@@ -2139,6 +2233,171 @@ const DECK = [
     '빨리 끝내고 싶다면 역설적으로 더 깊이 파야 합니다. 이번에 뿌리까지 다루면 같은 일이 다시 오지 않습니다.',
     '겉보기에는 조용한 결말이지만 아래에서는 큰 것이 바뀝니다. 다음 계절의 당신이 그 차이를 증명합니다.']}
 ];
+
+/* ===== ask-en NEW-EN-DATA (inserted after DECK) ===== */
+/* ============================ NEW-EN-DATA ============================ */
+
+/* --- CATS English side: keyword list + EN label/grant/micro, keyed by the
+       SAME category keys as CATS. detectCat(EN) matches CAT_EN[k].keys;
+       gatherEvidence/finishDraw pull EN label/grant/micro from here.
+       CATS itself (themes/houses/nums/tg + KO strings) is untouched. --- */
+const CAT_EN = {
+  love:    {label:'Love · Connection', grant:'a vessel that holds connection',
+            micro:'if someone is on your mind, start today by sending one light hello',
+            keys:['love','dating','relationship','romance','marry','marriage','wedding','boyfriend','girlfriend','crush','confess','confession','breakup','break up','ex-','reunite','reunion','date','couple','partner','him','her','feelings for','fall for','fall in love']},
+  work:    {label:'Work · Career', grant:'a vessel that holds work and honor',
+            micro:'if a role is on your mind, start today by saving one posting or fixing the first line of your resume',
+            keys:['job','career','work','quit','resign','resignation','promotion','promote','interview','company','business','startup','start-up','project','contract','employ','hire','hiring','position','office','coworker','transfer','freelance','workplace']},
+  money:   {label:'Money · Wealth', grant:'a vessel that holds wealth',
+            micro:'start today by writing the amount and the deadline on paper where you can see it',
+            keys:['money','wealth','invest','investment','stock','stocks','crypto','coin','bitcoin','real estate','property','loan','salary','income','profit','finance','financial','fund','debt','budget','afford','payment','buy','sell','purchase']},
+  study:   {label:'Study · Exams', grant:'a vessel that holds learning',
+            micro:'start today by sitting at the desk and opening the first page',
+            keys:['exam','test','study','pass the','certificate','license','school','college','university','degree','thesis','dissertation','grade','scholarship','admission','gpa','graduate']},
+  move:    {label:'Movement · Change', grant:'the energy of movement',
+            micro:'start today by picking one date and marking it on the calendar',
+            keys:['move','moving','relocate','relocation','travel','trip','immigrate','emigrate','abroad','overseas','depart','commute','change city','change place']},
+  health:  {label:'Health · Recovery', grant:'the strength to endure',
+            micro:'start today with a 10-minute walk, or one call to book a doctor',
+            keys:['health','surgery','diet','exercise','workout','sick','illness','ill ','pain','recover','recovery','hospital','doctor','fitness','stamina','healthy','wellness']},
+  relation:{label:'People · Relationships', grant:'the power to keep people close',
+            micro:'start by sending one message first',
+            keys:['friend','family','parent','mother','father','coworker','colleague','conflict','reconcile','argue','argument','falling out','fall out','team','boss','social','people']},
+  general: {label:'Life · Flow', grant:'the strength to hold your center',
+            micro:'start today by finishing the smallest possible piece of the task',
+            keys:[]}
+};
+
+/* --- readable EN period names (prose) keyed like PERIOD_META --- */
+const PERIOD_EN = {day:'today', week:'this week', month:'this month', quarter:'this quarter', year:'this year'};
+
+/* --- EN Ten-God label to mirror tgLabel() = `${TG_NICK[tg]}(${tg})` --- */
+const tgLabelEN = tg => `${TG_NICK_EN[tg]} (${TENGOD_NAME_EN[tg]})`;
+
+/* --- short hint keyed by the Korean group elRelation() returns
+       (short EN counterpart to REL_HINT) --- */
+const REL_HINT_EN = {
+  비겁:'an energy on your side', 식상:'an energy you draw out and use',
+  재성:'an energy you gather in', 관성:'an energy that tempers you',
+  인성:'an energy that fills you'
+};
+
+/* --- EN verdict table (same keys/shape as VERDICTS; yn + h read by logic) --- */
+const VERDICTS_EN = {
+  3:{yn:'YES', h:'吉', t:'Do it now', d:'the evidence of your chart and the cards you drew point the same way',
+     adv:'This is a time to act, not to ask. Take the first step exactly as this feeling tells you.'},
+  2:{yn:'YES', h:'小吉', t:'But hold half a beat', d:'the direction is right, but the cards attach a condition',
+     adv:'You may. Only settle the task named by the card at the pass first, then move.'},
+  1:{yn:'NO', h:'未', t:'Not yet', d:'the current fortune does not push this direction',
+     adv:'This is not a no forever, only a not-now. Read the timing below and ask again.'},
+  0:{yn:'NO', h:'否', t:'Not this direction', d:'both chart and cards are quiet on this path',
+     adv:'Push the current plan and the cost is high. Re-choose the direction itself, not just the timing.'}
+};
+
+/* --- EN position labels (mirror POS_LABEL) and short labels --- */
+const POS_LABEL_EN = ['Now — where you stand', 'The pass — what to work through', 'The end — where the current lands'];
+const SLABEL_EN     = ['Now', 'The pass', 'The end'];
+const CARDNOTE_WHEN_EN = ['today', 'this month', 'this year']; /* mirrors ['오늘','이달','올해'] */
+const SPOL_EN = {up:'順 a card that pushes', down:'逆 a card that blocks', flat:'平 a neutral card'};
+
+/* --- EN deck, index-aligned to DECK (h/el/pol/th reused from DECK) --- */
+const DECK_EN = [
+  {name:'Lantern', kw:'Direction · guidance · the near light', pos:[
+    'Beside you now is a light — not large, but unmistakable. It cannot light everything, yet it is enough to light the next single step.',
+    'The heart of this problem is that you cannot see all the way ahead. Do not demand the whole map; go only as far as the lantern reaches, first.',
+    'This ends in quiet certainty rather than a dazzling finale — looking back, you find the path was already lit.']},
+  {name:'Gate', kw:'Threshold · choice · the doorway', pos:[
+    'You are standing at a threshold — neither in nor out. That in-between is the very source of the frustration.',
+    'It is not that you lack the key; you simply have not turned the handle yet. This is not a door opened from the outside.',
+    'The gate does open in the end. Only — once through, there is no going back; the passage completes when you accept that too.']},
+  {name:'Bridge', kw:'Connection · crossing · the space between', pos:[
+    'Between two points you thought were severed, a bridge in fact lies. It may be a person, it may be an opportunity.',
+    'You cannot decide whether to cross while standing on the bridge. The longer you halt midway, the more it sways.',
+    'This matter is settled on the far side. It ends not by the logic of where you stand now, but by the logic of after you have crossed.']},
+  {name:'Seed', kw:'Beginning · potential · germination', pos:[
+    'On the surface nothing seems to be happening, but underground it has already begun. This quiet is not a stop but a germination.',
+    'The urge to keep digging it up is the greatest enemy. The moment you pull it out to check, you are back at the very start.',
+    'The harvest comes later than you expect — but larger than you expect. The unit of time for this question is not days but seasons.']},
+  {name:'Blade', kw:'Decision · cutting away · clearing', pos:[
+    'There is something you hold onto, gone blunt. Unable to cut it or let it go, it is what drains your energy most right now.',
+    'The task at this pass is not to add but to cut. Decide first not what to keep, but what to throw away.',
+    'It ends with a clean cut. It may hurt, but it will not fester — the later you cut, the wider the wound.']},
+  {name:'Mirror', kw:'Facing it · reflection · self-knowledge', pos:[
+    'Not the situation but you reflected in it is the point. What unfolds outside now is an image of what was already within.',
+    'This is a stretch where you must face, head-on, the scene you want to avoid. A mirror will not soften the view — but it does not lie either.',
+    'At the end you get, instead of the answer you wanted, the exact answer. And that turns out more useful than what you wanted.']},
+  {name:'Well', kw:'Depth · reserve · never running dry', pos:[
+    'The surface is calm, but go deep and there is much held below. Your resources run deeper than you think.',
+    'You cannot drink without the labor of lowering the bucket. Drawing out what is already there — that is the work of this pass.',
+    'Not a finale that bursts all at once, but one that refills each time you draw. You gain an answer to keep and use over time.']},
+  {name:'Wind', kw:'Change · rumor · the sway', pos:[
+    'What sways now is not because you are weak, but because you are passing through a stretch of wind. The voices around you sound unusually loud.',
+    'There is no way to fight the wind and win. Resist and you break; fold and it passes — only judge whether it is a wind you can use as a sail.',
+    'Where the wind has passed, what flew off and what remained become clear. What remains is truly yours.']},
+  {name:'Mountain', kw:'Weight · waiting · stillness', pos:[
+    'This is not a phase you move by pushing. Before a mountain, do not try to move it — prepare to climb it.',
+    'Impatience is the only obstacle. This mountain has no way around, only up, and the climb takes time.',
+    'You find the summit was not as high as it felt. Arrive at the end, and what weighed on you turns into a view.']},
+  {name:'Boat', kw:'Movement · voyage · departure', pos:[
+    'The anchor is already half up. Your heart is not at the harbor while only your body remains — that mismatch is the fatigue you feel.',
+    'The reason to leave is enough; it is the readiness to leave that is the problem. A boat floats on courage, but a voyage runs on preparation.',
+    'The end of this lies somewhere other than where you are now. Seen from the destination, departure was the hardest stretch.']},
+  {name:'Thread', kw:'Ties · entanglement · connection', pos:[
+    'You are not alone in this question. A thread, thin but tough, ties you to someone — or to a past matter.',
+    'A tangled thread only tightens the more you pull. Untangling is not force but order — start slowly, from the outermost knot.',
+    'Neither a fully severed end nor a fully unraveled one. It ends by choosing which single strand to keep.']},
+  {name:'Star', kw:'Hope · guidance · the far light', pos:[
+    'It looks faint only because it is far — the direction itself is not wrong. What you need is not a new goal but a clearing of what blocks your view.',
+    'A star is easily dismissed for being out of reach. But the navigator makes a reachable course out of an unreachable star.',
+    'This ends in alignment rather than arrival — you find yourself standing not at the point you wanted, but on the right direction.']},
+  {name:'Tower', kw:'Height · isolation · the view down', pos:[
+    'You climbed high, and in exchange became alone. This loneliness is not proof of failure but the cost of height.',
+    'From inside the tower you cannot see the tower. Coming down to look, asking someone else — that is the homework of this pass.',
+    'Come down on your own and it becomes stairs; hold on and it becomes a crack. Either way, it ends by touching the ground.']},
+  {name:'Ember', kw:'Passion · warmth · a living flame', pos:[
+    'What you thought had died is still alive. Like an ember under ash, this feeling endures longer than you think.',
+    'The impatience to burn it all at once puts the ember out. What is needed is not a woodpile but a breath of air — small, often.',
+    'It ends not as a great blaze but as a lasting fire. Instead of flaring up spectacularly, it becomes warmth that gets you through winter.']},
+  {name:'Vessel', kw:'Holding · readiness · the size of the vessel', pos:[
+    'It is not that opportunity is absent — the vessel to hold it is being shaped. While the vessel fires, it feels stifling, like inside a kiln.',
+    'Before coveting a larger vessel, first seal the crack in this one. Into a leaking vessel, whatever you pour is the same.',
+    'It ends by holding exactly as much as you can hold. And that size is one measure larger than you now expect.']},
+  {name:'Root', kw:'Root · origin · the unseen half', pos:[
+    'The problem is in the root, not the branch. What is visible now is only the latest version of something old.',
+    'If you want it over quickly, paradoxically you must dig deeper. Deal with it to the root this time, and the same matter will not return.',
+    'The finish looks quiet on the surface, but below, something large shifts. The you of the next season proves the difference.']}
+];
+
+/* KO card-name → EN fields, so helpers can map a picked card (a KO DECK obj) to EN */
+const DECK_EN_BY_KO = {};
+DECK.forEach((c, i) => { DECK_EN_BY_KO[c.name] = DECK_EN[i]; });
+const cardName = c => L(c.name, DECK_EN_BY_KO[c.name].name);
+const cardKw   = c => L(c.kw,   DECK_EN_BY_KO[c.name].kw);
+const cardKw1  = c => (LANG === 'en' ? DECK_EN_BY_KO[c.name].kw : c.kw).split(' · ')[0];
+const cardPos  = (c, i) => L(c.pos[i], DECK_EN_BY_KO[c.name].pos[i]);
+
+/* --- EN pair text: KO names kept at [0],[1] for matching against picks; EN at [2] --- */
+const PAIR_TEXT_EN = [
+  ['등불','거울','The lantern is doubled in the mirror — seeing yourself clearly is half of this question.'],
+  ['칼','실','The blade meets the thread — a knot long dragged out may need cutting, not untangling.'],
+  ['씨앗','그릇','The seed is set in the vessel — a prepared beginning. Now you need only sow.'],
+  ['배','바람','The sail catches the wind — a tailwind attaches to your movement.'],
+  ['배','산','The boat halts before the mountain — right now, anchoring suits better than sailing.'],
+  ['별','문','A star rises over the gate — a sign that a path you thought closed is opening.'],
+  ['우물','불씨','Water meets fire — rush and it goes out, handle it well and it turns to steam. Temperature control is the crux.'],
+  ['탑','다리','Down from the tower to cross the bridge — the key to ending isolation lies with whoever crosses first.'],
+  ['뿌리','씨앗','A seed falls beside the root — what you learned from the past becomes fertilizer for the next beginning.']
+];
+
+/* --- EN element taste / food (mirror EL_TASTE, EL_FOOD; EL_NUM is language-agnostic, reuse it) --- */
+const EL_TASTE_EN = ['sour', 'bitter', 'sweet', 'pungent', 'salty'];
+const EL_FOOD_EN = [
+  ['green leafy vegetables · sour fruit', 'sour foods with a vinegar or lemon note'],   /* Wood */
+  ['bitter greens · red foods · warm broth', 'bitter, warming foods'],                  /* Fire */
+  ['yellow sweet grains · root vegetables', 'mild, naturally sweet foods'],             /* Earth */
+  ['white lean meat · spicy dishes', 'pungent, white-toned foods'],                     /* Metal */
+  ['salty seafood · dark foods', 'salty, dark-hued foods']                              /* Water */
+];
 const POS_LABEL = ['지금 — 놓인 자리', '길목 — 풀어야 할 것', '끝자리 — 흐름이 닿는 곳'];
 
 /* 특수 조합 — 두 패가 만나면 생기는 결 */
@@ -2177,19 +2436,24 @@ const jRo = w => hasBatchim(w) ? '으로' : '로';
 function comboLine(els) {
   const [a, b, c] = els;
   if (a === b && b === c)
-    return `${ELEMENTS[a].k}(${ELEMENTS[a].h})의 기운이 세 겹으로 겹쳤습니다 — 메시지가 하나로 모입니다. 방향은 분명하고, 남은 것은 속도뿐입니다.`;
+    return L(`${ELEMENTS[a].k}(${ELEMENTS[a].h})의 기운이 세 겹으로 겹쳤습니다 — 메시지가 하나로 모입니다. 방향은 분명하고, 남은 것은 속도뿐입니다.`,
+      `The energy of ${ELEMENTS_EN[a].k}(${ELEMENTS[a].h}) is stacked three deep — the message converges into one. The direction is clear; all that remains is speed.`);
   const gen = (x, y) => (x + 1) % 5 === y;
   const perms = [[a,b,c],[a,c,b],[b,a,c],[b,c,a],[c,a,b],[c,b,a]];
   if (perms.some(([x, y, z]) => gen(x, y) && gen(y, z)))
-    return '세 패의 기운이 한 방향으로 흘러 서로를 살립니다(상생) — 일이 꼬리를 물고 풀리는 조합입니다. 순서를 건너뛰지만 마세요.';
+    return L('세 패의 기운이 한 방향으로 흘러 서로를 살립니다(상생) — 일이 꼬리를 물고 풀리는 조합입니다. 순서를 건너뛰지만 마세요.',
+      'The three cards\' energies flow one way and feed one another (generation) — a combination where things unlock one after another. Just don\'t skip the order.');
   let g = 0, k = 0;
   for (const [x, y] of [[a,b],[b,c],[a,c]]) {
     if (gen(x, y) || gen(y, x)) g++;
     if ((x + 2) % 5 === y || (y + 2) % 5 === x) k++;
   }
-  if (k >= 2) return '패끼리 서로 맞서는 조합(상극)입니다 — 긴장이 있지만 그 긴장이 이 질문을 움직이는 동력입니다. 부딪히는 지점이 곧 답이 있는 지점입니다.';
-  if (g >= 2) return '패들이 서로를 밀어주는 조합입니다 — 무리하게 당기지 않아도, 순서만 지키면 부드럽게 이어집니다.';
-  return '살리는 기운과 견제하는 기운이 섞여 있습니다 — 밀 때와 멈출 때를 구분하는 것이 이 질문의 기술입니다.';
+  if (k >= 2) return L('패끼리 서로 맞서는 조합(상극)입니다 — 긴장이 있지만 그 긴장이 이 질문을 움직이는 동력입니다. 부딪히는 지점이 곧 답이 있는 지점입니다.',
+    'A combination where the cards oppose one another (control) — there is tension, but that tension is the engine that moves this question. The point of collision is exactly where the answer lies.');
+  if (g >= 2) return L('패들이 서로를 밀어주는 조합입니다 — 무리하게 당기지 않아도, 순서만 지키면 부드럽게 이어집니다.',
+    'A combination where the cards push one another along — without forcing anything, keep the order and it flows smoothly.');
+  return L('살리는 기운과 견제하는 기운이 섞여 있습니다 — 밀 때와 멈출 때를 구분하는 것이 이 질문의 기술입니다.',
+    'Feeding energy and checking energy are mixed — telling when to push from when to pause is the skill of this question.');
 }
 
 /* =====================================================
@@ -2495,12 +2759,12 @@ $('#askForm').addEventListener('submit', e => {
   currentDraw = {q, picks: []};
   $('#askDraw').innerHTML = `
     <div class="deckwrap">
-      <p class="deckhint">마음속으로 질문을 되뇌며, 끌리는 패 <b>세 장</b>을 고르세요. <span id="deckCount">0 / 3</span></p>
+      <p class="deckhint">${L('마음속으로 질문을 되뇌며, 끌리는 패 <b>세 장</b>을 고르세요.', 'Repeat your question in your mind and choose the <b>three</b> cards you\'re drawn to.')} <span id="deckCount">0 / 3</span></p>
       <div class="deck" id="deck">${order.slice(0, 12).map(i =>
-        `<button type="button" class="deckcard" data-i="${i}" aria-label="뒤집힌 패">
+        `<button type="button" class="deckcard" data-i="${i}" aria-label="${L('뒤집힌 패','face-down card')}">
           <span class="inner">
             <span class="face back" aria-hidden="true"><i class="bs">✦</i><b class="bh">山</b><i class="bs">✦</i></span>
-            <span class="face front"><span class="fh">${DECK[i].h}</span><span class="fn">${DECK[i].name}</span></span>
+            <span class="face front"><span class="fh">${DECK[i].h}</span><span class="fn">${L(DECK[i].name, DECK_EN[i].name)}</span></span>
           </span>
         </button>`).join('')}</div>
     </div>`;
@@ -2513,7 +2777,7 @@ $('#askDraw').addEventListener('click', e => {
   if (!btn || !currentDraw || btn.classList.contains('picked') || currentDraw.picks.length >= 3) return;
   btn.classList.add('picked');
   const card = DECK[+btn.dataset.i];
-  btn.setAttribute('aria-label', `${card.name}(${card.h}) — ${POS_LABEL[currentDraw.picks.length]}`);
+  btn.setAttribute('aria-label', `${cardName(card)}(${card.h}) — ${L(POS_LABEL[currentDraw.picks.length], POS_LABEL_EN[currentDraw.picks.length])}`);
   currentDraw.picks.push(card);
   $('#deckCount').textContent = `${currentDraw.picks.length} / 3`;
   if (currentDraw.picks.length === 3) {
@@ -2530,120 +2794,140 @@ function finishDraw() {
   const R = window.READING;
   const ev = gatherEvidence(q, R);
 
-  /* 판정: 명식 근거(0~4)를 평년 수준 2점 기준으로 보정 + 패의 결(-3~+3) → 예/아니오 */
   const qt = detectQType(q);
   const polSum = picks.reduce((s, c) => s + c.pol, 0);
   const total = (ev.ev - 2) + polSum;
   const score = total >= 3 ? 3 : total >= 1 ? 2 : total >= -1 ? 1 : 0;
-  const v = VERDICTS[score];
+  const v = (LANG === 'en' ? VERDICTS_EN : VERDICTS)[score];
   const vl = verdictLines(score, ev, picks, polSum);
 
-  /* 패의 중심 오행 → 일간과의 관계 */
   const cnt = [0, 0, 0, 0, 0];
   picks.forEach(c => cnt[c.el]++);
   const domEl = cnt.indexOf(Math.max(...cnt));
   const dk = STEMS[R.saju.day.stem];
-  const [relName, relDesc] = elRelation(domEl, dk.el);
+  const [relName, relDescKo] = elRelation(domEl, dk.el);
+  const relLabel = L(relName, EL_REL_EN[relName].name);
+  const relDesc  = L(relDescKo, EL_REL_EN[relName].desc);
 
-  /* 특수 조합 */
-  const names = picks.map(c => c.name);
-  const pairLines = PAIR_TEXT.filter(([a, b]) => names.includes(a) && names.includes(b)).map(p => p[2]);
+  const names = picks.map(c => c.name); /* KO names — picks are KO objects */
+  const PT = LANG === 'en' ? PAIR_TEXT_EN : PAIR_TEXT;
+  const pairLines = PT.filter(([a, b]) => names.includes(a) && names.includes(b)).map(p => p[2]);
 
   const myWeak = R.saju.counts.indexOf(Math.min(...R.saju.counts));
   const myDom = R.saju.counts.indexOf(Math.max(...R.saju.counts));
   const perSlots = [R.fortune.periods[0], R.fortune.periods[2], R.fortune.periods[4]];
+  const themeName = t => L(THEMES[t].name, THEMES_EN[t].name);
   const seenEl = new Set();
   const cardNotes = (c, i) => {
     const notes = [];
-    if (!seenEl.has(c.el)) { // 패 해설은 카드 고정 텍스트 — 오행별 첫 패에 일간 교차 주석을 반드시 붙여 사람마다 다르게 읽히게
+    if (!seenEl.has(c.el)) {
       seenEl.add(c.el);
       const [crn] = elRelation(c.el, dk.el);
-      notes.push(`이 패의 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h})${jEun(ELEMENTS[c.el].k)} ${dk.k} 일간인 당신에게 ${crn} — ${REL_HINT[crn]}입니다.`);
+      notes.push(L(`이 패의 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h})${jEun(ELEMENTS[c.el].k)} ${dk.k} 일간인 당신에게 ${crn} — ${REL_HINT[crn]}입니다.`,
+        `This card's ${ELEMENTS_EN[c.el].k}(${ELEMENTS[c.el].h}) is, to you as a ${dk.h} Day Master, ${EL_REL_EN[crn].name} — ${REL_HINT_EN[crn]}.`));
     }
     if (c.el === myWeak && R.saju.counts[myWeak] <= 1)
-      notes.push(`이 패의 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h}) 기운은 당신 명식에 가장 옅은 기운입니다 — 안에 없는 답이 밖에서 온 셈이니, 평소의 방식 대신 이 패의 방식을 빌려보라는 뜻입니다.`);
+      notes.push(L(`이 패의 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h}) 기운은 당신 명식에 가장 옅은 기운입니다 — 안에 없는 답이 밖에서 온 셈이니, 평소의 방식 대신 이 패의 방식을 빌려보라는 뜻입니다.`,
+        `This card's ${ELEMENTS_EN[c.el].k}(${ELEMENTS[c.el].h}) energy is the faintest in your chart — the answer you lack inside has come from outside, so borrow this card's way instead of your usual one.`));
     else if (c.el === myDom && R.saju.counts[myDom] >= (R.saju.total >= 8 ? 3 : 2))
-      notes.push(`당신 명식에서 가장 강한 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h}) 기운과 같은 결 — 몸에 익은 방식이 통한다는 신호입니다.`);
+      notes.push(L(`당신 명식에서 가장 강한 ${ELEMENTS[c.el].k}(${ELEMENTS[c.el].h}) 기운과 같은 결 — 몸에 익은 방식이 통한다는 신호입니다.`,
+        `Same grain as the strongest ${ELEMENTS_EN[c.el].k}(${ELEMENTS[c.el].h}) energy in your chart — a sign that the way you know in your bones works.`));
     if (c.th.some(t => ev.cat.themes.includes(t)))
-      notes.push(`이 패의 주제는 지금 물은 「${ev.cat.label}」의 결과 겹칩니다 — 손이 질문의 과녁 위에 있는 패를 집었습니다.`);
+      notes.push(L(`이 패의 주제는 지금 물은 「${ev.cat.label}」의 결과 겹칩니다 — 손이 질문의 과녁 위에 있는 패를 집었습니다.`,
+        `This card's theme overlaps the grain of 「${ev.catEN.label}」 you just asked about — your hand picked a card right on the question's target.`));
     if (c.th.includes(perSlots[i].theme))
-      notes.push(`${['오늘', '이달', '올해'][i]}의 흐름(${THEMES[perSlots[i].theme].name})과 같은 결 — 패가 시절과 공명합니다.`);
+      notes.push(L(`${['오늘', '이달', '올해'][i]}의 흐름(${THEMES[perSlots[i].theme].name})과 같은 결 — 패가 시절과 공명합니다.`,
+        `Same grain as ${CARDNOTE_WHEN_EN[i]}'s flow (${THEMES_EN[perSlots[i].theme].name}) — the card resonates with the season.`));
     return notes.length ? ` <span class="pbx">${notes.join(' ')}</span>` : '';
   };
   const spots = picks.map((c, i) => `
     <div class="spot">
-      <p class="slabel">${['지금', '길목', '끝자리'][i]}</p>
+      <p class="slabel">${L(['지금', '길목', '끝자리'][i], SLABEL_EN[i])}</p>
       <p class="sh el-${ELEMENTS[c.el].cls}">${c.h}</p>
-      <p class="sn">${c.name}</p>
-      <p class="skw">${c.kw}</p>
-      <p class="spol ${c.pol > 0 ? 'up' : c.pol < 0 ? 'down' : 'flat'}">${c.pol > 0 ? '順 밀어주는 패' : c.pol < 0 ? '逆 막아서는 패' : '平 중립의 패'}</p>
+      <p class="sn">${cardName(c)}</p>
+      <p class="skw">${cardKw(c)}</p>
+      <p class="spol ${c.pol > 0 ? 'up' : c.pol < 0 ? 'down' : 'flat'}">${c.pol > 0 ? L('順 밀어주는 패', SPOL_EN.up) : c.pol < 0 ? L('逆 막아서는 패', SPOL_EN.down) : L('平 중립의 패', SPOL_EN.flat)}</p>
     </div>`).join('');
   const passages = picks.map((c, i) =>
-    `<p class="pb"><b>${POS_LABEL[i]} · ${c.name}(${c.h})</b><br>${c.pos[i]}${cardNotes(c, i)}</p>`).join('');
-  const kwOf = c => c.kw.split(' · ')[0];
-  const intro = `<p class="pb" style="margin-top:14px">「${ev.cat.label}」${jEul(ev.cat.label)} 묻는 당신에게 세 패는 이렇게 배열됐습니다. 당신은 ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath}의 사람 — 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`;
+    `<p class="pb"><b>${L(POS_LABEL[i], POS_LABEL_EN[i])} · ${cardName(c)}(${c.h})</b><br>${cardPos(c, i)}${cardNotes(c, i)}</p>`).join('');
+  const kwOf = c => cardKw1(c);
+  const intro = L(`<p class="pb" style="margin-top:14px">「${ev.cat.label}」${jEul(ev.cat.label)} 묻는 당신에게 세 패는 이렇게 배열됐습니다. 당신은 ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath}의 사람 — 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`,
+    `<p class="pb" style="margin-top:14px">For you, asking about 「${ev.catEN.label}」, the three cards fell into this arrangement. You are a ${dk.h} Day Master (${ILGAN_SHORT_EN[dk.k]}) · Sun in ${SIGNS_EN[R.astro.sun.sign]} · Life Path ${R.num.lifePath} — what stands now is <b>${kwOf(picks[0])}</b>, what to work through is <b>${kwOf(picks[1])}</b>, and where the current lands is <b>${kwOf(picks[2])}</b>.</p>`);
 
-  /* 명식 다층 교차 */
-  const crossLines = [`패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDesc}.`];
+  const crossLines = [L(`패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDescKo}.`,
+    `The cards' central energy is ${ELEMENTS_EN[domEl].k}(${ELEMENTS[domEl].h}) — to you, a ${dk.h} Day Master, the seat of <b>${EL_REL_EN[relName].name}</b>, ${EL_REL_EN[relName].desc}.`)];
   const weakCnt = picks.filter(c => c.el === myWeak).length;
   if (weakCnt >= 2 && R.saju.counts[myWeak] <= 1)
-    crossLines.push(`셋 중 ${weakCnt}장이 당신에게 비어 있는 ${ELEMENTS[myWeak].k}(${ELEMENTS[myWeak].h}) 기운을 들고 왔습니다 — 이 질문의 답이 당신 안이 아니라 밖(사람 · 환경 · 새로운 방식)에 있다는 신호입니다.`);
+    crossLines.push(L(`셋 중 ${weakCnt}장이 당신에게 비어 있는 ${ELEMENTS[myWeak].k}(${ELEMENTS[myWeak].h}) 기운을 들고 왔습니다 — 이 질문의 답이 당신 안이 아니라 밖(사람 · 환경 · 새로운 방식)에 있다는 신호입니다.`,
+      `${weakCnt} of the three carry the ${ELEMENTS_EN[myWeak].k}(${ELEMENTS[myWeak].h}) energy that is empty in you — a sign the answer to this question lies not within you but outside (people · environment · a new way).`));
   if (domEl === ZOD2EL[R.astro.sun.sign % 4])
-    crossLines.push(`태양 ${SIGNS[R.astro.sun.sign].k}의 ${ZOD_EL[R.astro.sun.sign % 4]} 원소와도 같은 온도의 패입니다 — 당신의 정체성과 어긋나지 않는 방향입니다.`);
+    crossLines.push(L(`태양 ${SIGNS[R.astro.sun.sign].k}의 ${ZOD_EL[R.astro.sun.sign % 4]} 원소와도 같은 온도의 패입니다 — 당신의 정체성과 어긋나지 않는 방향입니다.`,
+      `Cards of the same temperature as the ${ZOD_EL_EN[R.astro.sun.sign % 4]} element of your Sun in ${SIGNS_EN[R.astro.sun.sign]} — a direction that does not clash with your identity.`));
   if (picks.some(c => c.th.includes(R.fortune.periods[0].num.theme)))
-    crossLines.push(`오늘의 개인 일수(${R.fortune.PD})와 같은 결의 패가 섞여 있습니다 — 오늘 물어서 오늘 답이 맞는 질문입니다.`);
+    crossLines.push(L(`오늘의 개인 일수(${R.fortune.PD})와 같은 결의 패가 섞여 있습니다 — 오늘 물어서 오늘 답이 맞는 질문입니다.`,
+      `A card of the same grain as today's personal day-number (${R.fortune.PD}) is in the mix — a question best asked today and answered today.`));
 
-  /* 질문 유형별 판정 상자 */
   const clip = s => s.length > 16 ? s.slice(0, 16) + '…' : s;
   let verdictHTML, advLine = vl.adv;
   if (qt.t === 'when') {
     verdictHTML = `
     <div class="averdict${ev.tpKr ? ' yes' : ''}">
-      <span class="vh"${ev.tpKr && ev.tpKr.length > 2 ? ' style="font-size:30px"' : ''}>${ev.tpKr || '未定'}</span>
-      <span><span class="vt">${ev.tpKr ? '때를 묻는 물음 — 이 시기입니다' : '때를 묻는 물음 — 아직 열린 창이 없습니다'}</span><br>
-      <span class="vd">${ev.tpKr ? `오늘부터 올해까지 다섯 구간 중 「${ev.tpKr}」의 흐름(${ev.tpTheme})이 이 질문과 겹칩니다` : '오늘부터 올해까지 다섯 구간 어디에도 이 질문의 흐름이 아직 없습니다 — 지금은 준비하는 구간입니다'}</span></span>
+      <span class="vh"${ev.tpKr && ev.tpKr.length > 2 ? ' style="font-size:30px"' : ''}>${ev.tpKr || L('未定','TBD')}</span>
+      <span><span class="vt">${ev.tpKr ? L('때를 묻는 물음 — 이 시기입니다', 'A question of when — this is the time') : L('때를 묻는 물음 — 아직 열린 창이 없습니다', 'A question of when — no window is open yet')}</span><br>
+      <span class="vd">${ev.tpKr ? L(`오늘부터 올해까지 다섯 구간 중 「${ev.tpKr}」의 흐름(${ev.tpTheme})이 이 질문과 겹칩니다`, `Of the five stretches from today to this year, the flow of 「${ev.tpKr}」 (${ev.tpTheme}) overlaps this question`) : L('오늘부터 올해까지 다섯 구간 어디에도 이 질문의 흐름이 아직 없습니다 — 지금은 준비하는 구간입니다', 'None of the five stretches from today to this year holds this question\'s flow yet — for now, a stretch of preparation')}</span></span>
     </div>`;
     advLine = ev.tpKr
-      ? `시기를 물으셨기에 예/아니오 대신 때로 답합니다 — 「${ev.tpKr}」의 창이 열리면, 끝자리 패(${picks[2].name})의 결로 마무리하세요.`
-      : '지금은 날짜를 박을 때가 아니라 준비를 쌓을 국면입니다. 흐름이 겹치는 때에 다시 물으세요.';
+      ? L(`시기를 물으셨기에 예/아니오 대신 때로 답합니다 — 「${ev.tpKr}」의 창이 열리면, 끝자리 패(${picks[2].name})의 결로 마무리하세요.`,
+          `Since you asked about timing, I answer with a time rather than yes/no — when the window of 「${ev.tpKr}」 opens, finish by the grain of the end card (${cardName(picks[2])}).`)
+      : L('지금은 날짜를 박을 때가 아니라 준비를 쌓을 국면입니다. 흐름이 겹치는 때에 다시 물으세요.',
+          'This is not a time to fix a date but a phase to build preparation. Ask again when the flow overlaps.');
   } else if (qt.t === 'choice') {
     const lean = total >= 1;
-    const pick = qt.a ? `「${esc(clip(lean ? qt.a : qt.b))}」` : (lean ? '먼저 떠올린 길' : '뒤에 말한 길');
+    const pick = qt.a ? `「${esc(clip(lean ? qt.a : qt.b))}」` : (lean ? L('먼저 떠올린 길', 'the path you thought of first') : L('뒤에 말한 길', 'the path you named second'));
     verdictHTML = `
     <div class="averdict${lean ? ' yes' : ''}">
-      <span class="vh">${lean ? '前' : '後'}</span>
-      <span><span class="vt">${pick} 쪽으로 기웁니다</span><br>
-      <span class="vd">${lean ? '지금은 기운이 미는 때 — 먼저 꺼낸 마음이 곧 답입니다' : '지금은 기운이 막히는 때 — 남겨둔 다른 길이 답입니다'}</span></span>
+      <span class="vh">${lean ? L('前','A') : L('後','B')}</span>
+      <span><span class="vt">${L(`${pick} 쪽으로 기웁니다`, `It leans toward ${pick}`)}</span><br>
+      <span class="vd">${lean ? L('지금은 기운이 미는 때 — 먼저 꺼낸 마음이 곧 답입니다', 'The energy pushes now — the one you named first is the answer') : L('지금은 기운이 막히는 때 — 남겨둔 다른 길이 답입니다', 'The energy is blocked now — the other path you left is the answer')}</span></span>
     </div>`;
-    advLine = `${pick} 쪽을 고르되, 길목 패(${picks[1].name})가 말하는 과제를 그 길의 통행료로 치르세요.`;
+    advLine = L(`${pick} 쪽을 고르되, 길목 패(${picks[1].name})가 말하는 과제를 그 길의 통행료로 치르세요.`,
+      `Choose ${pick}, but pay the task the pass card (${cardName(picks[1])}) names as the toll for that road.`);
   } else if (qt.t === 'open') {
     verdictHTML = `
     <div class="averdict yes">
       <span class="vh">${ELEMENTS[domEl].h}</span>
-      <span><span class="vt">${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h})의 방식으로 푸세요</span><br>
-      <span class="vd">열린 물음이라 예/아니오 대신 방향으로 답합니다 — 당신에게 ${relName}의 자리입니다</span></span>
+      <span><span class="vt">${L(`${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h})의 방식으로 푸세요`, `Solve it the way of ${ELEMENTS_EN[domEl].k}(${ELEMENTS[domEl].h})`)}</span><br>
+      <span class="vd">${L(`열린 물음이라 예/아니오 대신 방향으로 답합니다 — 당신에게 ${relName}의 자리입니다`, `An open question, so I answer with a direction rather than yes/no — for you, the seat of ${EL_REL_EN[relName].name}`)}</span></span>
     </div>`;
-    advLine = `${relDesc}. 구체적인 '어떻게'는 세 패의 본문 — 특히 길목 자리(${picks[1].name}) — 에 있습니다.`;
+    advLine = L(`${relDescKo}. 구체적인 '어떻게'는 세 패의 본문 — 특히 길목 자리(${picks[1].name}) — 에 있습니다.`,
+      `${EL_REL_EN[relName].desc}. The concrete 'how' is in the three cards' text — especially the pass (${cardName(picks[1])}).`);
   } else if (qt.t === 'info') {
-    /* 행운의 색·숫자·방위 — 명식에서 가장 옅은 오행을 채우는 값으로 답한다 */
-    const wel = ELEMENTS[myWeak];
+    const wel = ELEMENTS[myWeak], welK = elK(myWeak);
     const INFO = {
-      color: {val: EL_COLOR[myWeak],
-        t: `당신의 행운색은 ${EL_COLOR[myWeak]}입니다`,
-        d: `명식에 가장 옅은 ${wel.k}(${wel.h}) 기운을 채우는 색 — 옷 · 소품 · 공간에 곁들이면 막힌 흐름이 트입니다`,
-        adv: `오늘 뽑은 세 패의 중심은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) 기운입니다 — ${EL_COLOR[myWeak]}을 바탕으로 두되 ${EL_COLOR[domEl]} 계열을 한 점 더하면 그날의 결까지 맞출 수 있습니다.`},
-      dir: {val: EL_DIR[myWeak],
-        t: `당신의 행운 방위는 ${EL_DIR[myWeak]}입니다`,
-        d: `${wel.k}(${wel.h})에 배속된 방위 — 자리를 고르거나 길을 정할 여지가 있을 때 이 방향을 등지지 말고 바라보세요`,
-        adv: `책상이나 잠자리의 머리를 ${EL_DIR[myWeak]} 쪽으로 두면 옅은 ${wel.k} 기운이 하루 내내 채워집니다.`},
+      color: {val: L(EL_COLOR[myWeak], EL_COLOR_EN[myWeak]),
+        t: L(`당신의 행운색은 ${EL_COLOR[myWeak]}입니다`, `Your lucky color is ${EL_COLOR_EN[myWeak]}`),
+        d: L(`명식에 가장 옅은 ${wel.k}(${wel.h}) 기운을 채우는 색 — 옷 · 소품 · 공간에 곁들이면 막힌 흐름이 트입니다`,
+             `the color that fills the faintest ${welK}(${wel.h}) energy in your chart — add it to clothes · accessories · space and the blocked flow opens`),
+        adv: L(`오늘 뽑은 세 패의 중심은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) 기운입니다 — ${EL_COLOR[myWeak]}을 바탕으로 두되 ${EL_COLOR[domEl]} 계열을 한 점 더하면 그날의 결까지 맞출 수 있습니다.`,
+             `The center of today's three cards is ${ELEMENTS_EN[domEl].k}(${ELEMENTS[domEl].h}) energy — keep ${EL_COLOR_EN[myWeak]} as the base but add one touch of the ${EL_COLOR_EN[domEl]} family to match the day's grain too.`)},
+      dir: {val: L(EL_DIR[myWeak], EL_DIR_EN[myWeak]),
+        t: L(`당신의 행운 방위는 ${EL_DIR[myWeak]}입니다`, `Your lucky direction is ${EL_DIR_EN[myWeak]}`),
+        d: L(`${wel.k}(${wel.h})에 배속된 방위 — 자리를 고르거나 길을 정할 여지가 있을 때 이 방향을 등지지 말고 바라보세요`,
+             `the direction assigned to ${welK}(${wel.h}) — when you have room to pick a seat or set a route, face this way rather than turning your back to it`),
+        adv: L(`책상이나 잠자리의 머리를 ${EL_DIR[myWeak]} 쪽으로 두면 옅은 ${wel.k} 기운이 하루 내내 채워집니다.`,
+             `Point the head of your desk or bed toward ${EL_DIR_EN[myWeak]} and the faint ${welK} energy fills through the day.`)},
       num: {val: EL_NUM[myWeak],
-        t: `당신의 행운 숫자는 ${EL_NUM[myWeak]}입니다`,
-        d: `${wel.k}(${wel.h})에 배속된 수 — 번호 · 날짜 · 개수를 고를 여지가 있을 때 이 수에 손이 가면 흐름과 맞습니다`,
-        adv: `끝자리 패(${picks[2].name})가 마무리에 닿는 자리이니, 매듭지어야 할 일의 날짜를 ${EL_NUM[myWeak]}에 맞춰보세요.`},
-      food: {val: EL_TASTE[myWeak],
-        t: `오늘은 ${EL_TASTE[myWeak]}이 당신을 채웁니다`,
-        d: `명식에 가장 옅은 ${wel.k}(${wel.h}) 기운은 ${EL_TASTE[myWeak]}으로 보(補)합니다 — ${EL_FOOD[myWeak][0]} 쪽이 잘 맞습니다`,
-        adv: `끌리는 대로 고르되 ${EL_FOOD[myWeak][1]}에 손이 가면 몸과 흐름이 함께 편해집니다.`},
+        t: L(`당신의 행운 숫자는 ${EL_NUM[myWeak]}입니다`, `Your lucky numbers are ${EL_NUM[myWeak]}`),
+        d: L(`${wel.k}(${wel.h})에 배속된 수 — 번호 · 날짜 · 개수를 고를 여지가 있을 때 이 수에 손이 가면 흐름과 맞습니다`,
+             `the numbers assigned to ${welK}(${wel.h}) — when you can choose a number · date · count, reaching for these fits the flow`),
+        adv: L(`끝자리 패(${picks[2].name})가 마무리에 닿는 자리이니, 매듭지어야 할 일의 날짜를 ${EL_NUM[myWeak]}에 맞춰보세요.`,
+             `The end card (${cardName(picks[2])}) touches the finish, so set the date of what needs closing to ${EL_NUM[myWeak]}.`)},
+      food: {val: L(EL_TASTE[myWeak], EL_TASTE_EN[myWeak]),
+        t: L(`오늘은 ${EL_TASTE[myWeak]}이 당신을 채웁니다`, `Today, ${EL_TASTE_EN[myWeak]} fills you`),
+        d: L(`명식에 가장 옅은 ${wel.k}(${wel.h}) 기운은 ${EL_TASTE[myWeak]}으로 보(補)합니다 — ${EL_FOOD[myWeak][0]} 쪽이 잘 맞습니다`,
+             `the faintest ${welK}(${wel.h}) energy in your chart is nourished by the ${EL_TASTE_EN[myWeak]} taste — ${EL_FOOD_EN[myWeak][0]} suit you well`),
+        adv: L(`끌리는 대로 고르되 ${EL_FOOD[myWeak][1]}에 손이 가면 몸과 흐름이 함께 편해집니다.`,
+             `Choose as you're drawn, but reaching for ${EL_FOOD_EN[myWeak][1]} eases both body and flow.`)},
     };
     const inf = INFO[qt.k];
     const vhStyle = inf.val.length > 4 ? ' style="font-size:20px;white-space:normal;line-height:1.2"' : '';
@@ -2658,15 +2942,15 @@ function finishDraw() {
     const doIt = score >= 2;
     verdictHTML = `
     <div class="averdict${doIt ? ' yes' : ' no'}">
-      <span class="vh">${doIt ? '아니오' : '예'}</span>
-      <span><span class="vt">${doIt ? '「말까」라는 물음에 아니오 — 그대로 하셔도 좋습니다' : '「말까」라는 물음에 예 — 접는 쪽이 맞습니다'}</span><br>
-      <span class="vd">물음을 뒤집으셨기에 답의 방향도 뒤집어 드립니다 · ${v.h} — 기운은 ${doIt ? '미는' : '막는'} 중</span></span>
+      <span class="vh">${doIt ? L('아니오','No') : L('예','Yes')}</span>
+      <span><span class="vt">${doIt ? L('「말까」라는 물음에 아니오 — 그대로 하셔도 좋습니다', 'To the "should I not" question — no; you may go ahead') : L('「말까」라는 물음에 예 — 접는 쪽이 맞습니다', 'To the "should I not" question — yes; folding is the right call')}</span><br>
+      <span class="vd">${L(`물음을 뒤집으셨기에 답의 방향도 뒤집어 드립니다 · ${v.h} — 기운은 ${doIt ? '미는' : '막는'} 중`, `You flipped the question, so I flip the answer's direction too · ${v.h} — the energy is ${doIt ? 'pushing' : 'blocking'}`)}</span></span>
     </div>`;
-    advLine = doIt ? `"말까"라 물으셨지만 기운은 하는 쪽을 밉니다. ${vl.adv}` : vl.adv;
+    advLine = doIt ? L(`"말까"라 물으셨지만 기운은 하는 쪽을 밉니다. ${vl.adv}`, `You asked "should I not," but the energy pushes toward doing it. ${vl.adv}`) : vl.adv;
   } else {
     verdictHTML = `
     <div class="averdict ${v.yn === 'YES' ? 'yes' : 'no'}">
-      <span class="vh">${v.yn === 'YES' ? '예' : '아니오'}</span>
+      <span class="vh">${v.yn === 'YES' ? L('예','Yes') : L('아니오','No')}</span>
       <span><span class="vt">${vl.t}</span><br><span class="vd">${v.h} · ${vl.d}</span></span>
     </div>`;
   }
@@ -2674,26 +2958,28 @@ function finishDraw() {
   const card = document.createElement('div');
   card.className = 'acard';
   card.innerHTML = `
-    <p class="aq">물음 · <b>${esc(q)}</b></p>
+    <p class="aq">${L('물음 · ','Question · ')}<b>${esc(q)}</b></p>
     ${verdictHTML}
-    <span class="acat">${ev.cat.label}</span>
+    <span class="acat">${L(ev.cat.label, ev.catEN.label)}</span>
     ${qt.t === 'info' ? infoWhyBlock(myWeak, R) : whyBlock(ev, picks, polSum, total)}
     <div class="spread3">${spots}</div>
     ${intro}
     ${passages}
-    <div class="combo"><b>패가 겹쳐 만든 결</b><br>${comboLine(picks.map(c => c.el))}${pairLines.length ? '<br>' + pairLines.join('<br>') : ''}</div>
-    <div class="combo"><b>당신의 명식과 겹쳐 읽기</b><br>${crossLines.join('<br>')}</div>
+    <div class="combo"><b>${L('패가 겹쳐 만든 결','The grain the cards make together')}</b><br>${comboLine(picks.map(c => c.el))}${pairLines.length ? '<br>' + pairLines.join('<br>') : ''}</div>
+    <div class="combo"><b>${L('당신의 명식과 겹쳐 읽기','Read against your chart')}</b><br>${crossLines.join('<br>')}</div>
     ${ev.pts.saju >= 1 && ev.pts.astro + ev.pts.num === 0
-      ? `<div class="combo"><b>갈림 읽기</b><br>세 하늘의 목소리가 갈립니다 — 명식은 ${ev.cat.grant}이 준비됐다고 말하는데, 하늘의 때(별)와 수의 계절은 아직 조용합니다. 실력이 아니라 타이밍의 문제 — ${ev.tpKr ? `창은 「${ev.tpKr}」에 먼저 열립니다` : '창이 열리는 때를 기다릴 줄 아는 것도 실력입니다'}.</div>`
+      ? `<div class="combo"><b>${L('갈림 읽기','Reading the split')}</b><br>${L(`세 하늘의 목소리가 갈립니다 — 명식은 ${ev.cat.grant}이 준비됐다고 말하는데, 하늘의 때(별)와 수의 계절은 아직 조용합니다. 실력이 아니라 타이밍의 문제 — ${ev.tpKr ? `창은 「${ev.tpKr}」에 먼저 열립니다` : '창이 열리는 때를 기다릴 줄 아는 것도 실력입니다'}.`,
+        `The three skies disagree — the chart says ${ev.catEN.grant} is ready, but the sky's timing (stars) and the season of numbers are still quiet. A matter of timing, not skill — ${ev.tpKr ? `the window opens first in 「${ev.tpKr}」` : 'knowing how to wait for the window to open is a skill too'}.`)}</div>`
       : ev.pts.saju === 0 && ev.pts.astro + ev.pts.num >= 1
-      ? `<div class="combo"><b>갈림 읽기</b><br>세 하늘의 목소리가 갈립니다 — 때(별·수)는 열리고 있는데, 명식의 ${ev.cat.grant}이 이 방향으로는 옅습니다. 기회가 와도 잡을 준비가 먼저 — 당신의 무기인 ${ILGAN_SHORT[dk.k]}으로 그 준비를 하라는 뜻입니다.</div>`
+      ? `<div class="combo"><b>${L('갈림 읽기','Reading the split')}</b><br>${L(`세 하늘의 목소리가 갈립니다 — 때(별·수)는 열리고 있는데, 명식의 ${ev.cat.grant}이 이 방향으로는 옅습니다. 기회가 와도 잡을 준비가 먼저 — 당신의 무기인 ${ILGAN_SHORT[dk.k]}으로 그 준비를 하라는 뜻입니다.`,
+        `The three skies disagree — the timing (stars · numbers) is opening, but the chart's ${ev.catEN.grant} is faint in this direction. Readiness to seize comes before opportunity — prepare with your weapon, ${ILGAN_SHORT_EN[dk.k]}.`)}</div>`
       : ''}
     <details>
-      <summary>세 하늘의 근거</summary>
+      <summary>${L('세 하늘의 근거','The three skies — the evidence')}</summary>
       <div class="fev" style="margin-top:10px">
-        <div class="frow"><span class="fsys">사주</span><span class="ftxt">${ev.sajuLine}</span></div>
-        <div class="frow"><span class="fsys">별</span><span class="ftxt">${ev.astroLine}</span></div>
-        <div class="frow"><span class="fsys">수</span><span class="ftxt">${ev.numLine}</span></div>
+        <div class="frow"><span class="fsys">${L('사주','Four Pillars')}</span><span class="ftxt">${ev.sajuLine}</span></div>
+        <div class="frow"><span class="fsys">${L('별','Astrology')}</span><span class="ftxt">${ev.astroLine}</span></div>
+        <div class="frow"><span class="fsys">${L('수','Numerology')}</span><span class="ftxt">${ev.numLine}</span></div>
       </div>
     </details>
     <p class="atiming">${ev.timing}</p>
@@ -4468,14 +4754,82 @@ const LP_LOVE = {
   5:'새로움으로 숨 쉬려는', 6:'돌보고 책임지려는', 7:'혼자만의 방이 필요한', 8:'결과로 증명하려는',
   9:'품고 이해하려는', 11:'말보다 직감으로 아는', 22:'크게 그려 오래 지으려는', 33:'아낌없이 내어주려는'
 };
-const lpLove = n => LP_LOVE[n] || (NUM_ESSENCE[n] ? NUM_ESSENCE[n].k.split(' · ')[0] + '을 향하는' : '자기 방식이 뚜렷한');
-function lpRel(x, y) { // [점수, 관계 문장] — 그룹: 0={1,5,7} 생각·자유 · 1={2,4,8} 현실·구조 · 2={3,6,9} 표현·마음
-  if (x === y) return [14, '같은 길을 걷는 두 사람이라 서로를 거울처럼 이해하지만, 같은 함정에도 같이 빠질 수 있습니다. 번갈아 브레이크가 되어주세요'];
+/* NEW-EN-DATA */
+
+/* GUNG_REL_PAIR_EN — 십성 5그룹 관계 문장 (may ALSO be defined by roots tab; dedupe on integration) */
+const GUNG_REL_PAIR_EN = {
+  비겁: 'a side-by-side bond. Friends and rivals at once — you understand each other best, yet clash the moment you both want the same thing.',
+  식상: 'a bond where you become the giver. Around this person you want to express, to look after them, to make them laugh.',
+  재성: 'a bond of building together. It grows sturdiest when you make and take responsibility for something side by side.',
+  관성: 'a bond that keeps you on your toes. Not always easy, but this person raises your game.',
+  인성: 'a bond that lets you rest. Being near them refills you; it is a relationship you can lean into.'
+};
+
+/* GUNG_GRP_NICK_EN — 십성 그룹 별명 (may ALSO be defined by roots tab; dedupe on integration) */
+const GUNG_GRP_NICK_EN = {
+  비겁: 'peer & rival', 식상: 'the giving one', 재성: 'building together',
+  관성: 'kept on your toes', 인성: 'quietly filled'
+};
+
+/* LP_LOVE_EN — 수의 "사랑의 방식", used as "someone who ${...}" */
+const LP_LOVE_EN = {
+  1: 'leads from the front', 2: 'meets others halfway and connects them',
+  3: 'opens up through words and laughter', 4: 'keeps love through promises and routine',
+  5: 'breathes through the new', 6: 'cares for and takes responsibility',
+  7: 'needs a room of their own', 8: 'proves it through results',
+  9: 'embraces and understands', 11: 'knows by intuition over words',
+  22: 'sketches big and builds for the long haul', 33: 'gives without holding back'
+};
+
+/* ZODEL_NAME_EN — 불/흙/바람/물 (index-aligned to ZODEL_NAME) */
+const ZODEL_NAME_EN = ['Fire', 'Earth', 'Air', 'Water'];
+
+/* GROUP_ROLE_EN — used as "the one who ${...}" (keys 0,1,2) */
+const GROUP_ROLE_EN = {0: 'opens new doors', 1: 'turns it into reality', 2: 'brings warmth and color to it'};
+
+/* SUN_ROLE_EN — used as "the one who ${...}" (keys 0,1,2,3) */
+const SUN_ROLE_EN = {0: 'moves first', 1: 'tends to the practical', 2: 'leads with thought and words', 3: 'reacts from the heart first'};
+
+/* MOON_ROLE_EN — used as "the one who ${...}" (keys 0,1,2,3) */
+const MOON_ROLE_EN = {0: 'shows feelings right away', 1: 'holds feelings inside', 2: 'needs to talk it out', 3: 'lets moods soak in deep'};
+
+/* SUN_ELPAIR_EN — 태양 원소 짝 (10 keys, same keys as SUN_ELPAIR) */
+const SUN_ELPAIR_EN = {
+  '0,0': 'both Fire that moves first — ablaze together, no team can match you, but on days your directions split, neither will back down. Settle contests out in the world, and be each other’s ally at home',
+  '1,1': 'both Earth — you build trust through action more than words. Steady as it gets, but daily life can stiffen, so plan a fresh setup together each season',
+  '2,2': 'both Air — the conversation never stops. It began because you clicked in talk, and too much talk can wander off course, so put the big decisions in writing',
+  '3,3': 'both Water — you seep into each other without a word. You connect deeply, but your feelings swell together too, so one of you needs days standing on dry land',
+  '0,2': 'Fire and Air — the wind feeds the flame. Ideas (Air) meet drive (Fire) in a pairing that brings each other to life',
+  '1,3': 'Earth and Water — water moistens the soil and something grows. The one who tends the practical and the one who fills the heart complete each other',
+  '0,1': 'Fire and Earth — different speeds. Fire says leave today; Earth says pack first. If Fire waits half a beat and Earth hurries half a beat, your follow-through doubles',
+  '0,3': 'Fire and Water — the widest temperature gap of all. Left unchecked you douse and cool each other, but match your temperatures and you raise a steam power neither could make alone',
+  '1,2': 'Earth and Air — one stands on the ground, the other floats. Air finds Earth stifling and Earth finds Air unsettling, so translate each other’s language — plans and possibilities',
+  '2,3': 'Air and Water — one speaks from the head, the other listens with the heart. You may remember the same talk differently, so check the facts and check the feelings separately'
+};
+
+/* MOON_ELPAIR_EN — 달(감정) 원소 짝 (10 keys, same keys as MOON_ELPAIR) */
+const MOON_ELPAIR_EN = {
+  '0,0': 'feelings both Fire too — quick to anger, quick to make up. Just on days you both flare at once, thrown words linger, so agree on off-limits words for fights',
+  '1,1': 'feelings both Earth — rarely shaken, and when shaken it barely shows. Asking anyway when the other seems fine is how this pair says I love you',
+  '2,2': 'feelings both Air — two who only settle a mood by talking it out. For this pair, conversation is affection',
+  '3,3': 'feelings both Water — the other’s mood becomes yours. Empathy runs deep, but heaviness is contagious, so on shared low days fresh outside air is the remedy',
+  '0,2': 'feelings Fire and Air — one expresses big, the other airs it out lightly. Different weights, but the rhythm matches well',
+  '1,3': 'feelings Earth and Water — one holds it, the other seeps in. Trading calm without words, one of the most comfortable emotional matches there is',
+  '0,1': 'feelings Fire and Earth — one expresses at once, the other swallows it. Fire mistakes Earth’s silence for indifference, Earth mistakes Fire’s outburst for overreaction. Owning the time lag in feeling is the key',
+  '0,3': 'feelings Fire and Water — one bursts outward, the other deepens inward. You recover from fights at different speeds, so the faster one waiting is what deepens the bond',
+  '1,2': 'feelings Earth and Air — one holds it heavy, the other lets it pass lightly. Mix the earnest and the humorous half and half, and the balance is actually good',
+  '2,3': 'feelings Air and Water — one sorts it out in words, the other just senses it. Empathy first, explanation later — keep that order and the fights halve'
+};
+const lpLove = n => LANG === 'en'
+  ? (LP_LOVE_EN[n] || (NUM_ESSENCE_EN[n] ? 'reaches toward ' + NUM_ESSENCE_EN[n].k.split(' · ')[0] : 'has a way distinctly their own'))
+  : (LP_LOVE[n] || (NUM_ESSENCE[n] ? NUM_ESSENCE[n].k.split(' · ')[0] + '을 향하는' : '자기 방식이 뚜렷한'));
+function lpRel(x, y) { // [점수, 관계 문장]
+  if (x === y) return [14, L('같은 길을 걷는 두 사람이라 서로를 거울처럼 이해하지만, 같은 함정에도 같이 빠질 수 있습니다. 번갈아 브레이크가 되어주세요', 'two people walking the same path, so you understand each other like a mirror — but you can fall into the same trap together. Take turns being the brakes')];
   const pair = [COMPAT_GROUP(x), COMPAT_GROUP(y)].sort().join('');
-  if (pair === '00' || pair === '11' || pair === '22') return [12, '결이 같은 수라, 애쓰지 않아도 서로의 우선순위가 이해되는 조합입니다'];
-  if (pair === '01') return [7, '생각이 먼저인 쪽과 현실이 먼저인 쪽 — 결정의 순서에서 자주 부딪히지만, 한쪽이 문을 열고 한쪽이 집을 짓는 보완이기도 합니다'];
-  if (pair === '02') return [10, '방향을 내는 쪽과 색을 입히는 쪽 — 서로의 세계를 넓혀주는, 지루할 틈 없는 조합입니다'];
-  return [9, '형태를 만드는 쪽과 의미를 만드는 쪽 — 속도만 맞추면 서로에게 가장 필요한 짝입니다'];
+  if (pair === '00' || pair === '11' || pair === '22') return [12, L('결이 같은 수라, 애쓰지 않아도 서로의 우선순위가 이해되는 조합입니다', 'numbers of the same grain, so each other’s priorities make sense without effort')];
+  if (pair === '01') return [7, L('생각이 먼저인 쪽과 현실이 먼저인 쪽 — 결정의 순서에서 자주 부딪히지만, 한쪽이 문을 열고 한쪽이 집을 짓는 보완이기도 합니다', 'one who leads with thought and one who leads with reality — you clash often over the order of decisions, yet it is also a complement where one opens the door and the other builds the house')];
+  if (pair === '02') return [10, L('방향을 내는 쪽과 색을 입히는 쪽 — 서로의 세계를 넓혀주는, 지루할 틈 없는 조합입니다', 'one who sets the direction and one who adds the color — a pairing that widens each other’s world, never a dull moment')];
+  return [9, L('형태를 만드는 쪽과 의미를 만드는 쪽 — 속도만 맞추면 서로에게 가장 필요한 짝입니다', 'one who makes the form and one who makes the meaning — match your pace and you are the pair each needs most')];
 }
 const ZODEL_NAME = ['불', '흙', '바람', '물'];
 const GUNG_WONJIN = [[0,7],[1,6],[2,9],[3,8],[4,11],[5,10]];
@@ -4484,21 +4838,21 @@ const sgOf = b => [8,0,4].includes(b) ? 0 : [2,6,10].includes(b) ? 1 : [5,9,1].i
 const inPairs = (pairs, a, b) => pairs.some(([x, z]) => (a === x && b === z) || (a === z && b === x));
 
 function zodCompat(a, b) {
-  if (a === b) return [9, `같은 ${ZODEL_NAME[a]}의 원소, 말하지 않아도 리듬이 같습니다`];
+  if (a === b) return [9, L(`같은 ${ZODEL_NAME[a]}의 원소, 말하지 않아도 리듬이 같습니다`, `the same element, ${ZODEL_NAME_EN[a]}; the rhythm matches without a word`)];
   if ((a === 0 && b === 2) || (a === 2 && b === 0) || (a === 1 && b === 3) || (a === 3 && b === 1))
-    return [10, `${ZODEL_NAME[a]}과 ${ZODEL_NAME[b]} — 서로를 살리는 원소, 부족한 온도를 채워줍니다`];
+    return [10, L(`${ZODEL_NAME[a]}과 ${ZODEL_NAME[b]} — 서로를 살리는 원소, 부족한 온도를 채워줍니다`, `${ZODEL_NAME_EN[a]} and ${ZODEL_NAME_EN[b]} — elements that feed each other, filling the missing temperature`)];
   if ((a === 0 && b === 3) || (a === 3 && b === 0) || (a === 1 && b === 2) || (a === 2 && b === 1))
-    return [4, `${ZODEL_NAME[a]}과 ${ZODEL_NAME[b]} — 온도차가 큰 원소, 다름을 번역하는 노력이 필요합니다`];
-  return [6, `${ZODEL_NAME[a]}과 ${ZODEL_NAME[b]} — 속도가 다른 원소, 낯선 만큼 배울 것이 많습니다`];
+    return [4, L(`${ZODEL_NAME[a]}과 ${ZODEL_NAME[b]} — 온도차가 큰 원소, 다름을 번역하는 노력이 필요합니다`, `${ZODEL_NAME_EN[a]} and ${ZODEL_NAME_EN[b]} — elements far apart in temperature; it takes effort to translate the difference`)];
+  return [6, L(`${ZODEL_NAME[a]}과 ${ZODEL_NAME[b]} — 속도가 다른 원소, 낯선 만큼 배울 것이 많습니다`, `${ZODEL_NAME_EN[a]} and ${ZODEL_NAME_EN[b]} — elements of different speeds; as unfamiliar as they are, there is much to learn`)];
 }
 function sunAspect(d) {
   d = Math.abs(norm360(d)); if (d > 180) d = 360 - d;
-  if (d < 15) return [6, `합(${Math.round(d)}°) — 같은 자리에서 시작하는 두 태양입니다`];
-  if (Math.abs(d - 60) <= 8) return [7, '육각(60°) — 애쓰지 않아도 협력이 되는 각도입니다'];
-  if (Math.abs(d - 120) <= 8) return [8, '삼각(120°) — 자연스럽게 흐르는, 고전 점성술이 가장 아끼는 각도입니다'];
-  if (Math.abs(d - 90) <= 8) return [3, '직각(90°) — 마찰이 잦지만 서로를 크게 성장시키는 각도입니다'];
-  if (Math.abs(d - 180) <= 12) return [5, '충(180°) — 정반대라서 오히려 강하게 끌리는 각도입니다'];
-  return [5, `${Math.round(d)}° — 느슨한 각, 무난하게 공존하는 자리입니다`];
+  if (d < 15) return [6, L(`합(${Math.round(d)}°) — 같은 자리에서 시작하는 두 태양입니다`, `Conjunction (${Math.round(d)}°) — two Suns starting from the same seat`)];
+  if (Math.abs(d - 60) <= 8) return [7, L('육각(60°) — 애쓰지 않아도 협력이 되는 각도입니다', 'Sextile (60°) — an angle where cooperation comes without effort')];
+  if (Math.abs(d - 120) <= 8) return [8, L('삼각(120°) — 자연스럽게 흐르는, 고전 점성술이 가장 아끼는 각도입니다', 'Trine (120°) — a naturally flowing angle, the one classical astrology treasures most')];
+  if (Math.abs(d - 90) <= 8) return [3, L('직각(90°) — 마찰이 잦지만 서로를 크게 성장시키는 각도입니다', 'Square (90°) — frequent friction, but an angle that grows you both greatly')];
+  if (Math.abs(d - 180) <= 12) return [5, L('충(180°) — 정반대라서 오히려 강하게 끌리는 각도입니다', 'Opposition (180°) — polar opposites, and drawn all the more strongly for it')];
+  return [5, L(`${Math.round(d)}° — 느슨한 각, 무난하게 공존하는 자리입니다`, `${Math.round(d)}° — a loose angle, an easy coexistence`)];
 }
 
 $('#gungForm').addEventListener('submit', e => {
@@ -4508,46 +4862,47 @@ $('#gungForm').addEventListener('submit', e => {
   const gErr = $('#gErr');
   const show = t => { gErr.textContent = t; gErr.style.display = 'block'; };
   const gd = ($('#gNum').value || '').replace(/\D/g, '');
+  const gzH = p => STEMS[p.stem].h + BRANCHES[p.branch].h; // 일주 하냐 표기 (EN 헤더용)
   /* 연도만 아는 상대 — 4자리 입력이면 띠·연의 기운으로 본 간이 궁합. 월일 없이 계산 가능한 것만 말한다 */
   if (gd.length === 4) {
     const yy2 = +gd, thisY = new Date().getFullYear();
-    if (yy2 < 1900 || yy2 > thisY) { show('연도는 1900년부터 올해 사이로 입력해주세요.'); return; }
+    if (yy2 < 1900 || yy2 > thisY) { show(L('연도는 1900년부터 올해 사이로 입력해주세요.', 'Please enter a year between 1900 and this year.')); return; }
     gErr.style.display = 'none';
-    const gname2 = $('#gName').value.trim() || '상대';
+    const gname2 = $('#gName').value.trim() || L('상대', 'your partner');
     const s1y = R.saju;
     const ys2 = (((yy2 - 4) % 10) + 10) % 10, yb2 = (((yy2 - 4) % 12) + 12) % 12;
     const myYb = s1y.year.branch, myDb = s1y.day.branch;
     const lines = [];
-    let gradeT = '무난한 결', headDesc = '띠끼리 합도 충도 아닌 자리 — 관계는 두 사람이 만드는 대로 흐릅니다';
-    if (inPairs(JIJI_HAP, myYb, yb2)) { gradeT = '끌리는 결'; headDesc = '띠끼리 육합 — 나고 자란 리듬이 서로 끌리는 짝입니다';
-      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>육합(合)</b> — 세대의 기운이 서로 끌어당기는 짝입니다.`); }
-    else if (sgOf(myYb) === sgOf(yb2) && myYb !== yb2) { gradeT = '뭉치는 결'; headDesc = '띠끼리 삼합 — 같은 목적 앞에서 강하게 뭉칩니다';
-      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>삼합(三合)</b>의 같은 결 — 방향이 같을 때 시너지가 큰 짝입니다.`); }
-    else if (inPairs(JIJI_CHUNG, myYb, yb2)) { gradeT = '불꽃의 결'; headDesc = '띠끼리 충 — 세게 끌리고 세게 부딪힙니다';
-      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>충(沖)</b> — 어른들이 꺼리던 조합이지만 끌림도 그만큼 강한 자리입니다. 생월일까지 보면 일지가 이를 뒤집는 경우도 많습니다.`); }
-    else if (inPairs(GUNG_WONJIN, myYb, yb2)) { gradeT = '애증의 결'; headDesc = '띠끼리 원진 — 거리 조절이 이 관계의 기술입니다';
-      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결입니다. 각자의 방이 있을 때 오히려 가까워집니다.`); }
-    else if (inPairs(GUNG_GWIMUN, myYb, yb2)) { gradeT = '예민한 결'; headDesc = '띠끼리 귀문 — 서로의 예민한 곳에 닿는 짝입니다';
-      lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>귀문(鬼門)</b> — 서로의 예민한 곳을 건드리지만, 그만큼 말 없이도 통하는 결입니다.`); }
-    else lines.push(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠 — 합도 충도 아닌 자리라, 띠보다 두 사람이 만드는 관계가 그대로 결이 됩니다.`);
-    if (inPairs(JIJI_HAP, myDb, yb2)) lines.push(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 합 — 곁에 두면 편안해지는 신호입니다.`);
-    else if (sgOf(myDb) === sgOf(yb2) && myDb !== yb2) lines.push(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 삼합 — 함께 무언가 도모하기 좋은 신호입니다.`);
-    else if (inPairs(JIJI_CHUNG, myDb, yb2)) lines.push(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 충 — 가까워질수록 생활 리듬의 조율이 필요한 신호입니다.`);
+    let gradeT = L('무난한 결', 'an easy grain'), headDesc = L('띠끼리 합도 충도 아닌 자리 — 관계는 두 사람이 만드는 대로 흐릅니다', 'neither harmony nor clash between your signs — the bond flows however the two of you make it');
+    if (inPairs(JIJI_HAP, myYb, yb2)) { gradeT = L('끌리는 결', 'a drawn-together grain'); headDesc = L('띠끼리 육합 — 나고 자란 리듬이 서로 끌리는 짝입니다', 'six-harmony between your signs — the rhythms you were born and raised in pull toward each other');
+      lines.push(L(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>육합(合)</b> — 세대의 기운이 서로 끌어당기는 짝입니다.`, `The ${ANIMALS_EN[myYb]} and the ${ANIMALS_EN[yb2]} form a <b>Six Harmony (合)</b> — the generational energies pull toward each other.`)); }
+    else if (sgOf(myYb) === sgOf(yb2) && myYb !== yb2) { gradeT = L('뭉치는 결', 'a rallying grain'); headDesc = L('띠끼리 삼합 — 같은 목적 앞에서 강하게 뭉칩니다', 'a Three Harmony between your signs — you rally hard behind a shared goal');
+      lines.push(L(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>삼합(三合)</b>의 같은 결 — 방향이 같을 때 시너지가 큰 짝입니다.`, `The ${ANIMALS_EN[myYb]} and the ${ANIMALS_EN[yb2]} share a <b>Three Harmony (三合)</b> grain — great synergy when your directions align.`)); }
+    else if (inPairs(JIJI_CHUNG, myYb, yb2)) { gradeT = L('불꽃의 결', 'a spark-and-flame grain'); headDesc = L('띠끼리 충 — 세게 끌리고 세게 부딪힙니다', 'a Clash between your signs — you pull hard and collide hard');
+      lines.push(L(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>충(沖)</b> — 어른들이 꺼리던 조합이지만 끌림도 그만큼 강한 자리입니다. 생월일까지 보면 일지가 이를 뒤집는 경우도 많습니다.`, `The ${ANIMALS_EN[myYb]} and the ${ANIMALS_EN[yb2]} sit in <b>Clash (沖)</b> — a match the elders warned against, yet the attraction runs just as strong. With the birth month and day, the Day branch often overturns this.`)); }
+    else if (inPairs(GUNG_WONJIN, myYb, yb2)) { gradeT = L('애증의 결', 'a love-hate grain'); headDesc = L('띠끼리 원진 — 거리 조절이 이 관계의 기술입니다', 'a Resentment tie between your signs — managing distance is the art of this bond');
+      lines.push(L(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결입니다. 각자의 방이 있을 때 오히려 가까워집니다.`, `The ${ANIMALS_EN[myYb]} and the ${ANIMALS_EN[yb2]} form a <b>Resentment tie (元嗔)</b> — a grain where love and hate cross easily. You grow closer when each has a room of their own.`)); }
+    else if (inPairs(GUNG_GWIMUN, myYb, yb2)) { gradeT = L('예민한 결', 'a raw-nerve grain'); headDesc = L('띠끼리 귀문 — 서로의 예민한 곳에 닿는 짝입니다', 'a Ghost Gate between your signs — you touch each other’s tender spots');
+      lines.push(L(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠는 <b>귀문(鬼門)</b> — 서로의 예민한 곳을 건드리지만, 그만큼 말 없이도 통하는 결입니다.`, `The ${ANIMALS_EN[myYb]} and the ${ANIMALS_EN[yb2]} form a <b>Ghost Gate (鬼門)</b> — you press each other’s tender spots, but you also connect without words.`)); }
+    else lines.push(L(`${BRANCHES[myYb].animal}띠와 ${BRANCHES[yb2].animal}띠 — 합도 충도 아닌 자리라, 띠보다 두 사람이 만드는 관계가 그대로 결이 됩니다.`, `The ${ANIMALS_EN[myYb]} and the ${ANIMALS_EN[yb2]} — neither harmony nor clash, so the bond the two of you build, more than the signs, becomes the grain itself.`));
+    if (inPairs(JIJI_HAP, myDb, yb2)) lines.push(L(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 합 — 곁에 두면 편안해지는 신호입니다.`, `${esc(gname2)}’s sign harmonizes with the <b>spouse seat (Day branch)</b> of your chart — a sign they feel easy to keep close.`));
+    else if (sgOf(myDb) === sgOf(yb2) && myDb !== yb2) lines.push(L(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 삼합 — 함께 무언가 도모하기 좋은 신호입니다.`, `${esc(gname2)}’s sign forms a Three Harmony with the <b>spouse seat (Day branch)</b> of your chart — a good sign for undertaking something together.`));
+    else if (inPairs(JIJI_CHUNG, myDb, yb2)) lines.push(L(`${esc(gname2)}의 띠가 당신 사주의 <b>배우자 자리(일지)</b>와 충 — 가까워질수록 생활 리듬의 조율이 필요한 신호입니다.`, `${esc(gname2)}’s sign clashes with the <b>spouse seat (Day branch)</b> of your chart — a sign that the closer you get, the more your daily rhythms need tuning.`));
     const tgy = tenGod(s1y.day.stem, ys2);
-    lines.push(`${yy2}년의 하늘 기운(연간 ${STEMS[ys2].k})은 당신에게 <b>${tgy}(${GRP_NICK[TG_GROUP[tgy]]})</b> — ${REL_PAIR[TG_GROUP[tgy]]}`);
+    lines.push(L(`${yy2}년의 하늘 기운(연간 ${STEMS[ys2].k})은 당신에게 <b>${tgy}(${GRP_NICK[TG_GROUP[tgy]]})</b> — ${REL_PAIR[TG_GROUP[tgy]]}`, `The sky energy of ${yy2} (year stem ${STEMS[ys2].h}) is <b>${TENGOD_NAME_EN[tgy]} (${GUNG_GRP_NICK_EN[TG_GROUP[tgy]]})</b> to you — ${GUNG_REL_PAIR_EN[TG_GROUP[tgy]]}`));
     $('#gungResult').innerHTML = `<div class="acard">
-      <p class="aq"><b>${esc(R.myName)}</b> &nbsp;✕&nbsp; <b>${esc(gname2)}</b> ${yy2}년생 · ${BRANCHES[yb2].animal}띠</p>
+      <p class="aq"><b>${esc(R.myName)}</b> &nbsp;✕&nbsp; <b>${esc(gname2)}</b> ${L(`${yy2}년생 · ${BRANCHES[yb2].animal}띠`, `born ${yy2} · Year of the ${ANIMALS_EN[yb2]}`)}</p>
       <div class="averdict">
         <span class="vh">${BRANCHES[yb2].h}</span>
         <span><span class="vt">${gradeT}</span><br><span class="vd">${headDesc}</span></span>
       </div>
-      <div class="combo"><b>연도만으로 본 간이 궁합</b><br>${lines.join('<br>')}</div>
-      <p class="small" style="margin-top:12px;color:var(--dim)">연도만으로는 띠와 그해의 기운까지만 읽을 수 있습니다. 1~2월생이라면 입춘 전 출생일 수 있어 띠가 전해로 밀릴 수 있어요. 생월일까지(8자리) 입력하면 일주 십성 · 두 태양의 각도 · 수의 결을 겹친 100점 리딩이 열립니다.</p>
+      <div class="combo"><b>${L('연도만으로 본 간이 궁합', 'Quick reading from the year alone')}</b><br>${lines.join('<br>')}</div>
+      <p class="small" style="margin-top:12px;color:var(--dim)">${L('연도만으로는 띠와 그해의 기운까지만 읽을 수 있습니다. 1~2월생이라면 입춘 전 출생일 수 있어 띠가 전해로 밀릴 수 있어요. 생월일까지(8자리) 입력하면 일주 십성 · 두 태양의 각도 · 수의 결을 겹친 100점 리딩이 열립니다.', 'From the year alone, I can read only the zodiac sign and that year’s energy. If you were born in Jan–Feb, your birth may fall before Ipchun (start of spring), so the sign can shift to the prior year. Enter the full birth month and day (8 digits) to unlock a 100-point reading that layers Day-pillar Ten Gods, the angle between your two Suns, and the grain of numbers.')}</p>
     </div>`;
     $('#gungResult').scrollIntoView({behavior: scrollMode(), block: 'nearest'});
     return;
   }
-  if (gd.length !== 8) { show('상대 생년월일 — 연도만 알면 4자리(예: 1995), 전부 알면 8자리(예: 19950316)로 입력해주세요.'); return; }
+  if (gd.length !== 8) { show(L('상대 생년월일 — 연도만 알면 4자리(예: 1995), 전부 알면 8자리(예: 19950316)로 입력해주세요.', 'Partner’s birth date — if you only know the year, enter 4 digits (e.g., 1995); if you know it all, 8 digits (e.g., 19950316).')); return; }
   const yy = +gd.slice(0, 4), mm = +gd.slice(4, 6), dd = +gd.slice(6, 8);
   const calv = $('#gCal').value;
   let sol;
@@ -4555,12 +4910,12 @@ $('#gungForm').addEventListener('submit', e => {
     const dt = new Date(yy, mm - 1, dd);
     sol = (dt.getMonth() === mm - 1 && dt.getDate() === dd) ? {y: yy, m: mm, d: dd} : null;
   } else sol = lunarToSolar(yy, mm, dd, calv === 'lunarLeap');
-  if (!sol) { show('존재하지 않는 날짜입니다. 달력 선택을 확인해주세요.'); return; }
+  if (!sol) { show(L('존재하지 않는 날짜입니다. 달력 선택을 확인해주세요.', 'That date does not exist. Please check the calendar selection.')); return; }
 
   let gTime = null;
   if (!$('#gNotime').checked) {
     gTime = readTime4('gTime');
-    if (gTime === false) { show('상대의 시간은 숫자 4자리로 — 예: 1830. 모르면 비워두거나 「몰라요」에 체크하세요.'); return; }
+    if (gTime === false) { show(L('상대의 시간은 숫자 4자리로 — 예: 1830. 모르면 비워두거나 「몰라요」에 체크하세요.', 'Partner’s time as 4 digits — e.g., 1830. If unknown, leave it blank or check "Don’t know".')); return; }
   }
   gErr.style.display = 'none';
   const gc = GEO[gCountrySel.value];
@@ -4569,7 +4924,7 @@ $('#gungForm').addEventListener('submit', e => {
   const s2 = computeSaju(sol.y, sol.m, sol.d, gTime, Math.round((geo2.lon - geo2.tz * 15) * 4), geo2.tz);
   const a2 = computeAstro(sol.y, sol.m, sol.d, gTime, geo2);
   const gnameRaw = $('#gName').value.trim();
-  const gname = gnameRaw || '상대'; // 표시용 — 계산에는 입력된 이름만 쓴다
+  const gname = gnameRaw || L('상대', 'your partner'); // 표시용 — 계산에는 입력된 이름만 쓴다
   const n2 = computeNumerology(sol.y, sol.m, sol.d, gnameRaw, new Date().getFullYear());
   const s1 = R.saju, a1 = R.astro, n1 = R.num;
   const gzOf = p => STEMS[p.stem].k + BRANCHES[p.branch].k;
@@ -4580,28 +4935,28 @@ $('#gungForm').addEventListener('submit', e => {
   const tg2 = tenGod(s2.day.stem, s1.day.stem), grp2 = TG_GROUP[tg2];
   let sj = GRP_PT[grp1] + GRP_PT[grp2];
   const linesSj = grp1 === grp2
-    ? [`서로가 서로에게 <b>${tg1} · ${tg2}(${GRP_NICK[grp1]})</b> — 쌍방향으로 같은 자리입니다. ${REL_PAIR[grp1]}`]
-    : [`<b>${esc(gname)}</b>는 당신에게 <b>${tg1}(${GRP_NICK[grp1]})</b> — ${REL_PAIR[grp1]}`,
-       `당신은 ${esc(gname)}에게 <b>${tg2}(${GRP_NICK[grp2]})</b> — ${REL_PAIR[grp2]}`];
+    ? [L(`서로가 서로에게 <b>${tg1} · ${tg2}(${GRP_NICK[grp1]})</b> — 쌍방향으로 같은 자리입니다. ${REL_PAIR[grp1]}`, `To each other you are <b>${TENGOD_NAME_EN[tg1]} · ${TENGOD_NAME_EN[tg2]} (${GUNG_GRP_NICK_EN[grp1]})</b> — the same seat both ways. ${GUNG_REL_PAIR_EN[grp1]}`)]
+    : [L(`<b>${esc(gname)}</b>는 당신에게 <b>${tg1}(${GRP_NICK[grp1]})</b> — ${REL_PAIR[grp1]}`, `<b>${esc(gname)}</b> is <b>${TENGOD_NAME_EN[tg1]} (${GUNG_GRP_NICK_EN[grp1]})</b> to you — ${GUNG_REL_PAIR_EN[grp1]}`),
+       L(`당신은 ${esc(gname)}에게 <b>${tg2}(${GRP_NICK[grp2]})</b> — ${REL_PAIR[grp2]}`, `you are <b>${TENGOD_NAME_EN[tg2]} (${GUNG_GRP_NICK_EN[grp2]})</b> to ${esc(gname)} — ${GUNG_REL_PAIR_EN[grp2]}`)];
   const b1 = s1.day.branch, b2 = s2.day.branch;
-  if (inPairs(JIJI_HAP, b1, b2)) { sj += 10; bonds.push({w:10, t:'일지 육합 — 사주에서 태어난 날의 글자끼리 서로 끌리는 짝'}); linesSj.push('두 사람의 일지 — 태어난 날의 땅 글자 — 가 <b>육합(合)</b>을 이룹니다. 곁에 있는 것만으로 서로 끌리는 짝의 글자라, 오래 곁에 있어도 소모되지 않는 조합입니다.'); }
-  else if (sgOf(b1) === sgOf(b2) && b1 !== b2) { sj += 8; bonds.push({w:8, t:'일지 삼합 — 목적이 같을 때 강하게 뭉치는 결'}); linesSj.push('두 일지가 <b>삼합(三合)</b>의 같은 결 — 목적이 같을 때 강하게 뭉치는 조합입니다.'); }
-  else if (inPairs(JIJI_CHUNG, b1, b2)) { sj -= 8; rubs.push({w:8, t:'일지 충 — 세게 끌리고 세게 흔들리는 자리', adv:'싸움의 규칙 하나(멈춤말)를 미리 정해두세요. 이 강한 에너지는 규칙만 있으면 관계를 깨는 대신 밀어주는 힘이 됩니다'}); linesSj.push('두 일지가 <b>충(沖)</b> — 강하게 끌리고 강하게 흔들리는, 불꽃 같은 조합입니다. 싸움의 규칙을 미리 정해두면 오래갑니다.'); }
-  else if (inPairs(GUNG_WONJIN, b1, b2)) { sj -= 5; rubs.push({w:6, t:'일지 원진 — 애증이 교차하기 쉬운 결', adv:'붙어 있는 시간보다 거리의 리듬을 설계하세요. 각자의 방이 있을 때 오히려 가까워지는 조합입니다'}); linesSj.push('두 일지가 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결. 거리 조절이 이 관계의 기술입니다.'); }
-  else if (inPairs(GUNG_GWIMUN, b1, b2)) { sj -= 3; rubs.push({w:4, t:'일지 귀문 — 서로의 예민한 곳을 건드리는 결', adv:'예민한 곳이 건드려진 날엔 추측하지 말고 물어보세요. 오해만 걷어내면 말 없이도 깊게 통하는 짝입니다'}); linesSj.push('두 일지가 <b>귀문(鬼門)</b> — 서로의 예민한 곳을 건드리지만, 그만큼 말 없이도 깊이 통합니다.'); }
+  if (inPairs(JIJI_HAP, b1, b2)) { sj += 10; bonds.push({w:10, t:L('일지 육합 — 사주에서 태어난 날의 글자끼리 서로 끌리는 짝', 'Day-branch Six Harmony — the birth-day characters of your charts draw to each other')}); linesSj.push(L('두 사람의 일지 — 태어난 날의 땅 글자 — 가 <b>육합(合)</b>을 이룹니다. 곁에 있는 것만으로 서로 끌리는 짝의 글자라, 오래 곁에 있어도 소모되지 않는 조합입니다.', 'Your two Day branches — the earth characters of the days you were born — form a <b>Six Harmony (合)</b>. They are characters that draw to each other by mere presence, a pairing that does not wear thin even over long closeness.')); }
+  else if (sgOf(b1) === sgOf(b2) && b1 !== b2) { sj += 8; bonds.push({w:8, t:L('일지 삼합 — 목적이 같을 때 강하게 뭉치는 결', 'Day-branch Three Harmony — a grain that rallies hard behind a shared goal')}); linesSj.push(L('두 일지가 <b>삼합(三合)</b>의 같은 결 — 목적이 같을 때 강하게 뭉치는 조합입니다.', 'Your two Day branches share a <b>Three Harmony (三合)</b> grain — a pairing that rallies hard when the goal is shared.')); }
+  else if (inPairs(JIJI_CHUNG, b1, b2)) { sj -= 8; rubs.push({w:8, t:L('일지 충 — 세게 끌리고 세게 흔들리는 자리', 'Day-branch Clash — a seat that pulls hard and shakes hard'), adv:L('싸움의 규칙 하나(멈춤말)를 미리 정해두세요. 이 강한 에너지는 규칙만 있으면 관계를 깨는 대신 밀어주는 힘이 됩니다', 'Set one rule for fights (a stop-word) in advance. With a rule, this strong energy pushes the relationship forward instead of breaking it')}); linesSj.push(L('두 일지가 <b>충(沖)</b> — 강하게 끌리고 강하게 흔들리는, 불꽃 같은 조합입니다. 싸움의 규칙을 미리 정해두면 오래갑니다.', 'Your two Day branches are in <b>Clash (沖)</b> — a flame-like pairing that pulls hard and shakes hard. Set the rules of a fight in advance and it lasts.')); }
+  else if (inPairs(GUNG_WONJIN, b1, b2)) { sj -= 5; rubs.push({w:6, t:L('일지 원진 — 애증이 교차하기 쉬운 결', 'Day-branch Resentment — a grain where love and hate cross easily'), adv:L('붙어 있는 시간보다 거리의 리듬을 설계하세요. 각자의 방이 있을 때 오히려 가까워지는 조합입니다', 'Design a rhythm of distance rather than constant togetherness. This pairing grows closer when each has a room of their own')}); linesSj.push(L('두 일지가 <b>원진(元嗔)</b> — 애증이 교차하기 쉬운 결. 거리 조절이 이 관계의 기술입니다.', 'Your two Day branches form <b>Resentment (元嗔)</b> — a grain where love and hate cross easily. Managing distance is the art of this bond.')); }
+  else if (inPairs(GUNG_GWIMUN, b1, b2)) { sj -= 3; rubs.push({w:4, t:L('일지 귀문 — 서로의 예민한 곳을 건드리는 결', 'Day-branch Ghost Gate — a grain that presses each other’s tender spots'), adv:L('예민한 곳이 건드려진 날엔 추측하지 말고 물어보세요. 오해만 걷어내면 말 없이도 깊게 통하는 짝입니다', 'On days a tender spot gets pressed, ask instead of assuming. Clear the misread and you are a pair that connects deeply without words')}); linesSj.push(L('두 일지가 <b>귀문(鬼門)</b> — 서로의 예민한 곳을 건드리지만, 그만큼 말 없이도 깊이 통합니다.', 'Your two Day branches form a <b>Ghost Gate (鬼門)</b> — you press each other’s tender spots, but connect just as deeply without words.')); }
   else sj += 2;
   const myWeak = s1.counts.indexOf(Math.min(...s1.counts));
   const theirWeak = s2.counts.indexOf(Math.min(...s2.counts));
   const myEl = STEMS[s1.day.stem].el, theirEl = STEMS[s2.day.stem].el;
   const fillA = theirEl === myWeak, fillB = myEl === theirWeak;
-  if (fillA) { sj += 4; linesSj.push(`${esc(gname)}의 ${ELEMENTS[theirEl].k}(${ELEMENTS[theirEl].h}) 기운이 당신 명식의 빈 자리를 채웁니다.`); }
-  if (fillB) { sj += 4; linesSj.push(`당신의 ${ELEMENTS[myEl].k}(${ELEMENTS[myEl].h}) 기운이 ${esc(gname)} 명식의 빈 자리를 채웁니다.`); }
-  if (fillA && fillB) bonds.push({w:9, t:'서로에게 부족한 기운을 정확히 채워주는 구조'});
-  else if (fillA) bonds.push({w:5, t:`${esc(gname)}의 ${ELEMENTS[theirEl].k} 기운이 당신에게 부족한 기운을 채우는 구조`});
-  else if (fillB) bonds.push({w:5, t:`당신의 ${ELEMENTS[myEl].k} 기운이 ${esc(gname)}에게 부족한 기운을 채우는 구조`});
+  if (fillA) { sj += 4; linesSj.push(L(`${esc(gname)}의 ${ELEMENTS[theirEl].k}(${ELEMENTS[theirEl].h}) 기운이 당신 명식의 빈 자리를 채웁니다.`, `${esc(gname)}’s ${ELEMENTS_EN[theirEl].k}(${ELEMENTS[theirEl].h}) energy fills the empty seat in your chart.`)); }
+  if (fillB) { sj += 4; linesSj.push(L(`당신의 ${ELEMENTS[myEl].k}(${ELEMENTS[myEl].h}) 기운이 ${esc(gname)} 명식의 빈 자리를 채웁니다.`, `Your ${ELEMENTS_EN[myEl].k}(${ELEMENTS[myEl].h}) energy fills the empty seat in ${esc(gname)}’s chart.`)); }
+  if (fillA && fillB) bonds.push({w:9, t:L('서로에게 부족한 기운을 정확히 채워주는 구조', 'a structure that fills exactly what each other lacks')});
+  else if (fillA) bonds.push({w:5, t:L(`${esc(gname)}의 ${ELEMENTS[theirEl].k} 기운이 당신에게 부족한 기운을 채우는 구조`, `${esc(gname)}’s ${ELEMENTS_EN[theirEl].k} energy fills what you lack`)});
+  else if (fillB) bonds.push({w:5, t:L(`당신의 ${ELEMENTS[myEl].k} 기운이 ${esc(gname)}에게 부족한 기운을 채우는 구조`, `your ${ELEMENTS_EN[myEl].k} energy fills what ${esc(gname)} lacks`)});
   const yb1 = s1.year.branch, yb2 = s2.year.branch;
-  if (inPairs(JIJI_HAP, yb1, yb2) || (sgOf(yb1) === sgOf(yb2) && yb1 !== yb2)) { sj += 4; bonds.push({w:3, t:`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠의 합`}); linesSj.push(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠 — 띠끼리도 합의 결입니다.`); }
-  else if (inPairs(JIJI_CHUNG, yb1, yb2)) { sj -= 4; rubs.push({w:3, t:'띠끼리의 충', adv:'가족 행사나 명절처럼 배경이 겹치는 자리에서 긁히기 쉬운 결입니다. 둘의 문제가 아니라 결의 문제로 읽고 넘기세요'}); linesSj.push(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠 — 띠끼리는 충. 어른들 말로는 상극이지만, 일지가 더 중요합니다.`); }
+  if (inPairs(JIJI_HAP, yb1, yb2) || (sgOf(yb1) === sgOf(yb2) && yb1 !== yb2)) { sj += 4; bonds.push({w:3, t:L(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠의 합`, `harmony between the ${ANIMALS_EN[yb1]} and the ${ANIMALS_EN[yb2]}`)}); linesSj.push(L(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠 — 띠끼리도 합의 결입니다.`, `The ${ANIMALS_EN[yb1]} and the ${ANIMALS_EN[yb2]} — your zodiac signs, too, are in a grain of harmony.`)); }
+  else if (inPairs(JIJI_CHUNG, yb1, yb2)) { sj -= 4; rubs.push({w:3, t:L('띠끼리의 충', 'a clash between your zodiac signs'), adv:L('가족 행사나 명절처럼 배경이 겹치는 자리에서 긁히기 쉬운 결입니다. 둘의 문제가 아니라 결의 문제로 읽고 넘기세요', 'It tends to chafe where your backgrounds overlap — family events, holidays. Read it as a matter of grain, not of the two of you, and let it pass')}); linesSj.push(L(`${BRANCHES[yb1].animal}띠와 ${BRANCHES[yb2].animal}띠 — 띠끼리는 충. 어른들 말로는 상극이지만, 일지가 더 중요합니다.`, `The ${ANIMALS_EN[yb1]} and the ${ANIMALS_EN[yb2]} — your zodiac signs clash. The elders call it a bad match, but the Day branch matters more.`)); }
   const sajuScore = Math.max(4, Math.min(40, Math.round(sj + 4)));
 
   /* 별 — 태양·달 원소(짝마다 전용 문구) + 두 태양의 각도 */
@@ -4614,17 +4969,17 @@ $('#gungForm').addEventListener('submit', e => {
   const SUN_ROLE = {0:'먼저 움직이는', 1:'현실을 챙기는', 2:'생각과 말이 앞서는', 3:'마음이 먼저 반응하는'};
   const MOON_ROLE = {0:'감정을 바로 내보이는', 1:'감정을 안으로 삭이는', 2:'말로 풀어야 풀리는', 3:'기분이 깊게 스며드는'};
   const linesAs = [
-    `태양 <b>${SIGNS[a1.sun.sign].k}</b>(${ZODEL_NAME[se1]}) ↔ <b>${SIGNS[a2.sun.sign].k}</b>(${ZODEL_NAME[se2]}) — ${SUN_ELPAIR[elKey(se1, se2)]}.${se1 !== se2 ? ` 여기서 ${SUN_ROLE[se1]} 쪽이 당신, ${SUN_ROLE[se2]} 쪽이 ${esc(gname)}입니다.` : ''}`,
-    `달 <b>${SIGNS[a1.moon.sign].k}</b>(${ZODEL_NAME[me1]}) ↔ <b>${SIGNS[a2.moon.sign].k}</b>(${ZODEL_NAME[me2]}) — ${MOON_ELPAIR[elKey(me1, me2)]}.${me1 !== me2 ? ` 여기서 ${MOON_ROLE[me1]} 쪽이 당신, ${MOON_ROLE[me2]} 쪽이 ${esc(gname)}입니다.` : ''}`,
-    `두 태양이 이루는 각 — ${aspLine}`
+    L(`태양 <b>${SIGNS[a1.sun.sign].k}</b>(${ZODEL_NAME[se1]}) ↔ <b>${SIGNS[a2.sun.sign].k}</b>(${ZODEL_NAME[se2]}) — ${SUN_ELPAIR[elKey(se1, se2)]}.${se1 !== se2 ? ` 여기서 ${SUN_ROLE[se1]} 쪽이 당신, ${SUN_ROLE[se2]} 쪽이 ${esc(gname)}입니다.` : ''}`, `Sun <b>${signName(a1.sun.sign)}</b>(${ZODEL_NAME_EN[se1]}) ↔ <b>${signName(a2.sun.sign)}</b>(${ZODEL_NAME_EN[se2]}) — ${SUN_ELPAIR_EN[elKey(se1, se2)]}.${se1 !== se2 ? ` Here the one who ${SUN_ROLE_EN[se1]} is you, the one who ${SUN_ROLE_EN[se2]} is ${esc(gname)}.` : ''}`),
+    L(`달 <b>${SIGNS[a1.moon.sign].k}</b>(${ZODEL_NAME[me1]}) ↔ <b>${SIGNS[a2.moon.sign].k}</b>(${ZODEL_NAME[me2]}) — ${MOON_ELPAIR[elKey(me1, me2)]}.${me1 !== me2 ? ` 여기서 ${MOON_ROLE[me1]} 쪽이 당신, ${MOON_ROLE[me2]} 쪽이 ${esc(gname)}입니다.` : ''}`, `Moon <b>${signName(a1.moon.sign)}</b>(${ZODEL_NAME_EN[me1]}) ↔ <b>${signName(a2.moon.sign)}</b>(${ZODEL_NAME_EN[me2]}) — ${MOON_ELPAIR_EN[elKey(me1, me2)]}.${me1 !== me2 ? ` Here the one who ${MOON_ROLE_EN[me1]} is you, the one who ${MOON_ROLE_EN[me2]} is ${esc(gname)}.` : ''}`),
+    L(`두 태양이 이루는 각 — ${aspLine}`, `The angle your two Suns form — ${aspLine}`)
   ];
-  if (sunPt >= 10) bonds.push({w:5, t:'서로를 살리는 태양 원소의 짝'});
-  else if (sunPt <= 4) rubs.push({w:5, t:'태양 원소의 온도차', adv:'같은 문장을 서로 다른 언어로 말하는 짝입니다. 상대의 말을 내 사전으로 해석하지 말고, 뜻을 한 번 더 물어보는 습관이 지름길입니다'});
-  if (moonPt0 >= 9) bonds.push({w:5, t:'감정의 결이 잘 포개지는 달의 짝'});
-  else if (moonPt0 <= 4) rubs.push({w:6, t:'감정을 다루는 방식의 차이 — 두 사람의 달이 서로 다른 원소에 있습니다', adv:'감정 처리 속도가 다른 짝은, 회복이 빠른 쪽이 기다려주는 만큼 깊어집니다'});
-  if (aspPt >= 8) bonds.push({w:6, t:'두 태양의 삼각(120°) — 애쓰지 않아도 흐르는 각'});
-  else if (aspPt === 7) bonds.push({w:4, t:'두 태양의 육각(60°) — 협력이 저절로 되는 각'});
-  else if (aspPt <= 3) rubs.push({w:6, t:'두 태양의 직각(90°) — 마찰로 서로를 키우는 각', adv:'부딪힘이 잦다는 건 서로에게 무던하지 않다는 뜻입니다. 싸움을 없애려 하지 말고, 짧게 끝내는 기술을 쌓으세요'});
+  if (sunPt >= 10) bonds.push({w:5, t:L('서로를 살리는 태양 원소의 짝', 'Sun elements that feed each other')});
+  else if (sunPt <= 4) rubs.push({w:5, t:L('태양 원소의 온도차', 'a temperature gap in Sun elements'), adv:L('같은 문장을 서로 다른 언어로 말하는 짝입니다. 상대의 말을 내 사전으로 해석하지 말고, 뜻을 한 번 더 물어보는 습관이 지름길입니다', 'You speak the same sentence in different languages. Don’t decode their words with your own dictionary; the shortcut is the habit of asking once more what they mean')});
+  if (moonPt0 >= 9) bonds.push({w:5, t:L('감정의 결이 잘 포개지는 달의 짝', 'Moons whose emotional grains fold together well')});
+  else if (moonPt0 <= 4) rubs.push({w:6, t:L('감정을 다루는 방식의 차이 — 두 사람의 달이 서로 다른 원소에 있습니다', 'a difference in how you handle emotion — your two Moons sit in different elements'), adv:L('감정 처리 속도가 다른 짝은, 회복이 빠른 쪽이 기다려주는 만큼 깊어집니다', 'When you process feelings at different speeds, the bond deepens as much as the faster-recovering one waits')});
+  if (aspPt >= 8) bonds.push({w:6, t:L('두 태양의 삼각(120°) — 애쓰지 않아도 흐르는 각', 'a Trine (120°) between your Suns — an angle that flows without effort')});
+  else if (aspPt === 7) bonds.push({w:4, t:L('두 태양의 육각(60°) — 협력이 저절로 되는 각', 'a Sextile (60°) between your Suns — an angle where cooperation happens on its own')});
+  else if (aspPt <= 3) rubs.push({w:6, t:L('두 태양의 직각(90°) — 마찰로 서로를 키우는 각', 'a Square (90°) between your Suns — an angle that grows you through friction'), adv:L('부딪힘이 잦다는 건 서로에게 무던하지 않다는 뜻입니다. 싸움을 없애려 하지 말고, 짧게 끝내는 기술을 쌓으세요', 'Frequent clashes mean you are not indifferent to each other. Don’t try to erase fights; build the skill of ending them quickly')});
   const astroScore = Math.max(3, Math.min(30, sunPt + Math.round(moonPt0 * 0.8) + aspPt + 4));
 
   /* 수 — 라이프패스 짝 문장 · 표현수 · 올해의 흐름 */
@@ -4635,48 +4990,48 @@ $('#gungForm').addEventListener('submit', e => {
   const lg1 = COMPAT_GROUP(n1.lifePath), lg2 = COMPAT_GROUP(n2.lifePath);
   const GROUP_ROLE = {0:'새 문을 여는', 1:'그것을 현실로 만드는', 2:'거기에 온기와 색을 입히는'};
   const lpBridge = n1.lifePath === n2.lifePath
-    ? '같은 길을 걷는 두 사람이라 서로를 거울처럼 이해하지만, 같은 함정에도 같이 빠질 수 있습니다. 번갈아 브레이크가 되어주세요'
+    ? L('같은 길을 걷는 두 사람이라 서로를 거울처럼 이해하지만, 같은 함정에도 같이 빠질 수 있습니다. 번갈아 브레이크가 되어주세요', 'two people walking the same path, so you understand each other like a mirror — but you can fall into the same trap together. Take turns being the brakes')
     : lg1 === lg2
-    ? '결이 같은 수라, 애쓰지 않아도 서로의 우선순위가 이해되는 조합입니다'
-    : `우선순위가 달라 결정의 순서에서 부딪히곤 하지만, 당신이 ${GROUP_ROLE[lg1]} 쪽이고 ${esc(gname)}${jIga(gname)} ${GROUP_ROLE[lg2]} 쪽 — 순서만 합의하면 서로에게 가장 필요한 분업입니다`;
+    ? L('결이 같은 수라, 애쓰지 않아도 서로의 우선순위가 이해되는 조합입니다', 'numbers of the same grain, so each other’s priorities make sense without effort')
+    : L(`우선순위가 달라 결정의 순서에서 부딪히곤 하지만, 당신이 ${GROUP_ROLE[lg1]} 쪽이고 ${esc(gname)}${jIga(gname)} ${GROUP_ROLE[lg2]} 쪽 — 순서만 합의하면 서로에게 가장 필요한 분업입니다`, `your priorities differ, so you clash over the order of decisions — but you are the one who ${GROUP_ROLE_EN[lg1]} and ${esc(gname)} the one who ${GROUP_ROLE_EN[lg2]}. Agree on the order and it is the very division of labor you each need most`);
   linesNu.push(n1.lifePath === n2.lifePath
-    ? `라이프패스가 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>로 같습니다 — ${lpBridge}.`
-    : `라이프패스 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>과 <b>${n2.lifePath}(${NUM_ESSENCE[n2.lifePath].t})</b> — 당신은 ${lpLove(n1.lifePath)} 사람, ${esc(gname)}는 ${lpLove(n2.lifePath)} 사람입니다. ${lpBridge}.`);
-  if (n1.lifePath === n2.lifePath) bonds.push({w:5, t:`라이프패스 ${n1.lifePath}이 같은 두 사람 — 같은 과제를 사는 동행`});
-  else if (lpPt <= 7) rubs.push({w:4, t:'인생의 우선순위 차이(라이프패스)', adv:'목표가 다른 게 아니라 순서가 다른 것입니다. 아이디어는 자유롭게 꺼내되 실행은 현실 기준으로 — 순서만 합의하면 최강의 분업이 됩니다'});
+    ? L(`라이프패스가 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>로 같습니다 — ${lpBridge}.`, `Your Life Paths are the same, <b>${n1.lifePath} (${NUM_ESSENCE_EN[n1.lifePath].t})</b> — ${lpBridge}.`)
+    : L(`라이프패스 <b>${n1.lifePath}(${NUM_ESSENCE[n1.lifePath].t})</b>과 <b>${n2.lifePath}(${NUM_ESSENCE[n2.lifePath].t})</b> — 당신은 ${lpLove(n1.lifePath)} 사람, ${esc(gname)}는 ${lpLove(n2.lifePath)} 사람입니다. ${lpBridge}.`, `Life Path <b>${n1.lifePath} (${NUM_ESSENCE_EN[n1.lifePath].t})</b> and <b>${n2.lifePath} (${NUM_ESSENCE_EN[n2.lifePath].t})</b> — you are someone who ${lpLove(n1.lifePath)}, ${esc(gname)} someone who ${lpLove(n2.lifePath)}. ${lpBridge}.`));
+  if (n1.lifePath === n2.lifePath) bonds.push({w:5, t:L(`라이프패스 ${n1.lifePath}이 같은 두 사람 — 같은 과제를 사는 동행`, `two people sharing Life Path ${n1.lifePath} — companions living the same task`)});
+  else if (lpPt <= 7) rubs.push({w:4, t:L('인생의 우선순위 차이(라이프패스)', 'a difference in life priorities (Life Path)'), adv:L('목표가 다른 게 아니라 순서가 다른 것입니다. 아이디어는 자유롭게 꺼내되 실행은 현실 기준으로 — 순서만 합의하면 최강의 분업이 됩니다', 'It is not that your goals differ, but the order does. Toss out ideas freely, but execute by the standard of reality — agree on the order and it becomes the strongest division of labor')});
   if (n1.name && n2.name) {
     const e1 = n1.name.expression, e2 = n2.name.expression;
-    if (e1 === e2 || COMPAT_GROUP(e1) === COMPAT_GROUP(e2)) { nu += 10; linesNu.push(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 겉으로 드러나는 방식이 닮은 결이라, 첫 만남부터 합이 빨랐을 조합입니다.`); }
-    else { nu += 6; linesNu.push(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 드러나는 방식은 ${lpLove(e1)} 쪽과 ${lpLove(e2)} 쪽으로 다릅니다. 처음엔 낯설고, 오래 볼수록 역할이 나뉩니다.`); }
+    if (e1 === e2 || COMPAT_GROUP(e1) === COMPAT_GROUP(e2)) { nu += 10; linesNu.push(L(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 겉으로 드러나는 방식이 닮은 결이라, 첫 만남부터 합이 빨랐을 조합입니다.`, `The Expression numbers of your two names, <b>${e1} · ${e2}</b> — the way you show on the surface shares a grain, a pairing that likely clicked fast from the first meeting.`)); }
+    else { nu += 6; linesNu.push(L(`두 이름의 표현수 <b>${e1} · ${e2}</b> — 드러나는 방식은 ${lpLove(e1)} 쪽과 ${lpLove(e2)} 쪽으로 다릅니다. 처음엔 낯설고, 오래 볼수록 역할이 나뉩니다.`, `The Expression numbers of your two names, <b>${e1} · ${e2}</b> — the way you show differs: one who ${lpLove(e1)} and one who ${lpLove(e2)}. Strange at first, and the longer you are together, the more the roles divide.`)); }
   } else nu += 6;
-  if (n1.personalYear === n2.personalYear) { nu += 6; bonds.push({w:4, t:`올해 같은 개인 연수(${n1.personalYear}) — 지금 같은 계절을 지나는 중`}); linesNu.push(`올해 개인 연수가 <b>${n1.personalYear}</b>로 같습니다 — 지금 같은 계절을 지나는 중입니다.`); }
-  else { nu += 3; linesNu.push(`올해 개인 연수는 <b>${n1.personalYear}</b>과 <b>${n2.personalYear}</b> — 서로 다른 계절을 지나는 중입니다. 속도 차이는 어긋남이 아니라 시차입니다.`); }
+  if (n1.personalYear === n2.personalYear) { nu += 6; bonds.push({w:4, t:L(`올해 같은 개인 연수(${n1.personalYear}) — 지금 같은 계절을 지나는 중`, `the same Personal Year (${n1.personalYear}) — passing through the same season right now`)}); linesNu.push(L(`올해 개인 연수가 <b>${n1.personalYear}</b>로 같습니다 — 지금 같은 계절을 지나는 중입니다.`, `Your Personal Years this year are the same, <b>${n1.personalYear}</b> — you are passing through the same season right now.`)); }
+  else { nu += 3; linesNu.push(L(`올해 개인 연수는 <b>${n1.personalYear}</b>과 <b>${n2.personalYear}</b> — 서로 다른 계절을 지나는 중입니다. 속도 차이는 어긋남이 아니라 시차입니다.`, `Your Personal Years this year are <b>${n1.personalYear}</b> and <b>${n2.personalYear}</b> — you are passing through different seasons. The gap in pace is not misalignment but a time difference.`)); }
   const numScore = Math.min(30, nu);
 
   const total = sajuScore + astroScore + numScore;
-  const grade = total >= 85 ? '하늘이 맺은 결' : total >= 70 ? '깊은 결' : total >= 55 ? '가꾸는 결' : total >= 40 ? '배우는 결' : '넘어야 할 결';
+  const grade = total >= 85 ? L('하늘이 맺은 결', 'a bond sealed by heaven') : total >= 70 ? L('깊은 결', 'a deep bond') : total >= 55 ? L('가꾸는 결', 'a bond to cultivate') : total >= 40 ? L('배우는 결', 'a bond that teaches') : L('넘어야 할 결', 'a bond to be overcome');
   /* 총평 — 이 커플의 실제 신호 중 가장 강한 고리와 마찰로 조립. 고정 문구 없음 */
   bonds.sort((a, b) => b.w - a.w); rubs.sort((a, b) => b.w - a.w);
   const summary = (bonds.length
-      ? `이 관계의 가장 단단한 고리는 <b>${bonds[0].t}</b>입니다${bonds[1] ? `. <b>${bonds[1].t}</b>도 힘을 보탭니다` : ''}.`
-      : '한눈에 보이는 상성의 고리보다, 차이를 다루는 솜씨가 재산이 되는 관계입니다.')
+      ? L(`이 관계의 가장 단단한 고리는 <b>${bonds[0].t}</b>입니다${bonds[1] ? `. <b>${bonds[1].t}</b>도 힘을 보탭니다` : ''}.`, `The sturdiest link in this relationship is <b>${bonds[0].t}</b>${bonds[1] ? `. <b>${bonds[1].t}</b> lends strength too` : ''}.`)
+      : L('한눈에 보이는 상성의 고리보다, 차이를 다루는 솜씨가 재산이 되는 관계입니다.', 'More than any obvious link of compatibility, the skill of handling differences is what makes this relationship rich.'))
     + ' ' + (rubs.length
-      ? `가장 자주 부딪힐 지점은 <b>${rubs[0].t}</b> — ${rubs[0].adv}.`
-      : '뚜렷하게 부딪힐 지점은 보이지 않는 조합입니다 — 큰 파도보다 잔잔함에 익숙해지는 것이 과제입니다.');
+      ? L(`가장 자주 부딪힐 지점은 <b>${rubs[0].t}</b> — ${rubs[0].adv}.`, `The point you will clash over most is <b>${rubs[0].t}</b> — ${rubs[0].adv}.`)
+      : L('뚜렷하게 부딪힐 지점은 보이지 않는 조합입니다 — 큰 파도보다 잔잔함에 익숙해지는 것이 과제입니다.', 'No sharp point of collision shows in this pairing — the task is getting used to calm rather than big waves.'));
   const fp1 = `${STEMS[s1.day.stem].h}${BRANCHES[s1.day.branch].h} ${SIGNS[a1.sun.sign].g}${a1.sun.deg}°·${n1.lifePath}`;
   const fp2 = `${STEMS[s2.day.stem].h}${BRANCHES[s2.day.branch].h} ${SIGNS[a2.sun.sign].g}${a2.sun.deg}°·${n2.lifePath}`;
 
   $('#gungResult').innerHTML = `<div class="acard">
-    <p class="aq"><b>${esc(R.myName)}</b> ${gzOf(s1.day)}일주 · ${SIGNS[a1.sun.sign].k} &nbsp;✕&nbsp; <b>${esc(gname)}</b> ${gzOf(s2.day)}일주 · ${SIGNS[a2.sun.sign].k}${gTime ? '' : ' <span style="color:var(--dim)">(상대 시간 미상 — 정오 기준)</span>'}</p>
+    <p class="aq"><b>${esc(R.myName)}</b> ${L(gzOf(s1.day) + '일주', gzH(s1.day) + ' Day pillar')} · ${signName(a1.sun.sign)} &nbsp;✕&nbsp; <b>${esc(gname)}</b> ${L(gzOf(s2.day) + '일주', gzH(s2.day) + ' Day pillar')} · ${signName(a2.sun.sign)}${gTime ? '' : L(' <span style="color:var(--dim)">(상대 시간 미상 — 정오 기준)</span>', ' <span style="color:var(--dim)">(partner’s time unknown — noon assumed)</span>')}</p>
     <div class="averdict${total >= 70 ? ' yes' : ''}">
       <span class="vh">${total}</span>
-      <span><span class="vt">${grade}</span><br><span class="vd">100점 만점 — 사주 ${sajuScore}/40 · 별 ${astroScore}/30 · 수 ${numScore}/30</span></span>
+      <span><span class="vt">${grade}</span><br><span class="vd">${L(`100점 만점 — 사주 ${sajuScore}/40 · 별 ${astroScore}/30 · 수 ${numScore}/30`, `out of 100 — Four Pillars ${sajuScore}/40 · Stars ${astroScore}/30 · Numbers ${numScore}/30`)}</span></span>
     </div>
     <p class="fadvice">${summary}</p>
-    <div class="combo"><b>사주 ${sajuScore}/40</b><br>${linesSj.join('<br>')}</div>
-    <div class="combo"><b>별 ${astroScore}/30</b><br>${linesAs.join('<br>')}</div>
-    <div class="combo"><b>수 ${numScore}/30</b><br>${linesNu.join('<br>')}</div>
-    <p class="small" style="margin-top:12px;color:var(--dim)">두 지문 ${fp1} ✕ ${fp2} — 일주 60갑자와 태양 도수가 함께 겹치는 쌍은 사실상 없어, 이 궁합 리딩은 두 사람만의 것입니다.</p>
+    <div class="combo"><b>${L(`사주 ${sajuScore}/40`, `Four Pillars ${sajuScore}/40`)}</b><br>${linesSj.join('<br>')}</div>
+    <div class="combo"><b>${L(`별 ${astroScore}/30`, `Stars ${astroScore}/30`)}</b><br>${linesAs.join('<br>')}</div>
+    <div class="combo"><b>${L(`수 ${numScore}/30`, `Numbers ${numScore}/30`)}</b><br>${linesNu.join('<br>')}</div>
+    <p class="small" style="margin-top:12px;color:var(--dim)">${L(`두 지문 ${fp1} ✕ ${fp2} — 일주 60갑자와 태양 도수가 함께 겹치는 쌍은 사실상 없어, 이 궁합 리딩은 두 사람만의 것입니다.`, `Two fingerprints ${fp1} ✕ ${fp2} — virtually no pair shares both the 60-jiazi Day pillar and the exact Sun degree, so this compatibility reading belongs to the two of you alone.`)}</p>
   </div>`;
   $('#gungResult').scrollIntoView({behavior: scrollMode(), block: 'nearest'});
 });
