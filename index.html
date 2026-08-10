@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.18.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.19.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -1716,7 +1716,7 @@ function elArt(el) {
   const han = ['木', '火', '土', '金', '水'][el];
   const kr = ['목', '화', '토', '금', '수'][el];
   const en = ['WOOD', 'FIRE', 'EARTH', 'METAL', 'WATER'][el];
-  return `<div class="el-box"><span class="el-han" style="color:${c}">${han}</span><span class="el-sub">${kr} · ${en}</span></div>`;
+  return `<div class="el-box"><span class="el-han" style="color:${c}">${han}</span><span class="el-sub">${L(`${kr} · ${en}`, en)}</span></div>`;
 }
 /* 어울리는 곳 세계지도 — 좌표[위도,경도] */
 const GEO_LL = {
@@ -1749,7 +1749,7 @@ function worldMapSVG(hi) {
   }).join('');
   /* 라벨 — 종류별 위치 분리 */
   const conLabel = `<text x="${hi.conPos[0]}" y="${hi.conPos[1]}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--earth)">${hi.conLabel}</text>`;
-  const ctryLabels = hi.countries.map(ko => MAP_SHAPES.countries[ko] ? `<text x="${MAP_SHAPES.countries[ko].c[0]}" y="${MAP_SHAPES.countries[ko].c[1] + 1}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--accent)">${ko}</text>` : '').join('');
+  const ctryLabels = hi.countries.map(ko => MAP_SHAPES.countries[ko] ? `<text x="${MAP_SHAPES.countries[ko].c[0]}" y="${MAP_SHAPES.countries[ko].c[1] + 1}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--accent)">${LANG === 'en' ? (COUNTRY_EN[ko] || ko) : ko}</text>` : '').join('');
   return `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="어울리는 곳 세계지도">`
     + `<defs><filter id="mapsh" x="-4%" y="-4%" width="108%" height="118%"><feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="#4a4133" flood-opacity="0.22"/></filter></defs>`
     + `<path d="${WORLD_PATH}" fill="var(--paper-deep)" stroke="rgba(74,65,51,0.5)" stroke-width="0.3" stroke-linejoin="round" filter="url(#mapsh)"/>`
@@ -3383,7 +3383,7 @@ const SIGN_KO2EN = {
 const EL_KO2EN = {'목': 'Wood', '화': 'Fire', '토': 'Earth', '금': 'Metal', '수': 'Water'};
 function srcEN(s) {
   if (LANG !== 'en') return s;
-  if (s.startsWith('사주 일간')) return 'Day Master ' + s.slice(6).trim();          // e.g. "갑甲" -> "Day Master 갑甲"
+  if (s.startsWith('사주 일간')) return 'Day Master ' + s.slice(6).trim().replace(/[가-힣]/g, '');  // hanja only in EN (e.g. "신辛" -> "辛")
   if (s.startsWith('오행의 중심')) {                                                  // "오행의 중심 목(木)"
     const m = s.match(/오행의 중심 (.)\((.)\)/);
     return m ? `Element core · ${EL_KO2EN[m[1]] || m[1]}(${m[2]})` : s;
@@ -5267,6 +5267,61 @@ const PAST_TIP = {
   1: ['버티며 힘을 기른 해였을 것입니다', '새로 벌이기보다 지키던 시기입니다', '고비를 넘기며 뿌리를 내린 때입니다']
 };
 const groupOf12 = b => [8, 0, 4].includes(b) ? 0 : [2, 6, 10].includes(b) ? 1 : [5, 9, 1].includes(b) ? 2 : 3;
+/* NEW-EN-DATA
+   Add these consts ONCE, alongside the existing Korean EL_COUNTRY / YEAR_CATS / YEAR_TIP /
+   PAST_TIP / YEOKMA_DIR. EL_COUNTRY_EN is index-aligned to EL_COUNTRY (weakest element).
+   renderLife #lifeCountry is the ONLY consumer of EL_COUNTRY (grep-confirmed), so this is
+   also "the" EL_COUNTRY_EN referenced by the task — #synthPlace uses EL_PLACE/EL_PLACE_EN,
+   which already exist and are already wired, so it does NOT need EL_COUNTRY_EN. */
+
+const EL_COUNTRY_EN = [
+  {kw: 'Growth · Learning · Fresh Start', list: [
+    ['Japan', 'A country to your near east with a deep culture of forests and gardens — its dense Wood (木) energy fills the faint growth and ordering power you lack'],
+    ['New Zealand', 'A land of nature blanketed in green — within Wood energy, both body and mind grow anew'],
+    ['Canada', 'A land of endless forests and lakes — broad Wood energy opens up a blocked, stifled feeling']]},
+  {kw: 'Expression · Passion · Sociability', list: [
+    ['Spain', 'A country of sunlight and festivals — hot Fire (火) energy lifts your expressiveness and vitality'],
+    ['Thailand', 'A warm southern land all year round — Fire energy thaws a frozen heart and opens the door to people'],
+    ['Italy', 'A country of sun, passion, and art — within Fire energy, feeling and talent blossom outward']]},
+  {kw: 'Stability · Center · Substance', list: [
+    ['Switzerland', 'A country of solid mountains and order — Earth (土) energy steadies a wavering center'],
+    ['Germany', 'A land of deep-rooted systems and solidity — Earth energy adds substance and stability'],
+    ['Turkey', 'The continental center where East meets West — Earth energy gathers scattered strength into one']]},
+  {kw: 'Achievement · Resolve · Order', list: [
+    ['USA', 'A country of opportunity, competition, and achievement — Metal (金) energy forges your resolve and career'],
+    ['UK', 'A western land firm in tradition and institutions — Metal energy raises your principle and finish'],
+    ['France', 'A country of refinement and formality — within Metal energy, the senses are honed sharp']]},
+  {kw: 'Wisdom · Flexibility · Reflection', list: [
+    ['Norway', 'The north of fjords, sea, and long nights — Water (水) energy deepens reflection and wisdom'],
+    ['Netherlands', 'A land that lives entirely with water — Water energy brings your flexibility and flow to life'],
+    ['Finland', 'A country of lakes, forests, and stillness — within Water energy, the mind settles clear and new answers surface']]}
+];
+
+/* index-aligned to YEAR_CATS (k = category label, area = short subject word) */
+const YEAR_CATS_EN = [
+  {k: 'Love', area: 'bonds'},
+  {k: 'Wealth', area: 'wealth'},
+  {k: 'Work · Career', area: 'work'},
+  {k: 'Health', area: 'health'}
+];
+
+/* same 3/2/1 keys and 3-length arrays as YEAR_TIP */
+const YEAR_TIP_EN = {
+  3: ['The more actively you move, the bigger the result', 'Whoever reaches out first wins', "When a chance comes, don't hesitate"],
+  2: ["As long as you don't overreach, it flows smoothly", 'Start small and watch how it goes', 'Mind direction over speed'],
+  1: ['Better to hold than to expand', 'Put off hasty decisions', 'Tend to your body and mind first']
+};
+
+/* same 3/2/1 keys and 3-length arrays as PAST_TIP */
+const PAST_TIP_EN = {
+  3: ['It was likely a year you expanded big and reaped much', 'If you seized the chance, the results were large', 'A stretch when the current pushed you hard'],
+  2: ['A year that flowed by without big ups or downs', 'A stretch you passed through, firming up slowly', 'A time when things quietly built up unseen'],
+  1: ['It was likely a year you endured and built strength', 'A stretch you spent holding rather than expanding', 'A time you put down roots while getting through the hump']
+};
+
+/* same 2/5/8/11 keys as YEOKMA_DIR; hanja compass mark kept */
+const YEOKMA_DIR_EN = {2: 'Northeast (艮)', 5: 'Southeast (巽)', 8: 'Southwest (坤)', 11: 'Northwest (乾)'};
+
 function renderLife(inp, saju, astro, num, age, curYear) {
   const dayStem = saju.day.stem;
   const mStem = saju.month.stem, mBranch = saju.month.branch;
@@ -5339,14 +5394,14 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     const x = xAt(i), y = yAt(d.avg);
     const isPeak = d.d === peakD.d && peakD.d !== valD.d, isNow = d.d === curDecade;
     ports += `<line x1="${x.toFixed(1)}" y1="${(y + 7).toFixed(1)}" x2="${x.toFixed(1)}" y2="${(fy1 - 20).toFixed(1)}" stroke="var(--hairline)" stroke-width="1" stroke-dasharray="1 4"/>`;
-    ports += `<text x="${x.toFixed(1)}" y="${(fy1 - 9).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--dim)">${d.d}대</text>`;
+    ports += `<text x="${x.toFixed(1)}" y="${(fy1 - 9).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--dim)">${L(`${d.d}대`, `${d.d}s`)}</text>`;
     if (isPeak) {
       ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="var(--accent)"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2 2"/>`;
       ports += isNow
-        ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12.5" fill="none" stroke="var(--nowgold)" stroke-width="1.4"/><text x="${x.toFixed(1)}" y="${(y - 18).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1" fill="var(--accent)">정점 · 지금 ${age}세</text>`
-        : `<text x="${x.toFixed(1)}" y="${(y - 15).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1" fill="var(--accent)">정점 섬</text>`;
+        ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12.5" fill="none" stroke="var(--nowgold)" stroke-width="1.4"/><text x="${x.toFixed(1)}" y="${(y - 18).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1" fill="var(--accent)">${L(`정점 · 지금 ${age}세`, `Peak · now, age ${age}`)}</text>`
+        : `<text x="${x.toFixed(1)}" y="${(y - 15).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1" fill="var(--accent)">${L('정점 섬', 'Peak Isle')}</text>`;
     } else if (isNow) {
-      ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="none" stroke="var(--nowgold)" stroke-width="1.2"/><rect x="${(x - 4.8).toFixed(1)}" y="${(y - 4.8).toFixed(1)}" width="9.6" height="9.6" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})" fill="var(--nowgold)"/><text x="${x.toFixed(1)}" y="${(y - 14).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1" fill="var(--nowgold)">지금 ${age}세</text>`;
+      ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="none" stroke="var(--nowgold)" stroke-width="1.2"/><rect x="${(x - 4.8).toFixed(1)}" y="${(y - 4.8).toFixed(1)}" width="9.6" height="9.6" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})" fill="var(--nowgold)"/><text x="${x.toFixed(1)}" y="${(y - 14).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1" fill="var(--nowgold)">${L(`지금 ${age}세`, `Now, age ${age}`)}</text>`;
     } else {
       ports += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>`;
     }
@@ -5354,12 +5409,12 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   /* 나침반 — 테두리 위 상단 여백 (항구와 충돌 방지) */
   const kx = fx1 - 12, ky = 17, kr = 9;
   const compass = `<g stroke="var(--dim)" stroke-width="1" fill="none"><line x1="${kx}" y1="${ky - kr}" x2="${kx}" y2="${ky + kr}"/><line x1="${kx - kr}" y1="${ky}" x2="${kx + kr}" y2="${ky}"/><path d="M${kx},${ky - kr} L${kx + 3},${ky} L${kx},${ky + kr} L${kx - 3},${ky} Z"/></g><text x="${(kx - kr - 4).toFixed(1)}" y="${(ky + 3).toFixed(1)}" text-anchor="end" font-size="8" fill="var(--dim)">N</text>`;
-  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="인생 항로 지도 — 10년마다의 운">`
+  const svg = `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${L('인생 항로 지도 — 10년마다의 운', 'Life-voyage map — fortune by decade')}">`
     + `<rect x="${fx0}" y="${fy0}" width="${fx1 - fx0}" height="${fy1 - fy0}" fill="none" stroke="var(--line)" stroke-width="1.2"/>`
     + `<rect x="${fx0 + 3}" y="${fy0 + 3}" width="${fx1 - fx0 - 6}" height="${fy1 - fy0 - 6}" fill="none" stroke="var(--hairline)" stroke-width="1"/>`
     + grid
-    + `<text x="${fx0 + 8}" y="${(fy0 + 13).toFixed(1)}" font-size="9" letter-spacing="1.5" fill="var(--dim)">순풍</text>`
-    + `<text x="${fx0 + 8}" y="${(fy1 - 6).toFixed(1)}" font-size="9" letter-spacing="1.5" fill="var(--dim)">역풍</text>`
+    + `<text x="${fx0 + 8}" y="${(fy0 + 13).toFixed(1)}" font-size="9" letter-spacing="1.5" fill="var(--dim)">${L('순풍', 'Fair wind')}</text>`
+    + `<text x="${fx0 + 8}" y="${(fy1 - 6).toFixed(1)}" font-size="9" letter-spacing="1.5" fill="var(--dim)">${L('역풍', 'Headwind')}</text>`
     + compass
     + `<path d="${route}" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="2 3" stroke-linejoin="round"/>`
     + ports + `</svg></div>`;
@@ -5376,31 +5431,41 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const nextSwitch = switchAges.find(a => a > age);
 
   const peakLine = peakD.d !== valD.d
-    ? `<div class="combo" style="margin-top:12px"><b>한눈에 — 인생 피크는 ${peakD.d}대</b><br>${peakD.d}세부터의 10년, ${peakDaeunTg}(${TG_NICK[peakDaeunTg]}) 대운이 미는 <b>${THEMES[TG_THEME[peakDaeunTg]].name}</b>의 기운이 절정에 이릅니다 — 인생에서 가장 크게 벌이고 거두기 좋은 때입니다. 반대로 <b>${valD.d}대</b>는 곡선이 가장 낮게 흐르는 구간 — 새로 벌이기보다 힘을 아끼고 뿌리를 내리며 다음 상승을 준비하는 때입니다.</div>`
-    : `<div class="combo" style="margin-top:12px"><b>한눈에 — 고르게 흐르는 인생</b><br>어느 10년이 유독 튀지 않고 전 생애가 비슷한 온도로 흐릅니다 — 큰 부침 없이 자기 페이스로 멀리 가는 유형입니다.</div>`;
+    ? L(`<div class="combo" style="margin-top:12px"><b>한눈에 — 인생 피크는 ${peakD.d}대</b><br>${peakD.d}세부터의 10년, ${peakDaeunTg}(${TG_NICK[peakDaeunTg]}) 대운이 미는 <b>${THEMES[TG_THEME[peakDaeunTg]].name}</b>의 기운이 절정에 이릅니다 — 인생에서 가장 크게 벌이고 거두기 좋은 때입니다. 반대로 <b>${valD.d}대</b>는 곡선이 가장 낮게 흐르는 구간 — 새로 벌이기보다 힘을 아끼고 뿌리를 내리며 다음 상승을 준비하는 때입니다.</div>`,
+        `<div class="combo" style="margin-top:12px"><b>At a glance — your life peaks in your ${peakD.d}s</b><br>The decade from age ${peakD.d}, pushed by the ${TENGOD_NAME_EN[peakDaeunTg]} (${TG_NICK_EN[peakDaeunTg]}) great-luck, brings the energy of <b>${THEMES_EN[TG_THEME[peakDaeunTg]].name}</b> to its peak — the best time in life to expand and reap big. Conversely, your <b>${valD.d}s</b> is the stretch where the curve runs lowest — a time to save your strength and put down roots for the next rise rather than start anew.</div>`)
+    : L(`<div class="combo" style="margin-top:12px"><b>한눈에 — 고르게 흐르는 인생</b><br>어느 10년이 유독 튀지 않고 전 생애가 비슷한 온도로 흐릅니다 — 큰 부침 없이 자기 페이스로 멀리 가는 유형입니다.</div>`,
+        `<div class="combo" style="margin-top:12px"><b>At a glance — a life that flows evenly</b><br>No single decade stands out; your whole life runs at a similar temperature — the type that goes far at your own pace, without big ups and downs.</div>`);
   const peakWhy = peakD.d !== valD.d
-    ? `<details style="margin-top:10px"><summary>왜 ${peakD.d}대가 정점인가 — 근거</summary><div style="margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.8">각 10년의 높이는 <b>그 시기 대운의 십성(×2) + 매년 세운의 십성</b> 등급을 더해 정합니다 (등급: 좋음 3 · 무난 2 · 주의 1). 대운의 등급이 두 배로 반영되기에, 등급이 가장 높은 대운의 10년이 곡선의 정점이 됩니다.<br>· <b>${peakD.d}대</b> — ${peakGz} 대운, 십성 <b>${peakDaeunTg}(${TG_NICK[peakDaeunTg]})</b> · 등급 <b>${RATE_WORD[peakRate]}(${peakRate})</b> → 가장 높음<br>· <b>${valD.d}대</b> — ${valGz} 대운, 십성 <b>${valTg}(${TG_NICK[valTg]})</b> · 등급 <b>${RATE_WORD[valRate]}(${valRate})</b> → 가장 낮음</div></details>`
+    ? L(`<details style="margin-top:10px"><summary>왜 ${peakD.d}대가 정점인가 — 근거</summary><div style="margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.8">각 10년의 높이는 <b>그 시기 대운의 십성(×2) + 매년 세운의 십성</b> 등급을 더해 정합니다 (등급: 좋음 3 · 무난 2 · 주의 1). 대운의 등급이 두 배로 반영되기에, 등급이 가장 높은 대운의 10년이 곡선의 정점이 됩니다.<br>· <b>${peakD.d}대</b> — ${peakGz} 대운, 십성 <b>${peakDaeunTg}(${TG_NICK[peakDaeunTg]})</b> · 등급 <b>${RATE_WORD[peakRate]}(${peakRate})</b> → 가장 높음<br>· <b>${valD.d}대</b> — ${valGz} 대운, 십성 <b>${valTg}(${TG_NICK[valTg]})</b> · 등급 <b>${RATE_WORD[valRate]}(${valRate})</b> → 가장 낮음</div></details>`,
+        `<details style="margin-top:10px"><summary>Why your ${peakD.d}s is the peak — the basis</summary><div style="margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.8">Each decade's height is set by adding <b>that period's great-luck Ten God (×2) + each year's year-pillar Ten God</b> tier (tiers: Good 3 · Fair 2 · Caution 1). Because the great-luck tier counts double, the decade of the highest-tier great-luck becomes the curve's peak.<br>· <b>${peakD.d}s</b> — ${gzEN(peakGz)} great-luck, Ten God <b>${TENGOD_NAME_EN[peakDaeunTg]} (${TG_NICK_EN[peakDaeunTg]})</b> · tier <b>${RATE_WORD_EN[peakRate]} (${peakRate})</b> → highest<br>· <b>${valD.d}s</b> — ${gzEN(valGz)} great-luck, Ten God <b>${TENGOD_NAME_EN[valTg]} (${TG_NICK_EN[valTg]})</b> · tier <b>${RATE_WORD_EN[valRate]} (${valRate})</b> → lowest</div></details>`)
     : '';
-  $('#lifeGraph').innerHTML = `<h3>인생 항로 — 지나온 길과 올 길</h3>`
-    + `<p class="small">당신의 인생을 하나의 항로로 그렸습니다. 가로는 시간(10~80대), 세로 위도는 그 10년의 운 — <b>위</b>로 오를수록 순풍, <b>아래</b>일수록 버티는 때입니다. 점선이 당신이 지나갈 항로, 매듭이 각 10년의 항구예요. <b style="color:var(--accent)">붉은 정점 섬</b>이 인생의 절정, <b style="color:var(--nowgold)">금색 지금 위치</b>가 현재입니다.</p>`
+  const lgStat = L(`<div class="lgstat"><span class="lgn">${startAge}</span><span class="lgt"><b>대운수 ${startAge} — 인생의 전환 나이</b>입니다. 태어난 날부터 가장 가까운 절기(節)까지 약 <b>${Math.round(days)}일</b>, 이를 3으로 나눠 나온 수 — 사주에서 당신의 큰 흐름(대운)이 처음 움직이기 시작하는 나이입니다. (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준)</span></div>`,
+    `<div class="lgstat"><span class="lgn">${startAge}</span><span class="lgt"><b>Luck-start ${startAge} — your life's turning age</b>. About <b>${Math.round(days)} days</b> from your birth to the nearest solar term (節), divided by 3 — the age at which your chart's great current (great-luck) first begins to move. (${forward ? 'forward' : 'reverse'} · ${male ? 'male chart' : 'female chart'})</span></div>`);
+  const lgSwitch = L(`<div class="combo"><b>대운이 바뀌는 해 — 인생 국면이 열리는 전환점</b><br>당신의 대운은 <b>${switchAges.join(' · ')}세</b>에 한 번씩 바뀝니다${nextSwitch ? ` — 가까이는 <b>${nextSwitch}세(${birthY + nextSwitch}년)</b>가 다음 국면이 열리는 해입니다` : ' — 이후로는 지금 국면이 인생 후반을 감쌉니다'}. 이 전환의 해마다 삶의 무대가 한 번씩 바뀌니, 이직 · 이사 · 결혼 같은 큰 방향 전환을 이때에 맞추면 흐름과 함께 갑니다.</div>`,
+    `<div class="combo"><b>The years your great-luck turns — the pivots where a new life-phase opens</b><br>Your great-luck turns once at <b>ages ${switchAges.join(' · ')}</b>${nextSwitch ? ` — soonest, <b>age ${nextSwitch} (${birthY + nextSwitch})</b> is the year the next phase opens` : ' — from here on, the current phase wraps the latter half of your life'}. Each turning year the stage of your life shifts once, so time big changes of direction — a job change, a move, marriage — to these and you go with the current.</div>`);
+  $('#lifeGraph').innerHTML = L(`<h3>인생 항로 — 지나온 길과 올 길</h3>`, `<h3>Life Voyage — the path behind and the path ahead</h3>`)
+    + L(`<p class="small">당신의 인생을 하나의 항로로 그렸습니다. 가로는 시간(10~80대), 세로 위도는 그 10년의 운 — <b>위</b>로 오를수록 순풍, <b>아래</b>일수록 버티는 때입니다. 점선이 당신이 지나갈 항로, 매듭이 각 10년의 항구예요. <b style="color:var(--accent)">붉은 정점 섬</b>이 인생의 절정, <b style="color:var(--nowgold)">금색 지금 위치</b>가 현재입니다.</p>`,
+        `<p class="small">Your life drawn as a single voyage. The horizontal is time (10s–80s), the vertical latitude is that decade's fortune — the <b>higher</b> you rise the fairer the wind, the <b>lower</b> the more you endure. The dashed line is the route you'll sail, each knot a decade's port. The <b style="color:var(--accent)">red Peak Isle</b> is life's height, the <b style="color:var(--nowgold)">gold present marker</b> is now.</p>`)
     + peakLine
     + peakWhy
     + svg
-    + `<div class="lgstat"><span class="lgn">${startAge}</span><span class="lgt"><b>대운수 ${startAge} — 인생의 전환 나이</b>입니다. 태어난 날부터 가장 가까운 절기(節)까지 약 <b>${Math.round(days)}일</b>, 이를 3으로 나눠 나온 수 — 사주에서 당신의 큰 흐름(대운)이 처음 움직이기 시작하는 나이입니다. (${forward ? '순행' : '역행'} · ${male ? '남명' : '여명'} 기준)</span></div>`
-    + `<div class="combo"><b>대운이 바뀌는 해 — 인생 국면이 열리는 전환점</b><br>당신의 대운은 <b>${switchAges.join(' · ')}세</b>에 한 번씩 바뀝니다${nextSwitch ? ` — 가까이는 <b>${nextSwitch}세(${birthY + nextSwitch}년)</b>가 다음 국면이 열리는 해입니다` : ' — 이후로는 지금 국면이 인생 후반을 감쌉니다'}. 이 전환의 해마다 삶의 무대가 한 번씩 바뀌니, 이직 · 이사 · 결혼 같은 큰 방향 전환을 이때에 맞추면 흐름과 함께 갑니다.</div>`;
+    + lgStat
+    + lgSwitch;
 
   /* 대운 국면 해설 */
   const nowIdx = phases.findIndex(p => age >= p.from && age <= p.to);
   const rows = phases.filter(p => p.from <= AGE_MAX).map((p, i) => `<div class="daeun-row${i === nowIdx ? ' on' : ''}">`
-    + `<span class="dage">${p.from}~${p.to}세</span>`
-    + `<span class="dgz">${STEMS[p.st].k}${BRANCHES[p.br].k}</span>`
-    + `<span class="dtg">${p.tg}(${TG_NICK[p.tg]})</span>`
-    + `<span class="dth">${THEMES[p.theme].name} · ${RATE_WORD[p.rate]}</span>`
-    + `${i === nowIdx ? '<span class="dnow">지금</span>' : ''}</div>`).join('');
-  $('#lifePhases').innerHTML = `<h3>10년마다 바뀌는 큰 흐름 — 대운</h3>`
-    + `<p class="small">0~${startAge}세는 태어난 달의 기운(월주 ${STEMS[mStem].k}${BRANCHES[mBranch].k})이 감쌉니다. 이후 ${forward ? '순행' : '역행'}으로 10년씩 국면이 바뀝니다.</p>`
+    + `<span class="dage">${L(`${p.from}~${p.to}세`, `ages ${p.from}–${p.to}`)}</span>`
+    + `<span class="dgz">${L(`${STEMS[p.st].k}${BRANCHES[p.br].k}`, `${STEMS[p.st].h}${BRANCHES[p.br].h}`)}</span>`
+    + `<span class="dtg">${L(`${p.tg}(${TG_NICK[p.tg]})`, `${TENGOD_NAME_EN[p.tg]} (${TG_NICK_EN[p.tg]})`)}</span>`
+    + `<span class="dth">${L(`${THEMES[p.theme].name} · ${RATE_WORD[p.rate]}`, `${THEMES_EN[p.theme].name} · ${RATE_WORD_EN[p.rate]}`)}</span>`
+    + `${i === nowIdx ? `<span class="dnow">${L('지금', 'now')}</span>` : ''}</div>`).join('');
+  $('#lifePhases').innerHTML = L(`<h3>10년마다 바뀌는 큰 흐름 — 대운</h3>`, `<h3>The great current that shifts every decade — Great-Luck</h3>`)
+    + L(`<p class="small">0~${startAge}세는 태어난 달의 기운(월주 ${STEMS[mStem].k}${BRANCHES[mBranch].k})이 감쌉니다. 이후 ${forward ? '순행' : '역행'}으로 10년씩 국면이 바뀝니다.</p>`,
+        `<p class="small">Ages 0–${startAge} are wrapped by your birth month's energy (month pillar ${STEMS[mStem].h}${BRANCHES[mBranch].h}). After that the phase shifts every 10 years, ${forward ? 'forward' : 'in reverse'}.</p>`)
     + `<div class="daeun-list">${rows}</div>`
-    + (nowIdx >= 0 ? `<div class="combo"><b>지금 이 국면 (${phases[nowIdx].from}~${phases[nowIdx].to}세)</b><br>대운의 십성은 ${phases[nowIdx].tg}(${TG_NICK[phases[nowIdx].tg]}) — ${TENGOD_DESC[phases[nowIdx].tg]}. ${THEMES[phases[nowIdx].theme].adv}</div>` : '');
+    + (nowIdx >= 0 ? L(`<div class="combo"><b>지금 이 국면 (${phases[nowIdx].from}~${phases[nowIdx].to}세)</b><br>대운의 십성은 ${phases[nowIdx].tg}(${TG_NICK[phases[nowIdx].tg]}) — ${TENGOD_DESC[phases[nowIdx].tg]}. ${THEMES[phases[nowIdx].theme].adv}</div>`,
+        `<div class="combo"><b>Your current phase (ages ${phases[nowIdx].from}–${phases[nowIdx].to})</b><br>The great-luck's Ten God is ${TENGOD_NAME_EN[phases[nowIdx].tg]} (${TG_NICK_EN[phases[nowIdx].tg]}) — ${TENGOD_DESC_EN[phases[nowIdx].tg]}. ${THEMES_EN[phases[nowIdx].theme].adv}</div>`) : '');
 
   /* ===== 다가오는 3년 운세 — 사주 세운 + 수비학 개인연도 + 이름·부모 시드로 유저마다 다르게 ===== */
   const cc = s => [...(s || '')].reduce((a, ch) => a + ch.charCodeAt(0), 0);
@@ -5417,10 +5482,12 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       const base = Math.max(TG_RATE[yTg], TG_RATE[bTg]);
       let rating = inSet ? Math.min(3, base + 1) : base;
       if (rating === 2 && (pSeed + Y + ci) % 4 === 0) rating = 3;
-      const star = inSet ? `${yTg}(${TG_NICK[yTg]}) 세운이 ${c.area}의 자리를 밝힙니다` : `${c.area}의 별은 조용하고, 흐름은 ${NUM_CYCLE[py].split(' — ')[0]}에 가깝습니다`;
-      return {k: c.k, rating, line: `${star} — ${YEAR_TIP[rating][(pSeed + Y * 7 + ci) % 3]}`};
+      const star = inSet
+        ? L(`${yTg}(${TG_NICK[yTg]}) 세운이 ${c.area}의 자리를 밝힙니다`, `The ${TENGOD_NAME_EN[yTg]} (${TG_NICK_EN[yTg]}) year-pillar lights the seat of ${YEAR_CATS_EN[ci].area}`)
+        : L(`${c.area}의 별은 조용하고, 흐름은 ${NUM_CYCLE[py].split(' — ')[0]}에 가깝습니다`, `The star of ${YEAR_CATS_EN[ci].area} is quiet, and the flow runs close to ${NUM_CYCLE_EN[py].split(' — ')[0]}`);
+      return {k: L(c.k, YEAR_CATS_EN[ci].k), rating, line: `${star} — ${L(YEAR_TIP[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3])}`};
     });
-    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, py, cats};
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], py, cats};
   };
   /* 지난 3년 회고 — 세운 + 개인연도수 + 실제 분기별 월운 */
   const yearReadingPast = Y => {
@@ -5432,8 +5499,10 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       const base = Math.max(TG_RATE[yTg], TG_RATE[bTg]);
       let rating = inSet ? Math.min(3, base + 1) : base;
       if (rating === 2 && (pSeed + Y + ci) % 4 === 0) rating = 3;
-      const star = inSet ? `${yTg}(${TG_NICK[yTg]}) 세운이 ${c.area}의 자리를 밝혔습니다` : `${c.area}의 별은 조용했고, 흐름은 ${NUM_CYCLE[py].split(' — ')[0]}에 가까웠습니다`;
-      return {k: c.k, rating, line: `${star} — ${PAST_TIP[rating][(pSeed + Y * 7 + ci) % 3]}`};
+      const star = inSet
+        ? L(`${yTg}(${TG_NICK[yTg]}) 세운이 ${c.area}의 자리를 밝혔습니다`, `The ${TENGOD_NAME_EN[yTg]} (${TG_NICK_EN[yTg]}) year-pillar lit the seat of ${YEAR_CATS_EN[ci].area}`)
+        : L(`${c.area}의 별은 조용했고, 흐름은 ${NUM_CYCLE[py].split(' — ')[0]}에 가까웠습니다`, `The star of ${YEAR_CATS_EN[ci].area} was quiet, and the flow ran close to ${NUM_CYCLE_EN[py].split(' — ')[0]}`);
+      return {k: L(c.k, YEAR_CATS_EN[ci].k), rating, line: `${star} — ${L(PAST_TIP[rating][(pSeed + Y * 7 + ci) % 3], PAST_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3])}`};
     });
     const qr = [2, 5, 8, 11].map((mm, qi) => {
       const s = computeSaju(Y, mm, 15, null);
@@ -5441,24 +5510,27 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       return {q: qi + 1, rate: TG_RATE[tg]};
     });
     const strongQ = qr.reduce((a, b) => b.rate > a.rate ? b : a);
-    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, py, cats, qr, strongQ, yTheme: TG_THEME[yTg]};
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], py, cats, qr, strongQ, yTheme: TG_THEME[yTg]};
   };
   const past = [curYear - 3, curYear - 2, curYear - 1].map(yearReadingPast);
-  $('#lifePast').innerHTML = `<h3>지난 3년 회고 — ${curYear - 3} · ${curYear - 2} · ${curYear - 1}</h3>`
-    + `<p class="small">다가올 3년과 견주어 보시라고, 지난 3년도 똑같은 방식(사주 세운 · 개인 연도수 · 분기별 월운)으로 되짚었습니다. 실제 그때가 어땠는지 맞춰 보면, 앞으로 3년의 신뢰도도 가늠할 수 있어요.</p>`
+  $('#lifePast').innerHTML = L(`<h3>지난 3년 회고 — ${curYear - 3} · ${curYear - 2} · ${curYear - 1}</h3>`, `<h3>The past three years in review — ${curYear - 3} · ${curYear - 2} · ${curYear - 1}</h3>`)
+    + L(`<p class="small">다가올 3년과 견주어 보시라고, 지난 3년도 똑같은 방식(사주 세운 · 개인 연도수 · 분기별 월운)으로 되짚었습니다. 실제 그때가 어땠는지 맞춰 보면, 앞으로 3년의 신뢰도도 가늠할 수 있어요.</p>`,
+        `<p class="small">So you can compare them with the three years ahead, the past three are traced the same way (year-pillar · personal year number · quarterly month-luck). Checking how those actually went lets you gauge how far to trust the next three.</p>`)
     + past.map(y => `<div class="yrblock">`
-      + `<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}해) · 개인 연도수 ${y.py}</p>`
-      + `<p class="yrflow">${NUM_CYCLE[y.py]} — 그 해 큰 결은 <b>${THEMES[y.yTheme].name}</b>, 특히 <b>${y.strongQ.q}분기</b>에 기운이 가장 셌습니다.</p>`
-      + `<div class="qstrip">${y.qr.map(q => `<span class="qseg"><b>${q.q}분기</b> <span class="hr${q.rate}">${RATE_ICON[q.rate]} ${RATE_WORD[q.rate]}</span></span>`).join('')}</div>`
-      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${RATE_WORD[c.rating]}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
+      + L(`<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}해) · 개인 연도수 ${y.py}</p>`, `<p class="yrhead">${y.Y} · ${gzEN(y.gz)} (Year of the ${y.animalEN}) · Personal Year ${y.py}</p>`)
+      + L(`<p class="yrflow">${NUM_CYCLE[y.py]} — 그 해 큰 결은 <b>${THEMES[y.yTheme].name}</b>, 특히 <b>${y.strongQ.q}분기</b>에 기운이 가장 셌습니다.</p>`,
+          `<p class="yrflow">${NUM_CYCLE_EN[y.py]} — the year's larger grain was <b>${THEMES_EN[y.yTheme].name}</b>, with energy strongest in <b>Q${y.strongQ.q}</b>.</p>`)
+      + `<div class="qstrip">${y.qr.map(q => `<span class="qseg"><b>${L(`${q.q}분기`, `Q${q.q}`)}</b> <span class="hr${q.rate}">${RATE_ICON[q.rate]} ${L(RATE_WORD[q.rate], RATE_WORD_EN[q.rate])}</span></span>`).join('')}</div>`
+      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
 
   const yrs = [curYear, curYear + 1, curYear + 2].map(yearReading);
-  $('#lifeYears').innerHTML = `<h3>다가오는 3년 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`
-    + `<p class="small">그 해의 사주 세운과 당신의 수비학 개인 연도수를 겹쳐, 네 갈래로 나눠 읽습니다. 이름과 생년월일, 부모님 정보까지 반영해 당신만의 결로 뽑았습니다.</p>`
+  $('#lifeYears').innerHTML = L(`<h3>다가오는 3년 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`, `<h3>The three years ahead — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`)
+    + L(`<p class="small">그 해의 사주 세운과 당신의 수비학 개인 연도수를 겹쳐, 네 갈래로 나눠 읽습니다. 이름과 생년월일, 부모님 정보까지 반영해 당신만의 결로 뽑았습니다.</p>`,
+        `<p class="small">Overlapping each year's year-pillar with your numerology personal year number, read across four strands. Your name, birth date, and even your parents' details are reflected, drawn to your own grain.</p>`)
     + yrs.map(y => `<div class="yrblock">`
-      + `<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}해) · 개인 연도수 ${y.py}</p>`
-      + `<p class="yrflow">${NUM_CYCLE[y.py]}</p>`
-      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${RATE_WORD[c.rating]}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
+      + L(`<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}해) · 개인 연도수 ${y.py}</p>`, `<p class="yrhead">${y.Y} · ${gzEN(y.gz)} (Year of the ${y.animalEN}) · Personal Year ${y.py}</p>`)
+      + L(`<p class="yrflow">${NUM_CYCLE[y.py]}</p>`, `<p class="yrflow">${NUM_CYCLE_EN[y.py]}</p>`)
+      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
 
   /* ===== 밀어도 좋은 3년 vs 삼재 3년 — 사주 삼합/삼재 + 세운 + 개인연도 ===== */
   const grp = groupOf12(saju.year.branch);
@@ -5479,13 +5551,20 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const sam = scan.filter(x => x.sam);
   const allyNames = [...allySet].map(b => BRANCHES[b].animal).join(' · ');
   const samNames = [...samSet].map(b => BRANCHES[b].animal).join(' · ');
-  $('#lifePush').innerHTML = `<h3>인생의 3년 — 밀어도 좋은 때, 사릴 때</h3>`
-    + `<p class="small">사주 삼합(내 편의 해: ${allyNames}띠 해)과 삼재(${samNames}띠 해), 그 해 세운, 수비학 개인 연도수를 겹쳐 저빈도 핵심 3년을 골랐습니다.</p>`
-    + `<div class="combo"><b>▲ 밀어도 좋은 3년 — ${gw[0].Y}~${gw[2].Y}년 (${gw[0].age}~${gw[2].age}세)</b><br>`
-    + `세운·삼합·개인 연도수가 함께 밀어주는 창입니다. 새 시작 · 큰 결정 · 도전 · 이직 · 결혼 같은 인생의 승부수를 이 3년에 맞추면 힘이 실립니다.${gw.some(x => x.ally) ? ` 특히 ${gw.filter(x => x.ally).map(x => x.Y + '년').join(' · ')}은 당신 띠의 삼합이 드는 우군의 해입니다.` : ''}</div>`
+  const allyNamesEN = [...allySet].map(b => ANIMALS_EN[b]).join(' · ');
+  const samNamesEN = [...samSet].map(b => ANIMALS_EN[b]).join(' · ');
+  $('#lifePush').innerHTML = L(`<h3>인생의 3년 — 밀어도 좋은 때, 사릴 때</h3>`, `<h3>Your three years — when to push, when to lie low</h3>`)
+    + L(`<p class="small">사주 삼합(내 편의 해: ${allyNames}띠 해)과 삼재(${samNames}띠 해), 그 해 세운, 수비학 개인 연도수를 겹쳐 저빈도 핵심 3년을 골랐습니다.</p>`,
+        `<p class="small">Overlapping the Four Pillars triad (your ally years: years of the ${allyNamesEN} zodiac) and the samjae misfortune years (years of the ${samNamesEN} zodiac), that year's year-pillar, and your numerology personal year number, I picked the rare, pivotal three years.</p>`)
+    + L(`<div class="combo"><b>▲ 밀어도 좋은 3년 — ${gw[0].Y}~${gw[2].Y}년 (${gw[0].age}~${gw[2].age}세)</b><br>`
+        + `세운·삼합·개인 연도수가 함께 밀어주는 창입니다. 새 시작 · 큰 결정 · 도전 · 이직 · 결혼 같은 인생의 승부수를 이 3년에 맞추면 힘이 실립니다.${gw.some(x => x.ally) ? ` 특히 ${gw.filter(x => x.ally).map(x => x.Y + '년').join(' · ')}은 당신 띠의 삼합이 드는 우군의 해입니다.` : ''}</div>`,
+        `<div class="combo"><b>▲ Three years worth pushing — ${gw[0].Y}–${gw[2].Y} (ages ${gw[0].age}–${gw[2].age})</b><br>`
+        + `A window where the year-pillar, the triad, and your personal year all push together. Time your life's big bets — a fresh start, a major decision, a challenge, a job change, marriage — to these three years and they carry weight.${gw.some(x => x.ally) ? ` In particular, ${gw.filter(x => x.ally).map(x => x.Y).join(' · ')} are ally years when your zodiac's triad comes in.` : ''}</div>`)
     + (sam.length
-      ? `<div class="combo"><b>▽ 삼재 — 몸을 사릴 ${sam.length}해</b><br>${sam.map(x => `${x.Y}년(${x.age}세)`).join(' · ')} — 큰 계약 · 이사 · 새 사업 · 무리한 확장은 미루고, 하던 것을 지키며 넘기세요. 삼재는 벌이면 탈나고, 지키면 지나갑니다.</div>`
-      : `<div class="combo"><b>삼재</b><br>앞으로 15년 안에는 삼재가 들지 않습니다 — 흐름을 타기 좋은 구간입니다.</div>`);
+      ? L(`<div class="combo"><b>▽ 삼재 — 몸을 사릴 ${sam.length}해</b><br>${sam.map(x => `${x.Y}년(${x.age}세)`).join(' · ')} — 큰 계약 · 이사 · 새 사업 · 무리한 확장은 미루고, 하던 것을 지키며 넘기세요. 삼재는 벌이면 탈나고, 지키면 지나갑니다.</div>`,
+          `<div class="combo"><b>▽ Samjae — ${sam.length} year${sam.length > 1 ? 's' : ''} to lie low</b><br>${sam.map(x => `${x.Y} (age ${x.age})`).join(' · ')} — put off big contracts, moves, new ventures, and overreaching expansion; get through by holding what you already have. Samjae harms if you push, and passes if you hold.</div>`)
+      : L(`<div class="combo"><b>삼재</b><br>앞으로 15년 안에는 삼재가 들지 않습니다 — 흐름을 타기 좋은 구간입니다.</div>`,
+          `<div class="combo"><b>Samjae</b><br>No samjae falls within the next 15 years — a good stretch to ride the current.</div>`));
 
   /* 역마 나라 — 역마살 있을 때만 */
   const cCard = $('#lifeCountry');
@@ -5493,17 +5572,19 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   if (!sinsal.some(x => x.key === 'yeokma')) { cCard.style.display = 'none'; cCard.innerHTML = ''; return; }
   cCard.style.display = '';
   const weak = saju.counts.indexOf(Math.min(...saju.counts));
-  const ec = EL_COUNTRY[weak];
+  const ec = EL_COUNTRY[weak], ecEN = EL_COUNTRY_EN[weak];
   const groupOf = b => [8, 0, 4].includes(b) ? 0 : [2, 6, 10].includes(b) ? 1 : [5, 9, 1].includes(b) ? 2 : 3;
   const yTbl = [2, 8, 11, 5];
   const targ = new Set([saju.year.branch, saju.day.branch].map(b => yTbl[groupOf(b)]));
   const dirs = [...new Set([saju.year, saju.month, saju.day, saju.hour].filter(Boolean)
-    .map(p => p.branch).filter(b => targ.has(b)).map(b => YEOKMA_DIR[b]).filter(Boolean))];
-  const cList = ec.list.map(([c, why]) => `<div class="country"><span class="cflag">${c}</span><span class="cwhy">${why}</span></div>`).join('');
-  cCard.innerHTML = `<h3>당신과 맞는 나라 — 역마의 지도</h3>`
-    + `<p class="small">당신의 명식에는 <b>역마살(驛馬)</b>이 있습니다 — 한자리에 머물기보다 움직일 때 운이 열리는 사주입니다. ${dirs.length ? `특히 <b>${dirs.join(' · ')}</b> 방향의 이동이 당신의 역마를 살립니다.` : ''} 아래는 명식에 가장 옅은 <b>${ELEMENTS[weak].k}(${ELEMENTS[weak].h})</b> 기운 — ${ec.kw} — 을 채워주는 곳들입니다.</p>`
+    .map(p => p.branch).filter(b => targ.has(b)).map(b => LANG === 'en' ? YEOKMA_DIR_EN[b] : YEOKMA_DIR[b]).filter(Boolean))];
+  const cList = (LANG === 'en' ? ecEN.list : ec.list).map(([c, why]) => `<div class="country"><span class="cflag">${c}</span><span class="cwhy">${why}</span></div>`).join('');
+  cCard.innerHTML = L(`<h3>당신과 맞는 나라 — 역마의 지도</h3>`, `<h3>Countries that suit you — the map of the wanderer's star</h3>`)
+    + L(`<p class="small">당신의 명식에는 <b>역마살(驛馬)</b>이 있습니다 — 한자리에 머물기보다 움직일 때 운이 열리는 사주입니다. ${dirs.length ? `특히 <b>${dirs.join(' · ')}</b> 방향의 이동이 당신의 역마를 살립니다.` : ''} 아래는 명식에 가장 옅은 <b>${ELEMENTS[weak].k}(${ELEMENTS[weak].h})</b> 기운 — ${ec.kw} — 을 채워주는 곳들입니다.</p>`,
+        `<p class="small">Your chart carries the <b>Yeokma (驛馬), the wanderer's star</b> — a chart whose luck opens through movement rather than staying in one place. ${dirs.length ? `In particular, moving toward the <b>${dirs.join(' · ')}</b> brings your Yeokma to life.` : ''} Below are places that fill the <b>${ELEMENTS_EN[weak].k}(${ELEMENTS[weak].h})</b> energy faintest in your chart — ${ecEN.kw}.</p>`)
     + `<div class="country-list">${cList}</div>`
-    + `<p class="small" style="margin-top:12px">여행이든 이주든 이 방향과 기운에 몸을 두면 막혔던 흐름이 트입니다. 반대로 억지로 한곳에 붙들리면 답답함이 병이 되는 사주이니, 움직임을 삶의 리듬으로 설계하세요.</p>`;
+    + L(`<p class="small" style="margin-top:12px">여행이든 이주든 이 방향과 기운에 몸을 두면 막혔던 흐름이 트입니다. 반대로 억지로 한곳에 붙들리면 답답함이 병이 되는 사주이니, 움직임을 삶의 리듬으로 설계하세요.</p>`,
+        `<p class="small" style="margin-top:12px">Travel or relocation — place yourself in this direction and energy, and a blocked current opens. Conversely, force yourself to stay fixed in one spot and the stifling turns into an ailment for this chart, so design movement into the rhythm of your life.</p>`);
 }
 
 const tabLinks = document.querySelectorAll('.tabs a');
