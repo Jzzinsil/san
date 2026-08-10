@@ -617,8 +617,8 @@ gtag('config', 'G-L7QPQ5GGL7');
       <div class="field">
         <label for="dateNum" data-en="Date of birth — 8 digits">생년월일 — 숫자 8자리</label>
         <div class="dselrow2">
-          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19980801" data-en-ph="e.g. 19980801" maxlength="10" aria-describedby="err" aria-label="생년월일 숫자 8자리">
-          <select id="cal" aria-label="양력·음력 선택">
+          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19980801" data-en-ph="e.g. 19980801" maxlength="10" aria-describedby="err" aria-label="생년월일 숫자 8자리" data-en-aria="Birth date, 8 digits">
+          <select id="cal" aria-label="양력·음력 선택" data-en-aria="Solar / lunar calendar">
             <option value="solar" data-en="Solar">양력</option>
             <option value="lunar" data-en="Lunar">음력 (평달)</option>
             <option value="lunarLeap" data-en="Lunar (leap)">음력 (윤달)</option>
@@ -659,7 +659,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         </div>
         <div class="field">
           <label for="fatherNum" data-en="Father's date of birth">아버지 생년월일</label>
-          <input type="text" id="fatherNum" inputmode="numeric" placeholder="예: 19680312" data-en-ph="e.g. 19680312" maxlength="10" aria-label="아버지 생년월일 숫자 8자리">
+          <input type="text" id="fatherNum" inputmode="numeric" placeholder="예: 19680312" data-en-ph="e.g. 19680312" maxlength="10" aria-label="아버지 생년월일 숫자 8자리" data-en-aria="Father's birth date, 8 digits">
         </div>
         <div class="field">
           <label for="fatherCal" data-en="Calendar">달력</label>
@@ -673,7 +673,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         </div>
         <div class="field">
           <label for="motherNum" data-en="Mother's date of birth">어머니 생년월일</label>
-          <input type="text" id="motherNum" inputmode="numeric" placeholder="예: 19710624" data-en-ph="e.g. 19710624" maxlength="10" aria-label="어머니 생년월일 숫자 8자리">
+          <input type="text" id="motherNum" inputmode="numeric" placeholder="예: 19710624" data-en-ph="e.g. 19710624" maxlength="10" aria-label="어머니 생년월일 숫자 8자리" data-en-aria="Mother's birth date, 8 digits">
         </div>
         <div class="field">
           <label for="motherCal" data-en="Calendar">달력</label>
@@ -712,7 +712,7 @@ gtag('config', 'G-L7QPQ5GGL7');
       <div class="chips" id="sumChips"></div>
     </div>
 
-    <nav class="tabs" aria-label="리딩 섹션">
+    <nav class="tabs" aria-label="리딩 섹션" data-en-aria="Reading section">
       <a href="#synth" data-t="synth" data-en="Reading">통합 리딩</a>
       <a href="#fortune" data-t="fortune" data-en="Fortune">운세</a>
       <a href="#ask" data-t="ask" data-en="Ask">질문</a>
@@ -884,8 +884,8 @@ gtag('config', 'G-L7QPQ5GGL7');
           <div class="field">
             <label for="gNum">상대 생년월일 — 연도만 알면 4자리, 다 알면 8자리</label>
             <div class="dselrow2">
-              <input type="text" id="gNum" inputmode="numeric" placeholder="예: 19950316 · 연도만 1995" maxlength="10" aria-label="상대 생년월일 — 연도만 알면 4자리, 다 알면 8자리">
-              <select id="gCal" aria-label="양력·음력"><option value="solar">양력</option><option value="lunar">음력 (평달)</option><option value="lunarLeap">음력 (윤달)</option></select>
+              <input type="text" id="gNum" inputmode="numeric" placeholder="예: 19950316 · 연도만 1995" maxlength="10" aria-label="상대 생년월일 — 연도만 알면 4자리, 다 알면 8자리" data-en-aria="Partner's birth date — 4 digits if only the year, 8 if you know it all">
+              <select id="gCal" aria-label="양력·음력" data-en-aria="Solar / lunar calendar"><option value="solar">양력</option><option value="lunar">음력 (평달)</option><option value="lunarLeap">음력 (윤달)</option></select>
             </div>
           </div>
           <div class="frow">
@@ -897,8 +897,8 @@ gtag('config', 'G-L7QPQ5GGL7');
             <div class="field">
               <label for="gCountry">태어난 곳</label>
               <div class="frow" style="gap:6px">
-                <select id="gCountry" aria-label="상대 나라"></select>
-                <select id="gCity" aria-label="상대 도시"></select>
+                <select id="gCountry" aria-label="상대 나라" data-en-aria="Partner's country"></select>
+                <select id="gCity" aria-label="상대 도시" data-en-aria="Partner's city"></select>
               </div>
             </div>
           </div>
@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.19.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.19.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -1750,7 +1750,7 @@ function worldMapSVG(hi) {
   /* 라벨 — 종류별 위치 분리 */
   const conLabel = `<text x="${hi.conPos[0]}" y="${hi.conPos[1]}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--earth)">${hi.conLabel}</text>`;
   const ctryLabels = hi.countries.map(ko => MAP_SHAPES.countries[ko] ? `<text x="${MAP_SHAPES.countries[ko].c[0]}" y="${MAP_SHAPES.countries[ko].c[1] + 1}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--accent)">${LANG === 'en' ? (COUNTRY_EN[ko] || ko) : ko}</text>` : '').join('');
-  return `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="어울리는 곳 세계지도">`
+  return `<div class="lg-wrap"><svg class="lg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${L('어울리는 곳 세계지도', 'World map of places that suit you')}">`
     + `<defs><filter id="mapsh" x="-4%" y="-4%" width="108%" height="118%"><feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="#4a4133" flood-opacity="0.22"/></filter></defs>`
     + `<path d="${WORLD_PATH}" fill="var(--paper-deep)" stroke="rgba(74,65,51,0.5)" stroke-width="0.3" stroke-linejoin="round" filter="url(#mapsh)"/>`
     + contFill + ctryFill + cityDots + conLabel + ctryLabels + `</svg></div>`;
@@ -5618,6 +5618,10 @@ function applyLang() {
   document.querySelectorAll('[data-en-ph]').forEach(el => {
     if (el.dataset.koPh === undefined) el.dataset.koPh = el.getAttribute('placeholder') || '';
     el.setAttribute('placeholder', LANG === 'en' ? el.dataset.enPh : el.dataset.koPh);
+  });
+  document.querySelectorAll('[data-en-aria]').forEach(el => {
+    if (el.dataset.koAria === undefined) el.dataset.koAria = el.getAttribute('aria-label') || '';
+    el.setAttribute('aria-label', LANG === 'en' ? el.dataset.enAria : el.dataset.koAria);
   });
   const lb = document.getElementById('langBtn');
   if (lb) lb.textContent = LANG === 'en' ? '한국어' : 'EN';
