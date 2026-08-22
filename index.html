@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.21.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.22.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -1899,8 +1899,8 @@ function verdictLines(score, ev, picks, polSum) {
             `your innate energy, the timing of the sky, and the current of the numbers all point one way — and your hand drew pushing cards on top. Times when everything overlaps like this are rare`)
         : L(`${pillars.join('·')}${jIga(pillars[pillars.length-1])} 밀어주는 위에, 손이 뽑은 밀어주는 패 ${up.length}장이 얹혔습니다`,
             `on top of ${join(pillars)} pushing, your hand laid down ${up.length} pushing card${up.length>1?'s':''}`),
-      adv: L(`이번에는 고민을 더 늘리지 말고 움직일 차례입니다. 뽑힌 「${lead.name}」 패의 뜻은 ${kw1(lead)} — ${ev.cat.micro} 시작하세요.`,
-             `This time, stop adding worry and move. The 「${nm(lead)}」 card you drew means ${kw1(lead)} — ${ev.catEN.micro}.`)
+      adv: L(`이번에는 고민을 더 늘리지 말고 움직일 차례입니다. 뽑힌 「${lead.name}」 패의 뜻은 ${kw1(lead)} — ${ev.micro} 시작하세요.`,
+             `This time, stop adding worry and move. The 「${nm(lead)}」 card you drew means ${kw1(lead)} — ${ev.microEN}.`)
     };
   }
   if (score === 2) {
@@ -2079,10 +2079,176 @@ function detectQType(q) {
   const neg = /지\s*말까|말아야|안\s*\S+\s*(게|것이|편이)\s*(나을|낫|좋)/.test(q);
   return {t:'yesno', neg};
 }
+
+/* ===== 1단계: 질문 이해 — 슬롯 추출 · 세부 의도 · 미러링 =====
+   외부 통신 없음(정규식·사전 기반). 못 알아들으면 조용히 일반 답으로 폴백한다.
+   원칙: 사용자의 말을 답에 되비추되(미러링), 지어내지 않는다 — 사전에 매칭된 표준형만 인용. */
+
+/* 세부 의도 — 8개 대분류 아래의 구체 행위. detectCat이 general로 빠질 때 cat 보정도 겸한다.
+   micro: 기존 cat.micro와 같은 문형(‘…것부터’ → 뒤에 ‘시작하세요’가 붙음) · microEN: 소문자로 시작하는 명령절. */
+const SUBINTENT = [
+  /* 사랑 */
+  {id:'love.confess', cat:'love', noun:'고백', nounEn:'a confession',
+   keys:['고백','좋아한다고','마음을 전','마음을 고백','사귀자고'], keysEn:['confess','tell them i like','tell him i like','tell her i like','ask them out','express my feelings'],
+   micro:'완성된 고백 문장 대신, 상대가 답하기 편한 짧은 안부 한 줄을 먼저 보내는 것부터', microEN:'instead of a finished confession, send one short, easy-to-answer hello first'},
+  {id:'love.reunite', cat:'love', noun:'재회', nounEn:'a reunion',
+   keys:['재회','다시 만날','다시 만나','돌아올','헤어진 사람','전 남친','전 여친','전남친','전여친','다시 시작'], keysEn:['reunite','reunion','get back together','ex-','my ex','reconcile with'],
+   micro:'지난 일을 되짚는 긴 메시지 대신, 오늘 안부만 담은 한 문장을 초안으로 적어보는 것부터', microEN:'draft one line that carries only a hello, not a rehash of the past'},
+  {id:'love.marry', cat:'love', noun:'결혼', nounEn:'marriage',
+   keys:['결혼','청혼','프러포즈','프로포즈','평생','혼인'], keysEn:['marry','marriage','propose','proposal','get married','spend my life'],
+   micro:'결론을 정하기 전에, 둘의 5년 뒤 그림을 각자 한 장씩 적어 맞대보는 것부터', microEN:'before deciding, each of you sketch your five-years-from-now on one page and compare'},
+  {id:'love.breakup', cat:'love', noun:'이별', nounEn:'a breakup',
+   keys:['헤어질','헤어져','이별할','그만 만날','정리할','끝낼'], keysEn:['break up','breakup','leave them','leave him','leave her','end it with','end the relationship'],
+   micro:'통보의 말을 고르기 전에, 정말 끝인지 하루만 종이에 적어 재보는 것부터', microEN:'before choosing words to end it, spend one day writing out whether it is truly over'},
+  {id:'love.status', cat:'love', noun:'이 인연', nounEn:'this connection',
+   keys:['썸','사귈','사귀게','잘될','잘 될','인연일까','만나볼','호감'], keysEn:['will it work with','are we','date them','see them','into me','likes me','have a chance with'],
+   micro:'마음을 확인하려 캐묻는 대신, 다음 약속 하나를 가볍게 제안해보는 것부터', microEN:'rather than pressing to confirm feelings, lightly propose one next plan'},
+  /* 일 */
+  {id:'work.change_job', cat:'work', noun:'이직', nounEn:'a job change',
+   keys:['이직','옮길','옮겨','자리를 옮','회사를 바꿀','넘어갈'], keysEn:['change jobs','change job','switch jobs','move companies','new job','another company'],
+   micro:'마음에 둔 자리가 있다면 오늘 공고 하나를 저장하거나 이력서 첫 줄을 고치는 것부터', microEN:'if a role is on your mind, save one posting or fix the first line of your resume today'},
+  {id:'work.quit', cat:'work', noun:'퇴사', nounEn:'quitting',
+   keys:['퇴사','그만두','그만 둘','사표','회사를 나올','때려치'], keysEn:['quit','resign','resignation','leave this job','hand in my notice'],
+   micro:'사표를 상상하기 전에, 지금 회사에서 못 견디는 것 세 가지를 종이에 적어보는 것부터', microEN:'before imagining a resignation, write the three things you cannot stand at this job'},
+  {id:'work.startup', cat:'work', noun:'창업', nounEn:'starting a business',
+   keys:['창업','사업','장사','내 일을 시작','가게를 낼','법인'], keysEn:['start a business','startup','start-up','my own business','open a shop','go it alone'],
+   micro:'큰 계획서 대신, 첫 손님 한 명에게 팔 것을 한 문장으로 적어보는 것부터', microEN:'skip the big plan; write in one sentence what you would sell to your first customer'},
+  {id:'work.interview', cat:'work', noun:'면접', nounEn:'the interview',
+   keys:['면접','인터뷰','최종 면접','합격할까','붙을까 이','뽑힐'], keysEn:['interview','get the offer','land the job','get hired','pass the interview'],
+   micro:'예상 질문을 다 외우기보다, 당신을 뽑아야 할 이유 한 줄을 소리 내어 말해보는 것부터', microEN:'rather than memorizing every question, say aloud one line for why they should pick you'},
+  {id:'work.promotion', cat:'work', noun:'승진', nounEn:'a promotion',
+   keys:['승진','진급','발탁','인정받을','고과','평가'], keysEn:['promotion','get promoted','make partner','get the raise','recognized at work'],
+   micro:'평가를 기다리기 전에, 올해 당신이 만든 성과 세 가지를 숫자로 적어두는 것부터', microEN:'before waiting on the review, note three results you made this year in numbers'},
+  /* 돈 — 매매(살까/팔까)를 투자보다 먼저 두어, ‘주식 살까’처럼 둘 다 걸릴 때 매매가 우선하도록 */
+  {id:'money.buy_sell', cat:'money', noun:'매매 결정', nounEn:'the buy-or-sell call',
+   keys:['살까','팔까','매수','매도','들어갈','손절','익절'], keysEn:['buy or sell','should i buy','should i sell','buy in','cut losses','take profit'],
+   micro:'지금 감정으로 정하지 말고, 살 가격·팔 가격을 미리 종이에 적어 두는 것부터', microEN:'don’t decide on the mood; write your buy price and your sell price on paper in advance'},
+  {id:'money.invest', cat:'money', noun:'투자', nounEn:'this investment',
+   keys:['투자','주식','코인','비트','펀드','베팅'], keysEn:['invest','investment','stock','stocks','crypto','coin','bitcoin','fund'],
+   micro:'전망을 더 찾아보기 전에, 잃어도 되는 금액의 상한선을 먼저 정하는 것부터', microEN:'before hunting for more forecasts, first set the ceiling you can afford to lose'},
+  {id:'money.realestate', cat:'money', noun:'집 문제', nounEn:'the home decision',
+   keys:['부동산','아파트','집을 살','집을 팔','전세','월세','매물','청약'], keysEn:['real estate','property','buy a house','buy a home','sell the house','mortgage','lease'],
+   micro:'매물을 더 보기 전에, 감당 가능한 월 상환액의 상한을 계산해 보는 것부터', microEN:'before viewing more listings, calculate the ceiling of a monthly payment you can bear'},
+  {id:'money.loan', cat:'money', noun:'대출', nounEn:'the loan',
+   keys:['대출','빚','상환','이자','빌릴','융자'], keysEn:['loan','debt','borrow money','pay off','repay','interest'],
+   micro:'이자에 쫓기기 전에, 갚을 순서를 금리 높은 것부터 한 줄로 세우는 것부터', microEN:'before the interest chases you, list the payoff order starting from the highest rate'},
+  {id:'money.income', cat:'money', noun:'수입', nounEn:'income',
+   keys:['월급','연봉','수입','벌이','부수입','돈을 더 벌'], keysEn:['salary','income','raise','earn more','side income','make more money'],
+   micro:'막연히 바라기보다, 원하는 숫자와 그 근거 한 줄을 적어 두는 것부터', microEN:'rather than vague hoping, write the number you want and one line of grounds for it'},
+  /* 공부 */
+  {id:'study.exam', cat:'study', noun:'시험', nounEn:'the exam',
+   keys:['시험','수능','고사','기말','중간','토익','토플'], keysEn:['exam','test','finals','midterm','sat','the bar','boards'],
+   micro:'전 범위를 걱정하기 전에, 가장 약한 한 단원을 오늘 30분 펴보는 것부터', microEN:'before fretting the whole syllabus, open your weakest unit for 30 minutes today'},
+  {id:'study.pass', cat:'study', noun:'합격', nounEn:'passing',
+   keys:['합격','붙을','붙을까','통과','당락','붙나'], keysEn:['pass','will i pass','get in','get accepted','make the cut'],
+   micro:'결과를 점치기 전에, 남은 날짜를 주 단위로 쪼개 오늘 몫만 정하는 것부터', microEN:'before divining the result, split the days left into weeks and set just today’s share'},
+  {id:'study.cert', cat:'study', noun:'자격증', nounEn:'the certification',
+   keys:['자격증','자격 시험','면허','기사 시험','취득'], keysEn:['certificate','certification','license exam','get certified','qualification'],
+   micro:'교재를 다 사기 전에, 시험일을 먼저 달력에 못 박는 것부터', microEN:'before buying every book, first nail the exam date onto your calendar'},
+  {id:'study.abroad', cat:'study', noun:'유학', nounEn:'studying abroad',
+   keys:['유학','교환학생','해외 대학','석사','박사 과정'], keysEn:['study abroad','grad school','master’s','phd','exchange student'],
+   micro:'학교를 고르기 전에, 정말 필요한 것이 학위인지 경험인지 한 줄로 적는 것부터', microEN:'before choosing a school, write in one line whether you truly need the degree or the experience'},
+  /* 이동 */
+  {id:'move.relocate', cat:'move', noun:'이사', nounEn:'the move',
+   keys:['이사','집을 옮','이사할','방을 뺄','이사 갈'], keysEn:['move house','relocate','move out','move to a new place','change apartments'],
+   micro:'집을 더 보기 전에, 지금 자리에서 못 견디는 것과 포기 못 할 것을 한 줄씩 적는 것부터', microEN:'before viewing more homes, write one line each for what you can’t stand and what you can’t give up'},
+  {id:'move.travel', cat:'move', noun:'여행', nounEn:'the trip',
+   keys:['여행','떠날','휴가','배낭','트립'], keysEn:['travel','trip','vacation','getaway','go away'],
+   micro:'완벽한 일정 대신, 가고 싶은 이유 한 가지와 날짜 하나를 먼저 고르는 것부터', microEN:'skip the perfect itinerary; pick one reason you want to go and one date first'},
+  {id:'move.immigrate', cat:'move', noun:'이민', nounEn:'emigrating',
+   keys:['이민','해외 이주','영주권','외국에서 살','떠나 살'], keysEn:['immigrate','emigrate','move abroad','green card','settle overseas'],
+   micro:'나라를 고르기 전에, 떠나려는 것인지 도착하려는 것인지 스스로 물어 한 줄로 적는 것부터', microEN:'before choosing a country, ask yourself whether you’re leaving or arriving, and write it in one line'},
+  /* 건강 */
+  {id:'health.surgery', cat:'health', noun:'수술', nounEn:'the surgery',
+   keys:['수술','시술','성형','교정 수술'], keysEn:['surgery','operation','procedure','go under the knife'],
+   micro:'결정을 서두르기 전에, 한 곳에서 더 소견을 듣기로 예약 전화 한 통 넣는 것부터', microEN:'before rushing the decision, make one call to book a second opinion'},
+  {id:'health.diet', cat:'health', noun:'다이어트', nounEn:'the diet',
+   keys:['다이어트','살을 뺄','살 뺄','감량','체중'], keysEn:['diet','lose weight','slim down','shed weight','get in shape'],
+   micro:'큰 계획 대신, 오늘 한 끼의 물 한 잔과 10분 걷기부터', microEN:'skip the big plan; start with one glass of water and a 10-minute walk today'},
+  {id:'health.recover', cat:'health', noun:'회복', nounEn:'recovery',
+   keys:['회복','나을','나아질','완치','재활','견딜'], keysEn:['recover','get better','heal','recovery','rehab'],
+   micro:'조급함을 내려놓고, 오늘 지킬 수 있는 가장 작은 회복 습관 하나를 정하는 것부터', microEN:'set down the impatience and pick the smallest recovery habit you can keep today'},
+  {id:'health.checkup', cat:'health', noun:'검진', nounEn:'the check-up',
+   keys:['검진','건강검진','병원 갈','진료','검사받'], keysEn:['check-up','checkup','see a doctor','get it checked','screening'],
+   micro:'미루던 검진이라면, 오늘 예약 가능한 가장 이른 날짜로 전화 한 통 넣는 것부터', microEN:'if it’s a check-up you’ve delayed, call today for the earliest available date'},
+  /* 사람·관계 */
+  {id:'relation.reconcile', cat:'relation', noun:'화해', nounEn:'making up',
+   keys:['화해','풀고 싶','사과할','다시 잘 지낼','오해를 풀'], keysEn:['reconcile','make up','apologize','patch things up','clear the air'],
+   micro:'누가 옳은지 따지기 전에, 먼저 건넬 짧은 안부 한 통을 초안으로 적어보는 것부터', microEN:'before arguing who’s right, draft one short hello to send first'},
+  {id:'relation.conflict', cat:'relation', noun:'갈등', nounEn:'the conflict',
+   keys:['갈등','싸움','싸웠','틀어진','사이가 나빠','다퉜'], keysEn:['conflict','fight','fell out','falling out','argument','clashing with'],
+   micro:'되받아치고 싶은 말 대신, 상대가 정말 원하는 것 한 가지를 추측해 적어보는 것부터', microEN:'instead of the retort you want to fire back, write one guess at what they really want'},
+  {id:'relation.family', cat:'relation', noun:'가족 문제', nounEn:'the family matter',
+   keys:['가족','부모님','엄마','아빠','형제','자매','시댁','처가'], keysEn:['family','parents','my mom','my dad','siblings','in-laws'],
+   micro:'설득하려 들기 전에, 오늘은 용건 없는 안부 연락 한 번만 넣는 것부터', microEN:'before trying to persuade, just send one no-agenda hello today'},
+  {id:'relation.boss', cat:'relation', noun:'상사와의 일', nounEn:'the matter with your boss',
+   keys:['상사','팀장','부장','직장 상사','윗사람','사수'], keysEn:['my boss','my manager','my supervisor','higher-up','team lead'],
+   micro:'감정을 삭이기 전에, 상사가 무엇으로 평가받는 자리인지 한 줄로 헤아려보는 것부터', microEN:'before swallowing the feeling, note in one line what your boss is themselves judged on'}
+];
+
+/* 대상 — 누구/무엇에 관한 물음인가. ko/en은 미러링에 그대로 인용되는 표준형. */
+const Q_TARGET = [
+  {re:/남편|와이프|아내|배우자/, reEn:/husband|wife|spouse/, ko:'배우자', en:'your spouse'},
+  {re:/남자\s*친구|남친|여자\s*친구|여친|애인|연인/, reEn:/boyfriend|girlfriend|partner/, ko:'그 사람', en:'your partner'},
+  {re:/그\s*사람|그사람|그\s*분|그이|그녀|그 남자|그 여자|상대방|짝사랑/, reEn:/that person|this person|him\b|her\b|them\b|my crush/, ko:'그 사람', en:'that person'},
+  {re:/상사|팀장|부장|사장|윗사람|사수/, reEn:/my boss|my manager|supervisor|higher-up/, ko:'상사', en:'your boss'},
+  {re:/회사|직장|우리\s*팀|부서|사무실/, reEn:/my company|this job|my workplace|the office|our team/, ko:'지금 회사', en:'your company'},
+  {re:/부모|엄마|아빠|어머니|아버지|시댁|처가/, reEn:/parents|my mom|my dad|mother|father|in-laws/, ko:'부모님', en:'your parents'},
+  {re:/가족|식구|형제|자매|남매/, reEn:/family|siblings|my brother|my sister/, ko:'가족', en:'your family'},
+  {re:/친구|동료|지인|동기/, reEn:/friend|coworker|colleague/, ko:'그 친구', en:'that friend'}
+];
+
+/* 시한 — 언제까지의 물음인가. */
+const Q_TIME = [
+  {re:/당장|지금\s*당장|바로|곧바로/, reEn:/right now|right away|immediately/, ko:'당장', en:'right now'},
+  {re:/오늘/, reEn:/today|tonight/, ko:'오늘', en:'today'},
+  {re:/이번\s*주|금주/, reEn:/this week/, ko:'이번 주', en:'this week'},
+  {re:/이번\s*달|이달|금월/, reEn:/this month/, ko:'이번 달', en:'this month'},
+  {re:/다음\s*달|내달/, reEn:/next month/, ko:'다음 달', en:'next month'},
+  {re:/올해|금년|연내|올\s*해/, reEn:/this year|within the year/, ko:'올해', en:'this year'},
+  {re:/내년/, reEn:/next year/, ko:'내년', en:'next year'},
+  {re:/조만간|곧|머지않아/, reEn:/soon|before long|anytime soon/, ko:'조만간', en:'soon'}
+];
+
+/* 감정 표지 — 물음에 밴 마음. ko/en은 짧은 명사(‘…까지 함께 담습니다’에 들어감). */
+const Q_EMOTION = [
+  {re:/불안|초조|겁\s?나|두렵|무서워|무섭|걱정/, reEn:/anxious|scared|afraid|nervous|worried/, ko:'불안', en:'anxiety'},
+  {re:/망설|고민|갈등|못\s?정|어떡|어쩌지|모르겠/, reEn:/torn|can'?t decide|hesitat|unsure|conflicted|don'?t know/, ko:'망설임', en:'hesitation'},
+  {re:/설레|설렘|기대|떨려|두근/, reEn:/excited|can'?t wait|butterflies|thrilled|looking forward/, ko:'설렘', en:'anticipation'},
+  {re:/지쳤|지쳐|지친|힘들|버겁|번아웃|소진/, reEn:/exhausted|burnt out|burned out|so tired|drained|worn out/, ko:'지침', en:'weariness'},
+  {re:/억울|서운|서럽|분해|짜증|화가?\s?나/, reEn:/resent|hurt|frustrated|upset|angry/, ko:'서운함', en:'hurt'},
+  {re:/확신|자신\s?있|마음\s?굳|결심|각오/, reEn:/i'?m sure|certain|made up my mind|determined|resolved/, ko:'확신', en:'conviction'}
+];
+
+const capEN = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* 질문 파싱 — 세부 의도·대상·시한·감정 슬롯을 뽑는다. 매칭 없으면 각 슬롯은 null. */
+function parseQuestion(q) {
+  const en = LANG === 'en';
+  const lc = q.toLowerCase();
+  const hit = (koRe, enRe) => en ? (enRe && enRe.test(lc)) : koRe.test(q);
+  let sub = null;
+  for (const s of SUBINTENT) {
+    const arr = en ? s.keysEn : s.keys;
+    if (arr.some(w => en ? lc.includes(w) : q.includes(w))) { sub = s; break; }
+  }
+  let target = null;
+  for (const t of Q_TARGET) if (hit(t.re, t.reEn)) { target = t; break; }
+  let time = null;
+  for (const t of Q_TIME) if (hit(t.re, t.reEn)) { time = t; break; }
+  let emo = null;
+  for (const e of Q_EMOTION) if (hit(e.re, e.reEn)) { emo = e; break; }
+  return {sub, target, time, emo};
+}
+
 function gatherEvidence(q, R) {
-  const catKey = detectCat(q);
+  const slots = parseQuestion(q);
+  let catKey = detectCat(q);
+  if (catKey === 'general' && slots.sub) catKey = slots.sub.cat; /* 세부 의도가 대분류를 보정 */
   const cat = CATS[catKey];
   const catEN = CAT_EN[catKey];
+  const micro = slots.sub ? slots.sub.micro : cat.micro;      /* 세부 의도가 있으면 그 첫걸음을, 없으면 대분류 기본 */
+  const microEN = slots.sub ? slots.sub.microEN : catEN.micro;
   const f = R.fortune;
   const yearTG = f.periods[4].saju.tg, monthTG = f.periods[2].saju.tg;
   const tgL = tg => L(tgLabel(tg), tgLabelEN(tg));
@@ -2160,7 +2326,7 @@ function gatherEvidence(q, R) {
       `When is good — your five stretches now pass through the grain of 「${flowSig}」. There is no window that overlaps this question (${catEN.label}) head-on yet, but the closest grain is <b>${PERIOD_EN[near.key]}</b> (${pStamp(near)}) — rather than deciding in a rush, build your preparation from this stretch. This year's big keyword is 「${THEMES_EN[f.periods[4].theme].name}」, so the nearer your prep is to that, the better it fits the flow.`);
   }
 
-  return {cat, catKey, catEN, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt},
+  return {cat, catKey, catEN, slots, micro, microEN, ev: sajuPt + astroPt + numPt, pts: {saju: sajuPt, astro: astroPt, num: numPt},
     sajuLine, astroLine, numLine, timing,
     tpKr: tp ? periodName(tp.key) : null, tpTheme: tp ? themeName(tp.theme) : null};
 }
@@ -3179,8 +3345,34 @@ function finishDraw() {
   const passages = picks.map((c, i) =>
     `<p class="pb"><b>${L(POS_LABEL[i], POS_LABEL_EN[i])} · ${cardName(c)}(${c.h})</b><br>${cardPosVar(c, i, dk.el)}${cardNotes(c, i)}</p>`).join('');
   const kwOf = c => cardKw1(c);
-  const intro = L(`<p class="pb" style="margin-top:14px">「${ev.cat.label}」${jEul(ev.cat.label)} 묻는 당신에게 세 패는 이렇게 배열됐습니다. 당신은 ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath}의 사람 — 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`,
-    `<p class="pb" style="margin-top:14px">For you, asking about 「${ev.catEN.label}」, the three cards fell into this arrangement. You are a ${dk.h} Day Master (${ILGAN_SHORT_EN[dk.k]}) · Sun in ${SIGNS_EN[R.astro.sun.sign]} · Life Path ${R.num.lifePath} — what stands now is <b>${kwOf(picks[0])}</b>, what to work through is <b>${kwOf(picks[1])}</b>, and where the current lands is <b>${kwOf(picks[2])}</b>.</p>`);
+  /* 미러링 — 물음에서 뽑은 시한·행위·대상·감정을 답 첫머리에 되비춘다(사전 매칭된 표준형만 인용, 지어내지 않음) */
+  const S = ev.slots;
+  const bk = x => `「${x}」`;
+  let mirrorKo = '', mirrorEn = '';
+  {
+    const head = S.sub ? S.sub.noun : S.target ? S.target.ko : '';
+    if (head) {
+      const lead = S.time ? `${bk(S.time.ko)}${hasBatchim(S.time.ko) ? '이라는' : '라는'} 시한을 얹어, ` : '';
+      mirrorKo = `${lead}${bk(head)}에 관한 물음 — 그대로 받겠습니다.`;
+      if (S.sub && S.target) mirrorKo += ` ${bk(S.target.ko)}${jWa(S.target.ko)}의 일임을 염두에 두고 읽습니다.`;
+      if (S.emo) mirrorKo += ` 물음에 밴 ${S.emo.ko}까지 함께 담습니다.`;
+    } else if (S.emo) mirrorKo = `물음에 밴 ${S.emo.ko}까지 함께 담아 읽습니다.`;
+    if (mirrorKo) mirrorKo = `<span class="pbx">${mirrorKo}</span> `;
+    const headEn = S.sub ? S.sub.nounEn : S.target ? S.target.en : '';
+    if (headEn) {
+      const lead = S.time ? `Within ${S.time.en}, ` : '';
+      mirrorEn = `${lead}${capEN(`i take your question about ${headEn} exactly as asked.`)}`;
+      if (S.sub && S.target) mirrorEn += ` I read it with ${S.target.en} in mind.`;
+      if (S.emo) mirrorEn += ` The ${S.emo.en} in it goes into the answer too.`;
+    } else if (S.emo) mirrorEn = `The ${S.emo.en} in your question goes into the answer too.`;
+    if (mirrorEn) mirrorEn = `<span class="pbx">${mirrorEn}</span> `;
+  }
+  const intro = L(`<p class="pb" style="margin-top:14px">${mirrorKo}「${ev.cat.label}」${jEul(ev.cat.label)} 묻는 당신에게 세 패는 이렇게 배열됐습니다. 당신은 ${dk.k} 일간(${ILGAN_SHORT[dk.k]}) · 태양 ${SIGNS[R.astro.sun.sign].k} · 라이프패스 ${R.num.lifePath}의 사람 — 지금 놓인 것은 <b>${kwOf(picks[0])}</b>, 풀어야 할 것은 <b>${kwOf(picks[1])}</b>, 흐름이 닿는 곳은 <b>${kwOf(picks[2])}</b>입니다.</p>`,
+    `<p class="pb" style="margin-top:14px">${mirrorEn}For you, asking about 「${ev.catEN.label}」, the three cards fell into this arrangement. You are a ${dk.h} Day Master (${ILGAN_SHORT_EN[dk.k]}) · Sun in ${SIGNS_EN[R.astro.sun.sign]} · Life Path ${R.num.lifePath} — what stands now is <b>${kwOf(picks[0])}</b>, what to work through is <b>${kwOf(picks[1])}</b>, and where the current lands is <b>${kwOf(picks[2])}</b>.</p>`);
+  /* 오늘의 첫걸음 — 세부 의도가 잡혔고, 밝은 답(그 문장이 이미 첫걸음을 담음)이 아닐 때만 별도로 노출 */
+  const firstStep = (S.sub && (qt.t === 'open' || (qt.t === 'yesno' && score !== 3)))
+    ? `<div class="combo"><b>${L('오늘의 첫걸음', 'Your first step today')}</b><br>${L(`${bk(S.sub.noun)}에 관해서라면 — ${ev.micro} 시작하세요.`, `On ${S.sub.nounEn} — ${capEN(ev.microEN)}.`)}</div>`
+    : '';
 
   const crossLines = [L(`패의 중심 기운은 ${ELEMENTS[domEl].k}(${ELEMENTS[domEl].h}) — 일간 ${dk.k}(${dk.h})인 당신에게 <b>${relName}</b>의 자리, ${relDescKo}.`,
     `The cards' central energy is ${ELEMENTS_EN[domEl].k}(${ELEMENTS[domEl].h}) — to you, a ${dk.h} Day Master, the seat of <b>${EL_REL_EN[relName].name}</b>, ${EL_REL_EN[relName].desc}.`)];
@@ -3288,7 +3480,7 @@ function finishDraw() {
   card.innerHTML = `
     <p class="aq">${L('물음 · ','Question · ')}<b>${esc(q)}</b></p>
     ${verdictHTML}
-    <span class="acat">${L(ev.cat.label, ev.catEN.label)}</span>
+    <span class="acat">${L(ev.cat.label + (S.sub ? ` · ${S.sub.noun}` : ''), ev.catEN.label + (S.sub ? ` · ${S.sub.nounEn}` : ''))}</span>
     ${qt.t === 'info' ? infoWhyBlock(myWeak, R) : whyBlock(ev, picks, polSum, total)}
     <div class="spread3">${spots}</div>
     ${intro}
@@ -3310,6 +3502,7 @@ function finishDraw() {
         <div class="frow"><span class="fsys">${L('수','Numerology')}</span><span class="ftxt">${ev.numLine}</span></div>
       </div>
     </details>
+    ${firstStep}
     <p class="atiming">${ev.timing}</p>
     <p class="fadvice">${advLine}</p>`;
   $('#askAnswers').prepend(card);
