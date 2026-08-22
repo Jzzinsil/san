@@ -932,7 +932,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.23.2</span><br>
+        <span style="letter-spacing:.2em">SAN v3.23.3</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -2119,7 +2119,12 @@ const SUBINTENT = [
   {id:'work.promotion', cat:'work', noun:'승진', nounEn:'a promotion',
    keys:['승진','진급','발탁','인정받을','고과','평가'], keysEn:['promotion','get promoted','make partner','get the raise','recognized at work'],
    micro:'평가를 기다리기 전에, 올해 당신이 만든 성과 세 가지를 숫자로 적어두는 것부터', microEN:'before waiting on the review, note three results you made this year in numbers'},
-  /* 돈 — 매매(살까/팔까)를 투자보다 먼저 두어, ‘주식 살까’처럼 둘 다 걸릴 때 매매가 우선하도록 */
+  /* 돈 — 실물 구매(차/노트북/명품…)를 매매보다 먼저 두어, ‘차 살까’가 주식 매매로 새지 않도록. 물건 특정어로만 잡아 오탐 방지 */
+  {id:'money.purchase', cat:'money', noun:'구매 결정', nounEn:'this purchase',
+   keys:['자동차','차 살','차 사','차 바꿀','차량','중고차','새 차','오토바이','노트북','컴퓨터 살','컴퓨터 바꿀','휴대폰','핸드폰','폰 살','폰 바꿀','아이폰','갤럭시','태블릿','명품','가방 살','시계 살','가전','냉장고','세탁기','에어컨','자전거 살','카메라 살'],
+   keysEn:['buy a car','new car','a car','used car','motorcycle','laptop','new phone','buy a phone','tablet','luxury','handbag','buy a watch','appliance','refrigerator','washing machine','buy a camera'],
+   micro:'충동인지 필요인지부터 가려보세요 — 이 물건이 없어 불편했던 최근 순간 세 번을 적고, 그래도 사야겠다면 예산 상한을 먼저 정하는 것부터', microEN:'tell impulse from need first — note three recent moments you were inconvenienced without it, and if you still must, set a budget ceiling before anything'},
+  /* 매매(살까/팔까)를 투자보다 먼저 두어, ‘주식 살까’처럼 둘 다 걸릴 때 매매가 우선하도록 */
   {id:'money.buy_sell', cat:'money', noun:'매매 결정', nounEn:'the buy-or-sell call',
    keys:['살까','팔까','매수','매도','들어갈','손절','익절'], keysEn:['buy or sell','should i buy','should i sell','buy in','cut losses','take profit'],
    micro:'지금 감정으로 정하지 말고, 살 가격·팔 가격을 미리 종이에 적어 두는 것부터', microEN:'don’t decide on the mood; write your buy price and your sell price on paper in advance'},
