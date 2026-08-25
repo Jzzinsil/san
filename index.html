@@ -134,40 +134,10 @@ input,select{max-width:100%}
 .btn:hover{background:#1d1a15}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
-/* ---------- 재방문 첫 화면 (오늘의 한 줄) ---------- */
-.return-card{
-  max-width:520px;margin:0 auto 26px;padding:26px 26px 22px;
-  background:var(--paper);border:1px solid var(--ink);
-  box-shadow:6px 6px 0 rgba(46,42,35,.07);
-}
-.return-card .rc-eyebrow{font-size:9.5px;font-weight:700;color:var(--accent);letter-spacing:.4em;text-transform:uppercase;margin:0 0 14px}
-.return-card .rc-main{display:flex;gap:16px;align-items:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--ink)}
-.return-card .rc-seal{display:flex;flex-direction:column;gap:3px;line-height:1;font-family:var(--serif);font-size:26px;color:var(--accent);border:1px solid var(--accent);padding:8px 9px;flex:none}
-.return-card .rc-name{font-family:var(--serif);font-size:20px;font-weight:500;letter-spacing:.08em;margin:0 0 4px;line-height:1.3}
-.return-card .rc-date{font-size:11px;color:var(--dim);letter-spacing:.1em;margin:0}
-.return-card .rc-th{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:0 0 6px}
-.return-card .rc-adv{font-family:var(--serif);font-size:15.5px;line-height:1.8;color:var(--text);margin:0}
-.return-card .rc-adv b{color:var(--gold-soft)}
-.return-card .rc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.return-card .rc-go{
-  flex:1 1 auto;min-width:180px;padding:13px 18px;cursor:pointer;
-  background:var(--paper-deep);color:var(--ink);
-  border:1px solid var(--hairline);border-bottom:2px solid var(--accent);
-  font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.14em;
-  transition:border-color .15s;
-}
-.return-card .rc-go:hover{border-bottom-color:var(--ink)}
-.return-card .rc-edit{
-  padding:13px 10px;cursor:pointer;background:transparent;color:var(--dim);border:none;
-  font-family:var(--sans);font-size:12px;letter-spacing:.08em;
-  text-decoration:underline;text-decoration-color:var(--hairline);text-underline-offset:3px;
-}
-.return-card .rc-edit:hover{color:var(--ink);text-decoration-color:var(--ink)}
-.return-card .rc-go:focus-visible,.return-card .rc-edit:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-
 /* ---------- 오늘의 하늘 — 히어로 카드 ---------- */
 .fcard.day-hero{outline:1px solid var(--ink);outline-offset:3px;border-color:var(--ink)}
 .day-hero .th-label{font-size:9.5px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
+.day-hero .th-greet{font-family:var(--serif);font-size:19px;font-weight:500;letter-spacing:.06em;color:var(--ink);margin:-6px 0 16px}
 .day-hero .th-main{display:flex;gap:18px;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--ink)}
 .day-hero .th-seal{display:flex;flex-direction:column;gap:4px;line-height:1;font-family:var(--serif);font-size:30px;color:var(--accent);border:1px solid var(--accent);padding:9px 11px;flex:none}
 .day-hero .th-theme{font-family:var(--serif);font-size:23px;font-weight:500;letter-spacing:.1em;line-height:1.2}
@@ -183,8 +153,8 @@ input,select{max-width:100%}
 .openluck .luckset{margin-top:16px}
 
 /* ---------- 페이지 전환 · 로딩 ---------- */
-body.loading .page-head,body.loading .form-card,body.loading .page-epi,body.loading .return-card,
-body.viewing .page-head,body.viewing .form-card,body.viewing .page-epi,body.viewing .return-card{display:none}
+body.loading .page-head,body.loading .form-card,body.loading .page-epi,
+body.viewing .page-head,body.viewing .form-card,body.viewing .page-epi{display:none}
 #loading{display:none;flex-direction:column;align-items:center;justify-content:center;padding:26vh 0 80px;text-align:center}
 body.loading #loading{display:flex}
 #loading .lmark{
@@ -650,23 +620,6 @@ gtag('config', 'G-L7QPQ5GGL7');
     <hr class="page-divider">
   </header>
 
-  <div id="returnCard" class="return-card" style="display:none">
-    <p class="rc-eyebrow" data-en="Welcome back">다시 오셨네요</p>
-    <div class="rc-main">
-      <div class="rc-seal" aria-hidden="true"><span id="rcH1"></span><span id="rcH2"></span></div>
-      <div>
-        <h2 class="rc-name" id="rcName"></h2>
-        <p class="rc-date" id="rcDate"></p>
-      </div>
-    </div>
-    <p class="rc-th" id="rcTheme"></p>
-    <p class="rc-adv" id="rcAdv"></p>
-    <div class="rc-actions">
-      <button type="button" class="rc-go" id="rcGo" data-en="See today's full reading">오늘의 전체 리딩 보기</button>
-      <button type="button" class="rc-edit" id="rcEdit" data-en="Edit / start fresh">정보 수정 · 새로 보기</button>
-    </div>
-  </div>
-
   <form class="form-card" id="form" novalidate>
     <h2 data-en="Build Your Chart">명식 세우기</h2>
     <p class="fsub" data-en="Your chart maps the moment you were born into characters and stars. The more you enter, the sharper the cross-reading of all three systems.">명식(命式) — 태어난 순간을 글자와 별로 옮긴 당신의 지도입니다. 자세히 넣을수록 세 체계의 교차 해석이 정밀해집니다</p>
@@ -1016,7 +969,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.24.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.24.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -3242,57 +3195,6 @@ function parseFormInput() {
   }};
 }
 
-/* 오늘의 한 줄 — 저장된 명식으로 오늘 일진의 결(테마)을 뽑아 짧게. 실패 시 null */
-function todayOneLine(input) {
-  try {
-    const {y, m, d, time, geo} = input;
-    const now = new Date();
-    const corrMin = Math.round((geo.lon - geo.tz * 15) * 4);
-    const saju = computeSaju(y, m, d, time, corrMin, geo.tz);
-    const astro = computeAstro(y, m, d, time, geo);
-    const wed = new Date(now); wed.setDate(now.getDate() - ((now.getDay() + 6) % 7) + 2);
-    const fortune = computeFortune(
-      {dayStem: saju.day.stem, sunLong: astro.sun.long, moonLong: astro.moon.long, birthM: m, birthD: d},
-      {today: {y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate()},
-       wed: {y: wed.getFullYear(), m: wed.getMonth() + 1, d: wed.getDate()}},
-      9);
-    const p0 = fortune.periods[0], t = fortune.today;
-    const th = (LANG === 'en') ? THEMES_EN[p0.theme] : THEMES[p0.theme];
-    const tgL = (LANG === 'en') ? `${TG_NICK_EN[p0.saju.tg]} (${TENGOD_NAME_EN[p0.saju.tg]})` : tgLabel(p0.saju.tg);
-    const prose = (LANG === 'en')
-      ? `The energy of <b>${tgL}</b> enters you today. ${th.adv}`
-      : `오늘 당신에게는 <b>${tgL}</b>의 기운이 들어옵니다. ${th.adv}`;
-    return {name: th.name, adv: th.adv, prose, gz: p0.saju.gz,
-      h1: STEMS[t.day.stem].h, h2: BRANCHES[t.day.branch].h, rate: TG_RATE[p0.saju.tg]};
-  } catch (e) { return null; }
-}
-
-/* 재방문 첫 화면 — 저장된 명식이 있으면 오늘의 한 줄 카드 노출 (페이지 끝에서 호출) */
-function showReturnCard() {
-  const card = $('#returnCard');
-  if (!card) return;
-  let saved = null;
-  try { saved = localStorage.getItem(MEM_KEY); } catch (e) {}
-  if (!saved) return;                       // 저장된 사용자만
-  const parsed = parseFormInput();
-  if (parsed.error) return;                 // 저장값이 불완전하면 그냥 폼 노출
-  const line = todayOneLine(parsed.input);
-  if (!line) return;
-  const nm = ($('#name').value.trim() || $('#ename').value.trim());
-  const now = new Date();
-  const dstr = LANG === 'en'
-    ? now.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})
-    : `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
-  const rate = L(RATE_WORD[line.rate], RATE_WORD_EN[line.rate]);
-  $('#rcH1').textContent = line.h1;
-  $('#rcH2').textContent = line.h2;
-  $('#rcName').textContent = nm ? L(`${nm}님의 오늘`, `${nm} — today`) : L('당신의 오늘', 'Your today');
-  $('#rcDate').textContent = L(`${dstr} · ${line.gz}일 · ${RATE_ICON[line.rate]} ${rate}`, `${dstr} · ${line.gz} · ${RATE_ICON[line.rate]} ${rate}`);
-  $('#rcTheme').textContent = L(`오늘의 결 — ${line.name}`, `Today's grain — ${line.name}`);
-  $('#rcAdv').innerHTML = line.prose;
-  card.style.display = '';
-}
-
 $('#form').addEventListener('submit', e => {
   e.preventDefault();
   const err = $('#err');
@@ -3392,7 +3294,7 @@ function render(inp) {
 
   renderHeadline(inp, saju, astro, num);
   renderSynth(saju, astro, num);
-  renderFortune(fortune, now, saju, natalTGs, astro, num);
+  renderFortune(fortune, now, saju, natalTGs, astro, num, name, ename);
   renderSaju(saju, time, inp, astro, num);
   renderAstro(astro, geo, ename, saju);
   renderNumer(num, nameForNum, now.getFullYear(), saju, astro);
@@ -4810,7 +4712,7 @@ const gzEN = (gz, key) => {
 };
 
 /* FUNCTION */
-function renderFortune(f, now, natalSaju, natalTGs, astro, num) {
+function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
   const y = now.getFullYear(), m = now.getMonth() + 1, d = now.getDate();
   const dayStem = natalSaju.day.stem;
   const t = f.today; // 오늘의 사주(일진)
@@ -4943,8 +4845,18 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num) {
   /* 오늘의 하늘 — 히어로 헤더 (통합리딩 첫 마디와 같은 결) */
   const rateT = TG_RATE[p0.saju.tg];
   const tgLT = L(tgLabel(p0.saju.tg), `${TG_NICK_EN[p0.saju.tg]} (${TENGOD_NAME_EN[p0.saju.tg]})`);
+  /* 이름 부르기 — 성을 뺀 이름(복성 처리) */
+  const TWO_SURNAMES = ['남궁', '선우', '제갈', '황보', '사공', '서문', '독고', '동방'];
+  const koRaw = (name || '').trim();
+  const koGiven = koRaw.length >= 3 && TWO_SURNAMES.includes(koRaw.slice(0, 2)) ? koRaw.slice(2)
+    : koRaw.length >= 2 ? koRaw.slice(1) : koRaw;
+  const enGiven = (ename || '').trim().split(/\s+/)[0] || '';
+  const given = LANG === 'en' ? (enGiven || koGiven) : (koGiven || enGiven);
+  const greet = given ? `<p class="th-greet">${L(`${given}님의 오늘 하루`, `${given}'s day today`)}</p>` : '';
+
   const dayHero = `
     <p class="th-label">${L('TODAY · 오늘의 하늘', "TODAY · Today's Sky")}</p>
+    ${greet}
     <div class="th-main">
       <div class="th-seal" aria-hidden="true"><span>${STEMS[t.day.stem].h}</span><span>${BRANCHES[t.day.branch].h}</span></div>
       <div class="th-head">
@@ -6636,13 +6548,6 @@ function showTab(id) {
 tabLinks.forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.t); }));
 showTab('fortune');
 
-/* 재방문 카드 버튼 — 전체 리딩 보기 / 정보 수정 */
-$('#rcGo').addEventListener('click', () => { $('#returnCard').style.display = 'none'; $('#form').requestSubmit(); });
-$('#rcEdit').addEventListener('click', () => {
-  $('#returnCard').style.display = 'none';
-  $('#form').scrollIntoView({behavior: 'smooth', block: 'start'});
-  $('#dateNum').focus({preventScroll: true});
-});
 
 /* ---------- 언어 토글 (KO ⇄ EN) — data-en / data-en-ph / data-en-html 기반 (LANG은 위에서 선언) ---------- */
 function applyLang() {
@@ -6672,8 +6577,6 @@ function applyLang() {
   if (document.body.classList.contains('viewing') && window.__lastInput) {
     try { render(window.__lastInput); showTab(document.querySelector('.tabs a.on')?.dataset.t || 'synth'); } catch (e) {}
   }
-  /* 재방문 카드가 떠 있으면 언어에 맞춰 오늘의 한 줄도 다시 채움 */
-  try { const rc = $('#returnCard'); if (rc && rc.style.display !== 'none') showReturnCard(); } catch (e) {}
 }
 document.getElementById('langBtn').addEventListener('click', () => {
   LANG = LANG === 'en' ? 'ko' : 'en';
@@ -6681,7 +6584,6 @@ document.getElementById('langBtn').addEventListener('click', () => {
   applyLang();
 });
 applyLang();
-showReturnCard();
 </script>
 </body>
 </html>
