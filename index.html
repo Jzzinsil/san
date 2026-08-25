@@ -969,7 +969,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.24.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.24.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -4947,6 +4947,20 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     const seedC = (natalSaju.dayIdx60 + 1) * 31 + (num.lifePath || 0) * 17 + (astro.sun.sign + 1) * 7;
     const coPick = (el, salt) => COS[el][((seedC + salt * 131) >>> 0) % COS[el].length];
     const dEl = (Y, M, D) => STEMS[computeSaju(Y, M, D, null).day.stem].el;
+    /* 목표 오행 = 사주(부족)×점성술(태양)×수비학(라이프패스)×그 날짜 일진 가중 교집합 (유저·시기마다 다름) */
+    const NUM2EL_C = {1: 0, 2: 4, 3: 1, 4: 2, 5: 3, 6: 2, 7: 4, 8: 3, 9: 1, 11: 1, 22: 2, 33: 4};
+    const numElC = NUM2EL_C[num.lifePath] ?? 2;
+    const sunElC = ZOD2EL[astro.sun.sign % 4];
+    const teFor = (de, salt) => {
+      let best = -1, el = 0;
+      for (let e = 0; e < 5; e++) {
+        const jit = ((seedC * (e + 3) + (de + 1) * (e + 5) * 13 + salt * 29) >>> 0) % 10;
+        const score = (e === weak ? 18 : 0) + (e === sunElC ? 11 : 0) + (e === numElC ? 11 : 0)
+          + (e === de ? 15 : 0) + ((e + 1) % 5 === weak ? 7 : 0) + jit;
+        if (score > best) { best = score; el = e; }
+      }
+      return el;
+    };
     const D0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const add = n => { const d = new Date(D0); d.setDate(D0.getDate() + n); return d; };
     const md = d => `${d.getMonth() + 1}/${d.getDate()}`;
@@ -4972,7 +4986,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     ];
     const shortL = [L('오늘', 'Today'), L('내일', 'Tomorrow'), L('이번주', 'This week'), L('다음주', 'Next week'), L('이번달', 'This month'), L('다음달', 'Next month'), L('연휴', 'Holiday')];
     const list = slots.map(([label, d], i) => {
-      const te = (weak + dEl(d.getFullYear(), d.getMonth() + 1, d.getDate())) % 5;
+      const te = teFor(dEl(d.getFullYear(), d.getMonth() + 1, d.getDate()), i + 1);
       const co = coPick(te, i + 1);
       const dateStr = (i === 4 || i === 5) ? L(`${d.getMonth() + 1}월`, MONTH_EN[d.getMonth() + 1])
         : i === 6 ? `${L(nextHol.nm, HOL_EN[nextHol.nm] || nextHol.nm)} ${md(d)}` : md(d);
@@ -4989,7 +5003,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
         <span class="fperiod">${L('TRAVEL · 행운의 나라', 'TRAVEL · Lucky Countries')}</span>
         <span class="fdate">${L('시기별', 'by period')}</span>
       </div>
-      <p class="ol-why">${L('당신에게 부족한 기운과 그 시기의 일진을 겹쳐 뽑았습니다 — 시기마다 당신을 채워줄 나라가 달라집니다.', "We crossed the element you lack with each period's day pillar — the land that refills you shifts with the season.")}</p>
+      <p class="ol-why">${L('사주 · 별자리 · 수비학을 그 시기의 일진과 겹쳐 뽑았습니다 — 사람마다, 시기마다 당신을 채워줄 나라가 달라집니다.', "Your Four Pillars · astrology · numerology crossed with each period's day pillar — the land that refills you differs by person and by season.")}</p>
       <div class="natal trip-list">${list}</div>
     </div>`;
   })();
