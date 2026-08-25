@@ -134,9 +134,57 @@ input,select{max-width:100%}
 .btn:hover{background:#1d1a15}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
+/* ---------- 재방문 첫 화면 (오늘의 한 줄) ---------- */
+.return-card{
+  max-width:520px;margin:0 auto 26px;padding:26px 26px 22px;
+  background:var(--paper);border:1px solid var(--ink);
+  box-shadow:6px 6px 0 rgba(46,42,35,.07);
+}
+.return-card .rc-eyebrow{font-size:9.5px;font-weight:700;color:var(--accent);letter-spacing:.4em;text-transform:uppercase;margin:0 0 14px}
+.return-card .rc-main{display:flex;gap:16px;align-items:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--ink)}
+.return-card .rc-seal{display:flex;flex-direction:column;gap:3px;line-height:1;font-family:var(--serif);font-size:26px;color:var(--accent);border:1px solid var(--accent);padding:8px 9px;flex:none}
+.return-card .rc-name{font-family:var(--serif);font-size:20px;font-weight:500;letter-spacing:.08em;margin:0 0 4px;line-height:1.3}
+.return-card .rc-date{font-size:11px;color:var(--dim);letter-spacing:.1em;margin:0}
+.return-card .rc-th{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:0 0 6px}
+.return-card .rc-adv{font-family:var(--serif);font-size:15.5px;line-height:1.8;color:var(--text);margin:0}
+.return-card .rc-adv b{color:var(--gold-soft)}
+.return-card .rc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.return-card .rc-go{
+  flex:1 1 auto;min-width:180px;padding:13px 18px;cursor:pointer;
+  background:var(--paper-deep);color:var(--ink);
+  border:1px solid var(--hairline);border-bottom:2px solid var(--accent);
+  font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.14em;
+  transition:border-color .15s;
+}
+.return-card .rc-go:hover{border-bottom-color:var(--ink)}
+.return-card .rc-edit{
+  padding:13px 10px;cursor:pointer;background:transparent;color:var(--dim);border:none;
+  font-family:var(--sans);font-size:12px;letter-spacing:.08em;
+  text-decoration:underline;text-decoration-color:var(--hairline);text-underline-offset:3px;
+}
+.return-card .rc-edit:hover{color:var(--ink);text-decoration-color:var(--ink)}
+.return-card .rc-go:focus-visible,.return-card .rc-edit:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- 오늘의 하늘 — 히어로 카드 ---------- */
+.fcard.day-hero{outline:1px solid var(--ink);outline-offset:3px;border-color:var(--ink)}
+.day-hero .th-label{font-size:9.5px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
+.day-hero .th-main{display:flex;gap:18px;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--ink)}
+.day-hero .th-seal{display:flex;flex-direction:column;gap:4px;line-height:1;font-family:var(--serif);font-size:30px;color:var(--accent);border:1px solid var(--accent);padding:9px 11px;flex:none}
+.day-hero .th-theme{font-family:var(--serif);font-size:23px;font-weight:500;letter-spacing:.1em;line-height:1.2}
+.day-hero .th-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);letter-spacing:.06em;margin-top:7px}
+.day-hero .th-rate{font-weight:700;letter-spacing:.12em}
+.day-hero .th-body{font-family:var(--serif);font-size:15.5px;line-height:1.85;color:var(--text);margin-top:2px}
+.day-hero .th-body b{color:var(--gold-soft)}
+
+/* ---------- 오늘의 행운 처방 ---------- */
+.openluck .ol-seal{display:inline-flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--accent);border:1px solid var(--accent);width:26px;height:26px;flex:none}
+.openluck .ol-why{margin-top:14px;font-size:14px;line-height:1.75;color:var(--text)}
+.openluck .ol-why b{color:var(--gold-soft)}
+.openluck .luckset{margin-top:16px}
+
 /* ---------- 페이지 전환 · 로딩 ---------- */
-body.loading .page-head,body.loading .form-card,body.loading .page-epi,
-body.viewing .page-head,body.viewing .form-card,body.viewing .page-epi{display:none}
+body.loading .page-head,body.loading .form-card,body.loading .page-epi,body.loading .return-card,
+body.viewing .page-head,body.viewing .form-card,body.viewing .page-epi,body.viewing .return-card{display:none}
 #loading{display:none;flex-direction:column;align-items:center;justify-content:center;padding:26vh 0 80px;text-align:center}
 body.loading #loading{display:flex}
 #loading .lmark{
@@ -290,15 +338,34 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .subcat:first-child{border-left:none}
 .subcat .scname{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
 .subcat .scscore{font-size:17px;font-weight:700;margin-top:3px;color:var(--ink)}
-.subcat .scbar{height:9px;margin-top:8px;background:linear-gradient(var(--hairline),var(--hairline)) 0 50%/100% 1px no-repeat}
-.subcat .scbar i{display:block;height:100%;position:relative;background:linear-gradient(var(--ink),var(--ink)) 0 50%/100% 1px no-repeat}
-.subcat .scbar i::after{content:"";position:absolute;right:0;top:0;bottom:0;width:1px;background:var(--ink)}
+/* Bar San 스케일 — 눈금 축 위의 사각 마커 */
+.subcat .scbar{position:relative;height:12px;margin-top:10px}
+.subcat .scbar::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--hairline)}
+.subcat .scbar::after{content:"";position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:5px;background-image:repeating-linear-gradient(90deg,var(--hairline) 0 1px,transparent 1px 12.5%)}
+.subcat .scbar i{position:absolute;top:50%;width:6px;height:6px;transform:translate(-50%,-50%);background:var(--ink);z-index:1}
 .sublines{margin-top:14px}
 .sublines p{font-size:13px;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--hairline)}
 .sublines p:last-child{border-bottom:none}
 .sublines b{color:var(--ink);font-weight:700}
 .lucky{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .lucky span{font-size:11px;font-weight:600;letter-spacing:.08em;border:1px solid var(--line);color:var(--ink);border-radius:0;padding:3px 10px}
+/* 행운 타일 — Bar San 레퍼런스 (손그림 라인 · 여백 · 뮤트) */
+.luckset{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.luckset.ol8{grid-template-columns:repeat(4,1fr)}
+.luckset .lk{display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;border:1px solid var(--divider);background:transparent;padding:22px 12px 17px}
+.luckset .lk-ic{width:42px;height:42px;color:var(--muted)}
+.luckset .lk-k{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.luckset .lk-v{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);line-height:1.4;word-break:keep-all}
+.luckset .lk-note{font-family:var(--sans);font-size:10.5px;color:var(--dim);letter-spacing:.02em;line-height:1.4;margin-top:-1px}
+.luckset .lk-dot{width:12px;height:12px;border-radius:50%;border:1px solid var(--hairline);flex:none}
+@media (max-width:600px){.luckset,.luckset.ol8{grid-template-columns:repeat(2,1fr)}}
+
+/* 행운의 나라 — 시기별 (네이탈 차트 행 리스트 스타일) */
+.trip .trip-list{margin-top:14px}
+.trip .prow .pg{display:flex;align-items:center;color:var(--muted)}
+.trip .prow .pg svg{width:16px;height:16px}
+.trip .prow .ps{font-family:var(--serif);font-weight:700}
+.trip .prow.now .pn{color:var(--accent)}
 .hourgrid{margin-top:8px}
 .hrow{display:grid;grid-template-columns:46px 82px 22px 1fr;gap:8px;align-items:baseline;padding:7px 8px;font-size:12.5px}
 .hrow + .hrow{border-top:1px solid var(--hairline)}
@@ -583,6 +650,23 @@ gtag('config', 'G-L7QPQ5GGL7');
     <hr class="page-divider">
   </header>
 
+  <div id="returnCard" class="return-card" style="display:none">
+    <p class="rc-eyebrow" data-en="Welcome back">다시 오셨네요</p>
+    <div class="rc-main">
+      <div class="rc-seal" aria-hidden="true"><span id="rcH1"></span><span id="rcH2"></span></div>
+      <div>
+        <h2 class="rc-name" id="rcName"></h2>
+        <p class="rc-date" id="rcDate"></p>
+      </div>
+    </div>
+    <p class="rc-th" id="rcTheme"></p>
+    <p class="rc-adv" id="rcAdv"></p>
+    <div class="rc-actions">
+      <button type="button" class="rc-go" id="rcGo" data-en="See today's full reading">오늘의 전체 리딩 보기</button>
+      <button type="button" class="rc-edit" id="rcEdit" data-en="Edit / start fresh">정보 수정 · 새로 보기</button>
+    </div>
+  </div>
+
   <form class="form-card" id="form" novalidate>
     <h2 data-en="Build Your Chart">명식 세우기</h2>
     <p class="fsub" data-en="Your chart maps the moment you were born into characters and stars. The more you enter, the sharper the cross-reading of all three systems.">명식(命式) — 태어난 순간을 글자와 별로 옮긴 당신의 지도입니다. 자세히 넣을수록 세 체계의 교차 해석이 정밀해집니다</p>
@@ -713,15 +797,15 @@ gtag('config', 'G-L7QPQ5GGL7');
     </div>
 
     <nav class="tabs" aria-label="리딩 섹션" data-en-aria="Reading section">
+      <a href="#fortune" data-t="fortune" data-en="Today's Fortune">오늘의 운세</a>
       <a href="#synth" data-t="synth" data-en="Reading">통합 리딩</a>
-      <a href="#fortune" data-t="fortune" data-en="Fortune">운세</a>
       <a href="#ask" data-t="ask" data-en="Ask">질문</a>
+      <a href="#gung" data-t="gung" data-en="Compatibility">궁합</a>
       <a href="#saju" data-t="saju" data-en="Saju">사주</a>
       <a href="#astro" data-t="astro" data-en="Astrology">별자리</a>
       <a href="#numer" data-t="numer" data-en="Numerology">수비학</a>
       <a href="#life" data-t="life" data-en="Life Map">인생 지도</a>
       <a href="#roots" data-t="roots" data-en="Roots">뿌리</a>
-      <a href="#gung" data-t="gung" data-en="Compatibility">궁합</a>
       <a href="#report" data-t="report" data-en="Monthly Talisman">이달의 세화</a>
     </nav>
 
@@ -731,14 +815,14 @@ gtag('config', 'G-L7QPQ5GGL7');
       <h2 class="sec-title" data-en="The You the Three Skies Draw">세 하늘이 그리는 당신</h2>
       <p class="sec-desc" data-en="Saju, astrology, and numerology don't know one another. When they still point to the same place — that's you.">사주 · 별자리 · 수비학은 서로 모르는 사이입니다. 그런데도 같은 곳을 가리킬 때, 그것이 당신입니다.</p>
       <p class="epi" data-en="&quot;I have become a question to myself.&quot; — this page reads that question in three languages.">"나는 나 자신에게 하나의 질문이 되었다." — 이 페이지는 그 질문을 세 갈래의 언어로 읽어본 기록입니다.</p>
-      <div id="headline"></div>
-      <div class="synth-open"><p id="synthOpen"></p></div>
-      <div class="card mirror">
+      <div class="card mirror" id="synthMirror">
         <p class="mlabel">Signature Reading</p>
         <h3 data-en="Mirror — me as others see me · me as I know myself">거울 — 남이 보는 나 · 내가 아는 나</h3>
         <p class="msub" data-en="Why does the same person look different? We set the outer record beside the inner one and read the gap between them.">같은 사람이 왜 다르게 보이는가 — 겉의 기록과 속의 기록을 나란히 놓고, 그 간극을 읽습니다.</p>
         <div id="synthLayers"></div>
       </div>
+      <div id="headline"></div>
+      <div class="synth-open"><p id="synthOpen"></p></div>
       <div class="card" id="synthPartner"></div>
       <div class="card" id="synthPlace"></div>
       <div id="synthTraits"></div>
@@ -932,7 +1016,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime.">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky.">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics.">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.23.3</span><br>
+        <span style="letter-spacing:.2em">SAN v3.24.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over">다시 보기</button>
@@ -1659,6 +1743,20 @@ const EL_COLOR = ['초록', '빨강', '노랑', '흰색', '파랑'];
 const EL_DIR = ['동쪽', '남쪽', '중앙 · 가까운 곳', '서쪽', '북쪽'];
 const EL_NUM = ['3 · 8', '2 · 7', '5 · 10', '4 · 9', '1 · 6'];
 const EL_TASTE = ['신맛', '쓴맛', '단맛', '매운맛', '짠맛'];
+/* 오행별 실제 색 스와치 (0목1화2토3금4수) */
+const EL_SWATCH = ['#4b8f6a', '#c74a3f', '#d8a72e', '#eee7d7', '#2f76a0'];
+/* 행운 타일 일러스트 — 손그림 톤 인라인 SVG (Bar San 레퍼런스 · 외부 통신 없음) */
+const LK_ICON = {
+  color: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8c0 0 10.5 11.5 10.5 19.5A10.5 10.5 0 0 1 13.5 27.5C13.5 19.5 24 8 24 8z"/><path d="M18.5 28.5a5.5 5.5 0 0 0 5 4.2" opacity=".55"/></svg>',
+  dir: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="16"/><path d="M24 10l3.2 10.8L38 24l-10.8 3.2L24 38l-3.2-10.8L10 24l10.8-3.2z"/><circle cx="24" cy="24" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  num: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="11" width="26" height="26" rx="5"/><circle cx="18" cy="18" r="1.7" fill="currentColor" stroke="none"/><circle cx="30" cy="18" r="1.7" fill="currentColor" stroke="none"/><circle cx="24" cy="24" r="1.7" fill="currentColor" stroke="none"/><circle cx="18" cy="30" r="1.7" fill="currentColor" stroke="none"/><circle cx="30" cy="30" r="1.7" fill="currentColor" stroke="none"/></svg>',
+  time: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="27" r="13"/><path d="M24 14V9.5M20.5 9.5h7"/><path d="M24 27v-6.5M24 27l4.5 2.5"/></svg>',
+  wear: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11l-8 5 3.5 5L18 19v18h12V19l3.5 2L37 16l-8-5a5 5 0 0 1-10 0z"/></svg>',
+  acc: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="30" r="9"/><path d="M20 20l4-5 4 5-4 3z"/></svg>',
+  food: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M11 23h26c0 7.5-6 13-13 13s-13-5.5-13-13z"/><path d="M11 23h26"/><path d="M20 12c0 2.5-2 2.5-2 5M27 11c0 2.5-2 2.5-2 5" opacity=".55"/></svg>',
+  hood: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M24 7a11 11 0 0 1 11 11c0 8-11 22-11 22S13 26 13 18A11 11 0 0 1 24 7z"/><circle cx="24" cy="18" r="3.8"/></svg>',
+  country: '<svg class="lk-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="16"/><path d="M8 24h32"/><ellipse cx="24" cy="24" rx="7" ry="16"/></svg>'
+};
 /* 역마 지지(인신사해) → 살아나는 이동 방위 */
 const YEOKMA_DIR = {2:'동북(艮)', 5:'동남(巽)', 8:'서남(坤)', 11:'서북(乾)'};
 /* 오행별 — 그 기운을 채워주는 나라 (역마 있는 사람에게 제안). index = 부족한 오행 */
@@ -3104,41 +3202,34 @@ function restoreForm() {
 $('#forget').addEventListener('click', forgetForm);
 restoreForm();
 
-$('#form').addEventListener('submit', e => {
-  e.preventDefault();
-  const err = $('#err');
-  const showErr = msg => {
-    err.textContent = msg;
-    err.style.display = 'block';
-    $('#dateNum').focus();
-  };
+/* 폼 입력을 파싱해 input 객체로 — 제출과 재방문 카드가 공유(부작용 없음). {input} 또는 {error} 반환 */
+function parseFormInput() {
   const validSolar = t => { const dt = new Date(t.y, t.m - 1, t.d); return dt.getMonth() === t.m - 1 && dt.getDate() === t.d; };
   const toSolar = (t, calv) => calv === 'solar'
     ? (validSolar(t) ? {y: t.y, m: t.m, d: t.d} : null)
     : lunarToSolar(t.y, t.m, t.d, calv === 'lunarLeap');
 
   const raw = readNum8('dateNum');
-  if (!raw.filled) { showErr(TT('생년월일을 숫자 8자리로 입력해주세요 — 예: 19980801.', 'Please enter your date of birth as 8 digits — e.g. 19980801.')); return; }
+  if (!raw.filled) return {error: TT('생년월일을 숫자 8자리로 입력해주세요 — 예: 19980801.', 'Please enter your date of birth as 8 digits — e.g. 19980801.')};
   const cal = $('#cal').value;
   const solar = toSolar(raw, cal);
-  if (!solar) { showErr(cal === 'solar' ? '존재하지 않는 날짜입니다.' : cal === 'lunarLeap' ? '그 해에는 해당 윤달이 없습니다. 달력 선택을 확인해주세요.' : '음력에 없는 날짜입니다.'); return; }
+  if (!solar) return {error: cal === 'solar' ? '존재하지 않는 날짜입니다.' : cal === 'lunarLeap' ? '그 해에는 해당 윤달이 없습니다. 달력 선택을 확인해주세요.' : '음력에 없는 날짜입니다.'};
   const {y, m, d} = solar;
 
   const fRaw = readNum8('fatherNum'), mRaw = readNum8('motherNum');
-  if (fRaw.touched && !fRaw.filled) { showErr(TT('아버지 생년월일을 숫자 8자리로 입력해주세요 — 예: 19650208.', "Enter father's date of birth as 8 digits — e.g. 19650208.")); return; }
-  if (mRaw.touched && !mRaw.filled) { showErr(TT('어머니 생년월일을 숫자 8자리로 입력해주세요 — 예: 19670521.', "Enter mother's date of birth as 8 digits — e.g. 19670521.")); return; }
+  if (fRaw.touched && !fRaw.filled) return {error: TT('아버지 생년월일을 숫자 8자리로 입력해주세요 — 예: 19650208.', "Enter father's date of birth as 8 digits — e.g. 19650208.")};
+  if (mRaw.touched && !mRaw.filled) return {error: TT('어머니 생년월일을 숫자 8자리로 입력해주세요 — 예: 19670521.', "Enter mother's date of birth as 8 digits — e.g. 19670521.")};
   const fDate = fRaw.filled ? toSolar(fRaw, $('#fatherCal').value) : null;
   const mDate = mRaw.filled ? toSolar(mRaw, $('#motherCal').value) : null;
-  if (fRaw.filled && !fDate) { showErr(TT('아버지 생년월일이 올바르지 않습니다.', "Father's date of birth is invalid.")); return; }
-  if (mRaw.filled && !mDate) { showErr(TT('어머니 생년월일이 올바르지 않습니다.', "Mother's date of birth is invalid.")); return; }
-  err.style.display = 'none';
+  if (fRaw.filled && !fDate) return {error: TT('아버지 생년월일이 올바르지 않습니다.', "Father's date of birth is invalid.")};
+  if (mRaw.filled && !mDate) return {error: TT('어머니 생년월일이 올바르지 않습니다.', "Mother's date of birth is invalid.")};
 
   let time = null;
   if (!$('#notime').checked) {
     time = readTime4('time');
-    if (time === false) { showErr(TT('태어난 시간은 숫자 4자리로 입력해주세요 — 예: 0930, 1830. 모르면 「몰라요」에 체크하세요.', 'Enter birth time as 4 digits — e.g. 0930, 1830. If unknown, check «I don\'t know».')); return; }
+    if (time === false) return {error: TT('태어난 시간은 숫자 4자리로 입력해주세요 — 예: 0930, 1830. 모르면 「몰라요」에 체크하세요.', 'Enter birth time as 4 digits — e.g. 0930, 1830. If unknown, check «I don\'t know».')};
   }
-  const input = {
+  return {input: {
     y, m, d, time,
     gender: $('#gender').value,
     lunarInput: cal !== 'solar',
@@ -3148,7 +3239,72 @@ $('#form').addEventListener('submit', e => {
     mother: $('#mother').value.trim(),
     fatherDate: fDate, motherDate: mDate,
     geo: getGeo()
-  };
+  }};
+}
+
+/* 오늘의 한 줄 — 저장된 명식으로 오늘 일진의 결(테마)을 뽑아 짧게. 실패 시 null */
+function todayOneLine(input) {
+  try {
+    const {y, m, d, time, geo} = input;
+    const now = new Date();
+    const corrMin = Math.round((geo.lon - geo.tz * 15) * 4);
+    const saju = computeSaju(y, m, d, time, corrMin, geo.tz);
+    const astro = computeAstro(y, m, d, time, geo);
+    const wed = new Date(now); wed.setDate(now.getDate() - ((now.getDay() + 6) % 7) + 2);
+    const fortune = computeFortune(
+      {dayStem: saju.day.stem, sunLong: astro.sun.long, moonLong: astro.moon.long, birthM: m, birthD: d},
+      {today: {y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate()},
+       wed: {y: wed.getFullYear(), m: wed.getMonth() + 1, d: wed.getDate()}},
+      9);
+    const p0 = fortune.periods[0], t = fortune.today;
+    const th = (LANG === 'en') ? THEMES_EN[p0.theme] : THEMES[p0.theme];
+    const tgL = (LANG === 'en') ? `${TG_NICK_EN[p0.saju.tg]} (${TENGOD_NAME_EN[p0.saju.tg]})` : tgLabel(p0.saju.tg);
+    const prose = (LANG === 'en')
+      ? `The energy of <b>${tgL}</b> enters you today. ${th.adv}`
+      : `오늘 당신에게는 <b>${tgL}</b>의 기운이 들어옵니다. ${th.adv}`;
+    return {name: th.name, adv: th.adv, prose, gz: p0.saju.gz,
+      h1: STEMS[t.day.stem].h, h2: BRANCHES[t.day.branch].h, rate: TG_RATE[p0.saju.tg]};
+  } catch (e) { return null; }
+}
+
+/* 재방문 첫 화면 — 저장된 명식이 있으면 오늘의 한 줄 카드 노출 (페이지 끝에서 호출) */
+function showReturnCard() {
+  const card = $('#returnCard');
+  if (!card) return;
+  let saved = null;
+  try { saved = localStorage.getItem(MEM_KEY); } catch (e) {}
+  if (!saved) return;                       // 저장된 사용자만
+  const parsed = parseFormInput();
+  if (parsed.error) return;                 // 저장값이 불완전하면 그냥 폼 노출
+  const line = todayOneLine(parsed.input);
+  if (!line) return;
+  const nm = ($('#name').value.trim() || $('#ename').value.trim());
+  const now = new Date();
+  const dstr = LANG === 'en'
+    ? now.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})
+    : `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+  const rate = L(RATE_WORD[line.rate], RATE_WORD_EN[line.rate]);
+  $('#rcH1').textContent = line.h1;
+  $('#rcH2').textContent = line.h2;
+  $('#rcName').textContent = nm ? L(`${nm}님의 오늘`, `${nm} — today`) : L('당신의 오늘', 'Your today');
+  $('#rcDate').textContent = L(`${dstr} · ${line.gz}일 · ${RATE_ICON[line.rate]} ${rate}`, `${dstr} · ${line.gz} · ${RATE_ICON[line.rate]} ${rate}`);
+  $('#rcTheme').textContent = L(`오늘의 결 — ${line.name}`, `Today's grain — ${line.name}`);
+  $('#rcAdv').innerHTML = line.prose;
+  card.style.display = '';
+}
+
+$('#form').addEventListener('submit', e => {
+  e.preventDefault();
+  const err = $('#err');
+  const parsed = parseFormInput();
+  if (parsed.error) {
+    err.textContent = parsed.error;
+    err.style.display = 'block';
+    $('#dateNum').focus();
+    return;
+  }
+  err.style.display = 'none';
+  const input = parsed.input;
 
   if ($('#remember').checked) saveForm(); else forgetForm();
 
@@ -3236,14 +3392,14 @@ function render(inp) {
 
   renderHeadline(inp, saju, astro, num);
   renderSynth(saju, astro, num);
-  renderFortune(fortune, now, saju, natalTGs);
+  renderFortune(fortune, now, saju, natalTGs, astro, num);
   renderSaju(saju, time, inp, astro, num);
   renderAstro(astro, geo, ename, saju);
   renderNumer(num, nameForNum, now.getFullYear(), saju, astro);
   renderRoots(inp, saju, num, astro, now);
   renderReport(inp, saju, astro, num, fortune);
   renderLife(inp, saju, astro, num, age, now.getFullYear());
-  showTab('synth');
+  showTab('fortune');
 }
 
 /* ---- 질문: 패 뽑기 ---- */
@@ -4654,7 +4810,7 @@ const gzEN = (gz, key) => {
 };
 
 /* FUNCTION */
-function renderFortune(f, now, natalSaju, natalTGs) {
+function renderFortune(f, now, natalSaju, natalTGs, astro, num) {
   const y = now.getFullYear(), m = now.getMonth() + 1, d = now.getDate();
   const dayStem = natalSaju.day.stem;
   const t = f.today; // 오늘의 사주(일진)
@@ -4669,7 +4825,7 @@ function renderFortune(f, now, natalSaju, natalTGs) {
   const inTension = (a, b) => TENSION_THEMES.some(([x, z]) => (a === x && b === z) || (a === z && b === x));
   const tn = t => L(THEMES[t].name, THEMES_EN[t].name);
   const tShort = t => (LANG === 'en' ? THEMES_EN[t].name : THEMES[t].name).split(' · ')[0];
-  const periodCard = (p, extra = '') => {
+  const periodCard = (p, extra = '', hero = null) => {
     const th = THEMES[p.theme];
     const gzD = LANG === 'en' ? gzEN(p.saju.gz, p.key) : p.saju.gz;
     let agreeLine, splitHtml = '';
@@ -4690,13 +4846,14 @@ function renderFortune(f, now, natalSaju, natalTGs) {
         `<p class="fsplit"><b>갈림 읽기</b> — 현실의 일(사주)은 <b>${tn(p.saju.theme)}</b>, 바깥의 흐름(별)은 <b>${tn(p.astro.theme)}</b>, 안의 주기(수)는 <b>${tn(p.num.theme)}</b>. 하나로 합치려 하지 말고 영역을 나누세요 — 일과 현실은 ${tShort(p.saju.theme)}의 결로, 사람과 기회는 ${tShort(p.astro.theme)}의 결로, 마음의 페이스는 ${tShort(p.num.theme)}의 결로 따로 운용하는 것이 이 시기의 정답입니다.</p>`,
         `<p class="fsplit"><b>Where they split</b> — real-world matters (Four Pillars) point to <b>${tn(p.saju.theme)}</b>, the outer current (Astrology) to <b>${tn(p.astro.theme)}</b>, and the inner cycle (Numerology) to <b>${tn(p.num.theme)}</b>. Don't try to fold them into one — divide by domain: run work and reality in the key of ${tShort(p.saju.theme)}, people and opportunity in the key of ${tShort(p.astro.theme)}, and your inner pace in the key of ${tShort(p.num.theme)}. Running them separately is the right answer for this period.</p>`);
     }
-    return `<div class="fcard">
-      <div class="fhead">
+    const stdHead = `<div class="fhead">
         <span class="fperiod">${PERIOD_META[p.key].label}${L(` · ${PERIOD_META[p.key].kr}`, '')}</span>
         <span class="fdate">${dateLabel[p.key]}</span>
       </div>
       <p class="ftheme">${L(th.name, THEMES_EN[p.theme].name)}</p>
-      <p class="fadvice">${L(THEMES[p.theme].adv, THEMES_EN[p.theme].adv)}</p>
+      <p class="fadvice">${L(THEMES[p.theme].adv, THEMES_EN[p.theme].adv)}</p>`;
+    return `<div class="fcard${hero ? ' day-hero' : ''}">
+      ${hero || stdHead}
       <p class="fagree">${agreeLine}</p>
       ${splitHtml}
       ${extra}
@@ -4750,16 +4907,10 @@ function renderFortune(f, now, natalSaju, natalTGs) {
       <div class="subcat">
         <p class="scname">${L(s.sc.key + '운', SUBCATS_EN[i].key)}</p>
         <p class="scscore">${s.score}</p>
-        <div class="scbar"><i style="width:${s.score}%"></i></div>
+        <div class="scbar"><i style="left:${s.score}%"></i></div>
       </div>`).join('')}</div>
     <div class="sublines">${subs.map((s, i) =>
-      `<p><b>${L(s.sc.key, SUBCATS_EN[i].key)} ${s.score} · ${L(RATE_WORD[s.tier], RATE_WORD_EN[s.tier])}</b> — ${L(s.sc.lines[s.tier], SUBCATS_EN[i].lines[s.tier])}</p>`).join('')}</div>
-    <div class="lucky">
-      <span>${L('행운의 색', 'Lucky color')} · ${L(EL_COLOR[weak], EL_COLOR_EN[weak])}</span>
-      <span>${L('방위', 'Direction')} · ${L(EL_DIR[weak], EL_DIR_EN[weak])}</span>
-      <span>${L('숫자', 'Numbers')} · ${EL_NUM[weak]}</span>
-      <span>${L('길한 시간', 'Lucky hour')} · ${luckyHour.name} ${luckyHour.range}</span>
-    </div>`;
+      `<p><b>${L(s.sc.key, SUBCATS_EN[i].key)} ${s.score} · ${L(RATE_WORD[s.tier], RATE_WORD_EN[s.tier])}</b> — ${L(s.sc.lines[s.tier], SUBCATS_EN[i].lines[s.tier])}</p>`).join('')}</div>`;
 
   const hourCard = `<div class="fcard">
     <div class="fhead">
@@ -4789,8 +4940,152 @@ function renderFortune(f, now, natalSaju, natalTGs) {
       <p class="wkw">${w.kw}</p>
     </div>`).join('')}</div>`;
 
+  /* 오늘의 하늘 — 히어로 헤더 (통합리딩 첫 마디와 같은 결) */
+  const rateT = TG_RATE[p0.saju.tg];
+  const tgLT = L(tgLabel(p0.saju.tg), `${TG_NICK_EN[p0.saju.tg]} (${TENGOD_NAME_EN[p0.saju.tg]})`);
+  const dayHero = `
+    <p class="th-label">${L('TODAY · 오늘의 하늘', "TODAY · Today's Sky")}</p>
+    <div class="th-main">
+      <div class="th-seal" aria-hidden="true"><span>${STEMS[t.day.stem].h}</span><span>${BRANCHES[t.day.branch].h}</span></div>
+      <div class="th-head">
+        <p class="th-theme">${L(THEMES[p0.theme].name, THEMES_EN[p0.theme].name)}</p>
+        <p class="th-meta"><span>${L(`${m}월 ${d}일 · ${p0.saju.gz}일`, `${MONTH_EN[m]} ${d} · ${gzEN(p0.saju.gz, 'day')}`)}</span><span class="th-rate hr${rateT}">${RATE_ICON[rateT]} ${L(RATE_WORD[rateT], RATE_WORD_EN[rateT])}</span></p>
+      </div>
+    </div>
+    <p class="th-body">${L(`오늘 당신에게는 <b>${tgLT}</b>의 기운이 들어옵니다. ${THEMES[p0.theme].adv}`, `The energy of <b>${tgLT}</b> enters you today. ${THEMES_EN[p0.theme].adv}`)}</p>`;
+
+  /* ===== 오늘의 행운 처방 — 사주×별자리×수비학 교집합을 오늘 일진과 다시 교차 (유저·날마다 다름) ===== */
+  /* 오행별 나라 풀 (0목1화2토3금4수) — 행운 나라 타일 · 시기별 나라 카드 공용 */
+  const CO_KO = EL_COUNTRY.map(o => o.list.map(x => x[0]));
+  const CO_EN = EL_PLACE_EN.map(o => o.countries);
+  const COS = LANG === 'en' ? CO_EN : CO_KO;
+
+  const openLuckCard = (() => {
+    /* 세 체계 → 오행(0목1화2토3금4수) */
+    const NUM2EL = {1:0, 2:4, 3:1, 4:2, 5:3, 6:2, 7:4, 8:3, 9:1, 11:1, 22:2, 33:4};
+    const weakEl = weak;                                  // 사주: 가장 옅은 오행
+    const sunEl  = ZOD2EL[astro.sun.sign % 4];            // 별자리: 태양 원소 → 오행
+    const numEl  = NUM2EL[num.lifePath] ?? 2;             // 수비학: 라이프패스 → 오행
+    const todayEl = STEMS[t.day.stem].el;                 // 오늘: 일진 천간의 오행
+    /* 유저×오늘 시드 (동률 해소·다양성) */
+    const uSeed = (natalSaju.dayIdx60 + 1) * 31 + (num.lifePath || 0) * 17 + (astro.sun.sign + 1) * 7;
+    const dSeed = t.dayIdx60 + 1;
+    const jit = e => ((uSeed * (e + 3) * 7 + dSeed * (e + 5) * 13) >>> 0) % 10;
+    /* 오행별 점수 — 세 체계 + 오늘 + 상생(보) + 시드 */
+    let openEl = 0, best = -1;
+    for (let e = 0; e < 5; e++) {
+      const score = (e === weakEl ? 20 : 0) + (e === sunEl ? 10 : 0) + (e === numEl ? 10 : 0)
+        + (e === todayEl ? 16 : 0) + ((e + 1) % 5 === weakEl ? 8 : 0) + jit(e);
+      if (score > best) { best = score; openEl = e; }
+    }
+    const pick = (arr, salt) => arr[((uSeed * 131 + dSeed * 89 + salt * 977) >>> 0) % arr.length];
+
+    const C_KO = [['짙은 초록','올리브','민트','연둣빛'],['선명한 빨강','버건디','코랄','주홍'],['머스터드','베이지','카멜','황토색'],['화이트','실버 그레이','아이보리','라이트 골드'],['네이비','딥블루','청록','먹빛 남색']];
+    const W_KO = [['리넨 셔츠','자연 소재 니트','식물 프린트 상의','넉넉한 코튼'],['레드 포인트 아이템','선명한 컬러 재킷','실키한 블라우스','볼드한 프린트'],['도톰한 니트','베이지 트렌치','포근한 울 가디건','스웨이드 소재'],['깔끔한 화이트 셔츠','테일러드 재킷','메탈릭 포인트','미니멀 슈트'],['네이비 코트','흐르는 실루엣 원피스','실크 스카프','매끈한 새틴']];
+    const A_KO = [['우드 팔찌','식물 모티프 이어링','그린 스톤 반지','라탄 가방'],['레드 스톤 반지','골드 포인트 이어링','붉은 스카프','볼드한 링'],['도자기 펜던트','브라운 가죽 벨트','토파즈 목걸이','원목 시계'],['실버 체인','메탈 워치','화이트골드 링','미니멀 이어커프'],['진주 귀걸이','블루 스톤 목걸이','아쿠아마린','은은한 실버 체인']];
+    const F_KO = [['샐러드·나물','신 과일','레몬수','새콤한 무침'],['따뜻한 국물','매콤 볶음','붉은 육류','구운 요리'],['잡곡밥·뿌리채소','단호박·고구마','노란 곡물','담백한 죽'],['흰 살 생선','매콤한 면','흰쌀·두부','알싸한 향신료'],['해산물','검은콩·미역','짭짤한 국','블루베리']];
+    const H_KO = [['나무 많은 공원 근처','동쪽의 오래된 골목','식물원·수목원','아침 햇살 드는 동네 카페'],['볕 좋은 번화가','남쪽의 전망 좋은 언덕','활기찬 시장통','노을 지는 루프탑'],['도심 한복판·중심가','오래된 동네의 단골집','도자기·공예 골목','가까운 동네 산책로'],['정돈된 서쪽 상업지구','미술관·갤러리 거리','미니멀한 편집숍','조용한 서점'],['강이나 바다 가까운 곳','북쪽의 물가 산책로','수족관·아쿠아리움','비 오는 날의 찻집']];
+    const C_EN = [['deep green','olive','mint','soft lime'],['vivid red','burgundy','coral','vermilion'],['mustard','beige','camel','ochre'],['white','silver grey','ivory','light gold'],['navy','deep blue','teal','ink-blue']];
+    const W_EN = [['a linen shirt','a natural-fiber knit','a botanical-print top','loose cotton'],['a red accent piece','a bright-colored jacket','a silky blouse','a bold print'],['a chunky knit','a beige trench','a cozy wool cardigan','suede'],['a crisp white shirt','a tailored jacket','a metallic accent','a minimal suit'],['a navy coat','a flowing dress','a silk scarf','smooth satin']];
+    const A_EN = [['a wood bracelet','botanical earrings','a green-stone ring','a rattan bag'],['a red-stone ring','gold accent earrings','a red scarf','a bold ring'],['a ceramic pendant','a brown leather belt','a topaz necklace','a wooden watch'],['a silver chain','a metal watch','a white-gold ring','a minimal ear cuff'],['pearl earrings','a blue-stone necklace','aquamarine','a subtle silver chain']];
+    const F_EN = [['a fresh salad','sour fruit','lemon water','a tangy dish'],['a warm broth','a spicy stir-fry','red meat','a grilled dish'],['multigrain rice & roots','pumpkin or sweet potato','yellow grains','a mild porridge'],['white fish','spicy noodles','white rice or tofu','a peppery dish'],['seafood','black beans or seaweed','a savory soup','blueberries']];
+    const H_EN = [['near a leafy park','an old lane to the east','a botanical garden','a sunlit neighborhood cafe'],['a sunny downtown','a hill with a view to the south','a lively market street','a rooftop at sunset'],['the city center','a regular spot in an old town','a craft & pottery lane','a walk in your own neighborhood'],['a tidy district to the west','a museum & gallery street','a minimal select shop','a quiet bookstore'],['near a river or the sea','a waterside walk to the north','an aquarium','a teahouse on a rainy day']];
+    const CS = LANG === 'en' ? C_EN : C_KO, WS = LANG === 'en' ? W_EN : W_KO, AS = LANG === 'en' ? A_EN : A_KO, FS = LANG === 'en' ? F_EN : F_KO, HS = LANG === 'en' ? H_EN : H_KO;
+
+    const elK = L(ELEMENTS[openEl].k, ELEMENTS_EN[openEl].k), elH = ELEMENTS[openEl].h;
+    const zK = L(ZOD_EL[astro.sun.sign % 4], ZOD_EL_EN[astro.sun.sign % 4]);
+    const sunName = L(SIGNS[astro.sun.sign].k, SIGNS_EN[astro.sun.sign]);
+    const swatch = `<i class="lk-dot" style="background:${EL_SWATCH[openEl]}"></i>`;
+    const rows = [
+      [LK_ICON.color, L('컬러','Color'), swatch + pick(CS[openEl], 1), L(`${ELEMENTS[openEl].k}의 색`, `a ${ELEMENTS_EN[openEl].k} tone`)],
+      [LK_ICON.wear, L('옷','Wear'), pick(WS[openEl], 2), ''],
+      [LK_ICON.acc, L('악세서리','Accessory'), pick(AS[openEl], 3), ''],
+      [LK_ICON.food, L('음식','Food'), pick(FS[openEl], 4), L(`${EL_TASTE[openEl]}으로 보(補)`, `nourished by the ${EL_TASTE_EN[openEl]} taste`)],
+      [LK_ICON.num, L('행운의 숫자','Lucky numbers'), EL_NUM[openEl], L(`${ELEMENTS[openEl].k}의 수`, `${ELEMENTS_EN[openEl].k} numbers`)],
+      [LK_ICON.time, L('길한 시간','Lucky hour'), `${luckyHour.name} ${luckyHour.range}`, ''],
+      [LK_ICON.hood, L('동네','Where to go'), pick(HS[openEl], 5), L(`${EL_DIR[openEl]} 방위`, `${EL_DIR_EN[openEl]} direction`)],
+      [LK_ICON.country, L('나라','Country'), pick(COS[openEl], 6), L(`${ELEMENTS[openEl].k} 기운의 땅`, `a ${ELEMENTS_EN[openEl].k} land`)]
+    ];
+    const why = L(
+      `사주(가장 옅은 <b>${ELEMENTS[weakEl].k}</b>) · 별자리(태양 ${sunName}의 ${zK}) · 수비학(라이프패스 ${num.lifePath})을 오늘 일진 <b>${p0.saju.gz}</b>${jWa(p0.saju.gz)} 다시 겹쳐 뽑았습니다 — 오늘 당신을 채우는 기운은 <b>${elK}(${elH})</b>입니다.`,
+      `We recrossed your Four Pillars (weakest <b>${ELEMENTS_EN[weakEl].k}</b>), astrology (Sun in ${sunName}, ${zK}) and numerology (Life Path ${num.lifePath}) with today's day pillar <b>${gzEN(p0.saju.gz, 'day')}</b> — the energy filling you today is <b>${elK} (${elH})</b>.`);
+
+    return `<div class="fcard openluck">
+      <div class="fhead">
+        <span class="fperiod">${L('LUCK BOOST · 오늘의 행운 처방', "LUCK BOOST · Today's Boosters")}</span>
+        <span class="fdate"><span class="ol-seal" aria-hidden="true">${elH}</span></span>
+      </div>
+      <p class="ol-why">${why}</p>
+      <div class="luckset ol8">${rows.map(([ic, k, v, note]) => `
+        <div class="lk">${ic}<span class="lk-k">${k}</span><span class="lk-v">${v}</span>${note ? `<span class="lk-note">${note}</span>` : ''}</div>`).join('')}</div>
+      <details>
+        <summary>${L('왜 이렇게 나왔나 — 세 하늘 × 오늘', 'Why these — the three skies × today')}</summary>
+        <div class="fev">
+          <div class="frow"><span class="fsys">${L('사주','Four Pillars')}</span><span class="ftxt">${L(`명식에서 가장 옅은 오행은 <b>${ELEMENTS[weakEl].k}</b> — 이를 채우는 기운을 기준으로 잡습니다.`, `The scarcest element in your chart is <b>${ELEMENTS_EN[weakEl].k}</b> — filling it sets the baseline.`)}</span></div>
+          <div class="frow"><span class="fsys">${L('별자리','Astrology')}</span><span class="ftxt">${L(`태양 ${sunName}의 ${zK} 원소 → 오행 <b>${ELEMENTS[sunEl].k}</b>.`, `Sun in ${sunName}, ${zK} element → <b>${ELEMENTS_EN[sunEl].k}</b>.`)}</span></div>
+          <div class="frow"><span class="fsys">${L('수비학','Numerology')}</span><span class="ftxt">${L(`라이프패스 ${num.lifePath} → 오행 <b>${ELEMENTS[numEl].k}</b>.`, `Life Path ${num.lifePath} → <b>${ELEMENTS_EN[numEl].k}</b>.`)}</span></div>
+          <div class="frow"><span class="fsys">${L('오늘','Today')}</span><span class="ftxt">${L(`오늘 일진 <b>${p0.saju.gz}</b>의 오행 <b>${ELEMENTS[todayEl].k}</b>${jIga(ELEMENTS[todayEl].k)} 겹치며, 오늘의 행운 기운은 <b>${elK}</b>${jRo(elK)} 모였습니다.`, `Today's pillar <b>${gzEN(p0.saju.gz, 'day')}</b> carries <b>${ELEMENTS_EN[todayEl].k}</b>, converging on <b>${elK}</b> for today.`)}</span></div>
+        </div>
+      </details>
+    </div>`;
+  })();
+
+  /* ===== 나랑 맞는 나라 — 시기별 (부족 기운 × 그 시기 일진, 유저·시기마다 다름) ===== */
+  const countryCard = (() => {
+    const seedC = (natalSaju.dayIdx60 + 1) * 31 + (num.lifePath || 0) * 17 + (astro.sun.sign + 1) * 7;
+    const coPick = (el, salt) => COS[el][((seedC + salt * 131) >>> 0) % COS[el].length];
+    const dEl = (Y, M, D) => STEMS[computeSaju(Y, M, D, null).day.stem].el;
+    const D0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const add = n => { const d = new Date(D0); d.setDate(D0.getDate() + n); return d; };
+    const md = d => `${d.getMonth() + 1}/${d.getDate()}`;
+    const satOff = (6 - D0.getDay() + 7) % 7;
+
+    const HOL_EN = {신정:'New Year', 삼일절:'Independence Day', 어린이날:"Children's Day", 현충일:'Memorial Day', 광복절:'Liberation Day', 개천절:'National Foundation Day', 한글날:'Hangeul Day', 크리스마스:'Christmas', 설날:'Seollal', 추석:'Chuseok'};
+    const hols = [];
+    for (const yy of [D0.getFullYear(), D0.getFullYear() + 1]) {
+      [[1,1,'신정'],[3,1,'삼일절'],[5,5,'어린이날'],[6,6,'현충일'],[8,15,'광복절'],[10,3,'개천절'],[10,9,'한글날'],[12,25,'크리스마스']].forEach(([M, D, nm]) => hols.push({nm, d: new Date(yy, M - 1, D)}));
+      try { const s = lunarToSolar(yy, 1, 1, false); if (s) hols.push({nm: '설날', d: new Date(s.y, s.m - 1, s.d)}); } catch (e) {}
+      try { const c = lunarToSolar(yy, 8, 15, false); if (c) hols.push({nm: '추석', d: new Date(c.y, c.m - 1, c.d)}); } catch (e) {}
+    }
+    const nextHol = hols.filter(h => h.d >= D0).sort((a, b) => a.d - b.d)[0] || hols.sort((a, b) => a.d - b.d)[0];
+
+    const slots = [
+      [L('오늘', 'Today'), D0],
+      [L('내일', 'Tomorrow'), add(1)],
+      [L('이번 주', 'This week'), add(satOff)],
+      [L('다음 주', 'Next week'), add(satOff + 7)],
+      [L('이번 달', 'This month'), new Date(D0.getFullYear(), D0.getMonth(), 15)],
+      [L('다음 달', 'Next month'), new Date(D0.getFullYear(), D0.getMonth() + 1, 15)],
+      [L(`가까운 연휴 · ${nextHol.nm} (${md(nextHol.d)})`, `Next holiday · ${HOL_EN[nextHol.nm] || nextHol.nm} (${md(nextHol.d)})`), nextHol.d]
+    ];
+    const shortL = [L('오늘', 'Today'), L('내일', 'Tomorrow'), L('이번주', 'This week'), L('다음주', 'Next week'), L('이번달', 'This month'), L('다음달', 'Next month'), L('연휴', 'Holiday')];
+    const list = slots.map(([label, d], i) => {
+      const te = (weak + dEl(d.getFullYear(), d.getMonth() + 1, d.getDate())) % 5;
+      const co = coPick(te, i + 1);
+      const dateStr = (i === 4 || i === 5) ? L(`${d.getMonth() + 1}월`, MONTH_EN[d.getMonth() + 1])
+        : i === 6 ? `${L(nextHol.nm, HOL_EN[nextHol.nm] || nextHol.nm)} ${md(d)}` : md(d);
+      return `<div class="prow${i === 0 ? ' now' : ''}">
+        <span class="pg" aria-hidden="true">${LK_ICON.country}</span>
+        <span class="pn">${shortL[i]} <i>${dateStr}</i></span>
+        <span class="ps">${co}</span>
+        <span class="pe">${L(`${ELEMENTS[te].k} 기운을 채우는 땅`, `a land that refills ${ELEMENTS_EN[te].k}`)}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="fcard trip">
+      <div class="fhead">
+        <span class="fperiod">${L('TRAVEL · 행운의 나라', 'TRAVEL · Lucky Countries')}</span>
+        <span class="fdate">${L('시기별', 'by period')}</span>
+      </div>
+      <p class="ol-why">${L('당신에게 부족한 기운과 그 시기의 일진을 겹쳐 뽑았습니다 — 시기마다 당신을 채워줄 나라가 달라집니다.', "We crossed the element you lack with each period's day pillar — the land that refills you shifts with the season.")}</p>
+      <div class="natal trip-list">${list}</div>
+    </div>`;
+  })();
+
   $('#fortuneCards').innerHTML =
-    periodCard(f.periods[0], dayExtra) +
+    periodCard(f.periods[0], dayExtra, dayHero) +
+    openLuckCard +
+    countryCard +
     hourCard +
     periodCard(f.periods[1], weekExtra) +
     f.periods.slice(2).map(p => periodCard(p)).join('');
@@ -6339,7 +6634,15 @@ function showTab(id) {
   if (sec && sec.getBoundingClientRect().top < 0) sec.scrollIntoView({behavior: 'auto'});
 }
 tabLinks.forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.t); }));
-showTab('synth');
+showTab('fortune');
+
+/* 재방문 카드 버튼 — 전체 리딩 보기 / 정보 수정 */
+$('#rcGo').addEventListener('click', () => { $('#returnCard').style.display = 'none'; $('#form').requestSubmit(); });
+$('#rcEdit').addEventListener('click', () => {
+  $('#returnCard').style.display = 'none';
+  $('#form').scrollIntoView({behavior: 'smooth', block: 'start'});
+  $('#dateNum').focus({preventScroll: true});
+});
 
 /* ---------- 언어 토글 (KO ⇄ EN) — data-en / data-en-ph / data-en-html 기반 (LANG은 위에서 선언) ---------- */
 function applyLang() {
@@ -6369,6 +6672,8 @@ function applyLang() {
   if (document.body.classList.contains('viewing') && window.__lastInput) {
     try { render(window.__lastInput); showTab(document.querySelector('.tabs a.on')?.dataset.t || 'synth'); } catch (e) {}
   }
+  /* 재방문 카드가 떠 있으면 언어에 맞춰 오늘의 한 줄도 다시 채움 */
+  try { const rc = $('#returnCard'); if (rc && rc.style.display !== 'none') showReturnCard(); } catch (e) {}
 }
 document.getElementById('langBtn').addEventListener('click', () => {
   LANG = LANG === 'en' ? 'ko' : 'en';
@@ -6376,6 +6681,7 @@ document.getElementById('langBtn').addEventListener('click', () => {
   applyLang();
 });
 applyLang();
+showReturnCard();
 </script>
 </body>
 </html>
