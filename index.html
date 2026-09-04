@@ -145,6 +145,15 @@ input,select{max-width:100%}
 .day-hero .th-rate{font-weight:700;letter-spacing:.12em}
 .day-hero .th-body{font-family:var(--serif);font-size:15.5px;line-height:1.85;color:var(--text);margin-top:2px}
 .day-hero .th-body b{color:var(--gold-soft)}
+/* 지금 이 시각 — 반시진 히어로 (매시간 갱신) */
+.nowhero .th-label{color:var(--accent)}
+.nowhero .th-seal{flex-direction:row;font-size:40px;padding:8px 15px}
+.nowhero .th-theme{letter-spacing:.06em;line-height:1.35}
+.nowhero .th-theme b{color:var(--accent);font-weight:600}
+.nh-next{margin-top:13px;border-top:1px solid var(--hairline);padding-top:10px;font-size:12.5px;color:var(--muted)}
+.nh-next b{color:var(--ink)}
+.nh-why{margin-top:8px;font-size:11.5px;color:var(--dim);line-height:1.7}
+.nh-why b{color:var(--muted)}
 
 /* ---------- 오늘의 행운 처방 ---------- */
 .openluck .ol-seal{display:inline-flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--accent);border:1px solid var(--accent);width:26px;height:26px;flex:none}
@@ -4842,9 +4851,6 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
       <p class="wkw">${w.kw}</p>
     </div>`).join('')}</div>`;
 
-  /* 오늘의 하늘 — 히어로 헤더 (통합리딩 첫 마디와 같은 결) */
-  const rateT = TG_RATE[p0.saju.tg];
-  const tgLT = L(tgLabel(p0.saju.tg), `${TG_NICK_EN[p0.saju.tg]} (${TENGOD_NAME_EN[p0.saju.tg]})`);
   /* 이름 부르기 — 성을 뺀 이름(복성 처리) */
   const TWO_SURNAMES = ['남궁', '선우', '제갈', '황보', '사공', '서문', '독고', '동방'];
   const koRaw = (name || '').trim();
@@ -4852,8 +4858,68 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     : koRaw.length >= 2 ? koRaw.slice(1) : koRaw;
   const enGiven = (ename || '').trim().split(/\s+/)[0] || '';
   const given = LANG === 'en' ? (enGiven || koGiven) : (koGiven || enGiven);
-  const greet = given ? `<p class="th-greet">${L(`${given}님의 오늘 하루`, `${given}'s day today`)}</p>` : '';
 
+  /* 지금 이 시각 — 반시진(초·정) 히어로 (매시간 갱신, 첫 마디와 같은 결) */
+  const isJeong = (mod(now.getHours() * 60 + now.getMinutes() + 60, 1440) % 120) >= 60;
+  const curH = hours[nowIdx];
+  const startHour = mod(23 + nowIdx * 2, 24);
+  const curHourStart = mod(startHour + (isJeong ? 1 : 0), 24);
+  const curHourEnd = mod(curHourStart + 1, 24);
+  const nextIdx = isJeong ? mod(nowIdx + 1, 12) : nowIdx;
+  const nextTg = hours[nextIdx].tg;
+  const seh = SEHWA_CHAR[curH.tg];
+  const hh = n => String(n).padStart(2, '0');
+  const TG_NOW = {
+    비견: ['내 힘으로 밀고 나가는', 'pushing ahead on your own strength'],
+    겁재: ['승부를 겨루는', 'contending in a real contest'],
+    식신: ['만들고 즐기는', 'making and savoring'],
+    상관: ['드러내고 표현하는', 'giving your ideas a voice'],
+    편재: ['기회를 크게 벌리는', 'opening opportunity wide'],
+    정재: ['차곡차곡 쌓는', 'building up piece by piece'],
+    편관: ['정면으로 부딪치는', 'meeting it head-on'],
+    정관: ['자리를 세우는', 'setting your place in order'],
+    편인: ['깊이 파고드는', 'digging deep'],
+    정인: ['도움을 받아들이는', 'taking in the help offered']
+  };
+  const nhBadge = L(`${curH.name} ${isJeong ? '정(正)' : '초(初)'}`, `${curH.name} · ${isJeong ? 'latter half' : 'first half'}`);
+  const nhVerdict = L(
+    `${given ? given + '님, ' : ''}지금은 <b>${TG_NOW[curH.tg][0]}</b> 시간입니다`,
+    `${given ? given + ', ' : ''}right now is your time for <b>${TG_NOW[curH.tg][1]}</b>`);
+  const nhBody = L(
+    (isJeong
+      ? `<b>${TG_NICK[curH.tg]}</b>의 기운이 무르익어 정점에 이른 국면입니다. `
+      : `${hh(curHourStart)}시, <b>${TG_NICK[curH.tg]}</b>의 기운이 이제 막 차오르는 국면입니다. `)
+      + `${TENGOD_FORTUNE[curH.tg]}.`,
+    (isJeong
+      ? `The energy of <b>${TG_NICK_EN[curH.tg]}</b> has ripened to its peak. `
+      : `The energy of <b>${TG_NICK_EN[curH.tg]}</b> is just beginning to rise. `)
+      + `${TENGOD_FORTUNE_EN[curH.tg]}.`);
+  const nhNext = isJeong
+    ? L(`→ ${hh(curHourEnd)}시부터 <b>${BRANCHES[nextIdx].k}시</b>로 넘어가며 <b>${TG_NICK[nextTg]}</b>의 기운으로 바뀝니다.`,
+        `→ From ${hh(curHourEnd)}:00 the hour turns to <b>${ANIMALS_EN[nextIdx]}</b> and the energy shifts to <b>${TG_NICK_EN[nextTg]}</b>.`)
+    : L(`→ ${hh(curHourEnd)}시부터 <b>${curH.name} 정(正)</b> — 같은 기운이 정점으로 무르익습니다.`,
+        `→ From ${hh(curHourEnd)}:00, the latter half of ${curH.name} — the same energy ripens to its peak.`);
+  const nhWhy = L(
+    `오늘 일진 <b>${STEMS[t.day.stem].k}${BRANCHES[t.day.branch].k}</b>에 지금 시각의 천간이 겹쳐, 당신의 일간에 <b>${tgLabel(curH.tg)}</b>으로 닿는 순간입니다.`,
+    `Today's pillar <b>${STEMS[t.day.stem].h}${BRANCHES[t.day.branch].h}</b> meets this hour's stem, touching your Day Master as <b>${tgLabelEN(curH.tg)}</b> right now.`);
+  const nowHero = `<div class="fcard day-hero nowhero">
+    <p class="th-label">${L('NOW · 지금 이 시각', 'NOW · This very hour')}</p>
+    <div class="th-main">
+      <div class="th-seal" aria-hidden="true"><span>${seh[0]}</span></div>
+      <div class="th-head">
+        <p class="th-theme">${nhVerdict}</p>
+        <p class="th-meta"><span>${hh(curHourStart)}:00–${hh(curHourEnd)}:00 · ${nhBadge}</span><span class="th-rate hr${curH.rate}">${RATE_ICON[curH.rate]} ${L(RATE_WORD[curH.rate], RATE_WORD_EN[curH.rate])}</span></p>
+      </div>
+    </div>
+    <p class="th-body">${nhBody}</p>
+    <p class="nh-next">${nhNext}</p>
+    <p class="nh-why">${nhWhy}</p>
+  </div>`;
+
+  /* 오늘의 하늘 — 히어로 헤더 (통합리딩 첫 마디와 같은 결) */
+  const rateT = TG_RATE[p0.saju.tg];
+  const tgLT = L(tgLabel(p0.saju.tg), `${TG_NICK_EN[p0.saju.tg]} (${TENGOD_NAME_EN[p0.saju.tg]})`);
+  const greet = given ? `<p class="th-greet">${L(`${given}님의 오늘 하루`, `${given}'s day today`)}</p>` : '';
   const dayHero = `
     <p class="th-label">${L('TODAY · 오늘의 하늘', "TODAY · Today's Sky")}</p>
     ${greet}
@@ -5009,6 +5075,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
   })();
 
   $('#fortuneCards').innerHTML =
+    nowHero +
     periodCard(f.periods[0], dayExtra, dayHero) +
     openLuckCard +
     countryCard +
