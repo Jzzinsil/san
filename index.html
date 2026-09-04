@@ -5078,10 +5078,10 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     nowHero +
     hourCard +
     periodCard(f.periods[0], dayExtra, dayHero) +
-    periodCard(f.periods[1], weekExtra) +
-    f.periods.slice(2).map(p => periodCard(p)).join('') +
     openLuckCard +
-    countryCard;
+    countryCard +
+    periodCard(f.periods[1], weekExtra) +
+    f.periods.slice(2).map(p => periodCard(p)).join('');
 }
 
 /* ---- 사주 ---- */
