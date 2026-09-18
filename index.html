@@ -575,9 +575,12 @@ footer p{font-size:11.5px;color:var(--dim);line-height:2;max-width:540px;margin:
 }
 .again:hover{background:var(--ink);color:#f2ecdf}
 .again:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-#langBtn{position:fixed;top:14px;right:14px;z-index:50;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:6px 12px;cursor:pointer;border-radius:0}
-#langBtn:hover{background:var(--ink);color:#f2ecdf;border-color:var(--ink)}
-#langBtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#langSwitch{position:fixed;top:14px;right:14px;z-index:50;display:flex;background:var(--paper);border:1px solid var(--line);border-radius:0}
+#langSwitch button{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted);background:transparent;border:0;padding:6px 11px;cursor:pointer;border-radius:0}
+#langSwitch button + button{border-left:1px solid var(--hairline)}
+#langSwitch button:hover{color:var(--ink)}
+#langSwitch button.on{background:var(--ink);color:#f2ecdf;cursor:default}
+#langSwitch button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .lang-en .ko-only,.lang-ja .ko-only{display:none !important}
 .lang-en .en-only,.lang-ja .en-only{display:block !important}
 .lang-en .name-row,.lang-ja .name-row{grid-template-columns:1fr}
@@ -621,7 +624,7 @@ gtag('config', 'G-L7QPQ5GGL7');
 </script>
 </head>
 <body>
-<button type="button" id="langBtn" aria-label="Language">EN</button>
+<div id="langSwitch" role="group" aria-label="Language"><button type="button" data-lang="ko" lang="ko">한국어</button><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="ja" lang="ja">日本語</button></div>
 <div class="wrap">
   <header class="page-head">
     <div class="page-icon" aria-hidden="true">山</div>
@@ -7951,16 +7954,21 @@ function applyLang() {
     if (el.dataset.koAria === undefined) el.dataset.koAria = el.getAttribute('aria-label') || '';
     el.setAttribute('aria-label', LANG === 'ja' ? (el.dataset.jaAria !== undefined ? el.dataset.jaAria : el.dataset.enAria) : LANG === 'en' ? el.dataset.enAria : el.dataset.koAria);
   });
-  const lb = document.getElementById('langBtn');
-  if (lb) lb.textContent = LANG === 'ko' ? 'EN' : LANG === 'en' ? '日本語' : '한국어';
+  document.querySelectorAll('#langSwitch button').forEach(b => {
+    const on = b.dataset.lang === LANG;
+    b.classList.toggle('on', on);
+    if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+  });
   /* 결과가 떠 있으면 동적 리딩도 다시 렌더 (렌더가 LANG을 반영하도록 확장되면 자동 적용) */
   if (document.body.classList.contains('viewing') && window.__lastInput) {
     try { render(window.__lastInput); showTab(document.querySelector('.tabs a.on')?.dataset.t || 'synth'); } catch (e) {}
   }
 }
-document.getElementById('langBtn').addEventListener('click', () => {
-  LANG = LANG === 'ko' ? 'en' : LANG === 'en' ? 'ja' : 'ko';
-  try { localStorage.setItem('san_lang', LANG); } catch (e) {}
+document.getElementById('langSwitch').addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]');
+  if (!b || b.dataset.lang === LANG) return;
+  LANG = b.dataset.lang;
+  try { localStorage.setItem('san_lang', LANG); } catch (e2) {}
   applyLang();
 });
 applyLang();
