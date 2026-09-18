@@ -3374,10 +3374,10 @@ const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',
 
 /* 나라/도시 셀렉트 — 큰 도시를 위로, 나머지는 가나다순 그대로 */
 const CITY_PRIORITY = ['서울', '부산', '인천', '대구', '대전', '광주', '수원', '울산', '용인', '고양', '창원', '성남'];
+/* 언어 — 순수 주소는 항상 한국어. 언어 유지는 저장소가 아니라 URL(?lang=)로만 (버튼 전환 시 주소에 반영) */
 let LANG = 'ko';
-try { const _sl = localStorage.getItem('san_lang'); LANG = (_sl === 'en' || _sl === 'ja') ? _sl : 'ko'; } catch (e) {}
-/* URL ?lang=ko|en|ja — 링크로 언어를 바로 지정 (지정 시 저장까지) */
-try { const _ql = new URLSearchParams(location.search).get('lang'); if (_ql === 'ko' || _ql === 'en' || _ql === 'ja') { LANG = _ql; localStorage.setItem('san_lang', _ql); } } catch (e) {}
+try { const _ql = new URLSearchParams(location.search).get('lang'); if (_ql === 'ko' || _ql === 'en' || _ql === 'ja') LANG = _ql; } catch (e) {}
+try { localStorage.removeItem('san_lang'); } catch (e) {} /* 구버전이 저장한 값 정리 */
 const COUNTRY_EN = {'대한민국':'South Korea','일본':'Japan','중국':'China','미국':'United States','캐나다':'Canada','영국':'United Kingdom','프랑스':'France','독일':'Germany','이탈리아':'Italy','스페인':'Spain','네덜란드':'Netherlands','러시아':'Russia','호주':'Australia','뉴질랜드':'New Zealand','베트남':'Vietnam','태국':'Thailand','필리핀':'Philippines','인도네시아':'Indonesia','싱가포르':'Singapore','말레이시아':'Malaysia','인도':'India','아랍에미리트':'United Arab Emirates','튀르키예':'Türkiye','브라질':'Brazil','멕시코':'Mexico','아르헨티나':'Argentina'};
 const COUNTRY_JA = {'대한민국':'韓国','일본':'日本','중국':'中国','미국':'アメリカ','캐나다':'カナダ','영국':'イギリス','프랑스':'フランス','독일':'ドイツ','이탈리아':'イタリア','스페인':'スペイン','네덜란드':'オランダ','러시아':'ロシア','호주':'オーストラリア','뉴질랜드':'ニュージーランド','베트남':'ベトナム','태국':'タイ','필리핀':'フィリピン','인도네시아':'インドネシア','싱가포르':'シンガポール','말레이시아':'マレーシア','인도':'インド','아랍에미리트':'アラブ首長国連邦','튀르키예':'トルコ','브라질':'ブラジル','멕시코':'メキシコ','아르헨티나':'アルゼンチン'};
 const CITY_EN = {
@@ -7968,7 +7968,11 @@ document.getElementById('langSwitch').addEventListener('click', e => {
   const b = e.target.closest('button[data-lang]');
   if (!b || b.dataset.lang === LANG) return;
   LANG = b.dataset.lang;
-  try { localStorage.setItem('san_lang', LANG); } catch (e2) {}
+  try { /* 주소에 반영 — 새로고침·공유 시에도 언어 유지, 순수 주소는 한국어 */
+    const u = new URL(location.href);
+    if (LANG === 'ko') u.searchParams.delete('lang'); else u.searchParams.set('lang', LANG);
+    history.replaceState(null, '', u);
+  } catch (e2) {}
   applyLang();
 });
 applyLang();
