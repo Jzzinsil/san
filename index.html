@@ -996,7 +996,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime." data-ja="個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにした場合のみこのブラウザに保存され、いつでも削除できます。">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky." data-ja="このリーディングはエンターテインメントとしてお楽しみください。あなたの選択は、いつだって空よりも大きいのですから。">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics." data-ja="訪問統計を把握するためにGoogle Analyticsを使用しています。">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.25.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.26.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -6045,10 +6045,10 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
 
   $('#fortuneCards').innerHTML =
     nowHero +
-    hourCard +
-    periodCard(f.periods[0], dayExtra, dayHero) +
-    skyNewsCard +
     openLuckCard +
+    skyNewsCard +
+    periodCard(f.periods[0], dayExtra, dayHero) +
+    hourCard +
     countryCard +
     periodCard(f.periods[1], weekExtra) +
     f.periods.slice(2).map(p => periodCard(p)).join('');
