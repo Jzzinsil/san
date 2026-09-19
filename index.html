@@ -165,6 +165,20 @@ input,select{max-width:100%}
 .sky-news .sn-head{font-family:var(--serif);font-size:14.5px;color:var(--ink);line-height:1.55}
 .sky-news .sn-sub{font-size:12px;color:var(--muted);line-height:1.7;margin-top:3px}
 .sky-news .sn-src{font-size:10px;color:var(--dim);letter-spacing:.04em;border-top:1px solid var(--hairline);padding-top:9px;margin-top:2px;line-height:1.6}
+/* ---------- 오늘, 그 사람과 (관계 날씨) ---------- */
+.rw-card .rw-main{display:flex;gap:16px;align-items:center;margin:4px 0 12px}
+.rw-card .rw-seal{font-family:var(--serif);font-size:26px;line-height:1.15;color:var(--accent);border:1px solid var(--accent);padding:10px 12px;flex:none;letter-spacing:.06em}
+.rw-card .rw-word{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--ink)}
+.rw-card .rw-who{font-size:11px;color:var(--dim);letter-spacing:.08em;margin-top:3px}
+.rw-card .rw-line{font-size:13px;color:var(--muted);line-height:1.75;margin-top:7px}
+.rw-card .rw-line b{color:var(--ink)}
+.rw-card .rw-x{background:none;border:none;color:var(--dim);font-size:10px;letter-spacing:.12em;cursor:pointer;text-decoration:underline;padding:0;margin-top:10px}
+/* ---------- 나의 길일 ---------- */
+.gilil .gl-row{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--hairline)}
+.gilil .gl-row:last-of-type{border-bottom:none}
+.gilil .gl-d{font-family:var(--serif);font-size:14px;color:var(--ink);flex:0 0 52px;white-space:nowrap}
+.gilil .gl-t{font-size:12.5px;color:var(--muted)}
+.gilil .gl-t.warn{color:var(--accent)}
 /* ---------- 오늘의 행운 처방 ---------- */
 .openluck .ol-seal{display:inline-flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--accent);border:1px solid var(--accent);width:26px;height:26px;flex:none}
 .openluck .ol-why{margin-top:14px;font-size:14px;line-height:1.75;color:var(--text)}
@@ -996,7 +1010,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime." data-ja="個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにした場合のみこのブラウザに保存され、いつでも削除できます。">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky." data-ja="このリーディングはエンターテインメントとしてお楽しみください。あなたの選択は、いつだって空よりも大きいのですから。">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics." data-ja="訪問統計を把握するためにGoogle Analyticsを使用しています。">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.26.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.27.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -5894,6 +5908,79 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     } catch (e) { return ''; }
   })();
 
+  /* ===== 오늘, 그 사람과 — 저장한 상대 × 오늘 일진 (옵트인 · 이 기기에만 · 매일 갱신) ===== */
+  const rwCard = (() => {
+    try {
+      const raw = localStorage.getItem('san_partner'); if (!raw) return '';
+      const P = JSON.parse(raw); if (!P || !P.y || !P.m || !P.d) return '';
+      const ps = computeSaju(P.y, P.m, P.d, null);
+      const pn = esc(P.n || L('그 사람', 'them', 'あの人'));
+      const myB = natalSaju.day.branch, myS = natalSaju.day.stem, pB = ps.day.branch, pS = ps.day.stem;
+      const tb = t.day.branch, ts = t.day.stem;
+      const gk = (a, b2) => Math.min(a, b2) + ',' + Math.max(a, b2);
+      const hapMe = inPairs(JIJI_HAP, tb, myB), chMe = inPairs(JIJI_CHUNG, tb, myB), ganMe = !!GAN_HAP_TEXT[gk(ts, myS)];
+      const hapP = inPairs(JIJI_HAP, tb, pB), chP = inPairs(JIJI_CHUNG, tb, pB), ganP = !!GAN_HAP_TEXT[gk(ts, pS)];
+      const score = 2 + (hapMe ? 1 : 0) + (hapP ? 1 : 0) + (ganMe ? 1 : 0) + (ganP ? 1 : 0) - (chMe ? 1.5 : 0) - (chP ? 1.5 : 0);
+      const W = score >= 4 ? ['快晴', L('쾌청', 'clear and bright', '快晴')]
+        : score >= 3 ? ['晴', L('맑음', 'sunny', '晴れ')]
+        : score >= 2 ? ['薄曇', L('옅은 구름', 'thin clouds', '薄曇り')]
+        : score >= 1 ? ['曇', L('흐림', 'overcast', '曇り')]
+        : score >= 0 ? ['雨', L('소나기', 'a passing shower', 'にわか雨')]
+        : ['雷', L('뇌우', 'thunder', '雷雨')];
+      const myTg = tenGod(myS, ts), pTg = tenGod(pS, ts);
+      const line1 = L(
+        `오늘의 하늘은 당신에게 <b>${myTg}(${TG_NICK[myTg]})</b>, ${pn}에게 <b>${pTg}(${TG_NICK[pTg]})</b>의 날입니다.`,
+        `Today's sky is a day of <b>${TENGOD_NAME_EN[myTg]} (${TG_NICK_EN[myTg]})</b> for you, and of <b>${TENGOD_NAME_EN[pTg]} (${TG_NICK_EN[pTg]})</b> for ${pn}.`,
+        `今日の空は、あなたには<b>${TENGOD_NAME_JA[myTg]}（${TG_NICK_JA[myTg]}）</b>、${pn}には<b>${TENGOD_NAME_JA[pTg]}（${TG_NICK_JA[pTg]}）</b>の日です。`);
+      let line2;
+      if (hapMe && hapP) line2 = L('두 사람 모두 오늘과 합 — 함께 움직이기 드물게 좋은 날입니다.', 'Both of you are in harmony with today — a rare day made for moving together.', 'お二人とも今日と合 — 一緒に動くのに、めったにないほど良い日です。');
+      else if (hapMe) line2 = L('당신 쪽이 오늘과 합 — 먼저 제안하는 쪽이 유리합니다.', 'You are the one in harmony with today — the advantage goes to whoever proposes first.', 'あなたの側が今日と合 — 先に切り出すほうが有利です。');
+      else if (hapP) line2 = L(`${pn} 쪽이 오늘과 합 — 오늘은 상대의 페이스에 실려보세요.`, `${pn} is the one in harmony with today — let yourself ride their pace.`, `${pn}の側が今日と合 — 今日は相手のペースに乗ってみてください。`);
+      else if (chMe && chP) line2 = L('둘 다 오늘과 충 — 중요한 담판은 내일로 미루는 편이 좋습니다.', 'Both of you clash with today — better to push any serious talk to tomorrow.', 'お二人とも今日と冲 — 大事な話し合いは明日に回すのが良さそうです。');
+      else if (chMe) line2 = L('당신 쪽이 오늘과 충 — 예민해지기 쉬우니 반박은 한 템포 늦게.', 'You are the one clashing with today — easy to bristle, so hold each retort one beat longer.', 'あなたの側が今日と冲 — ぴりつきやすいので、言い返すのはワンテンポ遅らせて。');
+      else if (chP) line2 = L(`${pn} 쪽이 오늘과 충 — 오늘은 듣는 자리를 내어주세요.`, `${pn} is the one clashing with today — today, give them the listening seat.`, `${pn}の側が今日と冲 — 今日は聞き役に回ってあげてください。`);
+      else line2 = L('합도 충도 없는 담백한 하늘 — 관계는 두 사람이 만드는 대로 흐릅니다.', 'A plain sky, no harmony and no clash — the relationship flows the way you two make it.', '合も冲もない、さっぱりとした空 — 関係はお二人のつくるままに流れます。');
+      const ganLine = (ganMe || ganP) ? ' ' + L('천간합까지 걸린 날이라, 말이 평소보다 잘 통합니다.', 'A Stem Combine is in play too — words carry further than usual.', '干合まで重なる日なので、言葉が普段よりよく通じます。') : '';
+      const adv = score >= 3
+        ? L('미뤄둔 이야기가 있다면 오늘 꺼내세요.', "If there's a talk you've been postponing, today is the day.", '先延ばしにしていた話があるなら、今日切り出してみてください。')
+        : score >= 1
+        ? L('무리하게 맞추기보다, 각자의 하루를 존중하는 날.', 'A day to honor each of your days, rather than force them to match.', '無理に合わせるより、それぞれの一日を尊重する日です。')
+        : L('오늘은 잔잔하게 — 따뜻한 한 마디면 충분합니다.', 'Keep it gentle today — one warm word is enough.', '今日は穏やかに — 温かいひと言だけで十分です。');
+      return `<div class="card rw-card">
+        <p class="sn-label" style="font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:8px">RELATIONSHIP WEATHER · ${L('오늘, 그 사람과', 'Today, with them', '今日、あの人と')}</p>
+        <div class="rw-main">
+          <div class="rw-seal" aria-hidden="true">${W[0]}</div>
+          <div>
+            <p class="rw-word">${W[1] === W[0] ? L('구름 한 점 없는 하늘', 'not a cloud in the sky', '雲ひとつない空') : W[1]}</p>
+            <p class="rw-who">${esc(given || L('나', 'me', 'わたし'))} ✕ ${pn} · ${m}/${d}</p>
+          </div>
+        </div>
+        <p class="rw-line">${line1}</p>
+        <p class="rw-line">${line2}${ganLine} ${adv}</p>
+        <button type="button" id="rwForget" class="rw-x">${L('상대 지우기 (이 기기에서 삭제)', 'forget them (remove from this device)', '相手を消す（この端末から削除）')}</button>
+      </div>`;
+    } catch (e) { return ''; }
+  })();
+
+  /* ===== 나의 길일 카드 — 미리보기 + .ics 저장 ===== */
+  const gililCard = (() => {
+    try {
+      const base = new Date(y, m - 1, d);
+      const list = computeGilil(natalSaju, base, t.dayIdx60);
+      const pos = list.filter(x => x.types.some(tp => tp !== 'ch')).slice(0, 3);
+      const firstCh = list.find(x => x.types.includes('ch'));
+      const row = (x, tp) => `<div class="gl-row"><span class="gl-d">${x.dt.getMonth() + 1}/${x.dt.getDate()}</span><span class="gl-t${tp === 'ch' ? ' warn' : ''}">${L(GILIL_T[tp][0], GILIL_T[tp][1], GILIL_T[tp][2])}</span></div>`;
+      const rows = pos.map(x => row(x, x.types.find(tp => tp !== 'ch'))).join('') + (firstCh ? row(firstCh, 'ch') : '');
+      return `<div class="card gilil">
+        <p class="sn-label" style="font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:8px;margin-bottom:4px">CALENDAR · ${L('나의 길일', 'My Days', 'わたしの吉日')}</p>
+        <p class="small" style="margin:8px 0 6px">${L('내 일주와 앞으로 60일의 일진을 겹쳐, 좋은 날과 조심할 날을 골라두었습니다.', 'Your Day Pillar crossed with the next sixty days — the good days and the shaky ones, picked out.', '日柱とこれから60日の日辰を重ね、良い日と気をつけたい日を選んでおきました。')}</p>
+        ${rows}
+        <div style="text-align:center;margin-top:16px"><button type="button" class="btn" id="gililBtn" style="width:auto;padding:12px 30px">${L('캘린더 파일로 저장 (.ics)', 'Save to my calendar (.ics)', 'カレンダーに保存 (.ics)')}</button></div>
+        <p class="small" style="margin-top:9px;color:var(--dim);text-align:center">${L('파일은 이 기기 안에서 만들어져 캘린더 앱에 들어갑니다 — 어디에도 전송되지 않습니다.', 'The file is made on this device and goes into your calendar app — nothing is sent anywhere.', 'ファイルはこの端末内で作成され、カレンダーアプリに追加されます — どこにも送信されません。')}</p>
+      </div>`;
+    } catch (e) { return ''; }
+  })();
+
   /* ===== 오늘의 행운 처방 — 사주×별자리×수비학 교집합을 오늘 일진과 다시 교차 (유저·날마다 다름) ===== */
   /* 오행별 나라 풀 (0목1화2토3금4수) — 행운 나라 타일 · 시기별 나라 카드 공용 */
   const CO_KO = EL_COUNTRY.map(o => o.list.map(x => x[0]));
@@ -6047,12 +6134,83 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     nowHero +
     openLuckCard +
     skyNewsCard +
+    rwCard +
     periodCard(f.periods[0], dayExtra, dayHero) +
     hourCard +
+    gililCard +
     countryCard +
     periodCard(f.periods[1], weekExtra) +
     f.periods.slice(2).map(p => periodCard(p)).join('');
 }
+
+/* ===== 나의 길일 — 내 일주 × 앞으로 60일의 일진 (전부 기기 안 계산) ===== */
+const GILIL_T = {
+  re: ['나의 날 — 일주 회귀', 'My day — Day-Pillar return', 'わたしの日 — 日柱回帰',
+       '60일에 한 번, 태어난 날의 두 글자가 돌아오는 날 — 나를 위한 결정에 좋습니다.', 'Once in sixty days, the two characters of your birth day return — good for decisions that are yours alone.', '60日に一度、生まれた日の二文字がめぐってくる日 — 自分にかかわる決断に向いています。'],
+  h6: ['결정·계약의 길일 (육합)', 'Decide · sign — a good day (Six Harmony)', '決断・契約の吉日（六合）',
+       '그날의 지지가 내 일지와 육합 — 매듭짓는 일이 순하게 풀립니다.', "The day's branch forms a Six Harmony with yours — things tie up smoothly.", 'その日の地支が日支と六合 — 物事がすなおにまとまります。'],
+  s3: ['협력·모임의 길일 (삼합)', 'Allies · gatherings — a good day (Trine)', '協力・集まりの吉日（三合）',
+       '내 일지와 같은 삼합의 결 — 함께 도모하는 일에 힘이 붙습니다.', 'The same trine as your Day Branch — joint plans gather strength.', '日支と同じ三合の流れ — 共に進める事に力が乗ります。'],
+  gh: ['인연·부탁의 길일 (천간합)', 'Bonds · favors — a good day (Stem Combine)', 'ご縁・お願いごとの吉日（干合）',
+       '그날의 천간이 내 일간과 합 — 말과 부탁이 평소보다 잘 통합니다.', "The day's stem combines with your Day Master — words and requests land better than usual.", 'その日の天干が日干と合 — 言葉やお願いごとが普段よりよく通ります。'],
+  ch: ['조심 — 흔들리는 날 (충)', 'Careful — a shaky day (Clash)', '注意 — 揺れやすい日（冲）',
+       '그날의 지지가 내 일지와 충 — 약속과 이동에 여유를 붙이세요.', "The day's branch clashes with yours — pad appointments and travel with slack.", 'その日の地支が日支と冲 — 約束や移動には余裕をもたせてください。'],
+};
+function computeGilil(saju, fromDate, todayIdx60) {
+  const SAM3 = [[8, 0, 4], [2, 6, 10], [5, 9, 1], [11, 3, 7]];
+  const grp = b => SAM3.findIndex(g => g.includes(b));
+  const gk60 = (a, b2) => Math.min(a, b2) + ',' + Math.max(a, b2);
+  const out = [];
+  for (let i = 1; i <= 60; i++) {
+    const idx = (todayIdx60 + i) % 60, st = idx % 10, br = idx % 12;
+    const types = [];
+    if (idx === saju.dayIdx60) types.push('re');
+    if (inPairs(JIJI_HAP, br, saju.day.branch)) types.push('h6');
+    else if (grp(br) === grp(saju.day.branch) && br !== saju.day.branch) types.push('s3');
+    if (GAN_HAP_TEXT[gk60(st, saju.day.stem)]) types.push('gh');
+    if (inPairs(JIJI_CHUNG, br, saju.day.branch)) types.push('ch');
+    if (types.length) { const dt = new Date(fromDate); dt.setDate(fromDate.getDate() + i); out.push({dt, st, br, types}); }
+  }
+  return out;
+}
+function downloadGililICS() {
+  const R = window.READING; if (!R) return;
+  const n2 = new Date(); const base = new Date(n2.getFullYear(), n2.getMonth(), n2.getDate());
+  const list = computeGilil(R.saju, base, R.fortune.today.dayIdx60);
+  const pad2 = x => String(x).padStart(2, '0');
+  const dstr = dt => `${dt.getFullYear()}${pad2(dt.getMonth() + 1)}${pad2(dt.getDate())}`;
+  const stamp = `${n2.getUTCFullYear()}${pad2(n2.getUTCMonth() + 1)}${pad2(n2.getUTCDate())}T${pad2(n2.getUTCHours())}${pad2(n2.getUTCMinutes())}00Z`;
+  const escI = s => s.replace(/([,;\\])/g, '\\$1');
+  const evs = [];
+  for (const x of list) {
+    const d2 = new Date(x.dt); d2.setDate(d2.getDate() + 1);
+    for (const tp of x.types) {
+      const T2 = GILIL_T[tp];
+      evs.push(`BEGIN:VEVENT\r\nUID:san-${dstr(x.dt)}-${tp}@san\r\nDTSTAMP:${stamp}\r\nDTSTART;VALUE=DATE:${dstr(x.dt)}\r\nDTEND;VALUE=DATE:${dstr(d2)}\r\nSUMMARY:${escI('山 ' + L(T2[0], T2[1], T2[2]))}\r\nDESCRIPTION:${escI(L(T2[3], T2[4], T2[5]) + ' — SAN')}\r\nEND:VEVENT`);
+    }
+  }
+  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//SAN//days//${LANG.toUpperCase()}\r\nCALSCALE:GREGORIAN\r\n${evs.join('\r\n')}\r\nEND:VCALENDAR\r\n`;
+  const bl = new Blob([ics], {type: 'text/calendar;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'san-days.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+/* 관계 날씨 저장·삭제 / 길일 다운로드 — 위임 핸들러 */
+document.addEventListener('click', e => {
+  const sv = e.target.closest ? e.target.closest('#rwSave') : null;
+  if (sv) {
+    try { localStorage.setItem('san_partner', JSON.stringify({n: sv.dataset.n, y: +sv.dataset.y, m: +sv.dataset.m, d: +sv.dataset.d})); } catch (e2) {}
+    sv.textContent = L('저장되었습니다 — 오늘의 운세 탭에서 확인하세요', 'Saved — see it in the Today tab', '保存しました — 今日の運勢タブでご覧ください');
+    sv.disabled = true;
+    if (window.__lastInput) { try { render(window.__lastInput); } catch (e3) {} }
+    return;
+  }
+  if (e.target.closest && e.target.closest('#rwForget')) {
+    try { localStorage.removeItem('san_partner'); } catch (e2) {}
+    if (window.__lastInput) { try { render(window.__lastInput); } catch (e3) {} }
+    return;
+  }
+  if (e.target.closest && e.target.closest('#gililBtn')) { try { downloadGililICS(); } catch (e2) {} }
+});
 
 /* ---- 사주 ---- */
 /* NEW-EN-DATA */
@@ -7370,6 +7528,10 @@ $('#gungForm').addEventListener('submit', e => {
     <div class="combo"><b>${L(`별 ${astroScore}/30`, `Stars ${astroScore}/30`, `星 ${astroScore}/30`)}</b><br>${linesAs.join('<br>')}</div>
     <div class="combo"><b>${L(`수 ${numScore}/30`, `Numbers ${numScore}/30`, `数 ${numScore}/30`)}</b><br>${linesNu.join('<br>')}</div>
     <p class="small" style="margin-top:12px;color:var(--dim)">${L(`두 지문 ${fp1} ✕ ${fp2} — 일주 60갑자와 태양 도수가 함께 겹치는 쌍은 사실상 없어, 이 궁합 리딩은 두 사람만의 것입니다.`, `Two fingerprints ${fp1} ✕ ${fp2} — virtually no pair shares both the 60-jiazi Day pillar and the exact Sun degree, so this compatibility reading belongs to the two of you alone.`, `二つの指紋 ${fp1} ✕ ${fp2} — 日柱の60干支と太陽の度数がともに重なる組み合わせはほぼ存在せず、この相性リーディングはお二人だけのものです。`)}</p>
+    <div style="margin-top:16px;border-top:1px solid var(--hairline);padding-top:14px;text-align:center">
+      <button type="button" class="btn" id="rwSave" style="width:auto;padding:12px 26px" data-n="${esc(gname)}" data-y="${sol.y}" data-m="${sol.m}" data-d="${sol.d}">${L('매일 「오늘, 그 사람과」 받기', 'Get “Today, with them” daily', '毎日「今日、あの人と」を受け取る')}</button>
+      <p class="small" style="margin-top:8px;color:var(--dim)">${L('오늘의 운세 탭에 두 사람의 관계 날씨가 매일 새로 열립니다 — 이 기기에만 저장되며, 언제든 지울 수 있습니다.', 'A daily relationship weather for you two opens in the Today tab — saved only on this device, removable anytime.', '今日の運勢タブに、お二人の関係の天気が毎日新しく開きます — この端末にのみ保存され、いつでも削除できます。')}</p>
+    </div>
   </div>`;
   $('#gungResult').scrollIntoView({behavior: scrollMode(), block: 'nearest'});
 });
