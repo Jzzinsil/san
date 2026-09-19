@@ -674,11 +674,11 @@ gtag('config', 'G-L7QPQ5GGL7');
         </div>
         <div class="field">
           <label for="ename" data-en-html="Name <span style=&quot;color:var(--dim)&quot;>(used for astrology · numerology)</span>" data-ja-html="お名前 <span style=&quot;color:var(--dim)&quot;>(占星術・数秘術に使用します)</span>">영문 이름 <span style="color:var(--dim)">(astrology · 수비학)</span></label>
-          <input type="text" id="ename" placeholder="Haneul Kim">
+          <input type="text" id="ename" placeholder="Haneul Kim" data-en-ph="Haneul Kim" data-ja-ph="やまだ はなこ（かな／ローマ字）">
         </div>
       </div>
       <p class="hint ko-only" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="Leave the English name blank and we'll romanize your Korean name automatically." data-ja="英語名は空欄のままで構いません。韓国語のお名前を自動でローマ字表記いたします。">영문 이름을 비우면 한글 이름을 로마자로 자동 변환해 사용합니다.</p>
-      <p class="hint en-only" style="font-size:12px;color:var(--dim);margin-top:-6px;display:none" data-en="Just your name in the Latin alphabet is enough. Saju itself is read from your birth date, time, and place — the name is used only for numerology." data-ja="ローマ字のお名前だけで十分です。命式そのものは生年月日・時間・場所から読み解きます — お名前は数秘術にのみ使用いたします。">Just your name in the Latin alphabet is enough. Saju itself is read from your birth date, time, and place — the name is used only for numerology.</p>
+      <p class="hint en-only" style="font-size:12px;color:var(--dim);margin-top:-6px;display:none" data-en="Just your name in the Latin alphabet is enough. Saju itself is read from your birth date, time, and place — the name is used only for numerology." data-ja="お名前は、ひらがな・カタカナ、またはローマ字でご入力ください（漢字のみの場合、数秘術のお名前計算は省略されます）。命式そのものは生年月日・時間・場所から読み解きます。">Just your name in the Latin alphabet is enough. Saju itself is read from your birth date, time, and place — the name is used only for numerology.</p>
       <div class="field" style="max-width:200px;margin-top:14px">
         <label for="gender" data-en="Gender" data-ja="性別">성별</label>
         <select id="gender">
@@ -952,7 +952,7 @@ gtag('config', 'G-L7QPQ5GGL7');
           <div class="frow">
             <div class="field">
               <label for="gName" data-en="Partner's name" data-ja="お相手のお名前">상대 이름</label>
-              <input type="text" id="gName" placeholder="이름 (한글 또는 영문)" data-en-ph="Name (Korean or English)" data-ja-ph="お名前(韓国語または英語)" autocomplete="off">
+              <input type="text" id="gName" placeholder="이름 (한글 또는 영문)" data-en-ph="Name (Korean or English)" data-ja-ph="お名前（かな・ローマ字・韓国語）" autocomplete="off">
             </div>
             <div class="field">
               <label for="gGender" data-en="Partner's gender" data-ja="お相手の性別">상대 성별</label>
@@ -1010,7 +1010,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime." data-ja="個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにした場合のみこのブラウザに保存され、いつでも削除できます。">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky." data-ja="このリーディングはエンターテインメントとしてお楽しみください。あなたの選択は、いつだって空よりも大きいのですから。">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics." data-ja="訪問統計を把握するためにGoogle Analyticsを使用しています。">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.27.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.27.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -1371,7 +1371,43 @@ const HANGUL_CHO  = ['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj'
 const HANGUL_JUNG = ['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'];
 const HANGUL_JONG = ['','k','k','k','n','n','n','t','l','k','m','p','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'];
 
+/* 가나 → 로마자 (헵번 간이) — 일본 유저가 이름을 ひらがな·カタカナ로 넣어도 수비학이 계산되도록 */
+const KANA_ROM = {あ:'a',い:'i',う:'u',え:'e',お:'o',か:'ka',き:'ki',く:'ku',け:'ke',こ:'ko',さ:'sa',し:'shi',す:'su',せ:'se',そ:'so',た:'ta',ち:'chi',つ:'tsu',て:'te',と:'to',な:'na',に:'ni',ぬ:'nu',ね:'ne',の:'no',は:'ha',ひ:'hi',ふ:'fu',へ:'he',ほ:'ho',ま:'ma',み:'mi',む:'mu',め:'me',も:'mo',や:'ya',ゆ:'yu',よ:'yo',ら:'ra',り:'ri',る:'ru',れ:'re',ろ:'ro',わ:'wa',ゐ:'wi',ゑ:'we',を:'wo',ん:'n',が:'ga',ぎ:'gi',ぐ:'gu',げ:'ge',ご:'go',ざ:'za',じ:'ji',ず:'zu',ぜ:'ze',ぞ:'zo',だ:'da',ぢ:'ji',づ:'zu',で:'de',ど:'do',ば:'ba',び:'bi',ぶ:'bu',べ:'be',ぼ:'bo',ぱ:'pa',ぴ:'pi',ぷ:'pu',ぺ:'pe',ぽ:'po',ゔ:'vu',ぁ:'a',ぃ:'i',ぅ:'u',ぇ:'e',ぉ:'o',ゎ:'wa'};
+const KANA_SMALL_Y = {ゃ:'a',ゅ:'u',ょ:'o'};
+function kanaToRomaji(str) {
+  let s = '';
+  for (const ch of str) { /* 카타카나 → 히라가나 정규화 */
+    const c = ch.codePointAt(0);
+    if (c >= 0x30A1 && c <= 0x30F6) s += String.fromCodePoint(c - 0x60);
+    else if (ch === '・' || ch === '　') s += ' ';
+    else s += ch;
+  }
+  let out = '';
+  const a = [...s];
+  for (let i = 0; i < a.length; i++) {
+    const ch = a[i];
+    if (ch === 'っ') { const nx = a[i + 1] && KANA_ROM[a[i + 1]]; if (nx) out += (nx[0] === 'c' ? 't' : nx[0]); continue; }
+    if (ch === 'ー') { const mv = out.match(/[aeiou](?=[^aeiou]*$)/); if (mv) out += mv[0]; continue; }
+    let r = KANA_ROM[ch];
+    const SMALL_V = {ぁ: 'a', ぃ: 'i', ぅ: 'u', ぇ: 'e', ぉ: 'o'};
+    if (r !== undefined && KANA_SMALL_Y[a[i + 1]]) {
+      const v = KANA_SMALL_Y[a[i + 1]];
+      if (/(?:shi|chi)$/.test(r)) r = r.slice(0, -1) + v;
+      else if (/ji$/.test(r)) r = 'j' + v;
+      else if (/i$/.test(r)) r = r.slice(0, -1) + 'y' + v;
+      else r += 'y' + v;
+      i++;
+    } else if (r !== undefined && i + 1 < a.length && SMALL_V[a[i + 1]] !== undefined && KANA_ROM[ch] && !/^[aeiou]$/.test(r)) {
+      /* ヴィ vi · ファ fa · チェ che 류 — 소문자 모음 결합 */
+      r = r.replace(/[aeiou]+$/, '') + SMALL_V[a[i + 1]];
+      i++;
+    }
+    out += r !== undefined ? r : ch;
+  }
+  return out;
+}
 function romanize(str) {
+  if (LANG === 'ja' && /[ぁ-ゖァ-ヺー]/.test(str)) str = kanaToRomaji(str); /* 가나 이름은 일본어 모드에서만 인정 */
   let out = '';
   for (const ch of str) {
     const c = ch.codePointAt(0);
