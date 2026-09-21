@@ -791,15 +791,15 @@ gtag('config', 'G-L7QPQ5GGL7');
     </div>
 
     <nav class="tabs" aria-label="리딩 섹션" data-en-aria="Reading section" data-ja-aria="リーディングのセクション">
-      <a href="#fortune" data-t="fortune" data-en="Today's Fortune" data-ja="今日の運勢">오늘의 운세</a>
       <a href="#synth" data-t="synth" data-en="Reading" data-ja="リーディング">통합 리딩</a>
+      <a href="#life" data-t="life" data-en="Life Map" data-ja="人生の地図">인생 지도</a>
+      <a href="#fortune" data-t="fortune" data-en="Today's Fortune" data-ja="今日の運勢">오늘의 운세</a>
       <a href="#ask" data-t="ask" data-en="Ask" data-ja="たずねる">질문</a>
-      <a href="#gung" data-t="gung" data-en="Compatibility" data-ja="相性">궁합</a>
       <a href="#saju" data-t="saju" data-en="Saju" data-ja="サジュ">사주</a>
       <a href="#astro" data-t="astro" data-en="Astrology" data-ja="占星術">별자리</a>
       <a href="#numer" data-t="numer" data-en="Numerology" data-ja="数秘術">수비학</a>
-      <a href="#life" data-t="life" data-en="Life Map" data-ja="人生の地図">인생 지도</a>
       <a href="#roots" data-t="roots" data-en="Roots" data-ja="ルーツ">뿌리</a>
+      <a href="#gung" data-t="gung" data-en="Compatibility" data-ja="相性">궁합</a>
       <a href="#report" data-t="report" data-en="Monthly Talisman" data-ja="今月のお守り">이달의 세화</a>
     </nav>
 
@@ -1010,7 +1010,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal info is never sent to a server. It's stored in this browser only if you turn on «Remember», and you can delete it anytime." data-ja="個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにした場合のみこのブラウザに保存され、いつでも削除できます。">입력하신 개인정보는 서버로 전송되지 않습니다. 「기억하기」를 켠 경우에만 이 브라우저에 저장되며, 언제든 지울 수 있습니다.</span><br>
         <span data-en="This reading is for entertainment. Your choices are always bigger than the sky." data-ja="このリーディングはエンターテインメントとしてお楽しみください。あなたの選択は、いつだって空よりも大きいのですから。">이 리딩은 엔터테인먼트를 위한 것입니다. 당신의 선택이 언제나 하늘보다 큽니다.</span><br>
         <span data-en="We use Google Analytics to collect visit statistics." data-ja="訪問統計を把握するためにGoogle Analyticsを使用しています。">방문 통계 수집을 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.27.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.28.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -3782,7 +3782,7 @@ function render(inp) {
   renderRoots(inp, saju, num, astro, now);
   renderReport(inp, saju, astro, num, fortune);
   renderLife(inp, saju, astro, num, age, now.getFullYear());
-  showTab('fortune');
+  showTab('synth');
 }
 
 /* ---- 질문: 패 뽑기 ---- */
@@ -8249,7 +8249,7 @@ function showTab(id) {
   if (sec && sec.getBoundingClientRect().top < 0) sec.scrollIntoView({behavior: 'auto'});
 }
 tabLinks.forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.t); }));
-showTab('fortune');
+showTab('synth');
 
 
 /* ---------- 언어 토글 (KO → EN → JA 순환) — data-en·data-ja / -ph / -html / -aria 기반 (LANG은 위에서 선언) ---------- */
