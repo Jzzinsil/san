@@ -1036,7 +1036,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.29.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.29.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -6311,6 +6311,8 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     try {
       const base = new Date(y, m - 1, d);
       const list = computeGilil(natalSaju, base, t.dayIdx60);
+      /* 달력 파일은 이 미리보기와 똑같은 기준일로 만든다 — 자정을 넘겨도 날짜가 하루 밀리지 않게 */
+      window.__gililBase = {saju: natalSaju, t: base.getTime(), idx: t.dayIdx60};
       const pos = list.filter(x => x.types.some(tp => tp !== 'ch')).slice(0, 3);
       const firstCh = list.find(x => x.types.includes('ch'));
       const row = (x, tp) => `<div class="gl-row"><span class="gl-d">${x.dt.getMonth() + 1}/${x.dt.getDate()}</span><span class="gl-t${tp === 'ch' ? ' warn' : ''}">${L(GILIL_T[tp][0], GILIL_T[tp][1], GILIL_T[tp][2])}</span></div>`;
@@ -6540,26 +6542,161 @@ function computeGilil(saju, fromDate, todayIdx60) {
   }
   return out;
 }
-function downloadGililICS() {
-  const R = window.READING; if (!R) return;
-  const n2 = new Date(); const base = new Date(n2.getFullYear(), n2.getMonth(), n2.getDate());
-  const list = computeGilil(R.saju, base, R.fortune.today.dayIdx60);
+/* ===== 내 달력에 저장 — 기기별로 길이 다르다 =====
+   · 아이폰 Safari: 달력 파일(blob)을 열면 iOS가 「모두 추가」 창을 띄운다. data: 주소는 iOS 26.6부터 막혀서 쓰지 않는다
+   · 아이폰의 다른 브라우저(Chrome 등)·홈 화면 앱: 만든 파일을 받을 길이 없어 Safari로 여는 길을 안내한다
+   · 안드로이드 Chrome·삼성 인터넷: 파일을 내려받은 뒤 「열기」 → 캘린더 앱. 앱마다 여러 일정 가져오기가 들쭉날쭉해 날짜별 Google 캘린더 링크를 함께 준다
+   · 인앱 브라우저(인스타 등): 파일 받기가 막혀 있어 기본 브라우저로 여는 길을 안내한다 */
+function gililEvents() {
+  const G = window.__gililBase; if (!G) return [];
+  const list = computeGilil(G.saju, new Date(G.t), G.idx);
   const pad2 = x => String(x).padStart(2, '0');
   const dstr = dt => `${dt.getFullYear()}${pad2(dt.getMonth() + 1)}${pad2(dt.getDate())}`;
-  const stamp = `${n2.getUTCFullYear()}${pad2(n2.getUTCMonth() + 1)}${pad2(n2.getUTCDate())}T${pad2(n2.getUTCHours())}${pad2(n2.getUTCMinutes())}00Z`;
-  const escI = s => s.replace(/([,;\\])/g, '\\$1');
-  const evs = [];
+  const out = [];
   for (const x of list) {
     const d2 = new Date(x.dt); d2.setDate(d2.getDate() + 1);
     for (const tp of x.types) {
       const T2 = GILIL_T[tp];
-      evs.push(`BEGIN:VEVENT\r\nUID:san-${dstr(x.dt)}-${tp}@san\r\nDTSTAMP:${stamp}\r\nDTSTART;VALUE=DATE:${dstr(x.dt)}\r\nDTEND;VALUE=DATE:${dstr(d2)}\r\nSUMMARY:${escI('山 ' + L(T2[0], T2[1], T2[2]))}\r\nDESCRIPTION:${escI(L(T2[3], T2[4], T2[5]) + ' — SAN')}\r\nEND:VEVENT`);
+      out.push({tp, dt: x.dt, start: dstr(x.dt), end: dstr(d2), title: '山 ' + L(T2[0], T2[1], T2[2]), desc: L(T2[3], T2[4], T2[5]) + ' — SAN'});
     }
   }
-  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//SAN//days//${LANG.toUpperCase()}\r\nCALSCALE:GREGORIAN\r\n${evs.join('\r\n')}\r\nEND:VCALENDAR\r\n`;
-  const bl = new Blob([ics], {type: 'text/calendar;charset=utf-8'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'san-days.ics';
-  document.body.appendChild(a); a.click(); a.remove();
+  return out;
+}
+/* RFC 5545 — 한 줄은 75옥텟까지. 넘으면 CRLF + 공백으로 접는다(글자 중간은 자르지 않음) */
+function icsFold(line) {
+  const enc = new TextEncoder();
+  let out = '', cur = '', bytes = 0, limit = 75;
+  for (const ch of line) {
+    const n = enc.encode(ch).length;
+    if (bytes + n > limit) { out += cur + '\r\n '; cur = ''; bytes = 0; limit = 74; }
+    cur += ch; bytes += n;
+  }
+  return out + cur;
+}
+function buildGililICS(evs) {
+  const n2 = new Date(), pad2 = x => String(x).padStart(2, '0');
+  const stamp = `${n2.getUTCFullYear()}${pad2(n2.getUTCMonth() + 1)}${pad2(n2.getUTCDate())}T${pad2(n2.getUTCHours())}${pad2(n2.getUTCMinutes())}${pad2(n2.getUTCSeconds())}Z`;
+  const escI = s => String(s).replace(/([,;\\])/g, '\\$1').replace(/\r?\n/g, '\\n');
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', `PRODID:-//SAN//days//${LANG.toUpperCase()}`, 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    'X-WR-CALNAME:' + escI(L('SAN 나의 길일', 'SAN My lucky days', 'SAN わたしの吉日'))];
+  for (const e of evs) {
+    lines.push('BEGIN:VEVENT', `UID:san-${e.start}-${e.tp}@san`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${e.start}`, `DTEND;VALUE=DATE:${e.end}`,
+      'SUMMARY:' + escI(e.title), 'DESCRIPTION:' + escI(e.desc), 'TRANSP:TRANSPARENT', 'END:VEVENT');
+  }
+  lines.push('END:VCALENDAR');
+  return lines.map(icsFold).join('\r\n') + '\r\n';
+}
+function calPlatform() {
+  const ua = navigator.userAgent || '';
+  const ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform || ''));
+  const android = /Android/i.test(ua);
+  /* 인앱: 알려진 앱 + 안드로이드 웹뷰 표시(; wv) + iOS에서 Safari 표시가 없는 웹뷰 */
+  const webview = IS_INAPP || /DaumApps|everytimeApp|BAND\/|; wv\)/i.test(ua) || (ios && !/Safari\//i.test(ua));
+  /* iOS에서는 Safari만 만든 파일을 달력으로 넘길 수 있다. 홈 화면에 추가한 앱(standalone)도 안 된다 */
+  const iosOther = ios && (/CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|YaBrowser|DuckDuckGo|Ddg\/|Whale|SamsungBrowser|GSA\//i.test(ua) || navigator.standalone === true);
+  return {ios, android, inapp: webview || iosOther, kakao: /KAKAOTALK/i.test(ua), line: /Line\//i.test(ua)};
+}
+/* 달력 파일 열기/받기 — 반드시 탭 이벤트 안에서 곧바로 불러야 한다(늦으면 브라우저가 막음) */
+function sendGililFile(url) {
+  const a = document.createElement('a');
+  a.style.display = 'none'; a.rel = 'noopener'; a.target = '_self';
+  a.href = url; a.setAttribute('download', 'san-days.ics');
+  document.body.appendChild(a); a.click();
+  setTimeout(() => a.remove(), 1000);
+}
+function gcalLink(e) {
+  /* 일반 https 주소 — 안드로이드에서는 Google 캘린더 앱이, 그 밖에서는 웹 화면이 열린다. 종일 일정은 끝 날짜가 '다음 날' */
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(e.title) + '&dates=' + e.start + '%2F' + e.end + '&details=' + encodeURIComponent(e.desc);
+}
+function externalBrowserUrl(pf) {
+  const here = location.href;
+  if (pf.kakao) return 'kakaotalk://web/openExternal?url=' + encodeURIComponent(here);
+  if (pf.line) { try { const u = new URL(here); u.searchParams.set('openExternalBrowser', '1'); return u.href; } catch (e) { return ''; } }
+  /* 패키지를 못박지 않는다 — Chrome이 없는 폰에서도 기본 브라우저가 열리도록 */
+  if (pf.android) return 'intent://' + here.replace(/^https?:\/\//, '').replace(/#.*$/, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;S.browser_fallback_url=' + encodeURIComponent(here) + ';end';
+  if (pf.ios) return 'x-safari-' + here;
+  return '';
+}
+function openCalSheet() {
+  const evs = gililEvents(); if (!evs.length) return;
+  const pf = calPlatform();
+  const ics = buildGililICS(evs);
+  let fileUrl = '';
+  if (!pf.inapp) { try { fileUrl = URL.createObjectURL(new Blob([ics], {type: 'text/calendar;charset=utf-8'})); sendGililFile(fileUrl); } catch (e) {} }
+  const old = document.getElementById('calSheet'); if (old) { const c = old.querySelector('#calClose'); if (c) c.click(); else old.remove(); }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const bn = pf.ios ? 'Safari' : L('Chrome이나 삼성 인터넷', 'Chrome or Samsung Internet', 'ChromeかSamsung Internet');
+  const steps = pf.inapp
+    ? L('지금 열려 있는 화면에서는 달력 파일을 받을 수 없습니다. 아래 버튼으로 ' + bn + '에서 여신 뒤, 다시 「내 달력에 저장」을 눌러 주시기 바랍니다. 버튼이 듣지 않으면 주소를 복사해 ' + bn + '에 붙여 넣으시면 됩니다.',
+        'The calendar file cannot be saved from the screen you have open now. Please open this page in ' + bn + ' with the button below, then tap “Save to my calendar” again. If the button does nothing, copy the address and paste it into ' + bn + '.',
+        'いま開いている画面では、カレンダーのファイルを保存できません。下のボタンで' + bn + 'で開いてから、もう一度「カレンダーに保存」を押してください。ボタンがきかないときは、アドレスをコピーして' + bn + 'に貼りつけてください。')
+    : pf.ios
+    ? L('<b>1.</b> 달력 창이 뜨면 <b>모두 추가</b>를 누릅니다. 그러면 끝입니다.<br><b>2.</b> 「다운로드하겠습니까?」라고 물으면 <b>다운로드</b>를 누른 뒤, 주소창 옆의 <b>↓ 표시</b> → <b>san-days</b> 파일을 누릅니다. 달력 창이 열리면 <b>모두 추가</b>를 누릅니다.<br><b>3.</b> 아무 창도 뜨지 않았으면 아래 <b>달력 파일 열기</b>를 눌러 주시기 바랍니다.',
+        '<b>1.</b> If a calendar window opens, tap <b>Add All</b>. That is all.<br><b>2.</b> If you are asked “Do you want to download?”, tap <b>Download</b>, then tap the <b>↓ mark</b> next to the address bar and tap the <b>san-days</b> file. When the calendar window opens, tap <b>Add All</b>.<br><b>3.</b> If no window opened, please tap <b>Open the calendar file</b> below.',
+        '<b>1.</b> カレンダーの画面が出たら<b>すべて追加</b>を押します。これで終わりです。<br><b>2.</b> 「ダウンロードしますか？」と出たら<b>ダウンロード</b>を押し、アドレスバーの横の<b>↓の印</b> → <b>san-days</b>のファイルを押します。カレンダーの画面が開いたら<b>すべて追加</b>を押します。<br><b>3.</b> 何も出なかったときは、下の<b>カレンダーのファイルを開く</b>を押してください。')
+    : pf.android
+    ? L('<b>1.</b> 파일을 받았다는 알림이 뜨면 <b>열기</b>를 누릅니다. (안 보이면 화면 맨 위를 아래로 쓸어내려 <b>san-days</b>를 누릅니다.)<br><b>2.</b> 앱을 고르라고 하면 <b>캘린더</b>를 고릅니다.<br><b>3.</b> <b>저장</b> 또는 <b>추가</b>를 누릅니다.',
+        '<b>1.</b> When you see that the file was downloaded, tap <b>Open</b>. (If you do not see it, swipe down from the top of the screen and tap <b>san-days</b>.)<br><b>2.</b> If you are asked to pick an app, pick <b>Calendar</b>.<br><b>3.</b> Tap <b>Save</b> or <b>Add</b>.',
+        '<b>1.</b> ファイルを受け取ったというお知らせが出たら<b>開く</b>を押します。(見えないときは、画面のいちばん上から下へなぞって<b>san-days</b>を押します。)<br><b>2.</b> アプリを選ぶ画面が出たら<b>カレンダー</b>を選びます。<br><b>3.</b> <b>保存</b>または<b>追加</b>を押します。')
+    : L('<b>san-days.ics</b> 파일을 받았습니다. 그 파일을 여시면 달력 프로그램에 날짜가 들어갑니다.',
+        'The file <b>san-days.ics</b> was downloaded. Open it, and the days go into your calendar program.',
+        '<b>san-days.ics</b>というファイルを受け取りました。そのファイルを開くと、カレンダーに日付が入ります。');
+  const ext = pf.inapp ? externalBrowserUrl(pf) : '';
+  const bS = 'display:inline-block;background:#2e2a23;color:#f2ecdf;border:none;padding:12px 20px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;margin:4px';
+  const bG = 'display:inline-block;background:none;color:#2e2a23;border:1px solid rgba(46,42,35,.5);padding:11px 18px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;margin:4px';
+  const rows = evs.map(e => `<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(46,42,35,.15)">
+      <span style="flex:0 0 44px;font-size:13px;white-space:nowrap">${+e.start.slice(4, 6)}/${+e.start.slice(6, 8)}</span>
+      <span style="flex:1;font-size:12.5px;line-height:1.5${e.tp === 'ch' ? ';color:#a63d28' : ''}">${esc(e.title.replace(/^山 /, ''))}</span>
+      <a class="cal-g" href="${esc(gcalLink(e))}" target="_blank" rel="noopener" style="flex:0 0 auto;font-size:12px;color:#2e2a23;border:1px solid rgba(46,42,35,.5);padding:7px 10px;text-decoration:none;white-space:nowrap">${L('넣기', 'Add', '入れる')}</a>
+    </div>`).join('');
+  const ov = document.createElement('div');
+  ov.id = 'calSheet';
+  ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', L('내 달력에 저장', 'Save to my calendar', 'カレンダーに保存'));
+  ov.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(24,21,17,.6);display:flex;align-items:flex-end;justify-content:center';
+  ov.innerHTML = `<div style="background:#f2ecdf;color:#2e2a23;width:100%;max-width:520px;max-height:88vh;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:22px 20px calc(20px + env(safe-area-inset-bottom));box-sizing:border-box">
+    <p style="font-size:10px;font-weight:700;letter-spacing:.3em;border-bottom:1px solid #2e2a23;padding-bottom:8px;margin-bottom:12px">CALENDAR · ${L('내 달력에 저장', 'Save to my calendar', 'カレンダーに保存')}</p>
+    <p style="font-size:14px;line-height:1.8;margin-bottom:14px">${steps}</p>
+    <div style="text-align:center;margin-bottom:6px;position:sticky;top:-22px;z-index:1;background:#f2ecdf;padding:6px 0">
+      ${pf.inapp
+        ? (ext ? `<a id="calExt" href="${esc(ext)}" style="${bS}">${pf.ios ? L('Safari에서 열기', 'Open in Safari', 'Safariで開く') : L('다른 브라우저에서 열기', 'Open in another browser', 'ほかのブラウザで開く')}</a>` : '')
+          + `<button type="button" id="calCopy" style="${bG}">${L('주소 복사', 'Copy the address', 'アドレスをコピー')}</button>`
+        : `<a id="calFile" href="${fileUrl}" download="san-days.ics" target="_self" style="${bS}">${pf.ios ? L('달력 파일 열기', 'Open the calendar file', 'カレンダーのファイルを開く') : L('달력 파일 다시 받기', 'Get the calendar file again', 'カレンダーのファイルをもう一度受け取る')}</a>`
+          + (pf.ios ? `<a id="calFile2" href="${fileUrl}" target="_self" style="${bG}">${L('다른 방법으로 열기', 'Open it another way', 'べつの方法で開く')}</a>` : '')}
+      <button type="button" id="calClose" style="${bG}">${L('닫기', 'Close', '閉じる')}</button>
+    </div>
+    <details style="margin-top:14px;border-top:1px solid rgba(46,42,35,.5);padding-top:12px"${pf.inapp ? '' : (pf.android ? ' open' : '')}>
+      <summary style="font-size:13px;font-weight:700;cursor:pointer;padding:4px 0">${L('잘 안 되면 — 날짜를 하나씩 Google 캘린더에 넣기', 'If that does not work — add the days one by one to Google Calendar', 'うまくいかないとき — 日付を一つずつGoogleカレンダーに入れる')}</summary>
+      <p style="font-size:12px;line-height:1.7;color:#6a6354;margin:8px 0 4px">${L('「넣기」를 누르면 Google 캘린더가 열립니다. 거기서 <b>저장</b>을 누르시면 됩니다. Google 계정이 필요하고, 이때는 그 날짜와 제목이 Google로 전달됩니다.', 'Tap “Add” and Google Calendar opens. Then tap <b>Save</b> there. You need a Google account, and that day and its title are sent to Google.', '「入れる」を押すとGoogleカレンダーが開きます。そこで<b>保存</b>を押してください。Googleアカウントが必要で、このときはその日付と題名がGoogleに送られます。')}</p>
+      ${rows}
+    </details>
+  </div>`;
+  document.body.appendChild(ov);
+  /* 창이 떠 있는 동안 뒤 화면은 움직이지 않게 — 닫을 때 되돌린다 */
+  const root = document.documentElement, prevOverflow = root.style.overflow;
+  root.style.overflow = 'hidden';
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  const close = () => {
+    root.style.overflow = prevOverflow;
+    document.removeEventListener('keydown', onKey);
+    ov.remove();
+    if (fileUrl) setTimeout(() => URL.revokeObjectURL(fileUrl), 120000);
+    const b = document.getElementById('gililBtn'); if (b) { try { b.focus({preventScroll: true}); } catch (e) {} }
+  };
+  document.addEventListener('keydown', onKey);
+  ov.addEventListener('touchmove', e => { if (e.target === ov) e.preventDefault(); }, {passive: false});
+  try { ov.querySelector('#calClose').focus({preventScroll: true}); } catch (e) {}
+  ov.addEventListener('click', e => {
+    if (e.target === ov || e.target.closest('#calClose')) { close(); return; }
+    const cp = e.target.closest('#calCopy');
+    if (cp) {
+      const done = () => { cp.textContent = L('복사했습니다 ✓', 'Copied ✓', 'コピーしました ✓'); };
+      const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = location.href; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); } catch (e3) {} };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(done, fallback); else fallback();
+      return;
+    }
+    const g = e.target.closest('.cal-g');
+    if (g) { g.textContent = '✓'; g.style.opacity = '.55'; }
+  });
 }
 /* 관계 날씨 저장·삭제 / 길일 다운로드 — 위임 핸들러 */
 document.addEventListener('click', e => {
@@ -6576,7 +6713,7 @@ document.addEventListener('click', e => {
     if (window.__lastInput) { try { render(window.__lastInput); } catch (e3) {} }
     return;
   }
-  if (e.target.closest && e.target.closest('#gililBtn')) { try { downloadGililICS(); } catch (e2) {} }
+  if (e.target.closest && e.target.closest('#gililBtn')) { try { openCalSheet(); } catch (e2) {} }
 });
 
 /* ---- 사주 ---- */
