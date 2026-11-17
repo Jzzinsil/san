@@ -1044,7 +1044,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.30.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.31.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -6943,6 +6943,7 @@ const DEEP_KO = {
     mHead: gz => `이번 달 · ${gz}월`,
     norm: (el, theme, tip, past) => `${el} 기운이 ${past ? '들어왔습니다' : '들어옵니다'}. ${theme}${past ? '였습니다.' : '입니다. ' + tip}`,
     fill: (el, gs, gift, past) => `사주에 없던 ${el} 기운이 ${past ? '들어왔습니다' : '들어옵니다'}. ${gift}이 ${past ? '생겼습니다' : '생깁니다'}. 당신께는 '${gs}' 쪽 일이 움직이는 ${past ? '때였습니다' : '때입니다'}.`,
+    boost: (el, past) => `사주에 약하던 ${el} 기운을 보태 주는 ${past ? '때였습니다' : '때입니다'}.`,
     fillTip: '없던 것이 오면 마음이 그쪽으로 확 쏠리기 쉽습니다. 작게, 천천히 시작하시기 바랍니다.',
     over: (el, img, feel, tip, past) => `이미 많은 ${el} 기운이 더 ${past ? '들어왔습니다' : '들어옵니다'}. ${img}입니다. ${feel}이 들기 ${past ? '쉬웠습니다.' : '쉽습니다. ' + tip}`,
     dbl: (el, past) => `위아래 두 글자가 모두 ${el} 기운입니다. 같은 기운이 두 겹으로 들어와 그 성질이 아주 세게 ${past ? '나왔습니다. 쉴 틈이 적으셨을 수 있습니다' : '나옵니다. 쉬는 날부터 먼저 정해 두시기 바랍니다'}.`,
@@ -7176,6 +7177,7 @@ const DEEP_EN = {
     mHead: gz => `This month · ${gz} month`,
     norm: (el, theme, tip, past) => `${el} energy ${past ? 'came in' : 'comes in'}. This ${past ? 'brought' : 'brings'} ${theme}.${past ? '' : ' ' + tip}`,
     fill: (el, gs, gift, past) => `${el} energy, which your birth chart does not have, ${past ? 'came in' : 'comes in'}. With it ${past ? 'came' : 'comes'} ${gift}. For you, things on the “${gs}” side ${past ? 'started' : 'start'} to move.`,
+    boost: (el, past) => `It ${past ? 'added' : 'adds'} to the ${el} energy that is weak in your birth chart.`,
     fillTip: "When something you did not have arrives, your heart can easily rush toward it. Please start small and go slowly.",
     over: (el, img, feel, tip, past) => `More ${el} energy ${past ? 'came in' : 'comes in'}, on top of the large amount you already have. It ${past ? 'was' : 'is'} like ${img}. It ${past ? 'was' : 'is'} easy to feel ${feel}.${past ? '' : ' ' + tip}`,
     dbl: (el, past) => `Both letters of this time are ${el} energy. The same energy ${past ? 'came' : 'comes'} in twice over, so its nature ${past ? 'came out very strongly. You may have had little room to rest' : 'comes out very strongly. Please decide your rest days first'}.`,
@@ -7409,6 +7411,7 @@ const DEEP_JA = {
     mHead: gz => `今月 · ${gz}の月`,
     norm: (el, theme, tip, past) => `${el}の気が${past ? '入ってきました' : '入ってきます'}。${theme}${past ? 'でした。' : 'です。' + tip}`,
     fill: (el, gs, gift, past) => `命式になかった${el}の気が${past ? '入ってきました' : '入ってきます'}。${gift}が${past ? '生まれました' : '生まれます'}。あなたにとっては、「${gs}」のことが動く${past ? 'ときでした' : 'ときです'}。`,
+    boost: (el, past) => `命式で弱めの${el}の気を、おぎなってくれる${past ? 'ときでした' : 'ときです'}。`,
     fillTip: 'なかったものがやって来ると、気持ちがそちらへ一気にかたむきやすいです。小さく、ゆっくり始めてください。',
     over: (el, img, feel, tip, past) => `すでに多い${el}の気が、さらに${past ? '入ってきました' : '入ってきます'}。${img}です。${feel}${past ? 'なりやすかったです。' : 'なりやすいです。' + tip}`,
     dbl: (el, past) => `上と下の二つの文字が、どちらも${el}の気です。同じ気が二重に入ってきて、その性質がとても強く${past ? '出ました。休むひまが少なかったかもしれません' : '出ます。休む日から先に決めておいてください'}。`,
@@ -7493,15 +7496,34 @@ function deepFacts(inp, s, astro, now) {
     }
   }
   /* 운의 글자 하나를 사주에 겹쳐 본다 */
-  const kindOf = el => cnt[el] === 0 ? 'fill' : lvP(el) === 3 ? 'over' : 'norm';
+  /* 화면에 보이는 세기와 같은 기준 — 나와 같은 기운은 개수 그대로, 나머지는 계절 · 충을 반영한 힘 */
+  const lvShown = el => el === dEl ? lvOf(cnt[el]) : lvP(el);
+  const kindOf = el => cnt[el] === 0 ? 'fill' : lvShown(el) === 3 ? 'over' : 'norm';
   const evalLuck = (st, br) => {
     const es = STEMS[st].el, eb = BRANCHES[br].el;
     return {st, br, es, eb, ks: kindOf(es), kb: kindOf(eb), gS: grpOf(es), gB: grpOf(eb), dbl: es === eb,
+      ws: cnt[es] > 0 && lvShown(es) === 1, wb: cnt[eb] > 0 && lvShown(eb) === 1,   // 사주에 약하던 기운을 보태 주는가
       stack: br === dayBr, clash: inPairs(JIJI_CHUNG, br, dayBr)};
+  };
+  /* 운의 등급(3 좋음 · 2 무난 · 1 주의) — 인생 지도 탭도 이 함수를 쓴다.
+     앞세우는 기운: 없던 것 3 · 약하던 것 2.5 · 보통 2 · 넘침 1. 뒤따르는 기운: 없던 것 +0.5(넘침 뒤에는 +0.25) · 약하던 것 +0.25 · 넘침 −0.5.
+     위아래가 같은 기운이면 보통 −0.25 · 약하던 것 +0.25, 날의 동물이 겹치거나 밀어내면 −0.5. 2.75 이상 좋음, 1.5 미만 주의 */
+  const rateOf = (st, br, lead) => {
+    const e = evalLuck(st, br), rk = {over: 0, fill: 1, weak: 2, norm: 3}, v = {fill: 3, weak: 2.5, norm: 2, over: 1};
+    const k = (kind, weak) => kind === 'norm' && weak ? 'weak' : kind;
+    const ks = k(e.ks, e.ws), kb = k(e.kb, e.wb);
+    const [p, q] = lead === 'branch' ? [kb, ks] : [ks, kb].sort((a, b) => rk[a] - rk[b]);
+    let sc = v[p];
+    if (e.dbl) sc += p === 'norm' ? -0.25 : p === 'weak' ? 0.25 : 0;
+    else sc += q === 'fill' ? (p === 'over' ? 0.25 : 0.5) : q === 'weak' ? 0.25 : q === 'over' ? -0.5 : 0;
+    if (e.stack || e.clash) sc -= 0.5;
+    return sc >= 2.75 ? 3 : sc < 1.5 ? 1 : 2;
   };
   /* 대운 */
   const dae = deepDaeun(inp, s, astro);
-  const curYear = now.getFullYear(), yAge = curYear - inp.y;
+  /* 나이는 화면의 다른 곳(인생 지도)과 같게 만 나이로 센다 */
+  const curYear = now.getFullYear();
+  let yAge = curYear - inp.y; if (now.getMonth() + 1 < inp.m || (now.getMonth() + 1 === inp.m && now.getDate() < inp.d)) yAge--;
   const curIdx = dae.list.findIndex(p => yAge >= p.from && yAge <= p.to);
   const cur = curIdx >= 0 ? dae.list[curIdx] : null;
   const next = curIdx >= 0 ? dae.list[curIdx + 1] || null : (yAge < dae.startAge ? dae.list[0] : null);
@@ -7536,7 +7558,7 @@ function deepFacts(inp, s, astro, now) {
   const over = [0, 1, 2, 3, 4].filter(e => lvP(e) === 3);
   const thisY = years[3];
   const yearTip = (thisY.ks === 'over' || thisY.kb === 'over' || thisY.stack || thisY.clash) ? 'heavy' : (thisY.ks === 'fill' || thisY.kb === 'fill') ? 'fill' : thisY.dbl ? 'strong' : 'calm';
-  return {dEl, cnt, grp, domEl, clearDom, missing, weakEl, over, sameInChart, clashes, dae, yAge, curYear, cur, next, curE: cur ? evalLuck(cur.st, cur.br) : null,
+  return {rate: rateOf, evalLuck, dEl, cnt, grp, domEl, clearDom, missing, weakEl, over, sameInChart, clashes, dae, yAge, curYear, cur, next, curE: cur ? evalLuck(cur.st, cur.br) : null,
     nextE: next ? evalLuck(next.st, next.br) : null, missArrive, years, month, palaceG, channel, dilemma, bridge, mind, tact, curious, starG, starClash, yearTip, hasHour: !!s.hour, dayBr,
     stackDae: !!cur && cur.br === dayBr, stackYear: thisY.br === dayBr};
 }
@@ -7551,21 +7573,23 @@ function deepLuckText(T, F, e, lead, past, seen) {
     if (seen) seen.add(key);
     return kind === 'fill' ? f.fill(T.el[el], T.gs[g], T.gift[el], past)
       : kind === 'over' ? f.over(T.el[el], T.crowdImg[el], T.crowdFeel[el], T.crowdTip[el], past)
-      : f.norm(T.el[el], T.theme[g], T.roleDo[g], past);
+      : f.norm(T.el[el], T.theme[g], (e.dbl || e.stack || e.clash) ? '' : T.roleDo[g], past).trim();   // 뒤에 '쉬어 가라'가 붙는 때에는 '해 보라'를 붙이지 않는다
   };
   const dbl = (el, kind) => kind === 'fill' ? f.dblFill(T.el[el], past) : f.dbl(T.el[el], past);
   let tip = false;
   if (lead === 'branch') {
     out.push(full(e.eb, e.kb, e.gB)); tip = e.kb === 'fill';
+    if (e.kb === 'norm' && e.wb) out.push(f.boost(T.el[e.eb], past));
     if (e.dbl) out.push(dbl(e.eb, e.kb));
     else if (e.ks === 'fill') out.push(f.subFill(T.el[e.es]));
     else if (e.ks === 'over') out.push(f.subOver(T.el[e.es]));
   } else if (e.dbl) {
-    out.push(full(e.es, e.ks, e.gS)); out.push(dbl(e.es, e.ks)); tip = e.ks === 'fill';
+    out.push(full(e.es, e.ks, e.gS)); if (e.ks === 'norm' && e.ws) out.push(f.boost(T.el[e.es], past)); out.push(dbl(e.es, e.ks)); tip = e.ks === 'fill';
   } else {
-    const items = [{el: e.es, k: e.ks, g: e.gS}, {el: e.eb, k: e.kb, g: e.gB}].sort((a, b) => rank[a.k] - rank[b.k]);
+    const items = [{el: e.es, k: e.ks, g: e.gS, w: e.ws}, {el: e.eb, k: e.kb, g: e.gB, w: e.wb}].sort((a, b) => (rank[a.k] - rank[b.k]) || ((b.w ? 1 : 0) - (a.w ? 1 : 0)));
     const [a, b] = items;
     out.push(full(a.el, a.k, a.g));
+    if (a.k === 'norm' && a.w) out.push(f.boost(T.el[a.el], past));
     /* 넘침이 앞서면 뒤따르는 채움은 '조금'으로만 — 답답한 해에 "안정이 생겼다"고 겹쳐 말하지 않는다 */
     out.push(b.k === 'norm' ? f.also(T.el[b.el], T.gs[b.g], past) : a.k === 'over' && b.k === 'fill' ? f.alsoFill(T.el[b.el], T.gs[b.g], past) : full(b.el, b.k, b.g));
     tip = a.k === 'fill' || (b.k === 'fill' && a.k !== 'over');
@@ -7622,10 +7646,10 @@ function renderDeep(inp, s, astro, now) {
   let Dh = (inp.gender !== 'M' && inp.gender !== 'F' ? `<p class="small">${f.dGender}</p>` : '') + P([f.dIntro(d.startAge, d.startAge % 10, ages) + sp + f.dBranch]);
   if (F.cur) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.now}</span> ${f.dCur(F.cur.from, F.cur.to, deepGz(F.cur.st, F.cur.br), T.animal[F.cur.br])}</p><p>${deepLuckText(T, F, F.curE, 'branch', false)}</p></div>`;
   else if (F.yAge < d.startAge) Dh += P([f.dBefore(d.startAge)]);
-  if (F.next) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.next}</span> ${f.dNext(F.next.from, F.next.to, inp.y + F.next.from, deepGz(F.next.st, F.next.br), T.animal[F.next.br])}</p><p>${F.curE && F.curE.eb === F.nextE.eb && !F.nextE.stack && !F.nextE.clash && F.nextE.ks === 'norm' ? f.dSame : deepLuckText(T, F, F.nextE, 'branch', false)}</p></div>`;
+  if (F.next) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.next}</span> ${f.dNext(F.next.from, F.next.to, F.curYear + (F.next.from - F.yAge), deepGz(F.next.st, F.next.br), T.animal[F.next.br])}</p><p>${F.curE && F.curE.eb === F.nextE.eb && !F.nextE.stack && !F.nextE.clash && F.nextE.ks === 'norm' ? f.dSame : deepLuckText(T, F, F.nextE, 'branch', false)}</p></div>`;
   Dh += P([...F.missArrive.map(m => !F.missing.length
-      ? (m.when === 'future' ? f.dWeakFuture(T.el[m.el], m.p.from, inp.y + m.p.from) : m.when === 'now' ? f.dWeakNow(T.el[m.el]) : '')
-      : m.when === 'future' ? f.dMissFuture(T.el[m.el], m.p.from, inp.y + m.p.from, T.gift[m.el])
+      ? (m.when === 'future' ? f.dWeakFuture(T.el[m.el], m.p.from, F.curYear + (m.p.from - F.yAge)) : m.when === 'now' ? f.dWeakNow(T.el[m.el]) : '')
+      : m.when === 'future' ? f.dMissFuture(T.el[m.el], m.p.from, F.curYear + (m.p.from - F.yAge), T.gift[m.el])
       : m.when === 'now' ? f.dMissNow(T.el[m.el]) : m.when === 'past' ? f.dMissPast(T.el[m.el], m.p.from, m.p.to) : f.dMissNever(T.el[m.el])),
     f.dTransition]);
 
@@ -9643,6 +9667,12 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   /* 나이별 대운 스텝(월주에서 ±) */
   const stepAt = a => a < startAge ? 0 : dir * (Math.floor((a - startAge) / 10) + 1);
 
+  /* 등급은 「깊이 읽기」와 같은 방식 — 운의 기운이 사주에 없던 것이면 좋음, 이미 많으면 주의.
+     10년 흐름은 아랫글자를, 해 · 달은 윗글자를 앞세워 읽는다 */
+  let DF = null; try { DF = deepFacts(inp, saju, astro, new Date()); } catch (e) {}
+  const rateOf = (st, br, lead) => DF ? DF.rate(st, br, lead) : TG_RATE[tenGod(dayStem, st)];
+  const deepLine = (st, br, lead, past, seen) => { try { return DF ? deepLuckText(deepT(), DF, DF.evalLuck(st, br), lead, past, seen) : ''; } catch (e) { return ''; } };
+
   /* 대운 국면 목록 */
   const phases = [];
   for (let k = 0; ; k++) {
@@ -9650,8 +9680,8 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     if (from > 88) break;
     const step = dir * (k + 1);
     const st = mod(mStem + step, 10), br = mod(mBranch + step, 12);
-    const tg = tenGod(dayStem, st);
-    phases.push({from, to: from + 9, st, br, tg, rate: TG_RATE[tg], theme: TG_THEME[tg]});
+    const tg = tenGod(dayStem, BRANCHES[br].main);        // 아랫글자의 역할
+    phases.push({from, to: from + 9, st, br, tg, rate: rateOf(st, br, 'branch'), theme: TG_THEME[tg]});
   }
 
   /* 나이별 점수: 대운 십성(×2) + 세운 십성 → 3~9 */
@@ -9659,9 +9689,9 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const pts = [];
   for (let a = 0; a <= AGE_MAX; a++) {
     const seStem = mod((birthY + a) - 4, 10);
-    const seRate = TG_RATE[tenGod(dayStem, seStem)];
+    const seRate = rateOf(seStem, mod((birthY + a) - 4, 12), 'stem');
     const dStem = mod(mStem + stepAt(a), 10);
-    const dRate = TG_RATE[tenGod(dayStem, dStem)];
+    const dRate = rateOf(dStem, mod(mBranch + stepAt(a), 12), 'branch');
     pts.push({a, score: dRate * 2 + seRate});
   }
 
@@ -9673,7 +9703,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   }
   const peakD = decades.reduce((a, b) => b.avg > a.avg ? b : a);
   const valD = decades.reduce((a, b) => b.avg < a.avg ? b : a);
-  const peakDaeunTg = tenGod(dayStem, mod(mStem + stepAt(peakD.d + 5), 10));
+  const peakDaeunTg = tenGod(dayStem, BRANCHES[mod(mBranch + stepAt(peakD.d + 5), 12)].main);
 
   /* ---- 인생 항로 (옛 항해지도 — 가로=시간, 세로 위도=운의 세기) ---- */
   const W = 660, H = 360;
@@ -9723,12 +9753,12 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   /* 피크·저점 대운 간지·등급 (근거용) */
   const peakStep = stepAt(peakD.d + 5), valStep = stepAt(valD.d + 5);
   const peakGz = STEMS[mod(mStem + peakStep, 10)].k + BRANCHES[mod(mBranch + peakStep, 12)].k;
-  const valTg = tenGod(dayStem, mod(mStem + valStep, 10));
+  const valTg = tenGod(dayStem, BRANCHES[mod(mBranch + valStep, 12)].main);
   const valGz = STEMS[mod(mStem + valStep, 10)].k + BRANCHES[mod(mBranch + valStep, 12)].k;
-  const peakRate = TG_RATE[peakDaeunTg], valRate = TG_RATE[valTg];
+  const peakRate = rateOf(mod(mStem + peakStep, 10), mod(mBranch + peakStep, 12), 'branch'), valRate = rateOf(mod(mStem + valStep, 10), mod(mBranch + valStep, 12), 'branch');
   /* 대운 전환 나이·연도 */
   const switchAges = [];
-  for (let a = startAge; a <= 80; a += 10) switchAges.push(a);
+  for (let a = startAge; a <= 88; a += 10) switchAges.push(a);
   const nextSwitch = switchAges.find(a => a > age);
 
   /* display-only: is year Y one of this person's samjae years (same set as the samjae card below) */
@@ -9753,7 +9783,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     : L(`한눈에 — 그래프에서 가장 높은 때는 ${peakD.d}대`, `At a glance — the highest point on your graph is your ${peakD.d}s`, `ひと目で — グラフでいちばん高いのは${peakD.d}代`);
   const pkWhy = peakRate === 3
     ? L(`그 무렵 10년의 큰 흐름이 '${pkTheme}' 쪽으로 힘을 실어 줍니다.`, `The big season around then gives strong support to <b>${pkTheme}</b>.`, `そのころの10年の流れが「${pkTheme}」を強く後押しします。`)
-    : L(`그 무렵의 해들이 고르게 좋아서 평균 점수가 가장 높게 나옵니다.`, `The single years around then are good one after another, so their average comes out highest.`, `そのころは一年ごとの運がよい年が続くので、平均がいちばん高くなります。`);
+    : L(`그 무렵의 10년 흐름과 해마다의 운을 합친 평균 점수가 가장 높게 나옵니다.`, `The 10-year season and the single years around then, taken together, give the highest average score.`, `そのころの10年の流れと一年ごとの運を合わせた平均が、いちばん高くなります。`);
   const pkPeak = peakPast
     ? L(`그래프에서 가장 높았던 때는 <b>${peakD.d}대</b>였고, 그때 다지신 바탕이 지금도 힘이 됩니다.${aheadOk ? ` 앞으로 남은 때 가운데서는 <b>${aheadIsNow ? '지금 ' : ''}${aheadD.d}대</b>가 가장 높습니다.` : ''}`,
         `The highest point on the graph was your <b>${peakD.d}s</b>, and the base you built then still helps you today.${aheadOk ? ` Of the years still ahead, <b>${aheadIsNow ? 'now, ' : ''}your ${aheadD.d}s</b> are the highest.` : ''}`,
@@ -9791,22 +9821,23 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     `<div class="lgstat"><span class="lgn">${startAge}</span><span class="lgt"><b>Age ${startAge} — when the first big 10-year season of your life (daeun) begins</b>. After that, the season changes every 10 years.</span></div>`, `<div class="lgstat"><span class="lgn">${startAge}</span><span class="lgt"><b>${startAge}歳 — 大きな流れ(大運)が初めて始まる年齢</b>です。そのあとは10年ごとに流れが変わります。</span></div>`);
   /* display-only: calendar year of the next switch counted the same way as the ages elsewhere on this screen,
      plus one bridging note when the season that opens is rated Caution and/or the switch year is a samjae year */
+  const plainAge = age < 19 || age >= 65;   // 미성년 · 고령에게는 이직 · 결혼 같은 예를 들지 않는다
   const swY = nextSwitch ? curYear + (nextSwitch - age) : 0;
   const swPh = nextSwitch ? phAt(nextSwitch) : null;
   const swLow = !!(swPh && swPh.rate === 1), swSam = !!(nextSwitch && isSamY(swY));
   /* display-only: ONE instruction per case — a Caution season or a samjae switch year replaces the general "time big moves to the switch" rule */
   const swNote = !nextSwitch ? ''
     : swLow
-    ? L(` 이때 열리는 10년은 아래 표에서 '주의'입니다${swSam ? `. ${swY}년은 조심할 해(삼재)와도 겹칩니다` : ''}. 그래서 이직 · 이사 · 결혼 같은 큰 결정은 <b>${swY - 1}년까지</b> 마쳐 두시고, 그 뒤에는 무리하지 않으시는 편이 좋겠습니다.`,
-        ` The season that opens then is rated Caution in the table below${swSam ? `, and ${swY} is also a careful year (samjae)` : ''}. So it is best to finish big decisions such as a new job, a move or a marriage <b>by ${swY - 1}</b>, and not to push hard after that.`,
-        `このとき始まる10年は、下の表で「注意」です${swSam ? `。${swY}年は気をつける年(三災)とも重なります` : ''}。ですから、転職・引っ越し・結婚のような大きな決断は<b>${swY - 1}年まで</b>にすませ、そのあとは無理をなさらないほうがよいでしょう。`)
+    ? L(` 이때 열리는 10년은 아래 표에서 '주의'입니다${swSam ? `. ${swY}년은 조심할 해(삼재)와도 겹칩니다` : ''}. 그래서 ${plainAge ? '큰 결정은' : '이직 · 이사 · 결혼 같은 큰 결정은'} <b>${swY - 1}년까지</b> 마쳐 두시고, 그 뒤에는 무리하지 않으시는 편이 좋겠습니다.`,
+        ` The season that opens then is rated Caution in the table below${swSam ? `, and ${swY} is also a careful year (samjae)` : ''}. So it is best to finish big decisions${plainAge ? '' : ' such as a new job, a move or a marriage'} <b>by ${swY - 1}</b>, and not to push hard after that.`,
+        `このとき始まる10年は、下の表で「注意」です${swSam ? `。${swY}年は気をつける年(三災)とも重なります` : ''}。ですから、${plainAge ? '' : '転職・引っ越し・結婚のような'}大きな決断は<b>${swY - 1}年まで</b>にすませ、そのあとは無理をなさらないほうがよいでしょう。`)
     : swSam
     ? L(` 흐름이 바뀌는 해에는 삶의 환경도 달라지기 쉽습니다. 다만 ${swY}년은 조심할 해(삼재)와 겹치니, 큰 계약 · 이사 · 새 사업은 그 전에 마치시거나 작게 시작하시기 바랍니다.`,
         ` Life often changes in the year the season changes. But ${swY} is also a careful year (samjae), so please finish a big contract, a move or a new business before then, or start small.`,
         `流れが変わる年は、暮らしも変わりやすくなります。ただ${swY}年は気をつける年(三災)と重なるので、大きな契約・引っ越し・新しい事業は、その前にすませるか、小さく始めてください。`)
-    : L(` 흐름이 바뀌는 해에는 삶의 환경도 달라지기 쉬워서, 이직 · 이사 · 결혼처럼 큰 일을 이때에 맞추시면 한결 쉽게 풀립니다.`,
-        ` Life often changes in the year the season changes, so big moves such as a new job, a move or a marriage tend to go more smoothly if you plan them for then.`,
-        `流れが変わる年は暮らしも変わりやすいので、転職・引っ越し・結婚のような大きなことは、この年に合わせると進めやすくなります。`);
+    : L(` 흐름이 바뀌는 해에는 삶의 환경도 달라지기 쉬워서, ${plainAge ? '큰 일을' : '이직 · 이사 · 결혼처럼 큰 일을'} 이때에 맞추시면 한결 쉽게 풀립니다.`,
+        ` Life often changes in the year the season changes, so big moves${plainAge ? '' : ' such as a new job, a move or a marriage'} tend to go more smoothly if you plan them for then.`,
+        `流れが変わる年は暮らしも変わりやすいので、${plainAge ? '' : '転職・引っ越し・結婚のような'}大きなことは、この年に合わせると進めやすくなります。`);
   const lgSwitch = L(`<div class="combo"><b>큰 흐름이 바뀌는 나이 — 새 시기가 열리는 때</b><br>당신의 큰 흐름은 <b>${switchAges.join(' · ')}세</b>에 바뀝니다${nextSwitch ? `. 다음은 <b>${nextSwitch}세(${swY}년)</b>입니다` : '. 이 뒤로는 지금의 시기가 인생 후반까지 이어집니다'}.${swNote}</div>`,
     `<div class="combo"><b>When your 10-year season changes — a new chapter opens</b><br>Your big season changes at <b>ages ${switchAges.join(' · ')}</b>${nextSwitch ? `. The next change is at <b>age ${nextSwitch} (${swY})</b>` : '. From here on, your current chapter continues through the later part of your life'}.${swNote}</div>`, `<div class="combo"><b>大きな流れが変わる年齢 — 新しい時期が始まるとき</b><br>あなたの大きな流れは<b>${switchAges.join(' · ')}歳</b>で変わります${nextSwitch ? `。次は<b>${nextSwitch}歳(${swY}年)</b>です` : '。これから先は、今の時期が人生の後半まで続きます'}。${swNote}</div>`);
   $('#lifeGraph').innerHTML = L(`<h3>인생의 흐름 — 지나온 길과 앞으로 갈 길</h3>`, `<h3>Your life journey — the road behind you and the road ahead</h3>`, `<h3>人生の道のり — これまでの道と、これからの道</h3>`)
@@ -9820,6 +9851,8 @@ function renderLife(inp, saju, astro, num, age, curYear) {
 
   /* 대운 국면 해설 */
   const nowIdx = phases.findIndex(p => age >= p.from && age <= p.to);
+  const genderNote = (inp.gender !== 'M' && inp.gender !== 'F' && DF) ? ' ' + deepT().f.dGender : '';
+  const nowDeep = nowIdx >= 0 ? deepLine(phases[nowIdx].st, phases[nowIdx].br, 'branch', false, new Set(['tip'])) : '';
   const rows = phases.filter(p => p.from <= AGE_MAX).map((p, i) => `<div class="daeun-row${i === nowIdx ? ' on' : ''}">`
     + `<span class="dage">${L(`${p.from}~${p.to}세`, `ages ${p.from}–${p.to}`, `${p.from}〜${p.to}歳`)}</span>`
     + `<span class="dgz">${L(`${STEMS[p.st].k}${BRANCHES[p.br].k}`, `${STEMS[p.st].h}${BRANCHES[p.br].h}`, `${STEMS[p.st].h}${BRANCHES[p.br].h}`)}</span>`
@@ -9827,11 +9860,11 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     + `<span class="dth">${L(`${THEMES[p.theme].name} · ${RATE_WORD[p.rate]}`, `${THEMES_EN[p.theme].name} · ${RATE_WORD_EN[p.rate]}`, `${THEMES_JA[p.theme].name} · ${RATE_WORD_JA[p.rate]}`)}</span>`
     + `${i === nowIdx ? `<span class="dnow">${L('지금', 'now', '今')}</span>` : ''}</div>`).join('');
   $('#lifePhases').innerHTML = L(`<h3>10년마다 바뀌는 큰 흐름 — 대운</h3>`, `<h3>The big 10-year seasons of your life — Daeun</h3>`, `<h3>10年ごとに変わる大きな流れ — 大運</h3>`)
-    + L(`<p class="small">${startAge}세부터 10년마다 흐름이 바뀝니다. 줄마다 나이, 그 10년의 글자와 이름, 주제, 그리고 운(좋음 · 무난 · 주의)을 적었습니다. 주제가 같아도 운은 다를 수 있습니다.</p>`,
-        `<p class="small">From age ${startAge}, your season changes every 10 years. Each row shows the ages, the letters and name of that season, its theme, and its luck (Good · Fair · Caution). Two seasons can share a theme and still differ in luck.</p>`, `<p class="small">${startAge}歳から、10年ごとに流れが変わります。各行は、年齢、その10年の文字と名前、テーマ、運(好調 · まずまず · 注意)です。テーマが同じでも、運がちがうことがあります。</p>`)
+    + L(`<p class="small">${startAge}세부터 10년마다 흐름이 바뀝니다. 줄마다 나이, 그 10년의 글자와 이름, 주제, 그리고 운(좋음 · 무난 · 주의)을 적었습니다. 주제가 같아도 운은 다를 수 있습니다. 운은 사주 탭 「깊이 읽기」와 같은 방식으로 매깁니다. 그 10년의 기운(아랫글자 중심)이 사주에 없던 것이면 높게, 이미 많은 것이면 낮게 봅니다. 윗글자의 기운도 조금 보태고, 태어난 날의 글자와 겹치거나 밀어내면 조금 낮춥니다.${genderNote}</p>`,
+        `<p class="small">From age ${startAge}, your season changes every 10 years. Each row shows the ages, the letters and name of that season, its theme, and its luck (Good · Fair · Caution). Two seasons can share a theme and still differ in luck. Luck is rated the same way as the Deep reading on the Saju tab: higher when the energy of that season (mainly its lower letter) is one your chart does not have, lower when it is one you already have a lot of. The upper letter adds a little, and the rating goes down a little when the season repeats or pushes against the letter of your birth day.${genderNote}</p>`, `<p class="small">${startAge}歳から、10年ごとに流れが変わります。各行は、年齢、その10年の文字と名前、テーマ、運(好調 · まずまず · 注意)です。テーマが同じでも、運がちがうことがあります。運は、サジュのタブの「深く読む」と同じ見方で決めています。その10年の気(おもに下の文字)が命式になかったものなら高く、すでに多いものなら低く見ます。上の文字の気も少し加え、生まれた日の文字と重なったり押し合ったりするときは少し下げます。${genderNote}</p>`)
     + `<div class="daeun-list">${rows}</div>`
-    + (nowIdx >= 0 ? L(`<div class="combo"><b>지금 계신 시기 (${phases[nowIdx].from}~${phases[nowIdx].to}세)</b><br>${TENGOD_FORTUNE[phases[nowIdx].tg].split(' — ')[0]}이 강한 10년입니다. ${THEMES[phases[nowIdx].theme].adv}</div>`,
-        `<div class="combo"><b>Where you are now (ages ${phases[nowIdx].from}–${phases[nowIdx].to})</b><br>Over these 10 years: ${TENGOD_FORTUNE_EN[phases[nowIdx].tg].split(' — ')[0].replace(/^./, ch => ch.toLowerCase())}. ${THEMES_EN[phases[nowIdx].theme].adv}</div>`, `<div class="combo"><b>今いらっしゃる時期(${phases[nowIdx].from}〜${phases[nowIdx].to}歳)</b><br>この10年は、${TENGOD_FORTUNE_JA[phases[nowIdx].tg].split(' — ')[0]}です。${THEMES_JA[phases[nowIdx].theme].adv}</div>`) : '');
+    + (nowIdx >= 0 ? L(`<div class="combo"><b>지금 계신 시기 (${phases[nowIdx].from}~${phases[nowIdx].to}세)</b><br>${TENGOD_FORTUNE[phases[nowIdx].tg].split(' — ')[0]}이 강한 10년입니다. ${nowDeep || THEMES[phases[nowIdx].theme].adv}</div>`,
+        `<div class="combo"><b>Where you are now (ages ${phases[nowIdx].from}–${phases[nowIdx].to})</b><br>Over these 10 years: ${TENGOD_FORTUNE_EN[phases[nowIdx].tg].split(' — ')[0].replace(/^./, ch => ch.toLowerCase())}. ${nowDeep || THEMES_EN[phases[nowIdx].theme].adv}</div>`, `<div class="combo"><b>今いらっしゃる時期(${phases[nowIdx].from}〜${phases[nowIdx].to}歳)</b><br>この10年は、${TENGOD_FORTUNE_JA[phases[nowIdx].tg].split(' — ')[0]}です。${nowDeep || THEMES_JA[phases[nowIdx].theme].adv}</div>`) : '');
 
   /* ===== 다가오는 3년 운세 — 사주 세운 + 수비학 개인연도 + 이름·부모 시드로 유저마다 다르게 ===== */
   const cc = s => [...(s || '')].reduce((a, ch) => a + ch.charCodeAt(0), 0);
@@ -9869,18 +9902,18 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     const parts = past ? [star, tip] : rating === 3 ? [say, star] : rating === 1 ? [star, say] : [star, tip];
     return parts.filter(Boolean).join(dot) + dot.trim();
   };
+  const seenNext = new Set(['tip']), seenPast = new Set(['tip']);   // 이 탭에서는 '작게, 천천히' 꼬리말을 붙이지 않는다(등급 문장과 겹침)
   const yearReading = Y => {
     const yStem = mod(Y - 4, 10), yBranch = mod(Y - 4, 12);
     const yTg = tenGod(dayStem, yStem), bTg = tenGod(dayStem, BRANCHES[yBranch].main);
     const py = pyOf(Y);
     const cats = YEAR_CATS.map((c, ci) => {
       const inSet = c.pos.includes(yTg) || c.pos.includes(bTg);
-      const base = Math.max(TG_RATE[yTg], TG_RATE[bTg]);
+      const base = rateOf(yStem, yBranch, 'stem');
       let rating = inSet ? Math.min(3, base + 1) : base;
-      if (rating === 2 && (pSeed + Y + ci) % 4 === 0) rating = 3;
       return {k: L(c.k, YEAR_CATS_EN[ci].k, YEAR_CATS_JA[ci].k), rating, line: yrLine(c, ci, yTg, bTg, inSet, rating, false, L(YEAR_TIP[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_JA[rating][(pSeed + Y * 7 + ci) % 3]))};
     });
-    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats};
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats, deep: deepLine(yStem, yBranch, 'stem', false, seenNext)};
   };
   /* 지난 3년 회고 — 세운 + 개인연도수 + 실제 분기별 월운 */
   const yearReadingPast = Y => {
@@ -9889,18 +9922,17 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     const py = pyOf(Y);
     const cats = YEAR_CATS.map((c, ci) => {
       const inSet = c.pos.includes(yTg) || c.pos.includes(bTg);
-      const base = Math.max(TG_RATE[yTg], TG_RATE[bTg]);
+      const base = rateOf(yStem, yBranch, 'stem');
       let rating = inSet ? Math.min(3, base + 1) : base;
-      if (rating === 2 && (pSeed + Y + ci) % 4 === 0) rating = 3;
       return {k: L(c.k, YEAR_CATS_EN[ci].k, YEAR_CATS_JA[ci].k), rating, line: yrLine(c, ci, yTg, bTg, inSet, rating, true, L(PAST_TIP[rating][(pSeed + Y * 7 + ci) % 3], PAST_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3], PAST_TIP_JA[rating][(pSeed + Y * 7 + ci) % 3]))};
     });
     const qr = [2, 5, 8, 11].map((mm, qi) => {
       const s = computeSaju(Y, mm, 15, null);
       const tg = tenGod(dayStem, s.month.stem);
-      return {q: qi + 1, rate: TG_RATE[tg]};
+      return {q: qi + 1, rate: rateOf(s.month.stem, s.month.branch, 'stem')};
     });
     const strongQ = qr.reduce((a, b) => b.rate > a.rate ? b : a);
-    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats, qr, strongQ, yTheme: TG_THEME[yTg]};
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats, qr, strongQ, yTheme: TG_THEME[yTg], deep: deepLine(yStem, yBranch, 'stem', true, seenPast)};
   };
   const past = [curYear - 3, curYear - 2, curYear - 1].map(yearReadingPast);
   /* display-only: every quarter that shares the top rating (so a tie is not shown as one "best" quarter) */
@@ -9913,14 +9945,14 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       + L(`<p class="yrflow">숫자로 보면 ${NUM_CYCLE[y.py]}. 사주로 본 그 해의 주제는 <b>${THEMES[y.yTheme].name}</b>입니다. ${qBest(y).length === 4 ? '석 달씩 나눈 네 분기는 운이 고르게 이어졌습니다' : `석 달씩 나누면 <b>${qBest(y).join(' · ')}분기</b>가 가장 나았습니다`}.</p>`,
           `<p class="yrflow">By your year number: ${NUM_CYCLE_EN[y.py]}. By saju, the theme of that year was <b>${THEMES_EN[y.yTheme].name}</b>. ${qBest(y).length === 4 ? 'Your luck stayed about the same in all four three-month blocks' : `In three-month blocks, <b>${qBest(y).map(q => 'Q' + q).join(' · ')}</b> went best`}.</p>`, `<p class="yrflow">数字で見ると、${NUM_CYCLE_JA[y.py]}。サジュで見たその年のテーマは<b>${THEMES_JA[y.yTheme].name}</b>でした。${qBest(y).length === 4 ? '3か月ごとの運は、一年を通して同じくらいでした' : `3か月ごとに見ると、<b>第${qBest(y).join('・')}四半期</b>がいちばんよい時期でした`}。</p>`)
       + `<div class="qstrip">${y.qr.map(q => `<span class="qseg"><b>${L(`${q.q}분기`, `Q${q.q}`, `第${q.q}四半期`)}</b> <span class="hr${q.rate}">${RATE_ICON[q.rate]} ${L(RATE_WORD[q.rate], RATE_WORD_EN[q.rate], RATE_WORD_JA[q.rate])}</span></span>`).join('')}</div>`
-      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating], RATE_WORD_JA[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
+      + (y.deep ? `<p class="yrflow">${y.deep}</p>` : '') + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating], RATE_WORD_JA[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
 
   const yrs = [curYear, curYear + 1, curYear + 2].map(yearReading);
   /* display-only: only claim the parents' details were used when some were entered */
   const hasPar = !!(inp.father || inp.mother || (inp.fatherDate && inp.fatherDate.filled) || (inp.motherDate && inp.motherDate.filled));
   /* display-only: one bridging note on a year that is rated here AND is a samjae year in the card below */
   const samNote = Y => !isSamY(Y) ? '' : L(
-    `<br>※ 조심할 해(삼재)이기도 합니다. 아래에 '좋음'으로 나온 분야도 지금 하시는 일 · 지금의 관계 안에서 키우시고, 새 사업 · 이사 · 큰 계약처럼 새로 크게 벌이는 일은 미루시기 바랍니다.`,
+    `<br>※ 조심할 해(삼재)이기도 합니다. 아래에서 좋게 나온 분야가 있더라도 지금 하시는 일 · 지금의 관계 안에서 키우시고, 새 사업 · 이사 · 큰 계약처럼 새로 크게 벌이는 일은 미루시기 바랍니다.`,
     `<br>Note: this is also a careful year (samjae). Even where the reading says Good, please grow what you already have, such as your current job or relationship, and put off brand-new big steps like a new business, a move or a big contract.`,
     `<br>※ 気をつける年(三災)でもあります。下で「好調」の分野も、今のお仕事や今の関係の中で伸ばし、新しい事業・引っ越し・大きな契約のように新しく大きく始めることは先にのばしてください。`);
   $('#lifeYears').innerHTML = L(`<h3>다가오는 3년 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`, `<h3>The three years ahead — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`, `<h3>これから来る3年 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`)
@@ -9929,7 +9961,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     + yrs.map(y => `<div class="yrblock">`
       + L(`<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}의 해) · 그 해의 내 숫자 ${y.py}</p>`, `<p class="yrhead">${y.Y} · ${gzEN(y.gz)} (Year of the ${y.animalEN}) · your year number ${y.py}</p>`, `<p class="yrhead">${y.Y}年 · ${gzJA(y.gz)}(${y.animalJA}〈${ANIMALS_JA_KANA[mod(y.Y - 4, 12)]}〉年) · その年の数字 ${y.py}</p>`)
       + L(`<p class="yrflow">숫자로 보면 ${NUM_CYCLE[y.py]}.${samNote(y.Y)}</p>`, `<p class="yrflow">By your year number: ${NUM_CYCLE_EN[y.py]}.${samNote(y.Y)}</p>`, `<p class="yrflow">数字で見ると、${NUM_CYCLE_JA[y.py]}。${samNote(y.Y)}</p>`)
-      + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating], RATE_WORD_JA[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
+      + (y.deep ? `<p class="yrflow">${y.deep}</p>` : '') + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating], RATE_WORD_JA[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
 
   /* ===== 밀어도 좋은 3년 vs 삼재 3년 — 사주 삼합/삼재 + 세운 + 개인연도 ===== */
   const grp = groupOf12(saju.year.branch);
@@ -9938,15 +9970,20 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const scan = [];
   for (let Y = curYear; Y <= curYear + 14; Y++) {
     const br = mod(Y - 4, 12), st = mod(Y - 4, 10), py = pyOf(Y);
-    const s = TG_RATE[tenGod(dayStem, st)] + (allySet.has(br) ? 1.5 : 0) - (samSet.has(br) ? 3 : 0) + ((py === 1 || py === 8) ? 1 : 0);
-    scan.push({Y, br, s, sam: samSet.has(br), ally: allySet.has(br), py, age: age + (Y - curYear)});
+    const yr0 = rateOf(st, br, 'stem');
+    const s = (yr0 === 1 ? -0.5 : yr0) + (allySet.has(br) ? 1.5 : 0) - (samSet.has(br) ? 3 : 0) + ((py === 1 || py === 8) ? 1 : 0);
+    scan.push({Y, br, s, r: yr0, sam: samSet.has(br), ally: allySet.has(br), py, age: age + (Y - curYear)});
   }
   let best = 0;
+  /* 85세를 넘는 3년은 다른 후보가 있으면 고르지 않는다(조심할 해 목록은 15년 그대로) */
+  const okWin = i => scan[i + 2].age <= 85 || scan[2].age > 85;
   for (let i = 0; i + 2 < scan.length; i++) {
+    if (!okWin(i)) continue;
     const sum = scan[i].s + scan[i + 1].s + scan[i + 2].s;
     if (sum > scan[best].s + scan[best + 1].s + scan[best + 2].s) best = i;
   }
   const gw = [scan[best], scan[best + 1], scan[best + 2]];
+  const gwWeak = gw.filter(x => x.r === 1).length >= 2, gwPlain = age < 19 || age >= 65;
   const sam = scan.filter(x => x.sam);
   const allyNames = [...allySet].map(b => BRANCHES[b].animal).join(' · ');
   const samNames = [...samSet].map(b => BRANCHES[b].animal).join(' · ');
@@ -9963,7 +10000,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   /* display-only: when the next 10-year season is rated Caution and the good window reaches into it, say how both hold
      (same swY / swLow as the "season changes" card) and do not single out a helper year that falls after the switch */
   const gwCut = !!(nextSwitch && swLow && gw[2].Y >= swY);
-  const gwAlly = gw.filter(x => x.ally && !(gwCut && x.Y >= swY));
+  const gwAlly = gw.filter(x => x.ally && x.r !== 1 && !x.sam && !(gwCut && x.Y >= swY));
   const gwInNow = !!(nowPh && gw[2].age <= nowPh.to);
   const gwBridge = !gwCut ? (gwInNow ? L(` 이 3년은 지금 10년('${THEMES[nowPh.theme].name}') 안에 있으니, 큰일도 그 주제에 맞는 쪽으로 고르시면 좋습니다.`, ` These years fall inside your current 10-year season (${THEMES_EN[nowPh.theme].name}), so choose big moves that fit that theme.`, `この3年は今の10年(「${THEMES_JA[nowPh.theme].name}」)の中にあるので、大きなことも、そのテーマに合うものを選ばれるとよいでしょう。`) : '') : gw[0].Y < swY
     ? L(` 다만 ${swY}년부터는 '주의'인 10년이 시작되니, 큰 결정은 <b>${swY - 1}년까지</b> 하시는 편이 좋습니다.`, ` But a Caution season starts in ${swY}, so it is best to make big decisions <b>by ${swY - 1}</b>.`, `ただ、${swY}年からは「注意」の10年が始まるので、大きな決断は<b>${swY - 1}年まで</b>にされるとよいでしょう。`)
@@ -9971,11 +10008,11 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   $('#lifePush').innerHTML = L(`<h3>밀고 나갈 때와 조심할 때 — 앞으로 15년</h3>`, `<h3>When to go for it, when to be careful — the next 15 years</h3>`, `<h3>進んでよい時、気をつける時 — これからの15年</h3>`)
     + L(`<p class="small">그 해의 흐름, 그 해의 내 숫자, 띠의 궁합을 함께 보고 골랐습니다.<br>· 나와 잘 맞는 띠의 해: ${allyNames}띠 해<br>· 조심할 해(삼재): ${samNames}띠 해${ovNote}</p>`,
         `<p class="small">Picked by looking at each year's flow, your number for that year and the zodiac animals together.<br>· Helper years (their animal goes well with yours): ${allyNamesEN}<br>· Careful years (samjae): ${samNamesEN}${ovNote}</p>`, `<p class="small">その年の流れ、その年の数字、干支の相性をあわせて見てお選びしました。<br>· 相性のよい干支の年:${allyNamesJA}<br>· 気をつける年(三災・さんさい):${samNamesJA}${ovNote}</p>`)
-    + L(`<div class="combo"><b>▲ 밀고 나가도 좋은 3년 — ${gw[0].Y}~${gw[2].Y}년 (${gw[0].age}~${gw[2].age}세)</b><br>`
-        + `앞으로 15년 가운데 점수가 가장 높은 3년입니다. 이직 · 결혼 · 새 시작처럼 중요한 일을 이때에 맞추시면 힘을 받으십니다.${gwAlly.length ? ` 특히 ${gwAlly.map(x => x.Y + '년').join(' · ')}은 나와 잘 맞는 띠의 해라서 더 든든합니다.` : ''}${gwBridge}</div>`,
-        `<div class="combo"><b>▲ Three good years to go for it — ${gw[0].Y}–${gw[2].Y} (ages ${gw[0].age}–${gw[2].age})</b><br>`
-        + `These are the three highest-scoring years in the next 15. If you plan big moves such as a job change, a marriage or a fresh start for these years, they get extra strength.${gwAlly.length ? ` ${gwAlly.map(x => x.Y).join(' · ')} is even stronger, because its animal goes well with yours.` : ''}${gwBridge}</div>`, `<div class="combo"><b>▲ 進んでよい3年 — ${gw[0].Y}〜${gw[2].Y}年(${gw[0].age}〜${gw[2].age}歳)</b><br>`
-        + `これからの15年で、点数がいちばん高い3年です。転職・結婚・新しい始まりなど、大切なことをこの3年に合わせると、力をもらえます。${gwAlly.length ? `とくに${gwAlly.map(x => x.Y).join(' · ')}年は、相性のよい干支の年なので、いっそう心強い年です。` : ''}${gwBridge}</div>`)
+    + L(`<div class="combo"><b>▲ ${gwWeak ? '그나마 나은 3년' : '밀고 나가도 좋은 3년'} — ${gw[0].Y}~${gw[2].Y}년 (${gw[0].age}~${gw[2].age}세)</b><br>`
+        + (gwWeak ? `앞으로 15년 가운데서는 그나마 나은 3년입니다. 중요한 일은 이때에 맞추시되, 무리하지 않는 선에서 하시기 바랍니다.` : `앞으로 15년 가운데 점수가 가장 높은 3년입니다. ${gwPlain ? '중요한 일을' : '이직 · 결혼 · 새 시작처럼 중요한 일을'} 이때에 맞추시면 힘을 받으십니다.`) + `${gwAlly.length ? ` 특히 ${gwAlly.map(x => x.Y + '년').join(' · ')}은 나와 잘 맞는 띠의 해라서 더 든든합니다.` : ''}${gwBridge}</div>`,
+        `<div class="combo"><b>▲ ${gwWeak ? 'The better three years' : 'Three good years to go for it'} — ${gw[0].Y}–${gw[2].Y} (ages ${gw[0].age}–${gw[2].age})</b><br>`
+        + (gwWeak ? `Of the next 15 years, these three are the better ones. Plan important things for them, but without pushing too hard.` : `These are the three highest-scoring years in the next 15. If you plan ${gwPlain ? 'the things that matter most to you' : 'big moves such as a job change, a marriage or a fresh start'} for these years, they get extra strength.`) + `${gwAlly.length ? ` ${gwAlly.map(x => x.Y).join(' · ')} is even stronger, because its animal goes well with yours.` : ''}${gwBridge}</div>`, `<div class="combo"><b>▲ ${gwWeak ? '比較的よい3年' : '進んでよい3年'} — ${gw[0].Y}〜${gw[2].Y}年(${gw[0].age}〜${gw[2].age}歳)</b><br>`
+        + (gwWeak ? `これからの15年の中では、比較的よい3年です。大切なことはこの3年に合わせつつ、無理のない範囲で進めてください。` : `これからの15年で、点数がいちばん高い3年です。${gwPlain ? '大切なこと' : '転職・結婚・新しい始まりなど、大切なこと'}をこの3年に合わせると、力をもらえます。`) + `${gwAlly.length ? `とくに${gwAlly.map(x => x.Y).join(' · ')}年は、相性のよい干支の年なので、いっそう心強い年です。` : ''}${gwBridge}</div>`)
     + (sam.length
       ? L(`<div class="combo"><b>▽ 조심하실 해(삼재) — 앞으로 15년 안에 ${sam.length}번</b><br>${sam.map(x => `${x.Y}년(${x.age}세)`).join(' · ')}<br>삼재는 12년마다 3년씩 이어서 오는 조심할 때입니다. 하시던 일을 꾸준히 키우는 것은 괜찮지만, 큰 계약 · 이사 · 새 사업처럼 새로 크게 벌이는 일은 미루시기 바랍니다. 지키고 계시면 무사히 지나갑니다.</div>`,
           `<div class="combo"><b>▽ Careful years (samjae) — ${sam.length} in the next 15 years</b><br>${sam.map(x => `${x.Y} (age ${x.age})`).join(' · ')}<br>Samjae means three careful years in a row, once every 12 years. It is fine to keep growing what you already do, but please put off brand-new big steps such as a big contract, a move or a new business. If you hold steady, these years pass safely.</div>`, `<div class="combo"><b>▽ 気をつける年(三災) — これからの15年に${sam.length}回</b><br>${sam.map(x => `${x.Y}年(${x.age}歳)`).join(' · ')}<br>三災(さんさい)は、12年に一度、3年続けてめぐってくる気をつける時期です。今なさっていることを続けて伸ばすのはかまいませんが、大きな契約・引っ越し・新しい事業のように、新しく大きく始めることは先にのばしてください。守っていれば、無事に過ぎていきます。</div>`)
