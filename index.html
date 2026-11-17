@@ -395,6 +395,13 @@ details .math{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:2;
 .wday .wkw{font-size:10px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
 .wday.today .hr3,.wday.today .hr1,.wday.today .hr2{color:#f2ecdf}
 
+/* ---------- 깊이 읽기 ---------- */
+.deep .dp-row{padding:13px 0;border-top:1px solid var(--hairline)}
+.deep .dp-row:first-of-type{margin-top:12px}
+.deep .dp-k{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--ink);margin-bottom:5px}
+.deep .dp-row p + p{margin-top:0}
+.deep .dp-tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--paper);background:var(--ink);padding:1px 7px;margin-right:8px;vertical-align:1px}
+.deep .dp-now{background:rgba(46,42,35,.045);margin:0 -12px;padding-left:12px;padding-right:12px}
 /* ---------- saju pillars ---------- */
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:22px;border:1px solid var(--line);background:var(--paper)}
 .pillar{padding:18px 6px 16px;text-align:center;border-left:1px solid var(--hairline)}
@@ -913,6 +920,7 @@ gtag('config', 'G-L7QPQ5GGL7');
           <div class="math" id="sajuMath"></div>
         </details>
       </div>
+      <div id="sajuDeep"></div>
       <div class="card" id="sinsalCard">
         <h3 data-en="Sinsal — special marks in your chart" data-ja="神殺 — 命式についた特別なしるし">신살 — 사주에 찍힌 특별한 표시</h3>
         <p class="small" id="sinsalIntro"></p>
@@ -1036,7 +1044,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.29.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.30.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -3837,6 +3845,7 @@ function render(inp) {
   renderSynth(saju, astro, num);
   renderFortune(fortune, now, saju, natalTGs, astro, num, name, ename);
   renderSaju(saju, time, inp, astro, num);
+  try { renderDeep(inp, saju, astro, now); } catch (e) {}
   renderAstro(astro, geo, ename, saju);
   renderNumer(num, nameForNum, now.getFullYear(), saju, astro);
   renderRoots(inp, saju, num, astro, now);
@@ -6716,6 +6725,927 @@ document.addEventListener('click', e => {
   if (e.target.closest && e.target.closest('#gililBtn')) { try { openCalSheet(); } catch (e2) {} }
 });
 
+/* ==DEEP-BEGIN== */
+/* ---- 깊이 읽기 문장 — 한국어 (합니다체 · 쉬운 말). 배열 순서: 오행 = 목·화·토·금·수 / 역할 = 비겁·식상·재성·관성·인성 / 동물 = 子…亥 ---- */
+const DEEP_KO = {
+  sp: ' ',
+  el: ['나무(목)', '불(화)', '흙(토)', '쇠(금)', '물(수)'],
+  elShort: ['나무', '불', '흙', '쇠', '물'],
+  gs: ['친구 · 경쟁', '표현 · 재주', '돈 · 성과', '직장 · 규칙', '배움 · 도움'],
+  gName: ['나와 같은 기운', '내가 내놓는 기운', '내가 다루는 기운', '나를 다스리는 기운', '나를 키우는 기운'],
+  lv: ['없음', '약함', '보통', '많음'],
+  animal: ['쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭', '개', '돼지'],
+  title: {
+    sec: '깊이 읽기 — 상담가가 읽는 순서대로',
+    intro: '아래는 사주 상담가가 실제로 읽는 순서를 따랐습니다. 여덟 글자는 상품의 바코드처럼, 태어난 순간의 기운을 적어 둔 표입니다. 먼저 어떤 재료를 갖고 태어나셨는지 보고, 그다음 지금 어떤 때를 지나고 계신지 봅니다.',
+    a: '타고난 모습 — 당신을 닮은 자연과 동물',
+    b: '다섯 가지 역할로 본 나',
+    c: '삶의 장면별로 읽기',
+    d: '10년마다 바뀌는 흐름 — 지금 어디쯤인가',
+    e: '지난 3년 · 올해 · 앞으로 2년',
+    f: '이번 달, 그리고 지금 하실 일',
+    money: '돈', work: '일', people: '사람', love: '사랑', mind: '마음', body: '몸',
+    now: '지금', next: '다음', thisYear: '올해', tip1: '쓰실 것', tip2: '챙기실 것', tip3: '올해'
+  },
+  stem: {
+    갑: {img: '수백 년 자란 큰 소나무', body: '곧게 위로 자라는 큰 나무입니다. 나이보다 생각이 깊다는 말을 자주 들으시고, 일을 맡기면 믿을 수 있는 사람으로 보입니다. 대신 가볍게 시작해야 하는 일이나 관계에서는 첫발이 무겁습니다.', good: '잘 쓰시면 한 분야를 깊이 파는 전문가, 무언가를 만드는 사람, 깊이 꿰뚫어 보는 사람이 됩니다.', bad: '못 쓰시면 혼자만의 생각에 갇혀 세상과 멀어지기 쉽습니다.'},
+    을: {img: '바위틈에서도 자라는 풀과 덩굴', body: '부드럽게 휘지만 꺾이지 않는 풀입니다. 어디에 놓여도 자리를 찾아 뿌리를 내리시고, 곁에 기댈 것이 있으면 높이 올라가십니다. 분위기를 읽고 맞추는 힘이 좋습니다.', good: '잘 쓰시면 사람 사이를 이어 주고, 어려운 곳에서도 끝내 살아남는 사람이 됩니다.', bad: '못 쓰시면 남에게 맞추다가 내 뜻을 잃거나, 기댄 곳에 휘둘리기 쉽습니다.'},
+    병: {img: '한낮의 해', body: '숨기는 것이 없는 밝은 해입니다. 계시기만 해도 주변이 환해지고 눈에 잘 띕니다. 좋고 싫은 것이 얼굴에 그대로 드러납니다.', good: '잘 쓰시면 사람들에게 힘을 주고, 앞에 서서 널리 알리는 사람이 됩니다.', bad: '못 쓰시면 모두를 비추려다 지치고, 마음이 식으면 금방 다른 곳으로 가기 쉽습니다.'},
+    정: {img: '어두운 방의 촛불, 밤길의 등불', body: '한곳을 오래 덥히는 작은 불입니다. 가까운 사람을 세심하게 챙기시고, 겉은 조용해도 속은 뜨겁습니다. 한 가지에 깊이 집중하십니다.', good: '잘 쓰시면 한 사람, 한 가지를 깊이 밝혀 주는 사람이 됩니다. 가르치고 돌보고 기술을 닦는 일에 잘 맞습니다.', bad: '못 쓰시면 속으로만 타들어 가 예민해지고, 혼자 지치기 쉽습니다.'},
+    무: {img: '멀리서도 보이는 큰 산', body: '쉽게 움직이지 않는 듬직한 산입니다. 사람들이 기대러 찾아옵니다. 속마음을 잘 보이지 않으시고, 바뀌는 일에는 천천히 움직이십니다.', good: '잘 쓰시면 믿고 맡길 수 있는 중심, 큰 것을 품는 사람이 됩니다.', bad: '못 쓰시면 고집으로 굳어 기회를 놓치고, 혼자 다 짊어지기 쉽습니다.'},
+    기: {img: '씨앗을 키우는 밭의 흙', body: '조용히 받아들이고 길러 내는 흙입니다. 꼼꼼하고 현실적이며 남을 잘 챙기십니다. 정작 자기 이야기는 잘 하지 않으십니다.', good: '잘 쓰시면 사람과 일을 키워 내는 사람이 됩니다. 기르고 관리하는 일에 잘 맞습니다.', bad: '못 쓰시면 걱정이 많아지고, 남의 일만 하다 내 것이 남지 않기 쉽습니다.'},
+    경: {img: '아직 다듬지 않은 큰 바위와 쇳덩이', body: '단단하고 정하는 것이 빠른 쇠입니다. 옳고 그른 것이 분명하고 의리가 있습니다. 말이 곧게 나갑니다. 다듬어질수록 값이 올라가는 분입니다.', good: '잘 쓰시면 정하고 해내는 힘으로 어지러운 일을 정리하는 사람이 됩니다.', bad: '못 쓰시면 굽히지 않고 부딪혀 사람을 잃기 쉽습니다.'},
+    신: {img: '잘 다듬은 보석, 날이 선 칼', body: '섬세하고 기준이 높은 쇠입니다. 깔끔한 것, 아름다운 것, 정확한 것에 민감하십니다. 자존심이 곧고 상처도 잘 받으십니다.', good: '잘 쓰시면 정밀하게 다듬는 일의 장인, 보는 눈이 좋은 사람이 됩니다.', bad: '못 쓰시면 말이 날카로워지고, 스스로를 깎아내리기 쉽습니다.'},
+    임: {img: '넓은 바다, 큰 강', body: '무엇이든 받아들이는 큰 물입니다. 생각의 폭이 넓고, 흐름을 읽어 움직이십니다. 자유를 좋아하시고, 속을 다 알기는 어려운 분입니다.', good: '잘 쓰시면 큰 그림을 그리고, 멀리 넓게 움직이는 사람이 됩니다.', bad: '못 쓰시면 이리저리 흘러 한곳에 머물지 못하고, 넘치면 스스로도 감당하기 어렵습니다.'},
+    계: {img: '소리 없이 스며드는 비와 샘물', body: '조용히 스며들어 살리는 물입니다. 감이 좋고 눈치가 빠르며 상상력이 넉넉합니다. 마음이 여리고 분위기에 민감하십니다.', good: '잘 쓰시면 사람 마음을 읽고 적셔 주는 사람, 생각이 샘솟는 사람이 됩니다.', bad: '못 쓰시면 걱정에 잠기고, 기분에 따라 흐려지기 쉽습니다.'}
+  },
+  ani: [
+    {body: '밤에 움직이는 쥐처럼 눈치가 빠르고 머릿속이 늘 바쁩니다. 조용히 살피고 궁리해서 실속을 챙기십니다. 밤에 생각이 많아 잠을 놓치기 쉽습니다.', stack: '머릿속이 더 바빠지는'},
+    {body: '묵묵히 밭을 가는 소처럼 느려도 끝까지 가십니다. 싫은 소리를 잘 하지 않고 참는 힘이 큽니다. 속에 쌓아 두었다가 한 번에 무거워지기 쉽습니다.', stack: '참고 버티는 일이 더 늘어나는'},
+    {body: '산을 넘나드는 호랑이처럼 시작이 빠르고 겁이 없으십니다. 한곳에 묶이기보다 넓게 다니실 때 힘이 납니다. 혼자 앞서가다 뒤를 챙기지 못하기 쉽습니다.', stack: '새로 벌이고 옮겨 다니는 일이 더 많아지는'},
+    {body: '귀를 세운 토끼처럼 감각이 섬세하고 분위기를 빨리 읽으십니다. 사람 사이를 부드럽게 만드는 재주가 있습니다. 작은 일에도 쉽게 놀라십니다.', stack: '예민해지고 사람 일이 더 많아지는'},
+    {body: '구름 위를 나는 용처럼 꿈이 크고 그리는 그림이 큽니다. 재주가 여러 가지입니다. 현실이 마음에 차지 않아 답답해하기 쉽습니다.', stack: '하고 싶은 일과 바꾸고 싶은 마음이 더 커지는'},
+    {body: '조용히 지켜보다 한 번에 움직이는 뱀처럼 생각이 빠르고 집중이 깊습니다. 속마음을 잘 보이지 않으십니다. 낯선 곳으로 옮겨 다닐 일이 생기기 쉽습니다.', stack: '속으로 따져 보고 자리를 옮기는 일이 더 많아지는'},
+    {body: '가만히 서 있는 말은 드뭅니다. 늘 할 일이 생기고, 일이 없어도 주변에서 "같이 가자"며 데려갑니다. 쉬는 법을 잘 모르고 계속 무언가를 찾아서 하십니다.', stack: '더 바빠지고 쉴 틈이 줄어드는'},
+    {body: '순해 보이지만 뜻을 잘 굽히지 않는 양과 닮으셨습니다. 속정이 깊어 가까운 사람을 오래 챙기십니다. 참다가 서운함이 쌓이기 쉽습니다.', stack: '참고 넘기는 일이 더 늘어나기 쉬운'},
+    {body: '나무를 옮겨 다니는 원숭이처럼 재주가 많고 그때그때 잘 맞추십니다. 여러 가지에 손을 대고 배우는 속도가 빠릅니다. 한 가지를 오래 붙들기는 어렵습니다.', stack: '이것저것 벌이고 움직이는 일이 더 많아지는'},
+    {body: '새벽을 알리는 닭처럼 꼼꼼하고 기준이 분명하십니다. 일을 깔끔하게 마무리하십니다. 남의 흠도 잘 보여 말이 날카로워지기 쉽습니다.', stack: '따지고 다듬는 일이 더 많아지는'},
+    {body: '집을 지키는 개처럼 의리가 있고 책임감이 강하십니다. 한번 믿으면 끝까지 가십니다. 걱정을 혼자 안고 계시기 쉽습니다.', stack: '지키고 책임질 일이 더 늘어나는'},
+    {body: '복을 안은 돼지처럼 속이 넓고 느긋하십니다. 생각이 깊고 상상력이 좋습니다. 정에 약해 거절을 잘 못하시고, 멀리 떠날 일이 생기기 쉽습니다.', stack: '생각이 깊어지고 마음 쓰는 일이 더 많아지는'}
+  ],
+  drive: [
+    '자라고 싶은 마음, 곧 "해 봐야지", "해야 돼"가 자꾸 생기는 것',
+    '드러내고 싶은 마음, 곧 속에 있는 것을 밖으로 보여야 풀리는 것',
+    '지키고 쌓고 싶은 마음, 곧 자리를 잡고 차근차근 다져야 편한 것',
+    '정하고 잘라 내고 싶은 마음, 곧 옳고 그름을 가려 깔끔히 끝내야 풀리는 것',
+    '생각하고 흘러가고 싶은 마음, 곧 깊이 헤아리고 상황에 맞춰 움직이는 것'
+  ],
+  gift: ['새로 시작할 힘과 자라고 싶은 마음', '나를 드러낼 용기와 뜨거운 마음', '안정감과, 생각을 하나하나 실제로 만드는 꼼꼼함', '딱 정하는 힘과 맺고 끊는 기준', '깊이 생각하는 힘과 부드럽게 맞춰 가는 여유로움'],
+  crowdImg: ['좁은 숲에 나무가 더 빽빽이 들어서는 모양', '밤이 없는 한여름 같은 모양', '흙이 자꾸 쌓여 무거워지는 모양', '칼날이 더 날카롭게 서는 모양', '물이 불어 넘치는 모양'],
+  crowdFeel: ['자라고 싶은데 천장이 낮아 답답한 느낌', '쉬지 못하고 계속 나서야 해서 지치는 느낌', '일이 움직이지 않아 몸과 마음이 가라앉는 느낌', '기준이 까다로워져 사람과 부딪히는 느낌', '생각과 걱정에 잠기는 느낌'],
+  crowdTip: ['새 일을 더 벌이기보다, 하던 일 하나를 덜어 내시기 바랍니다.', '나서야 하는 자리를 줄이고, 혼자 식히는 시간을 먼저 잡으시기 바랍니다.', '가만히 버티기보다 몸을 움직이고 자리를 바꿔 보시기 바랍니다.', '옳고 그름을 따지기 전에, 하루를 두고 말씀하시기 바랍니다.', '생각을 글로 적어 밖으로 꺼내고, 몸을 쓰는 일을 넣으시기 바랍니다.'],
+  theme: [
+    '닮은 사람들(친구 · 동료 · 경쟁자)이 가까이 오고, 뜻대로 해 보려는 마음이 커지는 때',
+    '생각과 솜씨를 밖으로 내보이고, 말하고 만들 일이 늘어나는 때',
+    '돈과 성과처럼 눈에 보이는 결과를 챙길 일이 앞에 놓이는 때',
+    '맡은 역할과 지켜야 할 일이 늘어나는 때',
+    '배우고 도움을 받고, 혼자 생각을 정리할 일이 늘어나는 때'
+  ],
+  roleDo: ['혼자 다 하려 하지 마시고, 함께할 사람을 고르는 데 공을 들이시기 바랍니다.', '미뤄 둔 것을 하나 꺼내어 사람들 앞에 내놓아 보시기 바랍니다.', '들어오는 것과 나가는 것을 한 번 적어 보시기 바랍니다.', '맡을 일과 맡지 않을 일을 먼저 가르시기 바랍니다.', '배우고 싶던 것 하나를 시작하시고, 쉬는 시간을 아끼지 마시기 바랍니다.'],
+  needRole: ['내 편이 되어 줄 사람과 내 뜻을 지키는 힘', '속에 있는 것을 말 · 글 · 작품으로 꺼내는 일', '돈과 결과를 직접 챙기는 습관', '스스로 정한 규칙과 마감', '배우는 시간과 기댈 수 있는 사람'],
+  role: [
+    [null, '나 말고는 같은 기운이 없습니다. 남에게 기대기보다 혼자 해내는 편입니다.', '같은 기운이 하나 더 있습니다. 내 편이 되어 주는 사람이 곁에 있는 모양입니다.', '같은 기운이 여럿입니다. 주관이 뚜렷하고, 주변에 사람이 늘 모입니다.'],
+    ['밖으로 꺼내는 길이 따로 없습니다. 속마음을 아예 꺼내지 않거나 한꺼번에 쏟아 내기 쉽습니다.', '맡기면 잘해 내지만, 스스로 앞에 나서지는 않는 편입니다.', '말하고 만드는 일이 무리 없이 나옵니다.', '표현과 재주가 넘칩니다. 말과 일이 앞서 나가 쉽게 지칩니다.'],
+    ['돈이 없다는 뜻이 아닙니다. 돈 다루는 법을 따로 배워야 하는 분입니다.', '돈 감각은 있지만 저절로 따라오지는 않습니다. 목표를 정해 두셔야 모입니다.', '현실 감각이 넉넉하지도 모자라지도 않습니다. 버신 만큼 챙기실 줄 압니다.', '돈이 될 일과 할 일이 많이 보입니다. 한꺼번에 벌이면 끌려다니기 쉽습니다.'],
+    ['틀에 매이는 것을 답답해하십니다. 스스로 정한 규칙이 있어야 흐트러지지 않습니다.', '책임감은 있지만, 압박이 길어지면 힘들어하십니다.', '조직과 규칙 안에서 자리를 잘 잡으십니다. 믿음을 얻기 쉽습니다.', '맡은 책임과 남의 눈을 많이 짊어지십니다. 스스로를 조이기 쉽습니다.'],
+    ['기대는 법이 서투십니다. 혼자 부딪혀서 배우는 편입니다.', '꼭 필요한 도움은 받으십니다. 배움은 한 가지를 깊게 하실 때 힘이 됩니다.', '도움과 소식이 주변 사람을 통해 들어옵니다. 혼자 생각을 정리하는 힘도 좋습니다.', '생각하고 받아들이는 힘이 넘칩니다. 생각이 많아 움직임이 늦어지기 쉽습니다.']
+  ],
+  money: {
+    base: [
+      '돈에 대한 마음에 중간이 없기 쉽습니다. 아예 무심하시거나, 몹시 바라시거나 둘 중 하나입니다. "왜 버는지, 왜 모으는지"가 흐릿하면 돈이 남지 않습니다. 돈을 계속 쫓아다녀야 하는 사업이나 장사는 서두르지 마시고, 지금부터 조금씩 돈 공부를 해 두시기 바랍니다.',
+      '돈을 버는 감각은 있습니다. 다만 목표가 없으면 들어온 만큼 나갑니다. 모으는 이유와 금액을 먼저 정해 두시기 바랍니다.',
+      '버는 일과 지키는 일이 고르게 됩니다. 크게 무리하지 않으시면 돈 때문에 흔들릴 일이 적습니다.',
+      '돈이 될 일이 여기저기 보입니다. 그만큼 할 일도 많아집니다. 다 잡으려 하시면 돈이 아니라 일에 끌려다니게 됩니다. 한 번에 한두 가지만 고르시기 바랍니다.'
+    ],
+    both: '솜씨와 돈 사이에 길이 나 있습니다. 잘하시는 일을 꾸준히 내놓으시면 그것이 돈으로 이어집니다.',
+    skillOnly: '솜씨는 있는데, 그것을 돈으로 바꾸는 다리가 약합니다. 내 일에 값을 매기는 연습을 하시거나, 돈 관리를 도와줄 사람이나 틀을 두시면 좋습니다.',
+    moneyOnly: '돈이 될 일은 보이는데, 내 솜씨로 버는 길이 약합니다. 내놓을 수 있는 기술 한 가지를 만들어 두시면 든든합니다.',
+    partner: '같은 기운이 많은 사주는 돈을 여럿이 나눠 갖는 모양이 되기 쉽습니다. 돈을 남과 섞는 일(동업 · 보증)은 신중히 하시기 바랍니다. 함께 하신다면, 상대가 지금 일이 잘 풀리는 때인지 먼저 보시고, 중요한 결정은 직접 내리시는 편이 좋습니다.'
+  },
+  work: {
+    channel: [
+      '내 이름과 내 힘으로 하는 일이 잘 맞습니다. 혼자 맡아 끝까지 책임지는 일입니다.',
+      '생각이나 결과물을 세상에 내놓는 일이 잘 맞습니다. 만들기 · 쓰기 · 찍기 · 가르치기 · 기획처럼 "내가 만든 것"이 남는 일입니다.',
+      '눈에 보이는 성과가 바로 나오는 일이 잘 맞습니다. 사고팔기, 숫자와 돈을 다루는 일, 운영처럼 결과가 분명한 일입니다.',
+      '역할과 책임이 분명한 자리에서 힘이 납니다. 조직, 공공의 일, 관리처럼 믿음을 쌓아 올라가는 일입니다.',
+      '배우고 깊이 아는 것이 무기가 되는 일이 잘 맞습니다. 연구 · 전문 지식 · 상담 · 글처럼 쌓은 것을 나누는 일입니다.'
+    ],
+    exp: [
+      '다만 내 일을 스스로 알리는 데는 서투십니다. 기록을 남기시거나, 대신 알려 줄 사람을 두시면 좋습니다.',
+      '직접 앞에 서지 않으셔도 됩니다. 결과물을 앞에 세우고 "이것을 만든 사람이 나"라고만 하셔도 충분합니다.',
+      '말과 결과물로 자신을 알리는 일도 무리가 없습니다.',
+      '앞에 서서 말하고 보여 주는 일도 잘하십니다. 다만 한꺼번에 너무 많이 쏟으시면 금방 바닥납니다.'
+    ],
+    org: [
+      '정해진 틀과 윗사람의 간섭은 오래 견디기 어렵습니다. 자유롭게 일하시되, 마감과 규칙은 스스로 정해 두시기 바랍니다.',
+      '조직에도 맞추실 수 있지만, 숨 쉴 틈이 있는 곳이어야 오래 갑니다.',
+      '회사 생활도 잘 해내십니다. 윗사람의 믿음을 얻기 쉽습니다.',
+      '책임을 너무 많이 맡으시기 쉽습니다. 다 해내려 하지 마시고 나눠 주시기 바랍니다.'
+    ],
+    both: '만드는 사람의 기질과, 조직에 잘 맞추는 기질을 함께 가지셨습니다. 그래서 "나는 내 것을 만드는 사람인가, 회사에 다니는 사람인가" 헷갈리기 쉽습니다. 둘 가운데 하나를 고르지 않으셔도 됩니다. 일터는 생활을 받쳐 주는 곳으로, 내 작업은 숨 쉬는 곳으로 나눠 두시면 둘 다 살아납니다.',
+    free: '내놓는 힘은 큰데 붙잡아 주는 틀이 없습니다. 혼자 일하실수록, 정해진 시간표와 함께 일할 사람 한 명이 큰 도움이 됩니다.',
+    org2: '맡은 일은 잘 해내시지만, 내 것을 꺼낼 길이 좁습니다. 일 밖에서 작게라도 "내가 만든 것"을 하나 두시면 숨통이 트입니다.'
+  },
+  people: {
+    tact: '사람을 대하는 법이 몸에 배어 있습니다. 애쓰지 않아도 상대에게 맞춰 주십니다. 그러다 보니 그 배려를 당연하게 여기는 사람이 가끔 생기고, 그럴 때 서운함이 큽니다. 그런 사람과는 거리를 두셔도 됩니다.',
+    peer: [null,
+      '사람들 속에 계셔도 결국 혼자 정하고 혼자 해내는 편입니다. 큰일 앞에서 의논할 한 사람을 일부러 만들어 두시기 바랍니다.',
+      '혼자 설 줄도 알고, 함께할 줄도 아십니다. 마음 맞는 한두 사람과 오래 가는 편입니다.',
+      '어디에 계시든 사람이 따라붙고, "같이 하자"는 말을 자주 들으십니다. 사람에게서 받는 영향이 큽니다. 마음뿐 아니라 하시는 일과 사는 곳까지 사람을 따라 바뀔 수 있습니다. 그래서 곁에 누구를 두는지가 남들보다 훨씬 중요합니다.'
+    ],
+    help: [
+      '도움을 청하는 일이 어색하십니다. 혼자 다 하려다 지치기 쉬우니, 가르쳐 줄 사람을 일부러 찾으시기 바랍니다.',
+      '도움은 꼭 필요할 때 한 번씩 옵니다. 그 인연을 오래 지키시기 바랍니다.',
+      '좋은 소식과 소개, 정보가 주변 사람을 통해 들어옵니다. 사람을 만나는 자리가 곧 기회입니다.',
+      '챙겨 주는 사람이 많습니다. 받는 데 익숙해지면 스스로 움직이는 힘이 약해집니다. 받은 것은 바로 써 보시기 바랍니다.'
+    ]
+  },
+  love: {
+    palace: [
+      '가까운 사이일수록 친구처럼 대등하게 지내고 싶어 하십니다. 각자의 생활이 있는 관계가 편합니다.',
+      '상대를 잘 살피고 챙기시는 만큼, 혼자만의 시간이 꼭 필요합니다. 하루 종일 붙어 있으면 지치는데, 사람이 싫어서가 아니라 신경이 계속 쓰여서입니다. 서로 바쁘거나, 각자의 방과 시간이 있는 관계가 오래 갑니다.',
+      '생활을 함께 꾸리는 든든한 관계를 바라십니다. 말보다 실제로 해 주는 것으로 마음을 확인하십니다.',
+      '책임감 있고 기준이 분명한 사람에게 끌리십니다. 상대에게 맞추려다 긴장하기 쉬우니, 편하게 풀어지는 시간을 함께 만드시기 바랍니다.',
+      '곁에서 챙겨 주고 마음을 편하게 해 주는 사람을 바라십니다. 받기만 하면 상대가 지칩니다. 고마운 마음을 말로 자주 전하시기 바랍니다.'
+    ],
+    star: [
+      '인연이 저절로 자주 오는 사주는 아닙니다. 인연에 아예 마음을 두지 않으시거나, 한번 오면 깊이 빠지시거나 둘 중 하나가 되기 쉽습니다. 이 기운이 들어오는 해와 10년에 인연이 움직입니다.',
+      '인연이 많지는 않지만, 한 사람과 깊고 오래 가는 편입니다.',
+      '인연의 기운이 넉넉하지도 모자라지도 않습니다. 만나고 이어 가는 일이 무리 없이 됩니다.',
+      '다가오는 사람과 신경 쓸 관계가 많습니다. 고르는 기준을 먼저 세워 두시면 덜 흔들립니다.'
+    ],
+    starClash: '인연은 들어옵니다. 다만 이 기운의 글자가 사주 안에서 다른 글자와 서로 밀어내고 있어, 시작이 더딜 수 있습니다. 서두르지 않으셔도 됩니다.',
+    noGender: '성별을 고르시면, 짝의 기운이 사주에 얼마나 있는지도 함께 읽어 드립니다.'
+  },
+  mind: {
+    lead: '바탕의 성격과는 다르게 보일 수 있습니다. 마음을 꺼내는 길은 따로 봅니다.',
+    hold: '받아들이는 힘이 내보내는 힘보다 큽니다. 그래서 힘든 일을 혼자 생각으로 풀려고 하시고, 물이 가득 차서 넘치기 전까지는 말을 잘 하지 않으십니다. 주변에서는 뒤늦게 알고 "그때 말하지" 하기 쉽습니다. 자세한 이야기는 하지 않으셔도 됩니다. "요즘 좀 힘들어" 한마디를 할 수 있는 사람을 한둘 두시기 바랍니다.',
+    vent: '내보내는 힘이 받아들이는 힘보다 큽니다. 느낀 것을 바로 말과 행동으로 꺼내셔서 속에 오래 쌓이지는 않습니다. 대신 쏟아 낸 뒤 기운이 빠지기 쉬우니, 혼자 조용히 채우는 시간을 두시기 바랍니다.',
+    shut: '속에 있는 것을 밖으로 꺼내는 길이 좁습니다. 평소에는 말을 아끼시다가 한 번에 쏟아 내기 쉽습니다. 글이나 메모처럼 조금씩 꺼내는 길을 하나 만들어 두시기 바랍니다.',
+    even: '받아들이는 힘과 내보내는 힘이 비슷합니다. 생각하고 말하는 일이 크게 막히지 않습니다. 바쁠 때 한쪽으로 쏠리지 않는지만 살피시면 됩니다.'
+  },
+  organ: ['간 · 눈 · 근육 쪽', '심장과 피가 도는 길 쪽', '위와 장 같은 소화 기관 쪽', '폐 · 기관지 · 피부 쪽', '신장 · 방광 · 허리 쪽'],
+  body: {
+    none: '기운이 한쪽으로 크게 치우치지 않았습니다. 그래서 특별히 약한 곳을 짚지는 않습니다. 지금처럼 고르게 돌보시면 됩니다.',
+    elder: '연세가 있으신 분의 사주입니다. 일과 인연 이야기는 지금까지 살아오신 모습에 비추어 읽어 주시기 바랍니다.',
+    young: '아직 어리신 분의 사주입니다. 돈과 일 이야기는 앞으로 드러날 성향으로 읽어 주시기 바랍니다.',
+    note: '옛 책에서 기운과 몸을 짝지은 것일 뿐, 진단이 아닙니다. 불편한 곳이 있으시면 병원에서 확인하시기 바랍니다.'
+  },
+  outlet: [
+    '자라고 싶은 마음을 막지 마시기 바랍니다. 새로 배우거나 만들어 볼 것을 하나 늘 곁에 두십시오. 이 마음을 쓸 곳이 없으면 무기력해지기 쉬운 분입니다.',
+    '드러내고 싶은 마음을 막지 마시기 바랍니다. 말하고, 보여 주고, 나눌 자리를 하나 늘 두십시오. 이 마음을 쓸 곳이 없으면 속이 타들어 가기 쉬운 분입니다.',
+    '지키고 쌓고 싶은 마음을 막지 마시기 바랍니다. 내 자리, 내 방식이라 할 것을 하나 늘 두십시오. 이 바탕이 흔들리면 불안해지기 쉬운 분입니다.',
+    '정하고 다듬고 싶은 마음을 막지 마시기 바랍니다. 끝까지 내 기준대로 마무리할 일을 하나 늘 두십시오. 이 마음을 쓸 곳이 없으면 날이 자신에게 향하기 쉬운 분입니다.',
+    '생각하고 흘러가고 싶은 마음을 막지 마시기 바랍니다. 혼자 깊이 생각하고 움직일 틈을 늘 두십시오. 이 틈이 없으면 속으로 잠기기 쉬운 분입니다.'
+  ],
+  curious: '배우고 들은 것이 곧 "해 보고 싶다"로 번지는 분입니다. 관심이 가는 곳으로 몸이 먼저 움직입니다. 깊지 않아도 괜찮습니다. 넓게 겪어 보실수록 자신만의 기준이 또렷해집니다.',
+  yearTip: {
+    heavy: '올해는 기운이 세게 겹치는 해입니다. 열심히 하는 것보다 무리하지 않는 것이 먼저입니다.',
+    fill: '올해는 사주에 없던 기운이 들어오는 해입니다. 마음이 급해지기 쉬우니, 작게 하나만 시작해 보시기 바랍니다.',
+    calm: '올해는 크게 치우치지 않고 흘러가는 해입니다. 하시던 일을 꾸준히 이어 가시면 됩니다.'
+  },
+  /* ---- 문장 틀 ---- */
+  f: {
+    bar: list => `여덟 글자를 다섯 기운으로 세면 ${list}입니다.`,
+    bar6: list => `태어난 시간을 모르셔서 여섯 글자로 읽었습니다. 다섯 기운으로 세면 ${list}입니다. 시간을 아시면 개수가 달라질 수 있습니다.`,
+    missing: els => `${els} 기운이 하나도 없지만, 잘못된 사주가 아닙니다. 다섯 기운을 모두 갖춘 분이 오히려 드뭅니다. 없는 기운은 10년 흐름과 그해의 기운으로 들어옵니다.`,
+    stem: (k, h, img) => `태어난 날의 글자는 ${k}(${h})입니다. 자연에 빗대면 ${img}입니다.`,
+    animalDiff: (yearAni, dayAni) => `띠는 ${yearAni}띠이지만, 태어난 날에도 동물이 있습니다. 태어난 날의 동물은 ${dayAni}입니다.`,
+    animalSame: ani => `띠도, 태어난 날의 동물도 ${ani}입니다. 그 성질이 겉과 속에 함께 있습니다.`,
+    stackChart: n => `사주 안에 이 동물이 ${n}번 나옵니다. 그래서 이 성질이 더 뚜렷합니다.`,
+    stackBoth: stack => `지금 지나는 10년 흐름에도, 올해에도 같은 동물이 들어와 있습니다. 같은 동물이 여럿 함께 달리는 셈이라, 지금은 ${stack} 때입니다.`,
+    stackDae: stack => `지금 지나는 10년 흐름에도 같은 동물이 들어와 있습니다. 이 10년은 ${stack} 때입니다.`,
+    stackYear: stack => `올해에도 같은 동물이 들어와 있습니다. 올해는 ${stack} 해입니다.`,
+    domSame: (el, drive) => `당신 자신도 ${el} 기운이고, 사주에서 가장 많은 것도 ${el} 기운입니다. 그래서 남보다 훨씬 세게 나오는 것이 있습니다. ${drive}입니다.`,
+    domEven: (el, drive) => `다섯 기운이 어느 한쪽으로 크게 쏠리지 않았습니다. 그래서 당신 자신의 기운인 ${el} 기운의 성질이 고르게 나옵니다. 그 성질은 ${drive}입니다.`,
+    domOther: (elMe, elDom, gs, drive) => `당신 자신은 ${elMe} 기운인데, 사주에서 가장 많은 것은 ${elDom} 기운입니다. 당신께 ${elDom} 기운은 '${gs}' 쪽입니다. 그래서 삶의 무게가 그쪽으로 실립니다. ${elDom} 기운의 성질은 ${drive}입니다.`,
+    roleIntro: '다섯 기운은 당신(태어난 날의 글자)을 기준으로 저마다 역할을 맡습니다. 어떤 역할이 많고 적은지를 보면, 삶의 어느 쪽이 쉽고 어느 쪽이 어려운지 알 수 있습니다. 앞의 "타고난 모습"은 바탕의 결이고, 아래는 그 결이 실제로 얼마나 쉽게 나오는지입니다. 둘이 서로 다르면, 마음은 그런데 몸이 잘 따라 주지 않는 부분이라고 보시면 됩니다.',
+    roleHead: (gName, gs, el, n, lv) => `${gName}(${gs}) — ${el} ${n}개 · ${lv}`,
+    clash: (gsA, gsB) => `사주 안에서 '${gsA}' 쪽 글자와 '${gsB}' 쪽 글자가 서로 밀어냅니다. 그래서 이 두 가지는 잘 되다가도 한 번씩 바뀌는 때가 옵니다. 나쁘다는 뜻은 아닙니다.`,
+    clashSame: gs => `사주 안에서 '${gs}' 쪽 글자끼리 서로 밀어냅니다. 그래서 이 일은 잘 되다가도 한 번씩 바뀌는 때가 옵니다. 나쁘다는 뜻은 아닙니다.`,
+    adjDown: n => `개수는 ${n}개이지만, 태어난 달의 계절에 힘을 받지 못하거나 다른 글자와 서로 밀어내고 있어 실제 힘은 더 약합니다.`,
+    adjUp: n => `개수는 ${n}개이지만, 태어난 달의 계절이 이 기운을 밀어 주어 실제 힘은 더 셉니다.`,
+    star: (who, el) => `옛 방식에서는 ${who}의 짝을 ${el} 기운으로 봅니다.`,
+    female: '여성', male: '남성',
+    bLack: (el, organ) => `${el} 기운이 없으신 분은 ${organ}을 남보다 더 살피라고 봅니다.`,
+    bOver: (el, organ) => `${el} 기운이 많으신 분은 ${organ}에 무리가 가기 쉽다고 봅니다.`,
+    need: (el, gs, need) => `사주에 없는 ${el} 기운은 당신께 '${gs}' 쪽입니다. 그래서 ${need}을 일부러 마련해 두셔야 합니다.`,
+    needWeak: (el, gs, need) => `적은 편인 ${el} 기운은 당신께 '${gs}' 쪽입니다. ${need}을 일부러 마련해 두시면 균형이 잡힙니다.`,
+    /* 10년 흐름 */
+    dIntro: (start, digit, ages) => `당신의 큰 흐름은 ${start}세에 처음 시작합니다. 그 뒤로 나이의 끝자리가 ${digit}인 해(${ages}세…)마다 바뀝니다. 10년에 한 번 계절이 바뀌는 것과 같습니다.`,
+    dBranch: '사주의 기둥마다 글자가 위아래로 둘 있습니다. 10년 흐름은 그 가운데 아랫글자를 중심으로 읽습니다.',
+    dCur: (from, to, gz, ani) => `${from}~${to}세 · ${gz} · ${ani}의 10년`,
+    dNext: (from, to, year, gz, ani) => `${from}~${to}세(${year}년부터) · ${gz} · ${ani}의 10년`,
+    dBefore: start => `아직 첫 큰 흐름이 시작되기 전입니다. ${start}세부터 10년 단위의 흐름이 시작됩니다.`,
+    dTransition: '계절이 하루아침에 바뀌지 않듯, 흐름도 바뀌는 나이의 앞뒤 1~2년에 걸쳐 서서히 넘어갑니다. 그 무렵에 "이제는 다르게 살아야겠다"는 생각이 들거나, 놓치고 있던 것을 정리하게 됩니다.',
+    dMissFuture: (el, from, year, gift) => `사주에 없는 ${el} 기운은 ${from}세(${year}년)에 시작되는 10년에 온전히 들어옵니다. 그때부터 ${gift}이 생깁니다.`,
+    dMissNow: el => `사주에 없는 ${el} 기운이 바로 지금 10년에 들어와 있습니다.`,
+    dMissPast: (el, from, to) => `사주에 없는 ${el} 기운은 ${from}~${to}세의 10년에 지나갔습니다. 그때 익히신 것이 지금의 밑천입니다.`,
+    dWeakFuture: (el, from, year) => `적은 편인 ${el} 기운은 ${from}세(${year}년)에 시작되는 10년에 들어옵니다. 그때 한결 균형이 잡힙니다.`,
+    dWeakNow: el => `적은 편인 ${el} 기운이 지금 10년에 들어와 있습니다. 균형이 잡히는 때입니다.`,
+    dMissNever: el => `사주에 없는 ${el} 기운은 10년 흐름으로는 크게 들어오지 않습니다. 해마다 오는 기운과 생활 습관으로 채우시게 됩니다.`,
+    dGender: '10년 흐름의 방향은 성별에 따라 달라집니다. 성별을 고르지 않으셔서 여성 기준으로 셈했습니다. 성별을 고르시면 더 정확합니다.',
+    subFill: el => `윗글자로는 사주에 없던 ${el} 기운이 조금씩 비치기 시작합니다.`,
+    subOver: el => `윗글자로 이미 많은 ${el} 기운이 더해져, 그 성질이 더 세집니다.`,
+    /* 해 · 달 — past: 지난 일이면 true */
+    yIntro: '해마다 들어오는 기운을 당신의 사주에 겹쳐서 읽었습니다. 같은 해라도 사주에 그 기운이 없으면 반갑고, 이미 많으면 버겁습니다. 지난 3년이 실제로 어떠셨는지 떠올려 보시기 바랍니다.',
+    yHead: (year, gz, ani) => `${year}년 · ${gz} · ${ani}의 해`,
+    mHead: gz => `이번 달 · ${gz}월`,
+    norm: (el, theme, tip, past) => `${el} 기운이 ${past ? '들어왔습니다' : '들어옵니다'}. ${theme}${past ? '였습니다.' : '입니다. ' + tip}`,
+    fill: (el, gs, gift, past) => `사주에 없던 ${el} 기운이 ${past ? '들어왔습니다' : '들어옵니다'}. ${gift}이 ${past ? '생겼습니다' : '생깁니다'}. 당신께는 '${gs}' 쪽 일이 움직이는 ${past ? '때였습니다' : '때입니다'}.`,
+    fillTip: '없던 것이 오면 마음이 그쪽으로 확 쏠리기 쉽습니다. 작게, 천천히 시작하시기 바랍니다.',
+    over: (el, img, feel, tip, past) => `이미 많은 ${el} 기운이 더 ${past ? '들어왔습니다' : '들어옵니다'}. ${img}입니다. ${feel}이 들기 ${past ? '쉬웠습니다.' : '쉽습니다. ' + tip}`,
+    dbl: (el, past) => `위아래 두 글자가 모두 ${el} 기운입니다. 같은 기운이 두 겹으로 들어와 그 성질이 아주 세게 ${past ? '나왔습니다. 쉴 틈이 적으셨을 수 있습니다' : '나옵니다. 쉬는 날부터 먼저 정해 두시기 바랍니다'}.`,
+    dblFill: (el, past) => `위아래 두 글자가 모두 ${el} 기운입니다. 없던 기운이 한꺼번에 넉넉히 ${past ? '들어왔습니다' : '들어옵니다'}.`,
+    normAgain: (el, gs, past) => `${el} 기운('${gs}' 쪽)이 이 해에도 ${past ? '이어졌습니다' : '이어집니다'}.`,
+    fillAgain: (el, gs, past) => `사주에 없던 ${el} 기운('${gs}' 쪽)이 이 해에도 ${past ? '들어왔습니다' : '들어옵니다'}.`,
+    overAgain: (el, past) => `이미 많은 ${el} 기운이 이 해에도 더 ${past ? '들어왔습니다' : '들어옵니다'}. 앞의 해와 같은 느낌이 이어지기 ${past ? '쉬웠습니다' : '쉽습니다'}.`,
+    stack: (ani, stack, past) => `태어난 날의 동물(${ani})이 한 번 더 ${past ? '겹쳤습니다' : '겹칩니다'}. ${stack} ${past ? '때였습니다' : '때입니다'}.`,
+    clashLuck: past => `이때의 기운이 태어난 날의 기운과 서로 ${past ? '밀어냈습니다' : '밀어냅니다'}. 집 · 일자리 · 가까운 관계에 변화가 ${past ? '있었을 수 있습니다' : '생길 수 있습니다. 나쁜 일이 생긴다는 뜻은 아닙니다'}.`,
+    also: (el, gs, past) => `여기에 ${el} 기운('${gs}' 쪽)도 함께 ${past ? '들어왔습니다' : '들어옵니다'}.`,
+    alsoFill: (el, gs, past) => `여기에 사주에 없던 ${el} 기운('${gs}' 쪽)도 조금 ${past ? '들어왔습니다' : '들어옵니다'}.`,
+    dSame: '다음 10년에도 같은 기운이 이어집니다. 지금의 주제가 한 번 더 깊어집니다.',
+    tipStrong: gs => `올해는 '${gs}' 쪽 일이 크게 들어오는 해입니다. 일이 커지는 만큼, 쉬는 날부터 먼저 정해 두시기 바랍니다.`,
+    change: '흐름이 바뀔 때는 조짐이 있습니다. 머릿속이 조금 맑아지고, 잊고 지내던 좋아하던 것들이 하나둘 떠오릅니다. 그 가운데 답이 있습니다.'
+  }
+};
+/* ---- Deep reading sentences — English (plain words, second person). Array order: elements = Wood, Fire, Earth, Metal, Water / roles = peers, expression, money, job, learning / animals = Rat … Pig ---- */
+const DEEP_EN = {
+  sp: ' ',
+  el: ['Wood', 'Fire', 'Earth', 'Metal', 'Water'],
+  elShort: ['Wood', 'Fire', 'Earth', 'Metal', 'Water'],
+  gs: ['friends · rivals', 'expression · skill', 'money · results', 'job · rules', 'learning · help'],
+  gName: ['Energy like me', 'Energy I put out', 'Energy I handle', 'Energy that governs me', 'Energy that feeds me'],
+  lv: ['none', 'weak', 'medium', 'many'],
+  animal: ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'],
+  title: {
+    sec: "Deep reading — in the order a counselor reads",
+    intro: "The reading below follows the order a birth chart counselor really uses. Like the barcode on a product, your eight letters are a record of the energy at the moment you were born. First we look at what materials you were born with. Then we look at what kind of time you are passing through now.",
+    a: "What you were born as — the nature and the animal that are like you",
+    b: "You, seen through five roles",
+    c: "Reading by area of life",
+    d: "The flow that changes every 10 years — where you are now",
+    e: "The last 3 years · this year · the next 2 years",
+    f: "This month, and what to do now",
+    money: "Money", work: "Work", people: "People", love: "Love", mind: "Mind", body: "Body",
+    now: "Now", next: "Next", thisYear: "This year", tip1: "What to use", tip2: "What to look after", tip3: "This year"
+  },
+  stem: {
+    갑: {img: "a great pine that has grown for hundreds of years", body: "You are a big tree that grows straight up. People often say you think more deeply than others your age, and you look like someone who can be trusted with a task. But in work or relationships that need a light start, your first step is heavy.", good: "When you use this well, you become an expert who goes deep into one field, a person who makes things, and a person who sees deeply into things.", bad: "When you use it poorly, it is easy to get shut inside your own thoughts and drift away from the world."},
+    을: {img: "grass and vines that grow even in a crack in a rock", body: "You are grass that bends softly but does not break. Wherever you are placed, you find a spot and put down roots, and when there is something beside you to lean on, you climb high. You are good at reading the mood and fitting in.", good: "When you use this well, you become a person who connects people and who survives in the end even in hard places.", bad: "When you use it poorly, it is easy to lose your own will while fitting in with others, or to be pushed around by what you lean on."},
+    병: {img: "the sun at midday", body: "You are a bright sun that hides nothing. Just by being there, you light up the people around you, and you are easy to notice. What you like and dislike shows right on your face.", good: "When you use this well, you become a person who gives people strength and who stands in front and makes things widely known.", bad: "When you use it poorly, it is easy to tire yourself out trying to shine on everyone, and to move on quickly once your heart cools."},
+    정: {img: "a candle in a dark room or a lantern on a night road", body: "You are a small fire that warms one place for a long time. You look after the people close to you with great care, and you are quiet on the outside but hot on the inside. You focus deeply on one thing.", good: "When you use this well, you become a person who lights up one person or one thing deeply. Teaching, caring for others and building a skill suit you well.", bad: "When you use it poorly, it is easy to burn only on the inside, become sensitive, and wear yourself out alone."},
+    무: {img: "a big mountain that can be seen from far away", body: "You are a solid mountain that does not move easily. People come to lean on you. You do not show your inner feelings much, and you move slowly when things change.", good: "When you use this well, you become a center that people can trust and rely on, and a person who can hold big things.", bad: "When you use it poorly, it is easy to harden into stubbornness and miss chances, and to carry everything alone."},
+    기: {img: "the soil of a field that raises seeds", body: "You are soil that quietly takes things in and helps them grow. You are careful and practical, and you look after others well. But you do not talk much about yourself.", good: "When you use this well, you become a person who helps people and work grow. Raising things and managing things suit you well.", bad: "When you use it poorly, it is easy to worry more and more, and to do only other people’s work until nothing is left for you."},
+    경: {img: "a big rock and a lump of iron that have not been shaped yet", body: "You are metal that is hard and quick to decide. You are clear about right and wrong, and you are loyal. Your words come out straight. Your value goes up the more you are shaped.", good: "When you use this well, you become a person who puts messy things in order with the power to decide and get things done.", bad: "When you use it poorly, it is easy to lose people by not bending and running into them."},
+    신: {img: "a well-cut jewel or a sharp blade", body: "You are metal that is delicate and has high standards. You are sensitive to what is neat, what is beautiful and what is exact. Your pride is strong, and you are also easily hurt.", good: "When you use this well, you become a master of fine, exact work and a person with a good eye.", bad: "When you use it poorly, it is easy for your words to turn sharp and for you to put yourself down."},
+    임: {img: "the wide sea or a great river", body: "You are a great water that takes in anything. Your thinking is wide, and you read the flow before you move. You love freedom, and it is hard for others to know all that is inside you.", good: "When you use this well, you become a person who draws the big picture and moves far and wide.", bad: "When you use it poorly, it is easy to flow here and there without staying in one place, and when you overflow, even you find it hard to handle."},
+    계: {img: "rain and spring water that soak in without a sound", body: "You are water that soaks in quietly and gives life. You have good instincts, you are quick to notice things, and you have plenty of imagination. You are soft-hearted and sensitive to the mood around you.", good: "When you use this well, you become a person who reads people’s hearts and refreshes them, and a person whose ideas keep welling up.", bad: "When you use it poorly, it is easy to sink into worry and to become cloudy depending on your mood."}
+  },
+  ani: [
+    {body: "Like a rat that moves at night, you are quick to notice things and your mind is always busy. You watch quietly, think things over and make sure you get real gains. You think a lot at night, so it is easy to lose sleep.", stack: "more busy thoughts in your head"},
+    {body: "Like an ox that plows the field without a word, you may be slow but you go to the end. You rarely complain, and your power to endure is great. It is easy to pile things up inside and then feel heavy all at once.", stack: "more enduring and more holding on"},
+    {body: "Like a tiger that crosses mountains, you start fast and you have no fear. You gain strength when you move widely rather than being tied to one place. It is easy to run ahead alone and fail to look after what is behind you.", stack: "more new starts and more moving from place to place"},
+    {body: "Like a rabbit with its ears up, your senses are delicate and you read the mood quickly. You have a talent for making things smooth between people. You are easily startled, even by small things.", stack: "more sensitivity and more dealings with people"},
+    {body: "Like a dragon that flies above the clouds, your dreams are big and so are the pictures you draw. You have many talents. Real life often does not satisfy you, so it is easy to feel frustrated.", stack: "stronger wishes to do new things and to change things"},
+    {body: "Like a snake that watches quietly and then moves all at once, you think fast and focus deeply. You do not show your inner feelings much. It is easy for you to end up moving to unfamiliar places.", stack: "more weighing things up inside and more changes of place"},
+    {body: "A horse rarely stands still. There is always something for you to do, and even when there is not, people around you say “come with us” and take you along. You do not really know how to rest, and you keep finding something to do.", stack: "more busyness and less room to rest"},
+    {body: "You are like a goat, which looks gentle but does not easily give up its will. Your affection runs deep, so you look after the people close to you for a long time. It is easy for hurt feelings to pile up while you hold things in.", stack: "more moments when you may hold back and let things pass"},
+    {body: "Like a monkey that moves from tree to tree, you have many talents and you adjust well to each moment. You try your hand at many things, and you learn fast. It is hard for you to hold on to one thing for a long time.", stack: "more starting this and that and more moving about"},
+    {body: "Like a rooster that calls in the dawn, you are careful and your standards are clear. You finish your work neatly. You also see other people’s flaws easily, so your words can turn sharp.", stack: "more checking and more polishing"},
+    {body: "Like a dog that guards the house, you are loyal and have a strong sense of duty. Once you trust someone, you stay with them to the end. It is easy for you to hold your worries alone.", stack: "more things to protect and more things to be responsible for"},
+    {body: "Like a pig that carries good fortune, you are big-hearted and relaxed. You think deeply and have a good imagination. You are soft toward people you care about, so you find it hard to say no, and it is easy for you to end up going far away.", stack: "deeper thinking and more things to care about"}
+  ],
+  drive: [
+    "the wish to grow. Thoughts like “I should try this” and “I have to do this” keep coming up",
+    "the wish to be seen. You feel relief only when you show outside what is inside you",
+    "the wish to protect and build up. You feel at ease only when you settle in and make things firm step by step",
+    "the wish to decide and cut away. You feel relief only when you sort right from wrong and finish cleanly",
+    "the wish to think and to flow. You weigh things deeply and move to fit the situation"
+  ],
+  gift: ["the strength to start new things and the wish to grow", "the courage to show yourself and a passionate heart", "a sense of stability and the care to make your ideas real one by one", "the power to decide firmly and a clear standard for what to keep and what to end", "the power to think deeply and the ease to adjust gently"],
+  crowdImg: ["more trees crowding into a small forest", "a midsummer with no night", "earth piling up and getting heavier", "a blade getting even sharper", "water rising and overflowing"],
+  crowdFeel: ["shut in, like wanting to grow under a low ceiling", "worn out from having to keep stepping forward without rest", "heavy in body and mind, with things not moving", "in conflict with people because of stricter standards", "sunk in thoughts and worries"],
+  crowdTip: ["Rather than starting more new things, please drop one thing you are already doing.", "Please cut down the occasions where you have to step forward, and set aside time to cool down alone first.", "Rather than staying still and holding on, please move your body and try a change of place.", "Before you argue about right and wrong, please wait a day and then speak.", "Please write your thoughts down to get them out of your head, and add something that uses your body."],
+  theme: [
+    "people who are like you (friends · co-workers · rivals) closer to you, and a stronger wish to do things your own way",
+    "more chances to show your ideas and skills, and more to say and make",
+    "the work of securing results you can see, such as money and achievements",
+    "more roles to carry and more duties to keep",
+    "more learning, more help from others, and more time sorting out your thoughts alone"
+  ],
+  roleDo: ["Please do not try to do everything alone, and take care in choosing who you work with.", "Please take out one thing you have put off and show it to people.", "Please write down, once, what comes in and what goes out.", "Please decide first which tasks you will take on and which you will not.", "Please start one thing you have wanted to learn, and do not hold back on rest."],
+  needRole: ["people who will be on your side and the strength to keep to your own will", "a way to bring out what is inside you through words, writing or creative work", "the habit of looking after money and results yourself", "rules and deadlines you set for yourself", "time to learn and people you can lean on"],
+  role: [
+    [null, "There is no energy like yours other than you. You tend to get things done alone rather than lean on others.", "There is one more energy like yours. It is as if a person on your side is standing next to you.", "There are several energies like yours. You have clear views of your own, and people always gather around you."],
+    ["There is no ready path for bringing things out. It is easy to either keep your inner feelings in completely or pour them out all at once.", "You do well when a task is given to you, but you tend not to step forward on your own.", "Speaking and making come out without strain.", "Your expression and skill overflow. Your words and work run ahead, so you tire easily."],
+    ["This does not mean you have no money. It means you need to learn how to handle money as a skill of its own.", "You have a feel for money, but money does not follow you by itself. It gathers only when you set a goal.", "Your sense of what is practical is neither too much nor too little. You know how to keep as much as you earn.", "You see many things that could make money and many things to do. If you start them all at once, it is easy to be pulled around."],
+    ["You feel shut in when you are tied to a fixed frame. You need rules you set for yourself to stay in order.", "You have a sense of duty, but you find it hard when pressure goes on for a long time.", "You find your place well inside an organization and its rules. It is easy for you to win trust.", "You carry a lot of responsibility and a lot of other people’s attention. It is easy to be too hard on yourself."],
+    ["You are not used to leaning on others. You tend to learn by running into things alone.", "You accept the help you truly need. Learning gives you strength when you go deep into one thing.", "Help and news come to you through the people around you. You are also good at sorting out your thoughts alone.", "Your power to think and take things in overflows. With so many thoughts, it is easy to be slow to act."]
+  ],
+  money: {
+    base: [
+      "With money, you tend to have no middle ground. You either do not care about it at all or want it very much. If “why I earn and why I save” is unclear, money does not stay with you. Please do not rush into a business or a trade where you must keep chasing money, and start learning about money little by little from now.",
+      "You have a feel for earning money. But without a goal, as much goes out as comes in. Please decide first why you are saving and how much.",
+      "You are equally good at earning money and keeping it. As long as you do not push too far, money is not likely to shake you much.",
+      "You see things that could make money here and there. That also means more to do. If you try to catch them all, you end up pulled around by work, not money. Please pick only one or two at a time."
+    ],
+    both: "There is a road between your skill and money. If you keep putting out what you do well, it leads to money.",
+    skillOnly: "You have skill, but the bridge that turns it into money is weak. It helps to practice putting a price on your work, or to have a person or a system that helps you manage money.",
+    moneyOnly: "You can see things that could make money, but the path of earning through your own skill is weak. You will feel secure if you build one skill you can offer.",
+    partner: "A birth chart with a lot of energy like your own easily takes a shape where money is shared among several people. Please be careful about mixing your money with other people’s (business partnerships · guaranteeing a loan). If you do work with someone, first check whether things are going well for that person right now. It is also better to make the important decisions yourself."
+  },
+  work: {
+    channel: [
+      "Work done under your own name and with your own strength suits you well. This is work you take on alone and are responsible for to the end.",
+      "Work that puts your ideas or the things you make out into the world suits you well. This is work where “something I made” is left behind, such as making, writing, filming, teaching and planning.",
+      "Work where results you can see come out right away suits you well. This is work with clear results, such as buying and selling, handling numbers and money, and running operations.",
+      "You gain strength in a position where the role and the responsibility are clear. This is work where you move up by building trust, such as work in an organization, public work and management.",
+      "Work where learning and deep knowledge are your tools suits you well. This is work where you share what you have built up, such as research, expert knowledge, counseling and writing."
+    ],
+    exp: [
+      "But you are not good at making your own work known. It helps to keep records, or to have someone who makes it known for you.",
+      "You do not have to stand in front yourself. It is enough to put your work in front and simply say, “I am the person who made this.”",
+      "Making yourself known through your words and your work also comes without strain.",
+      "You are also good at standing in front, speaking and showing. But if you pour out too much at once, you quickly run empty."
+    ],
+    org: [
+      "A fixed frame and close control from people above you are hard for you to bear for long. Please work freely, but set your own deadlines and rules.",
+      "You can fit into an organization too, but it needs to be a place with room to breathe for you to last.",
+      "You also do well in company life. It is easy for you to win the trust of the people above you.",
+      "It is easy for you to take on too much responsibility. Please do not try to do it all, and share it out."
+    ],
+    both: "You have both the nature of a person who makes things and the nature of a person who fits well into an organization. So it is easy to be confused: “Am I a person who makes my own things, or a person who works at a company?” You do not have to choose one of the two. If you treat your workplace as the place that supports your living and your own work as the place where you breathe, both come alive.",
+    free: "Your power to put things out is big, but there is no frame to hold you. The more you work alone, the more a fixed timetable and one person to work with will help you.",
+    org2: "You do the work you are given well, but the path for bringing out what is yours is narrow. If you keep one thing outside work that is “something I made,” even a small one, you will have room to breathe."
+  },
+  people: {
+    peer: [null,
+      "Even when you are among people, in the end you tend to decide alone and get things done alone. Please make a point of having one person to talk things over with before big matters.",
+      "You know how to stand alone, and you also know how to be with others. You tend to stay for a long time with one or two people you get along with.",
+      "Wherever you are, people stick with you, and you often hear “let’s do it together.” People affect you a great deal. Not only your feelings but also your work and where you live can change because of people. So who you keep near you matters far more for you than for others."
+    ],
+    tact: "Knowing how to treat people comes naturally to you. You fit yourself to the other person without trying. Because of that, now and then someone takes your kindness for granted, and when that happens it hurts a lot. It is fine to keep your distance from such people.",
+    help: [
+      "Asking for help feels awkward to you. It is easy to wear yourself out trying to do everything alone, so please look for someone who can teach you.",
+      "Help comes once in a while, just when you truly need it. Please keep that bond for a long time.",
+      "Good news, introductions and information come to you through the people around you. Places where you meet people are your chances.",
+      "Many people look after you. If you get used to receiving, your power to move on your own grows weak. Please put what you receive to use right away."
+    ]
+  },
+  love: {
+    palace: [
+      "The closer you are to someone, the more you want to be equals, like friends. A relationship where each of you has your own life feels comfortable.",
+      "You watch over and care for your partner so well that you truly need time alone. Being together all day wears you out. This is not because you dislike people, but because your attention never gets to rest. A relationship where you are both busy, or where each has a room and time of their own, lasts long.",
+      "You want a dependable relationship where you build a life together. You check a person’s feelings by what they really do for you rather than by words.",
+      "You are drawn to people who are responsible and have clear standards. It is easy to get tense trying to fit your partner, so please make time together when you can relax.",
+      "You want a person who looks after you at your side and puts your mind at ease. If you only receive, your partner gets tired. Please say your thanks in words often."
+    ],
+    star: [
+      "This is not a birth chart where partners come often by themselves. It is easy to be one of two ways: either you give no thought to finding a partner, or you fall in deeply once someone comes. Partners tend to appear in the years and the 10-year periods when this energy comes in.",
+      "You do not have many partners, but you tend to stay deeply and for a long time with one person.",
+      "The energy for partners is neither too much nor too little. Meeting someone and keeping the relationship going comes without strain.",
+      "Many people come toward you, and there are many relationships to mind. If you set your standard for choosing first, you will be shaken less."
+    ],
+    starClash: "Partners do come. But the letter of this energy and another letter in your birth chart push each other away, so things may be slow to start. You do not need to hurry.",
+    noGender: "If you choose your gender, we will also read how much partner energy your birth chart holds."
+  },
+  mind: {
+    lead: "This may look different from your basic nature. How you let your feelings out is read separately.",
+    hold: "Your power to take things in is bigger than your power to let things out. So you try to work through hard things alone in your head, and you rarely speak about it, like a cup that only spills when it is full. People around you often find out late and say, “You should have told me then.” You do not have to tell the details. Please have one or two people to whom you can say just, “Things are a bit hard these days.”",
+    shut: "The path for bringing out what is inside you is narrow. You usually hold back your words, and then it is easy to pour them out all at once. Please make one way to let things out little by little, such as writing or notes.",
+    vent: "Your power to let things out is bigger than your power to take things in. You bring what you feel straight out in words and actions, so it does not pile up inside for long. But it is easy to feel drained after pouring it out, so please keep quiet time alone to fill up again.",
+    even: "Your power to take things in and your power to let things out are about the same. Thinking and speaking are not blocked much. You only need to check that you are not leaning to one side when you are busy."
+  },
+  organ: ["the liver, eyes and muscles", "the heart and blood circulation", "the digestive organs, such as the stomach and bowels", "the lungs, airways and skin", "the kidneys, bladder and lower back"],
+  body: {
+    none: "Your energy does not lean far to any one side. So we do not point to any part as especially weak. Please keep looking after yourself evenly, as you do now.",
+    elder: "This is the birth chart of an older person. Please read the parts about work and partners in the light of the life you have already lived.",
+    young: "This is the birth chart of someone who is still young. Please read the parts about money and work as tendencies that will show later.",
+    note: "This is only how old books paired the energies with the body. It is not a diagnosis. If something feels wrong, please have it checked at a hospital."
+  },
+  outlet: [
+    "Please do not block your wish to grow. Always keep one thing near you to learn or to try making. Without a place to use this wish, you can easily lose your energy.",
+    "Please do not block your wish to be seen. Always keep one place where you can speak, show and share. Without a place to use this wish, you can easily burn up inside.",
+    "Please do not block your wish to protect and build up. Always keep one thing you can call your own place and your own way. When this base is shaken, you can easily become anxious.",
+    "Please do not block your wish to decide and polish. Always keep one task you can finish to the end by your own standard. Without a place to use this wish, the blade can easily turn toward yourself.",
+    "Please do not block your wish to think and to flow. Always keep some room to think deeply and to move alone. Without this room, you can easily sink inward."
+  ],
+  curious: "What you learn and hear soon turns into “I want to try that.” Your body moves first toward what interests you. It does not have to be deep. The more widely you try things, the clearer your own standards become.",
+  yearTip: {
+    heavy: "This year the energy piles up strongly. Not pushing too hard comes before working hard.",
+    fill: "This year an energy your birth chart does not have comes in. It is easy to feel rushed, so please start just one small thing.",
+    calm: "This year flows along without leaning far to one side. You only need to keep steadily doing what you have been doing."
+  },
+  /* ---- sentence templates ---- */
+  f: {
+    bar: list => `Counted as five energies, your eight letters are ${list}.`,
+    bar6: list => `You do not know your birth time, so we read six letters. Counted as five energies, they are ${list}. If you learn the time, the counts may change.`,
+    missing: els => `${els.includes(' · ') ? `Some energies do not appear in your birth chart at all: ${els}` : `You have no ${els} energy at all`}. This does not mean your birth chart is wrong. In fact, people who have all five energies are the rare ones. A missing energy comes in through the 10-year flow and through the energy of each year.`,
+    stem: (k, h, img) => `The letter of your birth day is ${k} (${h}). In nature it is like ${img}.`,
+    animalDiff: (yearAni, dayAni) => `You were born in the Year of the ${yearAni}, but your birth day has an animal too. The animal of your birth day is the ${dayAni}.`,
+    animalSame: ani => `Your birth year and your birth day have the same animal: the ${ani}. Its nature is in you both outside and inside.`,
+    stackChart: n => `This animal appears ${n} times in your birth chart. So this nature is even clearer.`,
+    stackBoth: stack => `The same animal has also come in with the 10-year flow you are in now, and with this year. It is as if several of the same animal are running together, so now is a time of ${stack}.`,
+    stackDae: stack => `The same animal has also come in with the 10-year flow you are in now. These 10 years are a time of ${stack}.`,
+    stackYear: stack => `The same animal has also come in with this year. This year is a year of ${stack}.`,
+    domSame: (el, drive) => `You yourself are ${el} energy, and ${el} energy is also the most common in your birth chart. So one thing shows much more strongly in you than in most people: ${drive}.`,
+    domEven: (el, drive) => `Your five energies do not lean far to any one side. So the nature of ${el} energy, which is your own energy, comes out evenly. That nature is ${drive}.`,
+    domOther: (elMe, elDom, gs, drive) => `You yourself are ${elMe} energy, but the most common energy in your birth chart is ${elDom} energy. For you, ${elDom} energy is on the “${gs}” side. So the weight of your life leans that way. The nature of ${elDom} energy is ${drive}.`,
+    roleIntro: "Each of the five energies takes a role, measured from you (the letter of your birth day). Seeing which roles are many and which are few shows which sides of life come easily and which are hard. The “What you were born as” part above is your basic nature, and the part below shows how easily that nature really comes out. Where the two differ, you can take it as a part where your heart is willing but your body does not follow easily.",
+    roleHead: (gName, gs, el, n, lv) => `${gName} (${gs}) — ${el} ×${n} · ${lv}`,
+    clash: (gsA, gsB) => `In your birth chart, a letter on the “${gsA}” side and a letter on the “${gsB}” side push each other away. So even when these two areas go well, a change comes from time to time. This does not mean something bad.`,
+    clashSame: gs => `In your birth chart, letters on the “${gs}” side push each other away. So even when this area goes well, a change comes from time to time. This does not mean something bad.`,
+    adjDown: n => `The count is ${n}, but this energy gets no support from the season of your birth month, or it and another letter push each other away, so its real strength is weaker.`,
+    adjUp: n => `The count is ${n}, but the season of your birth month supports this energy, so its real strength is greater.`,
+    star: (who, el) => `In the old way of reading, ${who}’s partner is seen in ${el} energy.`,
+    female: "a woman", male: "a man",
+    bLack: (el, organ) => `With no ${el} energy, you are traditionally advised, more than most people, to look after ${organ}.`,
+    bOver: (el, organ) => `With a lot of ${el} energy, you are traditionally seen as likely to put strain on ${organ}.`,
+    need: (el, gs, need) => `Your birth chart has no ${el} energy, and for you it is the “${gs}” side. So you need to make sure, on purpose, that you have ${need}.`,
+    needWeak: (el, gs, need) => `${el} energy is on the low side in your birth chart, and for you it is the “${gs}” side. If you make sure, on purpose, that you have ${need}, things come into balance.`,
+    /* 10-year flow */
+    dIntro: (start, digit, ages) => `The big 10-year flow of your life (called daeun in Korean) first starts at age ${start}. After that it changes in each year when your age ends in ${digit} (ages ${ages}…). It is like a season changing once every 10 years.`,
+    dBranch: "Each pillar of the chart has two letters, one above the other. The 10-year flow is read mainly from the lower one.",
+    dCur: (from, to, gz, ani) => `Ages ${from}–${to} · ${gz} · 10 years of the ${ani}`,
+    dNext: (from, to, year, gz, ani) => `Ages ${from}–${to} (from ${year}) · ${gz} · 10 years of the ${ani}`,
+    dBefore: start => `Your first big flow has not started yet. The 10-year flow begins at age ${start}.`,
+    dTransition: "A season does not change overnight, and the flow of your life also crosses over slowly, across the 1 or 2 years before and after the age of change. Around then you may think, “I should live differently now,” or you may tidy up things you had been missing.",
+    dMissFuture: (el, from, year, gift) => `${el} energy, which your birth chart does not have, comes in fully in the 10 years that start at age ${from} (${year}). From then on you gain ${gift}.`,
+    dMissNow: el => `${el} energy, which your birth chart does not have, is here right now, in the 10 years you are in.`,
+    dMissPast: (el, from, to) => `${el} energy, which your birth chart does not have, passed through in the 10 years from age ${from} to ${to}. What you learned then is what you build on now.`,
+    dMissNever: el => `${el} energy, which your birth chart does not have, does not come in strongly through the 10-year flow. You will fill it through the energy that comes each year and through your daily habits.`,
+    dWeakFuture: (el, from, year) => `${el} energy, which is on the low side in your birth chart, comes in during the 10 years that start at age ${from} (${year}). Things become much more balanced then.`,
+    dWeakNow: el => `${el} energy, which is on the low side in your birth chart, is here now, in the 10 years you are in. This is a time when things come into balance.`,
+    dGender: "The direction of the 10-year flow depends on gender. You did not choose one, so this is worked out the way it is for women. Choose a gender for a more exact reading.",
+    subFill: el => `Through the upper letter, ${el} energy, which your birth chart does not have, begins to show little by little.`,
+    subOver: el => `The upper letter adds more ${el} energy, which you already have a lot of, so its nature grows stronger.`,
+    /* year · month — past: true for things already gone by */
+    yIntro: "We read the energy that comes in each year by laying it over your birth chart. Even in the same year, an energy feels welcome if your chart does not have it, and heavy if you already have a lot. Please think back to how the last 3 years really went for you.",
+    yHead: (year, gz, ani) => `${year} · ${gz} · Year of the ${ani}`,
+    mHead: gz => `This month · ${gz} month`,
+    norm: (el, theme, tip, past) => `${el} energy ${past ? 'came in' : 'comes in'}. This ${past ? 'brought' : 'brings'} ${theme}.${past ? '' : ' ' + tip}`,
+    fill: (el, gs, gift, past) => `${el} energy, which your birth chart does not have, ${past ? 'came in' : 'comes in'}. With it ${past ? 'came' : 'comes'} ${gift}. For you, things on the “${gs}” side ${past ? 'started' : 'start'} to move.`,
+    fillTip: "When something you did not have arrives, your heart can easily rush toward it. Please start small and go slowly.",
+    over: (el, img, feel, tip, past) => `More ${el} energy ${past ? 'came in' : 'comes in'}, on top of the large amount you already have. It ${past ? 'was' : 'is'} like ${img}. It ${past ? 'was' : 'is'} easy to feel ${feel}.${past ? '' : ' ' + tip}`,
+    dbl: (el, past) => `Both letters of this time are ${el} energy. The same energy ${past ? 'came' : 'comes'} in twice over, so its nature ${past ? 'came out very strongly. You may have had little room to rest' : 'comes out very strongly. Please decide your rest days first'}.`,
+    dblFill: (el, past) => `Both letters of this time are ${el} energy. An energy you did not have ${past ? 'came in' : 'comes in'} generously, all at once.`,
+    normAgain: (el, gs, past) => `${el} energy (the “${gs}” side) ${past ? 'stayed' : 'stays'} for that year as well.`,
+    fillAgain: (el, gs, past) => `${el} energy (the “${gs}” side), which your birth chart does not have, ${past ? 'came in' : 'comes in'} again that year.`,
+    overAgain: (el, past) => `More ${el} energy ${past ? 'came in' : 'comes in'} again that year, on top of the large amount you already have. The same feeling as the year before ${past ? 'easily continued' : 'easily continues'}.`,
+    stack: (ani, stack, past) => `The animal of your birth day (${ani}) ${past ? 'came' : 'comes'} around once more. It ${past ? 'was' : 'is'} a time of ${stack}.`,
+    clashLuck: past => `The energy of this time and the energy of your birth day ${past ? 'pushed' : 'push'} each other away. ${past ? 'There may have been changes in your home, your job or your close relationships' : 'Changes may come in your home, your job or your close relationships. This does not mean something bad will happen'}.`,
+    also: (el, gs, past) => `Along with it, ${el} energy (the “${gs}” side) ${past ? 'came in' : 'comes in'} too.`,
+    alsoFill: (el, gs, past) => `Along with it, a little ${el} energy (the “${gs}” side), which your birth chart does not have, ${past ? 'came in' : 'comes in'} too.`,
+    dSame: "The same energy continues in the next 10 years. The theme you have now goes one step deeper.",
+    tipStrong: gs => `This year, matters on the “${gs}” side come in strongly. As they grow, please decide your rest days first.`,
+    change: "When the flow changes, there are signs. Your head gets a little clearer, and things you used to love and had forgotten come back to mind one by one. The answer is among them."
+  }
+};
+/* ---- 深く読む 文章 — 日本語 (です・ます体 · やさしい言葉)。配列の順番: 五つの気 = 木・火・土・金・水 / 役割 = 比劫・食傷・財星・官星・印星 / 動物 = 子…亥 ---- */
+const DEEP_JA = {
+  sp: '',
+  el: ['木', '火', '土', '金', '水'],
+  elShort: ['木', '火', '土', '金', '水'],
+  gs: ['友人・ライバル', '表現・才能', 'お金・成果', '職場・ルール', '学び・助け'],
+  gName: ['自分と同じ気', '自分が外に出す気', '自分が扱う気', '自分を引きしめる気', '自分を育てる気'],
+  lv: ['なし', '弱め', 'ふつう', '多め'],
+  animal: ['ねずみ', '牛', '虎', 'うさぎ', '竜', '蛇', '馬', '羊', '猿', '鶏', '犬', 'いのしし'],
+  title: {
+    sec: '深く読む — 鑑定士が読む順番で',
+    intro: '下の文章は、四柱推命の鑑定士が実際に読む順番にそっています。生まれた年・月・日・時間を八つの文字で書いた表を「命式」といいます。八つの文字は、商品のバーコードのように、生まれた瞬間の気を書きとめた表です。まず、どんな材料を持って生まれたかを見て、そのあと、今どんな時期をすごしているかを見ます。',
+    a: '生まれ持った姿 — あなたに似た自然と動物',
+    b: '五つの役割で見るあなた',
+    c: '人生の場面ごとに読む',
+    d: '10年ごとに変わる流れ — 今どのあたりか',
+    e: 'この3年・今年・これからの2年',
+    f: '今月、そして今すること',
+    money: 'お金', work: '仕事', people: '人', love: '恋愛', mind: '心', body: '体',
+    now: '今', next: '次', thisYear: '今年', tip1: '生かすもの', tip2: '補うもの', tip3: '今年'
+  },
+  stem: {
+    갑: {img: '何百年も育った大きな松', body: 'まっすぐ上へのびる大きな木です。年のわりに考えが深いとよく言われ、仕事をまかせると信頼できる人に見られます。そのかわり、気軽に始めたほうがよい仕事や人間関係では、最初の一歩が重くなります。', good: 'うまく生かすと、ひとつの分野を深くほり下げる専門家、何かを作り出す人、物事を深く見ぬく人になります。', bad: 'うまく生かせないと、自分ひとりの考えに閉じこもり、世の中から遠ざかりやすいです。'},
+    을: {img: '岩のすきまでも育つ草とつる', body: 'やわらかくしなっても、折れない草です。どこに置かれても場所を見つけて根をおろし、そばに寄りかかれるものがあると、高くのぼっていきます。場の空気を読んで合わせる力にすぐれています。', good: 'うまく生かすと、人と人をつなぎ、きびしい場所でも最後まで生きぬく人になります。', bad: 'うまく生かせないと、人に合わせるうちに自分の気持ちを見失ったり、寄りかかった相手にふり回されたりしやすいです。'},
+    병: {img: '真昼の太陽', body: 'かくしごとのない、明るい太陽です。そこにいるだけでまわりが明るくなり、よく目立ちます。好ききらいが、そのまま顔に出ます。', good: 'うまく生かすと、人に元気をあたえ、前に立って広く伝える人になります。', bad: 'うまく生かせないと、みんなを照らそうとして疲れ、気持ちが冷めるとすぐに別のところへ行きやすいです。'},
+    정: {img: '暗い部屋のろうそく、夜道のあかり', body: 'ひとつの場所を長くあたためる、小さな火です。身近な人をこまやかに気づかい、外は静かでも心の中は熱い方です。ひとつのことに深く集中します。', good: 'うまく生かすと、ひとりの人、ひとつのことを深く照らす人になります。教える仕事、世話をする仕事、技術をみがく仕事によく合います。', bad: 'うまく生かせないと、心の中だけで燃えて気持ちがとがり、ひとりで疲れてしまいやすいです。'},
+    무: {img: '遠くからでも見える大きな山', body: 'かんたんには動かない、どっしりした山です。人が頼りにしてやって来ます。本心はあまり見せず、変化にはゆっくり動きます。', good: 'うまく生かすと、安心してまかせられる中心、大きなものを包みこむ人になります。', bad: 'うまく生かせないと、がんこに固まってチャンスをのがし、ひとりで全部せおいこみやすいです。'},
+    기: {img: '種を育てる畑の土', body: '静かに受け入れて、育てあげる土です。きちょうめんで現実的で、人の世話をよくします。そのわりに、自分の話はあまりしません。', good: 'うまく生かすと、人と仕事を育てあげる人になります。育てる仕事、管理する仕事によく合います。', bad: 'うまく生かせないと、心配が増え、人のことばかりして自分のものが残らなくなりやすいです。'},
+    경: {img: 'まだみがかれていない大きな岩と鉄のかたまり', body: 'かたくて、決めるのが早い金属です。正しいこととまちがったことがはっきりしていて、義理がたい方です。言葉がまっすぐ出ます。みがかれるほど、価値が上がっていく方です。', good: 'うまく生かすと、決めてやりとげる力で、ごちゃごちゃした物事を整理する人になります。', bad: 'うまく生かせないと、ゆずらずにぶつかって、人を失いやすいです。'},
+    신: {img: 'よくみがいた宝石、するどい刃物', body: 'こまやかで、基準の高い金属です。すっきりしたもの、美しいもの、正確なものに敏感です。プライドがまっすぐで、傷つきやすいところもあります。', good: 'うまく生かすと、細かくみがき上げる仕事の名人、見る目のある人になります。', bad: 'うまく生かせないと、言葉がするどくなり、自分を低く見てしまいやすいです。'},
+    임: {img: '広い海、大きな川', body: '何でも受け入れる、大きな水です。考えの幅が広く、流れを読んで動きます。自由が好きで、心の中をすべて知るのはむずかしい方です。', good: 'うまく生かすと、大きな絵をえがき、遠く広く動く人になります。', bad: 'うまく生かせないと、あちこちに流れてひとつの場所にとどまれず、あふれると自分でも手に負えなくなりやすいです。'},
+    계: {img: '音もなくしみこむ雨とわき水', body: '静かにしみこんで、生かす水です。勘がよく、気がきき、想像力がゆたかです。心がやわらかく、場の空気に敏感です。', good: 'うまく生かすと、人の心を読んでうるおす人、考えが次々とわき出る人になります。', bad: 'うまく生かせないと、心配に沈み、気分によってくもりやすいです。'}
+  },
+  ani: [
+    {body: '夜に動くねずみのように、気がきいて、頭の中がいつもいそがしい方です。静かにようすを見て、よく考え、実になるものをしっかり手に入れます。夜に考えごとが増えて、眠れなくなりやすいです。', stack: '頭の中がさらにいそがしくなる'},
+    {body: 'だまって畑をたがやす牛のように、ゆっくりでも最後まで進みます。いやなことをあまり口にせず、がまんする力が大きい方です。心の中にためこんで、一度に重くなりやすいです。', stack: 'がまんしてふんばることがさらに増える'},
+    {body: '山をこえて行き来する虎のように、動き出しが早く、こわいもの知らずです。ひとつの場所にしばられるより、広く動き回るときに力が出ます。ひとりで先に進んで、うしろに気を配れなくなりやすいです。', stack: '新しく始めたり、あちこち移ったりすることがさらに増える'},
+    {body: '耳を立てたうさぎのように、感覚がこまやかで、場の空気をすばやく読みます。人と人のあいだをやわらかくする才能があります。小さなことにも、びっくりしやすいです。', stack: '気持ちが敏感になり、人づきあいの用事がさらに増える'},
+    {body: '雲の上を飛ぶ竜のように、夢が大きく、えがく絵も大きい方です。才能がいくつもあります。現実がもの足りなくて、もどかしく感じやすいです。', stack: 'やりたいことと、変えたい気持ちがさらに大きくなる'},
+    {body: '静かに見守ってから一気に動く蛇のように、頭の回転が速く、深く集中します。本心はあまり見せません。なじみのない場所へ移ることが起きやすいです。', stack: '心の中でよく考え、場所を移ることがさらに増える'},
+    {body: 'じっと立っている馬は、めったにいません。いつもやることができて、用事がなくても、まわりから「いっしょに行こう」とさそわれます。休み方をあまり知らず、いつも何かをさがして動いています。', stack: 'さらにいそがしくなり、休むひまがへる'},
+    {body: 'おとなしく見えても、気持ちをなかなか曲げない羊に似ています。情が深く、身近な人を長く気づかいます。がまんしているうちに、さびしい気持ちがたまりやすいです。', stack: 'がまんして流すことがさらに増えやすい'},
+    {body: '木から木へ移る猿のように、才能が多く、その場その場にうまく合わせます。いろいろなことに手を出し、おぼえるのも早い方です。ひとつのことを長く続けるのは、むずかしいところがあります。', stack: 'あれこれ始めて動き回ることがさらに増える'},
+    {body: '夜明けを知らせる鶏のように、きちょうめんで、基準がはっきりしています。仕事をきれいに仕上げます。人の足りないところもよく見えるので、言葉がするどくなりやすいです。', stack: '細かく確かめて整えることがさらに増える'},
+    {body: '家を守る犬のように、義理がたく、責任感の強い方です。一度信じると、最後までついていきます。心配をひとりでかかえこみやすいです。', stack: '守ること、責任を持つことがさらに増える'},
+    {body: '福をかかえたいのししのように、心が広く、ゆったりしています。考えが深く、想像力がゆたかです。情にもろくて断るのが苦手で、遠くへ出かけることが起きやすいです。', stack: '考えが深まり、気をつかうことがさらに増える'}
+  ],
+  drive: [
+    '育ちたい気持ち(「やってみよう」「やらなくては」と何度も思うこと)',
+    '表に出したい気持ち(心の中にあるものを外に見せると、すっきりすること)',
+    '守って積み上げたい気持ち(居場所を決めて、少しずつ固めていくと落ち着くこと)',
+    '決めて切りはなしたい気持ち(正しいかどうかを見分けて、きれいに終わらせると、すっきりすること)',
+    '考えて流れていきたい気持ち(深く考えて、場面に合わせて動くこと)'
+  ],
+  gift: ['新しく始める力と、育ちたい気持ち', '自分を表に出す勇気と、熱い気持ち', '安定感と、考えをひとつずつ形にしていくていねいさ', 'きっぱり決める力と、けじめをつける基準', '深く考える力と、やわらかく合わせていくゆとり'],
+  crowdImg: ['せまい森に、木がさらにぎっしり立ちならぶようなかたち', '夜のこない真夏のようなかたち', '土がどんどん積もって、重くなっていくようなかたち', '刃物の刃が、さらにするどくなるようなかたち', '水かさが増えて、あふれるようなかたち'],
+  crowdFeel: ['育ちたいのに天井が低いようで、息苦しく', '休めないまま前に出つづけて、くたくたに', '物事が動かず、気持ちが重く', '基準がきびしくなって、人と言い合うことが多く', '考えごとと心配で、頭がいっぱいに'],
+  crowdTip: ['新しいことをさらに始めるより、今していることをひとつへらしてください。', '前に出なければならない場をへらして、ひとりで熱をさます時間を先に取ってください。', 'じっとたえるより、体を動かし、場所を変えてみてください。', '正しいかどうかを言う前に、一日おいてから話してください。', '考えを文字に書いて外に出し、体を使うことを予定に入れてください。'],
+  theme: [
+    '似た人たち(友人・仲間・ライバル)が近くに来て、思うとおりにやってみたい気持ちが大きくなるとき',
+    '考えや得意なことを外に見せ、話すこと、作ることが増えるとき',
+    'お金や成果のように、目に見える結果を手にする場面が目の前に来るとき',
+    'まかされる役割と、守らなければならないことが増えるとき',
+    '学び、助けを受け、ひとりで考えを整理することが増えるとき'
+  ],
+  roleDo: ['ひとりで全部やろうとせず、いっしょにやる人をていねいに選んでください。', 'あと回しにしていたものをひとつ取り出して、人の前に出してみてください。', '入ってくるものと出ていくものを、一度書き出してみてください。', '引き受けることと引き受けないことを、先に分けてください。', '学びたかったことをひとつ始めて、休む時間をけずらないでください。'],
+  needRole: ['味方になってくれる人と、自分の考えを守る力', '心の中にあるものを、言葉・文章・作品にして外に出す場', 'お金と結果を自分で確かめる習慣', '自分で決めたルールとしめきり', '学ぶ時間と、頼れる人'],
+  role: [
+    [null, '自分のほかに、同じ気がありません。人に頼るより、ひとりでやりとげるほうです。', '同じ気が、もうひとつあります。味方になってくれる人がそばにいるかたちです。', '同じ気がいくつもあります。自分の考えがはっきりしていて、まわりにいつも人が集まります。'],
+    ['外に出すための道が、とくにありません。本心をまったく出さないか、一度にはき出すかになりやすいです。', 'まかされるとうまくできますが、自分から前に出るほうではありません。', '話すこと、作ることが、無理なく出てきます。', '表現と才能があふれています。言葉と仕事が先に走って、疲れやすいです。'],
+    ['お金がないという意味ではありません。お金の扱い方を、あらためて学ぶ必要がある方です。', 'お金の感覚はありますが、何もしなくてもたまるわけではありません。目標を決めておくと、たまります。', '現実を見る感覚は、多すぎも少なすぎもしません。かせいだぶんを、きちんと手もとに残せます。', 'お金になりそうなことと、やることがたくさん見えます。一度に手を広げると、ふり回されやすいです。'],
+    ['わくにしばられるのを、きゅうくつに感じます。自分で決めたルールがあると、くずれません。', '責任感はありますが、プレッシャーが長く続くとつらくなります。', '組織やルールの中で、うまく居場所を作ります。信頼されやすいです。', 'まかされた責任と人の目を、たくさんせおいます。自分をしめつけやすいです。'],
+    ['人に頼るのが苦手です。ひとりでぶつかって学ぶほうです。', 'どうしても必要な助けは、受け取ります。学びは、ひとつのことを深く続けるときに力になります。', '助けや知らせが、まわりの人を通して入ってきます。ひとりで考えを整理する力もあります。', '考える力、受け入れる力があふれています。考えが多くて、動きがおそくなりやすいです。']
+  ],
+  money: {
+    base: [
+      'お金に対する気持ちに、中間がなくなりやすいです。まったく気にしないか、とても強くほしいと思うか、どちらかです。「なぜかせぐのか、なぜためるのか」がぼんやりしていると、お金が残りません。お金をずっと追いかけなければならない事業や商売は急がずに、今から少しずつお金の勉強をしておいてください。',
+      'お金をかせぐ感覚はあります。ただ、目標がないと、入ってきたぶんだけ出ていきます。ためる理由と金額を、先に決めておいてください。',
+      'かせぐことと守ることが、どちらもかたよりなくできます。大きな無理をしなければ、お金のことでゆれることは少ないです。',
+      'お金になりそうなことが、あちこちに見えます。そのぶん、やることも増えます。全部つかもうとすると、お金ではなく仕事にふり回されることになります。一度にひとつかふたつだけ選んでください。'
+    ],
+    both: '得意なことが、そのままお金につながりやすいかたちです。得意なことをこつこつ外に出しつづけると、それが収入になっていきます。',
+    skillOnly: '得意なことはあるのに、それをお金に変えるのが苦手です。自分の仕事に値段をつける練習をするか、お金の管理を助けてくれる人やしくみを持つとよいでしょう。',
+    moneyOnly: 'お金になりそうなことは見えるのに、自分の得意なことでかせぐ力が弱めです。人に出せる技術をひとつ作っておくと、心強いです。',
+    partner: '同じ気が多い命式は、お金を何人かで分け合うかたちになりやすいです。お金を人といっしょにすること(共同の事業・保証人)は、よく考えてからにしてください。いっしょにするなら、相手が今、物事がうまく進んでいる時期かどうかを先に見て、大切なことは自分で決めるほうがよいでしょう。'
+  },
+  work: {
+    channel: [
+      '自分の名前と自分の力でする仕事がよく合います。ひとりで引き受けて、最後まで責任を持つ仕事です。',
+      '考えや作ったものを世の中に出す仕事がよく合います。作る・書く・撮る・教える・企画するなど、「自分が作ったもの」が残る仕事です。',
+      '目に見える成果がすぐに出る仕事がよく合います。売り買い、数字やお金を扱う仕事、運営など、結果がはっきりした仕事です。',
+      '役割と責任がはっきりした場所で、力が出ます。組織、公共の仕事、管理など、信頼を積み上げてのぼっていく仕事です。',
+      '学んで深く知っていることが武器になる仕事がよく合います。研究・専門の知識・相談・文章など、たくわえたものを分かち合う仕事です。'
+    ],
+    exp: [
+      'ただ、自分の仕事を自分で知らせるのは苦手です。記録を残すか、かわりに知らせてくれる人を持つとよいでしょう。',
+      '自分が前に立たなくてもかまいません。作ったものを前に出して、「これを作ったのはわたしです」と言うだけで十分です。',
+      '言葉や作ったもので自分を知らせることも、無理なくできます。',
+      '前に立って話し、見せることも上手です。ただ、一度にたくさん出しすぎると、すぐに空っぽになります。'
+    ],
+    org: [
+      '決まったわくや、上の人からの口出しは、長くはがまんしにくいです。自由に働きながら、しめきりとルールは自分で決めておいてください。',
+      '組織にも合わせることができますが、ひと息つけるゆとりのある場所でこそ、長く続きます。',
+      '会社での仕事も、うまくこなします。上の人から信頼されやすいです。',
+      '責任をたくさん引き受けすぎやすいです。全部やりとげようとせず、人に分けてください。'
+    ],
+    both: '作る人の気質と、組織にうまく合わせる気質を、両方持っています。そのため、「わたしは自分のものを作る人なのか、会社につとめる人なのか」と迷いやすいです。どちらかひとつを選ばなくてもかまいません。職場は暮らしを支える場所、自分の作品づくりは息をつく場所、と分けておくと、どちらも生きてきます。',
+    free: '外に出す力は大きいのに、支えてくれるわくがありません。ひとりで働くほど、決まった時間割と、いっしょに働く人がひとりいることが、大きな助けになります。',
+    org2: 'まかされた仕事はうまくこなしますが、自分のものを出す道がせまいです。仕事の外で、小さくても「自分が作ったもの」をひとつ持つと、息がしやすくなります。'
+  },
+  people: {
+    peer: [null,
+      '人の中にいても、最後はひとりで決めて、ひとりでやりとげるほうです。大きなことの前に相談できる人を、意識してひとり作っておいてください。',
+      'ひとりで立つことも、人といっしょにやることもできます。気の合うひとりかふたりと、長くつき合うほうです。',
+      'どこにいても人がついてきて、「いっしょにやろう」とよく言われます。人から受ける影響が大きいです。気持ちだけでなく、仕事や住む場所まで、人によって変わることがあります。ですから、だれをそばに置くかが、ほかの人よりずっと大切です。'
+    ],
+    help: [
+      '助けを求めることに慣れていません。ひとりで全部やろうとして疲れやすいので、教えてくれる人を意識してさがしてください。',
+      '助けは、どうしても必要なときに、ときどきやって来ます。そのご縁を長く大切にしてください。',
+      'よい知らせや紹介、情報が、まわりの人を通して入ってきます。人に会う場が、そのままチャンスです。',
+      '気にかけてくれる人がたくさんいます。受け取ることに慣れると、自分で動く力が弱くなります。受け取ったものは、すぐに使ってみてください。'
+    ],
+    tact: '人との接し方が、身についています。がんばらなくても、相手に合わせることができます。そのため、その気づかいを当たり前だと思う人がときどき出てきて、そういうときはとてもさびしくなります。そういう人とは、距離をおいてかまいません。'
+  },
+  love: {
+    palace: [
+      '近い関係であるほど、友だちのように対等でいたいと思います。それぞれの生活がある関係が楽です。',
+      '相手をよく見て気づかうぶん、ひとりの時間がどうしても必要です。一日じゅういっしょにいると疲れますが、それは人がきらいだからではなく、ずっと気をつかいつづけるからです。おたがいにいそがしいか、それぞれの部屋と時間がある関係が長く続きます。',
+      '暮らしをいっしょに作っていく、頼もしい関係を望みます。言葉よりも、実際にしてくれることで気持ちを確かめます。',
+      '責任感があり、基準がはっきりした人を好きになりやすいです。相手に合わせようとして緊張しやすいので、気楽にくつろげる時間をいっしょに作ってください。',
+      'そばで気づかってくれて、心を楽にしてくれる人を望みます。受け取るばかりだと、相手が疲れてしまいます。感謝の気持ちを、言葉でたびたび伝えてください。'
+    ],
+    star: [
+      'ご縁が何もしなくても何度もやって来る命式ではありません。ご縁にまったく気持ちを向けないか、一度来ると深くのめりこむか、どちらかになりやすいです。この気が入ってくる年と10年に、ご縁が動きます。',
+      'ご縁は多くありませんが、ひとりの人と深く長くつき合うほうです。',
+      'ご縁の気は、多すぎも少なすぎもしません。出会ってつき合いを続けることが、無理なくできます。',
+      '近づいてくる人や、気をつかう関係がたくさんあります。選ぶ基準を先に決めておくと、ゆれにくくなります。'
+    ],
+    starClash: 'ご縁は入ってきます。ただ、この気の文字が、命式の中でほかの文字と押し合っているので、始まりがゆっくりになることがあります。急がなくてもかまいません。',
+    noGender: '性別を選ぶと、パートナーの気が命式にどのくらいあるかも、あわせてお読みします。'
+  },
+  mind: {
+    lead: 'もとの性格とはちがって見えるかもしれません。気持ちを外に出す道は、べつに見ます。',
+    hold: '受け入れる力が、外に出す力より大きいです。そのため、つらいことをひとりで考えて解決しようとし、水がいっぱいになってあふれるまでは、なかなか口に出しません。まわりの人はあとから知って、「あのとき言ってくれればよかったのに」と思いやすいです。くわしい話はしなくてかまいません。「最近ちょっとつらい」とひとこと言える相手を、ひとりかふたり持ってください。',
+    vent: '外に出す力が、受け入れる力より大きいです。感じたことをすぐに言葉と行動で出すので、心の中に長くたまることはありません。そのかわり、はき出したあとに力がぬけやすいので、ひとりで静かに満たす時間を持ってください。',
+    even: '受け入れる力と外に出す力が、同じくらいです。考えること、話すことが、大きくつかえることはありません。いそがしいときに、どちらかにかたよっていないかだけ見ておけば十分です。',
+    shut: '心の中にあるものを外に出す道が、せまいです。ふだんは言葉をひかえていて、あるとき一度にはき出しやすいです。文章やメモのように、少しずつ出す道をひとつ作っておいてください。'
+  },
+  organ: ['肝臓・目・筋肉のあたり', '心臓と血のめぐりのあたり', '胃や腸などの消化器のあたり', '肺・気管支・皮ふのあたり', '腎臓・ぼうこう・腰のあたり'],
+  body: {
+    none: '気が、どちらかに大きくかたよっていません。そのため、とくに弱いところを挙げることはしません。今のように、まんべんなくいたわっていけば十分です。',
+    note: '昔の本で気と体を組み合わせたものにすぎず、診断ではありません。気になるところがあれば、病院で確かめてください。',
+    elder: '年を重ねた方の命式です。仕事とご縁の話は、これまで歩んできた道に照らして読んでください。',
+    young: 'まだお若い方の命式です。お金と仕事の話は、これから表れてくる傾向として読んでください。'
+  },
+  outlet: [
+    '育ちたい気持ちを、おさえないでください。新しく学ぶこと、作ってみることを、いつもひとつそばに置いてください。この気持ちの使い道がないと、元気が出なくなりやすい方です。',
+    '表に出したい気持ちを、おさえないでください。話し、見せ、分かち合う場を、いつもひとつ持っていてください。この気持ちの使い道がないと、心の中がじりじりとこげていきやすい方です。',
+    '守って積み上げたい気持ちを、おさえないでください。自分の居場所、自分のやり方と言えるものを、いつもひとつ持っていてください。この土台がゆれると、不安になりやすい方です。',
+    '決めて整えたい気持ちを、おさえないでください。最後まで自分の基準で仕上げることを、いつもひとつ持っていてください。この気持ちの使い道がないと、刃が自分に向きやすい方です。',
+    '考えて流れていきたい気持ちを、おさえないでください。ひとりで深く考えて動けるすきまを、いつも持っていてください。このすきまがないと、心の中に沈みこみやすい方です。'
+  ],
+  curious: '学んだこと、聞いたことが、すぐに「やってみたい」に広がる方です。気になるほうへ、体が先に動きます。深くなくてもかまいません。広く経験するほど、自分だけの基準がはっきりしてきます。',
+  yearTip: {
+    heavy: '今年は、気が強く重なる年です。がんばることより、無理をしないことが先です。',
+    fill: '今年は、命式になかった気が入ってくる年です。気持ちがあせりやすいので、小さくひとつだけ始めてみてください。',
+    calm: '今年は、大きくかたよらずに流れていく年です。これまでしてきたことを、こつこつ続けていけば十分です。'
+  },
+  /* ---- 文のわく ---- */
+  f: {
+    bar: list => `八つの文字を五つの気で数えると、${list}です。`,
+    bar6: list => `生まれた時間が入力されていないので、六つの文字で読みました。五つの気で数えると、${list}です。時間が分かると、数が変わることがあります。`,
+    missing: els => `命式にひとつもない気があります(${els})。けれども、悪い命式ではありません。五つの気がすべてそろっている方のほうが、むしろ少ないです。ない気は、10年の流れと、その年の気で入ってきます。`,
+    stem: (k, h, img) => `お生まれの日の文字は${k}(${h})です。自然にたとえると、${img}です。`,
+    animalDiff: (yearAni, dayAni) => `生まれ年の動物(えと)は「${yearAni}」ですが、お生まれの日にも動物があります。お生まれの日の動物は「${dayAni}」です。`,
+    animalSame: ani => `生まれ年の動物(えと)も、お生まれの日の動物も「${ani}」です。その性質が、外側にも内側にもあります。`,
+    stackChart: n => `命式の中に、この動物が${n}回出てきます。そのため、この性質がいっそうはっきりしています。`,
+    stackBoth: stack => `今すごしている10年の流れにも、今年にも、同じ動物が入っています。同じ動物がいくつも並んで走っているようなもので、今は、${stack}ときです。`,
+    stackDae: stack => `今すごしている10年の流れにも、同じ動物が入っています。この10年は、${stack}ときです。`,
+    stackYear: stack => `今年にも、同じ動物が入っています。今年は、${stack}年です。`,
+    domSame: (el, drive) => `あなた自身も${el}の気で、命式でいちばん多いのも${el}の気です。そのため、ほかの人よりずっと強く出るものがあります。${drive}です。`,
+    domEven: (el, drive) => `五つの気が、どれかひとつに大きくかたよっていません。そのため、あなた自身の気である${el}の気の性質が、むらなく出ます。その性質は、${drive}です。`,
+    domOther: (elMe, elDom, gs, drive) => `あなた自身は${elMe}の気ですが、命式でいちばん多いのは${elDom}の気です。あなたにとって${elDom}の気は「${gs}」にあたります。そのため、人生の重みがそちらにかかります。${elDom}の気の性質は、${drive}です。`,
+    roleIntro: '五つの気は、あなた(お生まれの日の文字)をもとにして、それぞれ役割を受け持ちます。どの役割が多く、どの役割が少ないかを見ると、人生のどちらが楽で、どちらがむずかしいかが分かります。前の「生まれ持った姿」は土台の性質で、下は、その性質が実際にどのくらい出やすいかです。二つがちがうときは、気持ちはそうなのに、体がなかなかついてこない部分だと考えてください。',
+    roleHead: (gName, gs, el, n, lv) => `${gName}(${gs}) — ${el} ${n}個 · ${lv}`,
+    clash: (gsA, gsB) => `命式の中で、「${gsA}」の文字と「${gsB}」の文字が押し合っています。そのため、この二つのことは、うまくいっていても、ときどき変わる時期が来ます。悪いという意味ではありません。`,
+    clashSame: gs => `命式の中で、「${gs}」の文字どうしが押し合っています。そのため、このことは、うまくいっていても、ときどき変わる時期が来ます。悪いという意味ではありません。`,
+    adjDown: n => `数は${n}個ですが、生まれた月の季節から力をもらえないか、ほかの文字と押し合っているため、実際の力はもっと弱いです。`,
+    adjUp: n => `数は${n}個ですが、生まれた月の季節がこの気をあと押しするので、実際の力はもっと強いです。`,
+    star: (who, el) => `昔からの見方では、${who}の場合、パートナーを${el}の気で見ます。`,
+    female: '女性', male: '男性',
+    bLack: (el, organ) => `${el}の気がない方は、${organ}を、ほかの人より気にかけるとよいとされています。`,
+    bOver: (el, organ) => `${el}の気が多い方は、${organ}に負担がかかりやすいとされています。`,
+    need: (el, gs, need) => `命式にない${el}の気は、あなたにとって「${gs}」にあたります。そのため、${need}を、意識して用意しておくことが大切です。`,
+    needWeak: (el, gs, need) => `少なめの${el}の気は、あなたにとって「${gs}」にあたります。${need}を意識して用意しておくと、バランスがとれます。`,
+    /* 10年の流れ */
+    dIntro: (start, digit, ages) => `あなたの10年ごとの大きな流れ(大運)は、${start}歳から始まります。そのあとは、年齢の下ひとけたが${digit}の年(${ages}歳…)ごとに変わります。10年に一度、季節が変わるようなものです。`,
+    dBranch: '命式の柱には、上と下に二つずつ文字があります。10年の流れは、そのうち下の文字を中心に読みます。',
+    dCur: (from, to, gz, ani) => `${from}〜${to}歳 · ${gz} · ${ani}の10年`,
+    dNext: (from, to, year, gz, ani) => `${from}〜${to}歳(${year}年から) · ${gz} · ${ani}の10年`,
+    dBefore: start => `まだ、最初の大きな流れが始まる前です。${start}歳から、10年ごとの流れが始まります。`,
+    dTransition: '季節が一日で変わらないように、流れも、変わる年齢の前後1〜2年をかけて、少しずつ移っていきます。そのころに「これからはちがう生き方をしよう」と思ったり、見落としていたものを整理したりすることになります。',
+    dMissFuture: (el, from, year, gift) => `命式にない${el}の気は、${from}歳(${year}年)に始まる10年に、しっかり入ってきます。そのころから、${gift}が生まれます。`,
+    dMissNow: el => `命式にない${el}の気が、ちょうど今の10年に入ってきています。`,
+    dMissPast: (el, from, to) => `命式にない${el}の気は、${from}〜${to}歳の10年に通りすぎました。そのころに身につけたものが、今の元手です。`,
+    dWeakFuture: (el, from, year) => `少なめの${el}の気は、${from}歳(${year}年)に始まる10年に入ってきます。そのころ、バランスがぐっとよくなります。`,
+    dWeakNow: el => `少なめの${el}の気が、今の10年に入ってきています。バランスがとれる時期です。`,
+    dMissNever: el => `命式にない${el}の気は、10年の流れとしては大きく入ってきません。毎年やって来る気と、暮らしの習慣で補っていくことになります。`,
+    dGender: '10年の流れの向きは、性別で変わります。性別が選ばれていないので、女性の場合の数え方で出しています。性別を選ぶと、より正確になります。',
+    subFill: el => `上の文字からは、命式になかった${el}の気が、少しずつ見えはじめます。`,
+    subOver: el => `上の文字で、すでに多い${el}の気が加わり、その性質がさらに強くなります。`,
+    /* 年 · 月 — past: すぎたことなら true */
+    yIntro: '毎年入ってくる気を、あなたの命式に重ねて読みました。同じ年でも、命式にその気がなければうれしく、すでに多ければ重たく感じます。この3年が実際にどうだったか、思い出してみてください。',
+    yHead: (year, gz, ani) => `${year}年 · ${gz} · ${ani}の年`,
+    mHead: gz => `今月 · ${gz}の月`,
+    norm: (el, theme, tip, past) => `${el}の気が${past ? '入ってきました' : '入ってきます'}。${theme}${past ? 'でした。' : 'です。' + tip}`,
+    fill: (el, gs, gift, past) => `命式になかった${el}の気が${past ? '入ってきました' : '入ってきます'}。${gift}が${past ? '生まれました' : '生まれます'}。あなたにとっては、「${gs}」のことが動く${past ? 'ときでした' : 'ときです'}。`,
+    fillTip: 'なかったものがやって来ると、気持ちがそちらへ一気にかたむきやすいです。小さく、ゆっくり始めてください。',
+    over: (el, img, feel, tip, past) => `すでに多い${el}の気が、さらに${past ? '入ってきました' : '入ってきます'}。${img}です。${feel}${past ? 'なりやすかったです。' : 'なりやすいです。' + tip}`,
+    dbl: (el, past) => `上と下の二つの文字が、どちらも${el}の気です。同じ気が二重に入ってきて、その性質がとても強く${past ? '出ました。休むひまが少なかったかもしれません' : '出ます。休む日から先に決めておいてください'}。`,
+    dblFill: (el, past) => `上と下の二つの文字が、どちらも${el}の気です。なかった気が、一度にたっぷり${past ? '入ってきました' : '入ってきます'}。`,
+    normAgain: (el, gs, past) => `${el}の気(「${gs}」の気)が、この年にも${past ? '続きました' : '続きます'}。`,
+    fillAgain: (el, gs, past) => `命式になかった${el}の気(「${gs}」の気)が、この年にも${past ? '入ってきました' : '入ってきます'}。`,
+    overAgain: (el, past) => `すでに多い${el}の気が、この年にもさらに${past ? '入ってきました' : '入ってきます'}。前の年と同じ感じが${past ? '続いたかもしれません' : '続きやすいです'}。`,
+    stack: (ani, stack, past) => `お生まれの日の動物(${ani})が、もう一度${past ? '重なりました' : '重なります'}。${stack}${past ? 'ときでした' : 'ときです'}。`,
+    clashLuck: past => `この時期の気が、お生まれの日の気と${past ? '押し合いました' : '押し合います'}。住まい・職場・身近な関係に変化が${past ? 'あったかもしれません' : '起きることがあります。悪いことが起きるという意味ではありません'}。`,
+    also: (el, gs, past) => `そこに、${el}の気(「${gs}」の気)もいっしょに${past ? '入ってきました' : '入ってきます'}。`,
+    alsoFill: (el, gs, past) => `そこに、命式になかった${el}の気(「${gs}」の気)も少し${past ? '入ってきました' : '入ってきます'}。`,
+    dSame: '次の10年にも、同じ気が続きます。今のテーマが、もう一段深まります。',
+    tipStrong: gs => `今年は、「${gs}」のことが大きく入ってくる年です。物事が大きくなるぶん、休む日から先に決めておいてください。`,
+    change: '流れが変わるときには、きざしがあります。頭の中が少しすっきりして、忘れていた好きだったものが、ひとつふたつと思い浮かびます。その中に答えがあります。'
+  }
+};
+/* ===== 사주 깊이 읽기 — 상담가가 읽는 순서를 규칙으로 옮긴 것 =====
+   ① 여덟 글자를 다섯 기운으로 센다(없는 기운 · 많은 기운)
+   ② 태어난 날의 윗글자 = 자연물, 아랫글자 = 날의 동물
+   ③ 다섯 기운을 '나' 기준 다섯 역할(비겁 · 식상 · 재성 · 관성 · 인성)로 바꿔 많고 적음을 읽는다
+   ④ 10년 흐름(대운) · 그해(세운) · 그달(월운)의 기운을 사주에 겹친다 —
+      사주에 없던 기운이면 '채움', 이미 3개 이상이면 '넘침', 그 밖은 '보통'
+   점수 · 등급 로직은 건드리지 않는다. 표시 전용. */
+const deepT = () => LANG === 'ja' ? (typeof DEEP_JA !== 'undefined' ? DEEP_JA : DEEP_KO) : LANG === 'en' ? (typeof DEEP_EN !== 'undefined' ? DEEP_EN : DEEP_KO) : DEEP_KO;
+const deepGz = (st, br) => LANG === 'ko' ? `${STEMS[st].k}${BRANCHES[br].k}(${STEMS[st].h}${BRANCHES[br].h})` : `${STEMS[st].h}${BRANCHES[br].h}`;
+
+/* 태어난 때부터 다음(순행) · 이전(역행) 절입까지의 날수 — 해의 실제 빠르기로 되풀이해 맞춘다
+   (1도를 늘 0.98565일로 치면 여름 · 겨울에 대운수가 한 살씩 어긋난다) */
+function daeunDays(inp, forward) {
+  const t = inp.time, tz = inp.geo ? inp.geo.tz : 9;
+  const jd0 = julianDate(inp.y, inp.m, inp.d, (t ? t.h : 12) - tz, t ? t.m : 0);
+  const sl = norm360(sunLongitude(jd0)), off = ((15 - sl) % 30 + 30) % 30;
+  const target = forward ? sl + off : sl - (off === 0 ? 0 : 30 - off);
+  let jd = jd0 + (target - sl) / 0.98565;
+  for (let i = 0; i < 6; i++) jd += (((target - sunLongitude(jd)) % 360 + 540) % 360 - 180) / 0.98565;
+  return Math.abs(jd - jd0);
+}
+/* 대운 — renderLife와 같은 셈법(양남음녀 순행 · 절입까지 날수 ÷ 3) */
+function deepDaeun(inp, s, astro) {
+  const yearYang = STEMS[s.year.stem].yang, male = inp.gender === 'M';
+  const forward = (yearYang && male) || (!yearYang && !male), dir = forward ? 1 : -1;
+  const days = daeunDays(inp, forward);
+  const startAge = Math.max(1, Math.min(10, Math.round(days / 3)));
+  const list = [];
+  for (let k = 0; ; k++) {
+    const from = startAge + k * 10; if (from > 118) break;
+    const step = dir * (k + 1);
+    list.push({from, to: from + 9, st: mod(s.month.stem + step, 10), br: mod(s.month.branch + step, 12)});
+  }
+  return {startAge, list};
+}
+
+/* 사주에서 읽어 낸 사실들 — 문장과 분리해 둔다(검증용으로 window.__deepFacts에도 남김) */
+function deepFacts(inp, s, astro, now) {
+  const dEl = STEMS[s.day.stem].el, cnt = s.counts;
+  const grpOf = el => (el - dEl + 5) % 5;                 // 0 비겁 1 식상 2 재성 3 관성 4 인성
+  const lvOf = c => c >= 3 ? 3 : c;                        // 0 없음 1 적음 2 알맞음 3 많음
+  const pil0 = [s.year, s.month, s.day, s.hour].filter(Boolean);
+  /* 실제 힘 = 개수 + 태어난 달의 계절(왕 +0.5 · 상 +0.25 · 휴 0 · 수 −0.25 · 사 −0.5) − 사주 안의 충(−0.5) */
+  const seasonEl = BRANCHES[s.month.branch].el;
+  const clashedEl = new Set();
+  pil0.forEach((p, i) => pil0.forEach((q, j) => { if (i < j && inPairs(JIJI_CHUNG, p.branch, q.branch)) { clashedEl.add(BRANCHES[p.branch].el); clashedEl.add(BRANCHES[q.branch].el); } }));
+  const power = el => cnt[el] + [0.5, 0.25, -0.5, -0.25, 0][(el - seasonEl + 5) % 5] - (clashedEl.has(el) ? 0.5 : 0);
+  const lvP = el => cnt[el] === 0 ? 0 : power(el) < 1.5 ? 1 : power(el) < 2.75 ? 2 : 3;
+  const grp = [0, 1, 2, 3, 4].map(g => { const el = (dEl + g) % 5; const raw = lvOf(cnt[el]); return {g, el, c: cnt[el], lv: g === 0 ? raw : lvP(el), raw}; });   // 비겁은 '나 말고 몇 개인가'가 뜻이라 개수 그대로
+  const max = Math.max(...cnt), min = Math.min(...cnt);
+  const domEls = [0, 1, 2, 3, 4].filter(e => cnt[e] === max);
+  const clearDom = max >= 3 || domEls.length === 1;        // 뚜렷하게 많은 기운이 있는가
+  const domEl = !clearDom || domEls.includes(dEl) ? dEl : domEls[0];
+  const missing = [0, 1, 2, 3, 4].filter(e => cnt[e] === 0);
+  const weakEl = missing.length ? missing[0] : [0, 1, 2, 3, 4].filter(e => cnt[e] === min)[0];
+  const pil = [['year', s.year], ['month', s.month], ['day', s.day], ['hour', s.hour]].filter(x => x[1]);
+  const dayBr = s.day.branch;
+  const sameInChart = pil.filter(([k, p]) => p.branch === dayBr).length;   // 일지 포함 개수
+  /* 사주 안의 충 — 역할 쌍(중복 제거) */
+  const clashes = [];
+  for (let i = 0; i < pil.length; i++) for (let j = i + 1; j < pil.length; j++) {
+    const a = pil[i][1].branch, b = pil[j][1].branch;
+    if (inPairs(JIJI_CHUNG, a, b)) {
+      const ga = grpOf(BRANCHES[a].el), gb = grpOf(BRANCHES[b].el), key = Math.min(ga, gb) + '-' + Math.max(ga, gb);
+      if (!clashes.some(c => c.key === key)) clashes.push({key, ga: Math.min(ga, gb), gb: Math.max(ga, gb)});
+    }
+  }
+  /* 운의 글자 하나를 사주에 겹쳐 본다 */
+  const kindOf = el => cnt[el] === 0 ? 'fill' : lvP(el) === 3 ? 'over' : 'norm';
+  const evalLuck = (st, br) => {
+    const es = STEMS[st].el, eb = BRANCHES[br].el;
+    return {st, br, es, eb, ks: kindOf(es), kb: kindOf(eb), gS: grpOf(es), gB: grpOf(eb), dbl: es === eb,
+      stack: br === dayBr, clash: inPairs(JIJI_CHUNG, br, dayBr)};
+  };
+  /* 대운 */
+  const dae = deepDaeun(inp, s, astro);
+  const curYear = now.getFullYear(), yAge = curYear - inp.y;
+  const curIdx = dae.list.findIndex(p => yAge >= p.from && yAge <= p.to);
+  const cur = curIdx >= 0 ? dae.list[curIdx] : null;
+  const next = curIdx >= 0 ? dae.list[curIdx + 1] || null : (yAge < dae.startAge ? dae.list[0] : null);
+  /* 없는 기운이 대운(아랫글자)으로 오는 때 — 지금·앞으로를 먼저 찾고, 없으면 지나간 때 */
+  const missArrive = (missing.length ? missing : [weakEl]).map(el => {
+    const hit = (p, i) => BRANCHES[p.br].el === el;
+    let i = dae.list.findIndex((p, k) => hit(p) && p.to >= yAge && p.from <= 85), when = 'future';   // 86세 넘어 오는 것은 말하지 않는다
+    if (i >= 0) when = (yAge >= dae.list[i].from) ? 'now' : 'future';
+    else { for (let k = dae.list.length - 1; k >= 0; k--) if (hit(dae.list[k]) && dae.list[k].to < yAge) { i = k; break; } when = i >= 0 ? 'past' : 'never'; }
+    return {el, i, p: i >= 0 ? dae.list[i] : null, when};
+  });
+  /* 해 · 달 */
+  const yearOf = Y => ({Y, ...evalLuck(mod(Y - 4, 10), mod(Y - 4, 12))});
+  const years = [-3, -2, -1, 0, 1, 2].map(d => ({...yearOf(curYear + d), rel: d < 0 ? 'past' : d === 0 ? 'now' : 'next'}));
+  const ms = computeSaju(now.getFullYear(), now.getMonth() + 1, now.getDate(), null);
+  const month = evalLuck(ms.month.stem, ms.month.branch);
+  /* 장면별 규칙 */
+  const c = g => grp[g].c;
+  const palaceG = grpOf(STEMS[BRANCHES[dayBr].main].el);
+  const monthG = grpOf(STEMS[BRANCHES[s.month.branch].main].el);
+  let channel = 0, best = -1;
+  [1, 3, 2, 4].forEach(g => {                                  // 동점이면 식상 → 관성 → 재성 → 인성
+    const sc = c(g) + (palaceG === g ? 1.5 : 0) + (monthG === g ? 1 : 0);
+    if (c(g) > 0 && sc > best) { best = sc; channel = g; }
+  });
+  const dilemma = c(1) >= 1 && c(3) >= 2 ? 'both' : c(1) >= 2 && c(3) === 0 ? 'free' : c(3) >= 2 && c(1) === 0 ? 'org2' : '';
+  const bridge = c(1) >= 1 && c(2) >= 1 ? 'both' : c(1) >= 1 && c(2) === 0 ? 'skillOnly' : c(1) === 0 && c(2) >= 1 ? 'moneyOnly' : '';
+  const mind = c(1) === 0 ? 'shut' : c(4) > c(1) ? 'hold' : c(1) > c(4) ? 'vent' : 'even';
+  const tact = c(4) >= 2 && c(3) >= 1, curious = c(4) >= 2 && cnt[dEl] >= 3;
+  const starG = inp.gender === 'F' ? 3 : inp.gender === 'M' ? 2 : -1;
+  const starClash = starG >= 0 && clashes.some(x => x.ga === starG || x.gb === starG);
+  const over = [0, 1, 2, 3, 4].filter(e => lvP(e) === 3);
+  const thisY = years[3];
+  const yearTip = (thisY.ks === 'over' || thisY.kb === 'over' || thisY.stack || thisY.clash) ? 'heavy' : (thisY.ks === 'fill' || thisY.kb === 'fill') ? 'fill' : thisY.dbl ? 'strong' : 'calm';
+  return {dEl, cnt, grp, domEl, clearDom, missing, weakEl, over, sameInChart, clashes, dae, yAge, curYear, cur, next, curE: cur ? evalLuck(cur.st, cur.br) : null,
+    nextE: next ? evalLuck(next.st, next.br) : null, missArrive, years, month, palaceG, channel, dilemma, bridge, mind, tact, curious, starG, starClash, yearTip, hasHour: !!s.hour, dayBr,
+    stackDae: !!cur && cur.br === dayBr, stackYear: thisY.br === dayBr};
+}
+
+/* 운 한 덩어리를 문장으로 — lead: 'stem'(해 · 달) | 'branch'(대운)
+   가장 눈에 띄는 것(넘침 → 채움 → 보통) 하나를 풀어 쓰고, 나머지는 한 줄로 잇는다 */
+function deepLuckText(T, F, e, lead, past, seen) {
+  const out = [], f = T.f, rank = {over: 0, fill: 1, norm: 2};
+  const full = (el, kind, g) => {
+    const key = el + kind;
+    if (seen && seen.has(key)) return kind === 'fill' ? f.fillAgain(T.el[el], T.gs[g], past) : kind === 'over' ? f.overAgain(T.el[el], past) : f.normAgain(T.el[el], T.gs[g], past);
+    if (seen) seen.add(key);
+    return kind === 'fill' ? f.fill(T.el[el], T.gs[g], T.gift[el], past)
+      : kind === 'over' ? f.over(T.el[el], T.crowdImg[el], T.crowdFeel[el], T.crowdTip[el], past)
+      : f.norm(T.el[el], T.theme[g], T.roleDo[g], past);
+  };
+  const dbl = (el, kind) => kind === 'fill' ? f.dblFill(T.el[el], past) : f.dbl(T.el[el], past);
+  let tip = false;
+  if (lead === 'branch') {
+    out.push(full(e.eb, e.kb, e.gB)); tip = e.kb === 'fill';
+    if (e.dbl) out.push(dbl(e.eb, e.kb));
+    else if (e.ks === 'fill') out.push(f.subFill(T.el[e.es]));
+    else if (e.ks === 'over') out.push(f.subOver(T.el[e.es]));
+  } else if (e.dbl) {
+    out.push(full(e.es, e.ks, e.gS)); out.push(dbl(e.es, e.ks)); tip = e.ks === 'fill';
+  } else {
+    const items = [{el: e.es, k: e.ks, g: e.gS}, {el: e.eb, k: e.kb, g: e.gB}].sort((a, b) => rank[a.k] - rank[b.k]);
+    const [a, b] = items;
+    out.push(full(a.el, a.k, a.g));
+    /* 넘침이 앞서면 뒤따르는 채움은 '조금'으로만 — 답답한 해에 "안정이 생겼다"고 겹쳐 말하지 않는다 */
+    out.push(b.k === 'norm' ? f.also(T.el[b.el], T.gs[b.g], past) : a.k === 'over' && b.k === 'fill' ? f.alsoFill(T.el[b.el], T.gs[b.g], past) : full(b.el, b.k, b.g));
+    tip = a.k === 'fill' || (b.k === 'fill' && a.k !== 'over');
+  }
+  if (!past && tip && !(seen && seen.has('tip'))) { out.push(f.fillTip); if (seen) seen.add('tip'); }
+  if (e.stack) out.push(f.stack(T.animal[e.br], T.ani[e.br].stack, past));
+  else if (e.clash) out.push(f.clashLuck(past));
+  return out.join(T.sp);
+}
+
+function renderDeep(inp, s, astro, now) {
+  const box = document.getElementById('sajuDeep'); if (!box) return;
+  let F;
+  try { F = deepFacts(inp, s, astro, now); } catch (e) { box.innerHTML = ''; return; }
+  window.__deepFacts = F;
+  const T = deepT(), f = T.f, sp = T.sp;
+  const P = arr => arr.filter(Boolean).map(x => `<p>${x}</p>`).join('');
+  const H = t => `<h4 class="dp-h">${t}</h4>`;
+  const dayStemK = STEMS[s.day.stem].k, st = T.stem[dayStemK], dayBr = F.dayBr;
+
+  /* A. 타고난 모습 */
+  const list = [0, 1, 2, 3, 4].map(e => `${T.elShort[e]} ${F.cnt[e]}`).join(' · ');
+  const stackNow = F.stackDae && F.stackYear ? f.stackBoth(T.ani[dayBr].stack) : F.stackDae ? f.stackDae(T.ani[dayBr].stack) : F.stackYear ? f.stackYear(T.ani[dayBr].stack) : '';
+  const A = P([
+    (F.hasHour ? f.bar(list) : f.bar6(list)) + (F.missing.length ? sp + f.missing(F.missing.map(e => T.el[e]).join(' · ')) : ''),
+    `<b>${f.stem(LANG === 'ko' ? dayStemK : STEMS[s.day.stem].h, LANG === 'ko' ? STEMS[s.day.stem].h : T.elShort[F.dEl], st.img)}</b>` + sp + st.body + sp + st.good + sp + st.bad,
+    `<b>${s.year.branch === dayBr ? f.animalSame(T.animal[dayBr]) : f.animalDiff(T.animal[s.year.branch], T.animal[dayBr])}</b>` + sp + T.ani[dayBr].body
+      + (F.sameInChart >= 2 ? sp + f.stackChart(F.sameInChart) : '') + (stackNow ? sp + stackNow : ''),
+    !F.clearDom ? f.domEven(T.el[F.dEl], T.drive[F.dEl]) : F.domEl === F.dEl ? f.domSame(T.el[F.dEl], T.drive[F.dEl]) : f.domOther(T.el[F.dEl], T.el[F.domEl], T.gs[(F.domEl - F.dEl + 5) % 5], T.drive[F.domEl]),
+    F.curious ? T.curious : ''
+  ]);
+
+  /* B. 다섯 역할 */
+  const B = `<p class="small">${f.roleIntro}</p>` + F.grp.map(x =>
+    `<div class="dp-row"><p class="dp-k">${f.roleHead(T.gName[x.g], T.gs[x.g], T.el[x.el], x.c, T.lv[x.lv])}</p><p>${(T.role[x.g][x.lv] || T.role[x.g][1]) + (x.lv < x.raw ? sp + f.adjDown(x.c) : x.lv > x.raw ? sp + f.adjUp(x.c) : '')}</p></div>`).join('')
+    + P(F.clashes.map(c => c.ga === c.gb ? f.clashSame(T.gs[c.ga]) : f.clash(T.gs[c.ga], T.gs[c.gb])));
+
+  /* C. 장면별 */
+  const g = F.grp;
+  const young = F.yAge < 19;
+  const money = [T.money.base[g[2].lv], F.bridge ? T.money[F.bridge] : '', g[0].lv === 3 && !young ? T.money.partner : ''].filter(Boolean).join(sp);
+  /* 겹치는 말은 한 번만 — 'free'는 조직 문장을, 'org2'는 알리기 문장을 대신한다 */
+  const work = [T.work.channel[F.channel], F.dilemma === 'org2' ? '' : T.work.exp[g[1].lv], F.dilemma === 'free' ? '' : T.work.org[g[3].lv], F.dilemma ? T.work[F.dilemma] : ''].filter(Boolean).join(sp);
+  const people = [T.people.peer[g[0].lv] || T.people.peer[1], T.people.help[g[4].lv], F.tact ? T.people.tact : ''].filter(Boolean).join(sp);
+  const love = [T.love.palace[F.palaceG],
+    F.starG < 0 ? T.love.noGender : f.star(F.starG === 3 ? f.female : f.male, T.el[g[F.starG].el]) + sp + (F.starClash && g[F.starG].lv > 0 ? T.love.starClash : T.love.star[g[F.starG].lv])].join(sp);
+  const bodyLines = [...F.missing.map(e => f.bLack(T.el[e], T.organ[e])), ...F.over.map(e => f.bOver(T.el[e], T.organ[e]))].slice(0, 2);
+  const body = (bodyLines.length ? bodyLines.join(sp) : T.body.none);
+  const C = (young ? `<p class="small">${T.body.young}</p>` : F.yAge >= 65 ? `<p class="small">${T.body.elder}</p>` : '') + [['money', money], ['work', work], ['people', people], ['love', young ? '' : love], ['mind', T.mind.lead + sp + T.mind[F.mind]], ['body', body]]
+    .filter(x => x[1]).map(([k, t]) => `<div class="dp-row"><p class="dp-k">${T.title[k]}</p><p>${t}</p></div>`).join('') + `<p class="small" style="margin-top:12px">${T.body.note}</p>`;
+
+  /* D. 10년 흐름 */
+  const d = F.dae, ages = d.list.slice(1, 4).map(p => p.from).join(' · ');
+  let Dh = (inp.gender !== 'M' && inp.gender !== 'F' ? `<p class="small">${f.dGender}</p>` : '') + P([f.dIntro(d.startAge, d.startAge % 10, ages) + sp + f.dBranch]);
+  if (F.cur) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.now}</span> ${f.dCur(F.cur.from, F.cur.to, deepGz(F.cur.st, F.cur.br), T.animal[F.cur.br])}</p><p>${deepLuckText(T, F, F.curE, 'branch', false)}</p></div>`;
+  else if (F.yAge < d.startAge) Dh += P([f.dBefore(d.startAge)]);
+  if (F.next) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.next}</span> ${f.dNext(F.next.from, F.next.to, inp.y + F.next.from, deepGz(F.next.st, F.next.br), T.animal[F.next.br])}</p><p>${F.curE && F.curE.eb === F.nextE.eb && !F.nextE.stack && !F.nextE.clash && F.nextE.ks === 'norm' ? f.dSame : deepLuckText(T, F, F.nextE, 'branch', false)}</p></div>`;
+  Dh += P([...F.missArrive.map(m => !F.missing.length
+      ? (m.when === 'future' ? f.dWeakFuture(T.el[m.el], m.p.from, inp.y + m.p.from) : m.when === 'now' ? f.dWeakNow(T.el[m.el]) : '')
+      : m.when === 'future' ? f.dMissFuture(T.el[m.el], m.p.from, inp.y + m.p.from, T.gift[m.el])
+      : m.when === 'now' ? f.dMissNow(T.el[m.el]) : m.when === 'past' ? f.dMissPast(T.el[m.el], m.p.from, m.p.to) : f.dMissNever(T.el[m.el])),
+    f.dTransition]);
+
+  /* E. 해 */
+  let seen = new Set();
+  const E = `<p class="small">${f.yIntro}</p>` + F.years.map(y => {
+    if (y.rel === 'now') seen = new Set();            // 올해는 늘 처음부터 풀어 쓴다
+    return `<div class="dp-row${y.rel === 'now' ? ' dp-now' : ''}"><p class="dp-k">${y.rel === 'now' ? `<span class="dp-tag">${T.title.thisYear}</span> ` : ''}${f.yHead(y.Y, deepGz(y.st, y.br), T.animal[y.br])}</p><p>${deepLuckText(T, F, y, 'stem', y.rel === 'past', seen)}</p></div>`; }).join('')
+    + `<p class="small" style="margin-top:12px">${f.change}</p>`;
+
+  /* F. 이번 달 + 처방 */
+  const Fh = `<div class="dp-row"><p class="dp-k">${f.mHead(deepGz(F.month.st, F.month.br))}</p><p>${deepLuckText(T, F, F.month, 'stem', false)}</p></div>`
+    + [[T.title.tip1, T.outlet[F.domEl]], [T.title.tip2, (F.missing.length ? f.need : f.needWeak)(T.el[F.weakEl], T.gs[(F.weakEl - F.dEl + 5) % 5], T.needRole[(F.weakEl - F.dEl + 5) % 5])], [T.title.tip3, F.yearTip === 'strong' ? f.tipStrong(T.gs[F.years[3].gS]) : T.yearTip[F.yearTip]]]
+      .map(([k, t]) => `<div class="dp-row"><p class="dp-k">${k}</p><p>${t}</p></div>`).join('');
+
+  const card = (t, h) => `<div class="card deep"><h3>${t}</h3>${h}</div>`;
+  box.innerHTML = `<div class="card deep"><h3>${T.title.sec}</h3><p class="small">${T.title.intro}</p></div>`
+    + card(T.title.a, A) + card(T.title.b, B) + card(T.title.c, C) + card(T.title.d, Dh) + card(T.title.e, E) + card(T.title.f, Fh);
+}
+/* ==DEEP-END== */
 /* ---- 사주 ---- */
 /* NEW-EN-DATA */
 
@@ -8707,9 +9637,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const dir = forward ? 1 : -1;
 
   /* 대운수: 입춘(태양황경 315°) 계열 절입 경계까지의 날수 ÷ 3. 경계는 황경 ≡ 15°(mod 30) */
-  const sl = ((astro.sun.long % 360) + 360) % 360;
-  const off = ((15 - sl) % 30 + 30) % 30;            // 다음 절입까지 남은 도수
-  const days = forward ? off / 0.98565 : (off === 0 ? 0 : (30 - off) / 0.98565);
+  const days = daeunDays(inp, forward);                // 절입까지의 실제 날수(깊이 읽기와 같은 함수)
   const startAge = Math.max(1, Math.min(10, Math.round(days / 3)));
 
   /* 나이별 대운 스텝(월주에서 ±) */
