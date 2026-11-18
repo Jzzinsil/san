@@ -1107,7 +1107,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.33.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.34.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -9025,7 +9025,7 @@ $('#gungForm').addEventListener('submit', e => {
         <span class="vh">${BRANCHES[yb2].h}</span>
         <span><span class="vt">${gradeT}</span><br><span class="vd">${headDesc}</span></span>
       </div>
-      ${(typeof rvGungLead === 'function') ? rvGungLead({yearOnly: true, me: (R.myName && R.myName !== '나') ? esc(R.myName) + ' 님' : '', gN: gN2, grade: gradeT, nk1: NK_KO[TG_GROUP[tgy]]}).html : ''}
+      ${(typeof rvGungLead === 'function') ? rvGungLead({yearOnly: true, me: (R.myName && R.myName !== '나') ? esc(R.myName) + ' 님' : '', gN: gN2, grade: gradeT, nk1: L(NK_KO[TG_GROUP[tgy]], NK_EN[TG_GROUP[tgy]], NK_JA[TG_GROUP[tgy]])}).html : ''}
       <div class="combo"><b>${L('태어난 해만으로 간단히 본 궁합', 'A quick look from the birth year alone', '生まれ年だけで見るかんたんな相性')}</b><br>${lines.join('<br>')}</div>
       <p class="small" style="margin-top:12px;color:var(--dim)">${L('태어난 해만으로는 띠와 그해의 기운까지만 읽을 수 있어요. 1~2월에 태어난 분은 띠가 한 해 앞으로 바뀔 수 있어요. 사주에서는 2월 초 입춘(봄이 시작되는 날)부터 새해로 치기 때문이에요. 태어난 달과 날까지 8자리로 입력하면, 사주·별자리·숫자를 함께 본 100점 만점 궁합을 볼 수 있어요.', 'From the birth year alone, I can read only the birth-year animal and that year’s energy. If the person was born in January or February, the animal may belong to the year before. This is because saju starts the new year at Ipchun, the first day of spring in early February. Enter the full birth date (8 digits) to see a 100-point reading that combines saju, the stars and numbers.', '生まれ年だけでは、干支とその年の気までしかお読みできません。1〜2月生まれの方は、干支が前の年になることがあります。四柱推命では、2月はじめの立春(春が始まる日)から新しい年と数えるためです。生まれた月と日まで8桁でご入力いただくと、四柱推命・星座・数字を合わせた100点満点の相性をご案内いたします。')}</p>
     </div>`;
@@ -9216,7 +9216,7 @@ $('#gungForm').addEventListener('submit', e => {
     + '<br>' + (rubs.length
       ? L(`근데 솔직하게 말하면 걸리는 것도 있어요. <b>${rubs[0].t}</b>이에요. 누가 잘못해서가 아니라, 두 분의 기본값이 달라서 생기는 일이에요. ${rubs[0].adv}. 그렇게 하면 같은 다툼이 짧아지고, 그냥 두면 같은 장면이 되풀이돼요.`, `Where you may clash most: <b>${rubs[0].t}</b>. ${rubs[0].adv}.`, `いちばんぶつかりやすいところは、<b>${rubs[0].t}</b>です。${rubs[0].adv}。`)
       : L('근데 크게 부딪히는 표시가 없다고 숙제가 없는 건 아니에요. 큰 다툼이 없는 대신, 잔잔한 날들에 익숙해지는 것이 두 분의 숙제예요. 작은 서운함을 그때 말하면 계속 편안하고, 쌓아 두면 한 번에 크게 와요.', 'No clear point of conflict shows for the two of you. With no big fights, the task is to get used to calm days.', 'はっきりぶつかるところは見当たらないお二人です。大きなけんかがないかわりに、おだやかな毎日に慣れていくことが課題です。'));
-  const rvG = (typeof rvGungLead === 'function') ? rvGungLead({me: (R.myName && R.myName !== '나') ? esc(R.myName) + ' 님' : '', gN, total, sajuScore, astroScore, numScore, grade, bonds, rubs, nk1: NK_KO[grp1], nk2: NK2_KO[grp2], same: grp1 === grp2}).html : '';
+  const rvG = (typeof rvGungLead === 'function') ? rvGungLead({me: (R.myName && R.myName !== '나') ? esc(R.myName) + ' 님' : '', gN, total, sajuScore, astroScore, numScore, grade, bonds, rubs, nk1: L(NK_KO[grp1], NK_EN[grp1], NK_JA[grp1]), nk2: L(NK2_KO[grp2], NK2_EN[grp2], NK2_JA[grp2]), same: grp1 === grp2}).html : '';
   /* 표시 전용 — 암호처럼 보이던 기호·각도 대신 말로: 태어난 날 두 글자 · 태양 별자리 · 라이프패스 */
   const dayLbl = p => L(`${STEMS[p.stem].k}·${BRANCHES[p.branch].k}(${gzH(p)})`, gzH(p), gzH(p));
   const fp1 = L(`${(R.myName && R.myName !== '나') ? esc(R.myName) + ' 님' : '나'} ${dayLbl(s1.day)}일 · ${signName(a1.sun.sign)} · 숫자 ${n1.lifePath}`, `you: ${gzH(s1.day)} day · ${signName(a1.sun.sign)} · number ${n1.lifePath}`, `あなた:${gzH(s1.day)}の日・${signName(a1.sun.sign)}・数字${n1.lifePath}`);
@@ -10917,6 +10917,928 @@ function rvGungLead(c, opt) {
   });
   mountOpening();
 })();
+/* =====================================================================
+   SAN · 언어 연결 (English · 日本語) — san-voice-kit-en-ja/rv-lang.js 를 이 페이지에 맞춘 것
+   - 화면 언어(LANG)가 en · ja 일 때 「리더의 말」 · 「하늘에 묻기」 답의 첫머리 · 「궁합」 총평을
+     window.RV_PACKS(아래 영어 · 일본어 문장)로 조립한다. 한국어 화면은 위의 한국어 함수가 그대로 맡는다.
+   - 키트와 달라진 곳:
+     ① 위기 표현 안내는 이 페이지의 스위치 하나(RV_CRISIS_ON)를 따른다. 꺼져 있으면 어느 언어에서도 나오지 않는다.
+     ② 질문 읽기 — 값 · 둘 중 하나를 묻는 질문, 「하지 말까」, 될지를 묻는 질문, 대신 정하지 않는 질문
+        (다른 사람의 사실 · 마음 / 건강 · 법 · 큰돈 / 되돌리기 어려운 결정)을 한국어 쪽과 같은 갈래로 나눈다.
+     ③ 답 카드 마무리(판정 상자 · 「합계」 줄)를 영어 · 일본어 화면에서도 첫머리와 같은 말로 맞춘다.
+     ④ 궁합 — 다섯 구간 · 같은 역할 · 태어난 해만 아는 상대.
+   - 계산은 건드리지 않는다. 밖으로 보내는 것도 없다. 전역 이름을 새로 선언하지 않는다.
+   ===================================================================== */
+(function () {
+  const W = window;
+  const PACKS = (W.RV_PACKS = W.RV_PACKS || {});
+  if (W.__rvLang) return;                                  // 두 번 붙여 넣어도 한 번만 건다
+
+  /* 세 언어를 모두 아는 스니펫(RV_A · RV_B)이 이미 있으면, 문장 조립은 그쪽에 맡기고 이름 정리만 한다 */
+  let coreTri = false;
+  try { coreTri = typeof RV_A !== 'undefined' && !!RV_A.en && typeof RV_B !== 'undefined' && !!RV_B.en; } catch (e) { coreTri = false; }
+  W.__rvLang = coreTri ? 'core' : 'bridge';
+
+  /* 이미 있는 함수(한국어) — 한국어 화면은 이 함수가 그대로 맡는다 */
+  const base = {
+    opening: typeof rvOpening === 'function' ? rvOpening : null,
+    ask: typeof rvAskLead === 'function' ? rvAskLead : null,
+    gung: typeof rvGungLead === 'function' ? rvGungLead : null
+  };
+
+  const EMPTY = () => ({paras: [], html: '', text: ''});
+  const langOf = opt => (opt && opt.lang) || (typeof LANG !== 'undefined' ? LANG : 'ko');
+  const pick = (lang, ko, en, ja) => lang === 'ja' ? (ja !== undefined && ja !== null ? ja : en) : lang === 'en' ? en : ko;
+  /* 이름은 사용자가 직접 적는 글자다. 화면 코드로 읽힐 수 있는 꺾쇠(< >)는 뺀다 */
+  const clean = s => String(s === undefined || s === null ? '' : s).replace(/[<>]/g, '').trim();
+  const NO_NAME = ['나', 'Me', '私', 'わたし'];           // 이름을 안 넣으면 앱이 '나'로 채운다
+
+  /* ───────────── 리더 A — 「리더의 말」 ───────────── */
+
+  /* 기능(2겹) — 그 기운이 '나(태어난 날의 글자)에게' 하는 일. ELEMENTS 순서(0목 1화 2토 3금 4수)에서 (기운 − 내 기운) mod 5 */
+  const GROUP = ['비겁', '식상', '재성', '관성', '인성'];
+  const groupIdx = (dayEl, el) => ((el - dayEl) % 5 + 5) % 5;
+
+  /* 그 해의 계절(기운 번호로) — 천간의 기운 기준, 흙(戊·己)의 해는 지지의 계절로. 구현상의 약속 */
+  function seasonEl(year) {
+    const st = ((year - 4) % 10 + 10) % 10, br = ((year - 4) % 12 + 12) % 12;
+    const el = STEMS[st].el;
+    return el !== 2 ? el : [4, 4, 0, 0, 0, 1, 1, 1, 3, 3, 3, 4][br];   // 子丑 겨울 · 寅卯辰 봄 · 巳午未 여름 · 申酉戌 가을 · 亥 겨울
+  }
+
+  /* 역할 이름 — 앱의 「깊이 읽기」(DEEP_EN · DEEP_JA)가 있으면 그 이름을 그대로 써서 화면마다 말이 달라지지 않게 한다 */
+  function role(lang, K, gi) {
+    let D = null;
+    try { D = lang === 'ja' ? DEEP_JA : lang === 'en' ? DEEP_EN : null; } catch (e) { D = null; }
+    const f = K.func[GROUP[gi]];
+    return {role: D && D.gName ? D.gName[gi] : f.name, gloss: D && D.gs ? D.gs[gi] : f.gloss, many: f.many, none: f.none};
+  }
+
+  function openingIn(lang, K, R, opt) {
+    const s = R.saju, ds = s.day.stem, dk = STEMS[ds], I = K.ilgan[dk.k];
+    const raw = clean(R.myName);
+    const typed = NO_NAME.includes(raw) ? '' : raw;
+    let en = '';
+    try { en = clean((W.__lastInput && W.__lastInput.ename) || ''); } catch (e) { en = ''; }
+    const name = lang === 'en' ? (en || typed) : typed;      // 영어 화면은 영문 이름이 있으면 그것을 쓴다
+    const year = opt.year || new Date().getFullYear();
+    const tgOf = y => tenGod(ds, ((y - 4) % 10 + 10) % 10);
+    const cur = K.year[tgOf(year)], prev = K.year[tgOf(year - 1)], next = K.year[tgOf(year + 1)];
+    const P = [], T = K.t;
+
+    /* D1 물상 3단 추론 + D2 속말 인용 */
+    P.push({dev: 'D1·D2', t: T.d1({name, I})});
+    /* D3 양면 — 같은 성질의 두 얼굴 */
+    P.push({dev: 'D3', t: T.d3({I})});
+
+    /* D4 두 겹 읽기 — 가장 많은 기운과 없는 기운을 '기능'으로 · D5 없는 기운 = 따로 챙기는 기능 */
+    const max = Math.max(...s.counts), dom = s.counts.indexOf(max);
+    const zeros = s.counts.map((c, i) => c === 0 ? i : -1).filter(i => i >= 0);
+    const n = K.n(!!s.hour);
+    if (max >= 3) { const r = role(lang, K, groupIdx(dk.el, dom)); P.push({dev: 'D4', t: T.d4({name, n, max, el: K.el[dom], role: r.role, gloss: r.gloss, many: r.many})}); }
+    if (zeros.length) { const z = zeros[0], r = role(lang, K, groupIdx(dk.el, z)); P.push({dev: 'D4·D5', t: T.d5({name, el: K.el[z], role: r.role, none: r.none})}); }
+
+    /* D6 되짚기 — 지난해를 먼저 맞춰 본다 */
+    P.push({dev: 'D6', t: T.d6({year, prev})});
+
+    /* D7 올해의 한마디 + D8 계절 + D9 예상되는 느낌을 미리 말해 주기 */
+    const yEl = STEMS[((year - 4) % 10 + 10) % 10].el;
+    const mode = s.counts[yEl] === 0 ? 'new' : s.counts[yEl] >= 3 ? 'much' : '';
+    P.push({dev: 'D7·D8·D9', t: T.d789({name, year, season: K.el[seasonEl(year)].season, mode, yel: K.el[yEl], cur})});
+
+    /* D10 확신의 정도 — 세 풀이가 같은 말을 하는 만큼만 세게 말한다 */
+    const py = R.fortune && R.fortune.periods && R.fortune.periods[4];
+    if (py && typeof THEMES !== 'undefined') {
+      const nm = t => { try { return lang === 'ja' ? THEMES_JA[t].name : THEMES_EN[t].name; } catch (e) { return THEMES[t].name; } };
+      P.push({dev: 'D10', t: T.d10({th: [nm(py.saju.theme), nm(py.num.theme), nm(py.astro.theme)], same: new Set([py.saju.theme, py.num.theme, py.astro.theme]).size})});
+    }
+
+    /* D11 올해의 과목 + D12 처방(바람으로 말하기 · 최소 버전 · 허락) */
+    P.push({dev: 'D11·D12', t: T.d1112({cur})});
+
+    /* D13 다음 해 예고 + D14 처음 비유로 돌아와 닫기 */
+    const hard = typeof TG_RATE !== 'undefined' && TG_RATE[tgOf(year + 1)] === 1;
+    P.push({dev: 'D13·D14', t: T.d1314({year, next, hard, I})});
+
+    const text = P.map(p => p.t).join('\n\n');
+    const html = `<div class="card rv-opening"><p class="hl-label">${K.label}</p>${P.map(p => `<p data-rv="${p.dev}">${p.t}</p>`).join('')}<p class="small" style="margin-top:10px">${T.foot({stemK: dk.k, stemH: dk.h, year})}</p></div>`;
+    return {lang, paras: P, html, text};
+  }
+
+  /* ───────────── 리더 B — 「하늘에 묻기」 답의 첫머리 ───────────── */
+
+  const scoreOf = total => total >= 3 ? 3 : total >= 1 ? 2 : total >= -1 ? 1 : 0;
+
+  /* 안전 — 위기 표현이 보이면 점을 치지 않는다. 켜져 있을 때는 어느 언어 화면에서든 세 언어의 표현을 모두 본다.
+     켜고 끄는 곳은 한 곳뿐이다: 이 페이지의 RV_CRISIS_ON(한국어 쪽과 같은 스위치). 꺼져 있으면 여기서도 아무것도 하지 않는다 */
+  const crisisOn = () => { try { return RV_CRISIS_ON === true; } catch (e) { return false; } };
+  const CRISIS = [
+    /죽고\s?싶|죽어\s?버리|자살|자해|사라지고\s?싶|살기\s?싫|살고\s?싶지\s?않|(다|모든\s?걸|모든\s?것을|삶을|인생을)\s?끝내고\s?싶|목숨을?\s?끊/,
+    /\b(kill(ing)? myself|suicid\w*|end my life|end it all|want to die|wanna die|don'?t want to (live|be alive)|no reason to live|better off dead|self[- ]?harm\w*|hurt(ing)? myself|cut(ting)? myself|want to disappear|disappear forever)\b/i,
+    /死にたい|死のうと|自殺|消えたい|消えてしまいたい|いなくなりたい|生きていたくない|生きるのがつらい|生きる(こと|の)に疲れ|自傷|リストカット|命を絶/
+  ];
+  const isCrisis = q => { if (!crisisOn()) return false; const s = String(q || ''); return CRISIS.some(re => re.test(s)); };
+  /* 한국어 화면용 안내 — 한국어 문단(RV_CRISIS_TEXT)이 없을 때 쓰는 예비 문단(연락처 확인: 2026-11-18) */
+  const CRISIS_KO = [
+    '지금 적어 주신 말이 마음에 걸려요. 이건 카드로 답할 질문이 아니에요.',
+    '많이 힘드신 거라면 혼자 견디지 않았으면 좋겠어요. 지금 바로 이야기할 수 있는 곳이 있어요. 자살예방상담전화 109(24시간), 정신건강위기상담 1577-0199예요. 당장 위험하다면 119예요.',
+    '가까운 사람 한 명에게 ‘나 지금 좀 힘들어’ 한 줄만 보내도 괜찮아요. 답은 그다음에 같이 찾아도 늦지 않아요.'
+  ];
+  function crisisOut(lang) {
+    let T = PACKS[lang] && PACKS[lang].B && PACKS[lang].B.crisis;
+    if (!T && lang === 'ko') { try { T = RV_CRISIS_TEXT; } catch (e) { T = null; } if (!T) T = CRISIS_KO; }
+    if (!T) T = (PACKS.en && PACKS.en.B && PACKS.en.B.crisis) || CRISIS_KO;      // 그 언어의 문장 파일이 없을 때
+    const C = T.map(t => ({dev: '안전', t}));
+    return {lang, crisis: true, paras: C, html: `<div class="combo rv-lead rv-safety">${C.map(p => `<p class="pb">${p.t}</p>`).join('')}</div>`, text: C.map(p => p.t).join('\n\n')};
+  }
+
+  /* ── 질문 읽기(영어 · 일본어) — 짧은 낱말 시험. 헷갈리면 조심하는 쪽으로 읽는다 ──
+     cls  'third' 다른 사람의 사실 · 마음 / 'pro' 건강 · 법 · 큰돈 / 'brk' 되돌리기 어려운 결정 / '' 그 밖
+     kind 'do' 해도 되는지를 물음 / 'be' 될지를 물음(허락하는 말을 쓰지 않는다 — 꼴이 뚜렷하지 않으면 이쪽) */
+
+  /* English */
+  const EN_DO = /\b(should|shall|ought|may|must)\s+(i|we)\b|\bshouldn'?t\s+(i|we)\b|\b(is|would)\s+it\s+(be\s+)?(ok|okay|all\s?right|fine|good|wise|safe|smart|better|best|bad|a\s+(good|bad)\s+idea|time|too\s+(early|late)|the\s+right\s+time)\b|\bis\s+(now|this)\s+(a\s+good|the\s+right)\s+time\b|\bdo\s+(i|we)\s+(need|have)\s+to\b|\bi\s+want\s+to\b/i;
+  const EN_PERSON = '(?:he|she|they|my\\s+(?:ex[- ]?)?(?:husband|wife|spouse|boyfriend|girlfriend|partner|fianc[eé]e?|lover|crush|ex|date|boss|manager|coworker|colleague|friend|best\\s+friend|mother|father|mom|mum|dad|parents|son|daughter|child|kid|brother|sister|in-laws|mother-in-law|father-in-law|teacher|landlord|client|interviewer)|(?:this|that|the)\\s+(?:guy|girl|man|woman|person))';
+  const EN_SUBJ = new RegExp('\\b(?:is|are|was|were|does|do|did|will|would|has|have|had|can|could|might)\\s+' + EN_PERSON + '\\b(?!\\s+and\\s+(?:i|me)\\b)', 'i');
+  const EN_BOTH = /\b(we|us)\b|\b(he|she|they|him|her|them)\s+and\s+(i|me)\b|\b(i|me)\s+and\s+(him|her|them|he|she|they)\b/i;
+  const EN_SUSPECT = /\b(cheat(s|ed|ing)?|affair|unfaithful|faithful|two-?timing|lying|lied|lies\s+to\s+me|hiding\s+(something|things|anything)|seeing\s+someone\s+else|another\s+(woman|man|girl|guy))\b/i;
+  const EN_PRED = /\b(his|her|their)\s+(true\s+|real\s+)?(feelings?|heart|mind|intentions?)\b|\b(loves?|likes?|miss|misses|wants?|forgives?|hates?|thinks?\s+(of|about)|feels?\s+(about|for)|cares?\s+(about|for)|interested\s+in|into)\s+me\b|\b(come|comes|coming)\s+back\b|\b(texts?|calls?|contacts?|messages?|repl(y|ies)\s+to)\s+me\b|\bhear\s+from\s+(him|her|them)\b/i;
+  const EN_PRED_NOT = /\b(someone|people|person|anyone|somebody|those|women|men)\s+like\s+me\b/gi;
+  const EN_PRO = /\b(health|surgery|surgeries|operation|chemo(therapy)?|radiation|medications?|medicine|meds|pills?|antidepressants?|painkillers?|dosage|dose|treatment|therapy|diagnos(is|ed|e)|biopsy|tumou?r|cancer|depression|psychiatrist|ivf|implants?|lasik|hospital|doctor|lawsuit|sue|suing|sued|court|lawyer|attorney|legal\s+action|press\s+charges|settlement|alimony|bankrupt(cy)?|invest(s|ed|ing|ment|ments)?|stocks?|stock\s+market|crypto|bitcoin|fund|funds|loans?|mortgage|borrow(ing)?|lend(ing)?|debt|co-?sign|guarantor)\b/i;
+  /* 일터 · 직업 이름으로 쓰인 말, 「시간을 투자」 — 전문가와 정할 일이 아니다 */
+  const EN_PRO_NOT = /\b(invest(ing)?|put|putting)\s+((more|my|some|so\s+much|a\s+lot\s+of)\s+)*(time|energy|effort|love|myself)\b|\b(become|becoming|be|work(ing)?\s+as|job\s+as|career\s+as|study(ing)?\s+to\s+be)\s+an?\s+(doctor|lawyer|attorney|psychiatrist)\b|\b(medical|law)\s+school\b|\b(job|position|interview|offer|career|apply|applying|application|work|working)\b[^.?!]{0,30}\b(hospital|court|investment)\b|\b(hospital|court|investment)\s+(job|position|interview|offer)\b/gi;
+  const EN_BRK = /\b(break(ing)?\s+up|split(ting)?\s+up|divorc(e|ing)|separat(e|ing|ion)|leav(e|ing)\s+(him|her|them|my\s+(husband|wife|boyfriend|girlfriend|partner|fianc[eé]e?|job|company|marriage|family))|end(ing)?\s+(it|things)\s+with\s+(him|her|them|my\s+\w+)|end(ing)?\s+(the|my|our)\s+(relationship|marriage|engagement)|call(ing)?\s+off\s+(the|my|our)\s+(wedding|engagement)|quit(ting)?|resign(ing|ation)?|hand(ing)?\s+in\s+my\s+notice|drop(ping)?\s+out|cut(ting)?\s+(him|her|them)\s+off|cut(ting)?\s+ties|block(ing)?\s+(him|her|them))\b/i;
+  /* 이미 지난 일 · 하지 않겠다는 말 · 남이 꺼낸 말 · 습관을 끊는 일 — 지금 묻는 결정이 아니다 */
+  const EN_BRK_NOT = /\b(after|since)\s+(the|my|our)\s+(divorce|breakup|break-up|separation|resignation)\b|\b(don'?t|do\s+not|never)\s+want\s+to\s+(break\s+up|split\s+up|divorce|separate|quit|resign|leave)\b|\b(he|she|they|my\s+\w+)\s+(wants?|asked\s+for|is\s+asking\s+for)\s+(a\s+|to\s+)?(break\s+up|divorce|separation|separate|leave)\b|\bquit(ting)?\s+(smoking|drinking|sugar|coffee|caffeine|gaming|vaping|social\s+media)\b/gi;
+  function clsEn(q) {
+    const s = ' ' + String(q || '').replace(/[’‘]/g, "'") + ' ';
+    const doForm = EN_DO.test(s);
+    if (!doForm && EN_SUSPECT.test(s)) return 'third';
+    if (EN_PRO.test(s.replace(EN_PRO_NOT, ' '))) return 'pro';
+    if (!doForm && EN_SUBJ.test(s) && !EN_BOTH.test(s)) return 'third';
+    if (EN_BRK.test(s.replace(EN_BRK_NOT, ' '))) return 'brk';
+    if (!doForm && EN_PRED.test(s.replace(EN_PRED_NOT, ' '))) return 'third';
+    return '';
+  }
+
+  /* 日本語 — 「大丈夫 · 丈夫 · 工夫」의 「夫」가 사람으로 잡히지 않게 먼저 걷어 낸다(후방탐색은 쓰지 않는다) */
+  const JA_DO = /べき|(た|だ|ない)(方|ほう)が(いい|良い|よい)|ても(いい|良い|よい|大丈夫|かまいません|構いません|平気)|していい|ましょうか|(よう|おう|こう|そう|とう|もう|ぼう|ごう)か(な|しら)?[?？。\s]*$|(^|[^だ])ろうか(な|しら)?[?？。\s]*$|たい(です|のです|んです)/;
+  const JA_PERSON = '(?:彼氏|彼女|彼|あの人|その人|あの方|あの子|相手|夫|旦那|主人|妻|奥さん|嫁|元カレ|元彼|元カノ|元夫|元妻|恋人|パートナー|好きな人|気になる人|上司|部長|課長|社長|先輩|後輩|同僚|面接官|友達|友人|母|父|両親|親|息子|娘|兄|弟|姉|妹|義母|義父|姑|[ぁ-んァ-ヶー一-龠々]{1,6}(?:さん|くん|ちゃん))';
+  const JA_SUBJ = new RegExp(JA_PERSON + '(?:は|が|も|って)');
+  const JA_BOTH = /私たち|わたしたち|二人|ふたり|お互い|おたがい|(彼氏|彼女|彼|あの人|相手|夫|妻|旦那|主人|パートナー|恋人)と(私|わたし|の(相性|関係|仲|結婚|復縁|将来|未来))/;
+  /* 「彼氏ができますか」 — 특정한 한 사람의 일이 아니다 */
+  const JA_APPEAR = /(彼氏|彼女|恋人|パートナー|好きな人|友達|友人|相手)(は|が|も)[^、。?？]{0,8}(でき|現れ|あらわれ|見つか)/;
+  const JA_SUSPECT = /浮気|不倫|二股|うそ|ウソ|嘘|隠しごと|隠し事|隠して|隠れて|(ほか|他)の(女|男|人)|本心|脈(あり|なし|が|は)/;
+  const JA_PRED = /私のこと(を|が|は)?[^、。?？]{0,8}(好き|嫌い|どう思|忘れ|覚え|愛し)|気持ちは?(ある|あり|ない|残って|冷め|離れ|変わ)|連絡(は|が|も)?[^、。?？]{0,6}(来|き(ます|て)|くる|くれ|もらえ)|戻って(き|来|く)|(好きになって|愛して|想って|思って|許して|待って|会って|返信して|信じて|わかって|振り向いて)(くれ|もらえ)/;
+  const JA_PRO = /手術|治療|薬|服用|入院|通院|病院|病気|診察|診断|検査|抗がん|がん|癌|うつ|鬱|精神科|心療内科|健康|訴訟|裁判|訴え|告訴|弁護士|慰謝料|破産|債務整理|投資|株|仮想通貨|ビットコイン|FX|ローン|借金|借り入れ|借入|融資|保証人|キャッシング/;
+  const JA_PRO_NOT = /株式会社|(時間|気持ち|労力|自分)(を|に)(もっと|たくさん)?投資|自己投資|健康的|がんば|頑張|(病院|裁判所|証券|製薬|薬局|投資)[^、。?？]{0,8}(就職|転職|入社|応募|働|内定|面接)/g;
+  const JA_BRK = /別れ|離婚|婚約(を)?(破棄|解消)|辞め|退職|退社|辞表|退学|中退|絶交|縁を切|(会社|仕事|職場|学校|大学|バイト|部活)(を|は|も)?[^、。?？]{0,6}やめ/;
+  const JA_BRK_NOT = /別れた(あと|後|ばかり|彼|人|元|から|のに|けど|ので|ら)|別れてから|離婚(した|してから|している|しています|後|歴|経験)|辞めた(あと|後|ばかり|会社|から|けど|ので)|辞めてから|退職(した|後|してから)|(別れ|離婚し|辞め)たくな|(別れ|離婚せ|辞め)ずに|別れ(よう|たい)と言われ|離婚(しよう|したい)と言われ|別れを(告げ|切り出さ)れ|離婚を切り出され/g;
+  function clsJa(q) {
+    const raw = String(q || ''), s = raw.replace(/大丈夫|丈夫|工夫/g, '').replace(/夫婦/g, 'ふたり');
+    const doForm = JA_DO.test(raw);
+    if (!doForm && JA_SUSPECT.test(s)) return 'third';
+    if (JA_PRO.test(s.replace(JA_PRO_NOT, ' '))) return 'pro';
+    if (!doForm && JA_SUBJ.test(s) && !JA_BOTH.test(s) && !JA_APPEAR.test(s)) return 'third';
+    if (JA_BRK.test(s.replace(JA_BRK_NOT, ' '))) return 'brk';
+    if (!doForm && JA_PRED.test(s)) return 'third';
+    return '';
+  }
+  /* 「하지 말까」가 낱말(quit · stop · 辞める) 때문이 아니라 정말로 부정으로 물은 것인지 */
+  const REAL_NEG = /\bnot\b|n't\b|ない(方|ほう)が|べきでない|控え|見送/i;
+
+  /* 어느 언어로 적었든 읽는다(영어 화면에 한국어로 적어도) — 여러 갈래가 걸리면 더 조심하는 쪽 */
+  function readQ(q) {
+    const s = String(q || ''), hits = [clsEn(s), clsJa(s)];
+    let kind = (EN_DO.test(' ' + s.replace(/[’‘]/g, "'") + ' ') || JA_DO.test(s)) ? 'do' : 'be';
+    if (/[가-힣]/.test(s)) { try { if (typeof rvClass === 'function') { hits.push(rvClass(s)); kind = rvAskKind(s); } } catch (e) {} }
+    return {cls: ['third', 'pro', 'brk'].find(c => hits.includes(c)) || '', kind};
+  }
+
+  let lastAsk = null;      // 방금 만든 첫머리 — 답 카드 마무리(tidyCard)가 한 번 읽고 비운다
+
+  function askIn(lang, K, q, ev, score, picks, polSum, opt) {
+    const qtype = opt.qtype || 'yesno';
+    /* 값(색 · 숫자 · 방향 · 음식)을 묻는 질문 — 판정이 없으므로 첫머리도 붙이지 않는다 */
+    if (qtype === 'info') return EMPTY();
+    const A = K.ask, X = K.safe, V = K.verdict[score], S = ev.slots || {}, P = [];
+    const sum = ev.ev + polSum;                       // 화면의 「합계」와 같은 숫자
+    const baseScore = scoreOf(ev.ev - 2);              // 카드 없이 사주·별·숫자만 봤을 때
+    const down = picks.filter(c => c.pol < 0), gate = picks[1];
+    const cond = down[0] || (gate.pol <= 0 ? gate : null);
+    const neg = !!opt.neg && qtype === 'yesno';
+    const rd = readQ(q), cls = rd.cls, kind = rd.kind;
+    const cname = c => (typeof cardName === 'function' ? cardName(c) : c.name);
+    const kw = c => (typeof cardKw1 === 'function' ? cardKw1(c) : String(c.kw).split(' · ')[0]);
+    const sumTxt = K.sum(sum);
+
+    /* 일본어 「大丈夫 · 丈夫 · 工夫」의 「夫」가 「배우자」로 잡히는 경우를 걸러 낸다(앱의 대상 사전은 그대로 둔다) */
+    let target = S.target || null;
+    if (lang === 'ja' && target && target.ja === '配偶者' && !/夫|旦那|奥さん|妻|嫁|配偶者/.test(String(q).replace(/大丈夫|丈夫|工夫/g, ''))) target = null;
+    /* M11 은 대상이 사람일 때만(회사 · 직장은 사람이 아니다) */
+    const aboutPerson = (!!target && target.ko !== '지금 회사') || ev.catKey === 'love' || ev.catKey === 'relation';
+
+    const todoRaw = cond && typeof CARD_TODO !== 'undefined' && CARD_TODO[cond.name] ? pick(lang, CARD_TODO[cond.name][0], CARD_TODO[cond.name][1], CARD_TODO[cond.name][2]) : '';
+    const todo = cond ? (todoRaw ? K.todo(todoRaw) : X.todoFallback) : '';
+    /* 판정 상자가 이름을 부르는 카드와 같은 카드 — 「막고 있다」는 말은 막는 카드일 때만 */
+    const drag = score === 1 ? (down[0] || [...picks].sort((a, b) => a.pol - b.pol)[0]) : (down[0] || picks[2]);
+    const dragTxt = X.drag({card: cname(drag), block: drag.pol < 0});
+    const noTxt = tail => X.no({score, drag: dragTxt, tail});
+    let box = null, sumNames = null, m8 = '', m11done = false;
+    const sumNote = cls ? X.sumNote[cls] : '';
+
+    /* M1 질문을 되받고, 질문 뒤의 마음까지 받는다 */
+    const head = S.sub ? pick(lang, S.sub.noun, S.sub.nounEn, S.sub.nounJa) : target ? pick(lang, target.ko, target.en, target.ja) : '';
+    const m1 = A.m1({head: head || '', time: S.time ? pick(lang, S.time.ko, S.time.en, S.time.ja) : '', emo: S.emo ? pick(lang, S.emo.ko, S.emo.en, S.emo.ja) : ''});
+    /* 예·아니오가 아닌 질문에 안전 분류가 걸리면 되받는 문단에 이어서 먼저 말해 둔다(결론은 바로 다음 문단) */
+    if (cls && qtype !== 'yesno') P.push({dev: 'M1·안전', t: m1 + (lang === 'ja' ? '' : ' ') + X.pre[cls]});
+    else P.push({dev: 'M1', t: m1});
+
+    if (qtype === 'yesno' && cls === 'third') {
+      /* 다른 사람의 사실 · 마음 — 예·아니오로 답하지 않는다. 분위기와 확인하는 방법까지만(M11) */
+      P.push({dev: 'M2', t: X.third.m2});
+      P.push({dev: 'M3', t: X.third.m3({sumTxt})});
+      P.push({dev: 'M11', t: X.third.m11({mood: Math.sign(gate.pol)})});
+      m11done = true;
+      m8 = X.third.m8;
+      box = Object.assign({hideAdv: true}, X.third.box);
+    } else if (qtype === 'yesno' && cls === 'pro') {
+      /* 건강 · 법 · 큰돈 — 하라 / 하지 말라로 말하지 않는다. 마음의 준비 쪽만 */
+      const ready = X.pro.ready[score];
+      P.push({dev: 'M2', t: X.pro.m2});
+      P.push({dev: 'M3', t: X.pro.m3({ready, sumTxt})});
+      P.push({dev: 'M4·M5', t: score >= 2 ? (cond ? X.pro.cond({card: cname(cond), todo}) : X.pro.free) : X.pro.low});
+      m8 = X.pro.m8;
+      box = Object.assign({hideAdv: true}, X.pro.box(ready));
+    } else if (qtype === 'yesno' && cls === 'brk') {
+      /* 되돌리기 어려운 결정 — 대신 정하지 않는다. 낮은 판정에서도 「권하지 않아요」「다시 고르는 게 먼저」까지만 */
+      P.push({dev: 'M2', t: X.brk.m2({score, neg: neg && REAL_NEG.test(String(q))})});
+      P.push({dev: 'M3', t: X.brk.m3({sumTxt})});
+      P.push({dev: 'M4·M5', t: score >= 2 ? (cond ? X.brk.cond({card: cname(cond), todo}) : X.brk.free) : noTxt(X.brk.tail)});
+      if (baseScore !== score) P.push({dev: 'M6', t: X.brk.m6(baseScore < score)});
+      P.push({dev: 'M7', t: X.brk.m7(score)});
+      m8 = X.brk.m8;
+      box = Object.assign({hideAdv: true}, X.brk.box(score));
+    } else if (qtype === 'yesno') {
+      const be = kind === 'be' && !neg;
+      /* M2 결론 먼저 + M3 실제 점수를 말로 — 될지를 물었으면 허락하는 말을 쓰지 않고, 「하지 말까」로 물었으면 판정 상자와 같은 말 */
+      const hd = neg ? X.neg[score] : be ? X.outcome[score] : V;
+      P.push({dev: 'M2·M3', t: A.m23({V: hd, sumTxt, band: be && sum >= 5 ? X.beBand : K.band(sum)})});
+      if (be) sumNames = [0, 1, 2, 3].map(i => X.outcome[i].name);
+
+      /* M4 "근데" — 걸리는 것 하나를 숨기지 않는다 + M5 조건부 */
+      if (score === 3 && cond) P.push({dev: 'M4·M5', t: A.m45top({card: cname(cond), todo})});
+      else if (score === 2 && cond) P.push({dev: 'M4·M5', t: A.m45cond({card: cname(cond), todo})});
+      else if (score >= 2) P.push({dev: 'M4·M5', t: be ? X.beFree : A.m45free()});
+      else P.push({dev: 'M4·M5', t: noTxt(be ? X.tailBe : score === 0 ? X.tail0 : X.tail1)});
+
+      /* M14 모든 근거가 같은 말을 하면 그 사실을 말한다 — 카드가 답을 바꾸지 않았을 때만 */
+      if (score === 3 && baseScore === score && ev.pts && ev.pts.saju >= 1 && ev.pts.astro && ev.pts.num && down.length === 0) P.push({dev: 'M14', t: A.m14()});
+
+      /* M6 카드가 답을 바꿨다면 그 사실을 풀어서 말한다(모순을 그대로 두지 않는다) */
+      if (baseScore !== score) P.push({dev: 'M6', t: baseScore < score
+        ? (score === 3 && be ? X.m6topBe : A.m6({up: true, top: score === 3}))
+        : (score === 0 ? X.m6down0 : A.m6({up: false}))});
+
+      /* M7 '될까'와 '하는 게 좋을까'를 나눈다 */
+      P.push({dev: 'M7', t: be ? X.m7be({advise: X.outcome[score].advise}) : A.m7({V})});
+      /* M8 오늘 할 것은 하나 — 카드가 먼저 하라고 한 일이 있으면 그것, 낮은 판정이면 움직임이 아니라 준비 */
+      m8 = score <= 1 ? X.m8prep(score) : cond ? X.m8cond : '';
+    } else if (qtype === 'when') {
+      /* M13 시기 — 날짜가 아니라 '그 무렵의 흐름'. 맞는 때가 없으면 없다고 말한다 */
+      P.push({dev: 'M2·M13', t: ev.tpKr ? (cls ? X.whenYesCls({tp: ev.tpKr}) : A.whenYes({tp: ev.tpKr})) : A.whenNo()});
+      P.push({dev: 'M4·M5', t: A.whenBut()});
+    } else if (qtype === 'open') {
+      /* 상태를 묻는 질문 — 판정 대신 지금 자리와 흐름(나아지는 쪽인지)을 먼저 말한다 */
+      const first = picks[0], last = picks[2];
+      P.push({dev: 'M2·M3', t: A.open1({first: cname(first), kw1: kw(first), trend: Math.sign(last.pol - first.pol)})});
+      P.push({dev: 'M4·M5', t: A.open2({gate: cname(gate), kw2: kw(gate)})});
+    }
+    /* 둘 가운데 하나를 묻는 질문(choice)은 판정 상자가 이미 어느 쪽인지 말한다 — 되받기와 한계만 붙인다 */
+
+    /* M11 사람이 걸린 질문 — 상대 쪽은 '분위기'까지만 말하고 단정하지 않는다 */
+    if (aboutPerson && !m11done && qtype !== 'choice') P.push({dev: 'M11', t: A.m11({mood: Math.sign(gate.pol)})});
+
+    /* M8 오늘 할 것 하나 + M9 지켜볼 것 하나 */
+    if (qtype !== 'choice') {
+      const microRaw = pick(lang, ev.micro, ev.microEN, ev.microJA) || K.microFallback;
+      P.push({dev: 'M8·M9', t: m8 || (cls ? X.m8cls : A.m89({micro: String(microRaw).trim().replace(/[.。]$/, '')}))});
+    }
+
+    /* M10 한계를 말한다 */
+    P.push({dev: 'M10', t: A.m10()});
+
+    /* 둘 가운데 하나를 묻는 질문에 안전 분류가 걸리면 「어느 쪽」이라고 답한 상자도 바꾼다 */
+    if (cls && qtype === 'choice') box = Object.assign({hideAdv: true}, X.choiceBox[cls]);
+
+    const text = P.map(p => p.t).join('\n\n');
+    const html = `<div class="combo rv-lead">${P.map(p => `<p class="pb" data-rv="${p.dev}">${p.t}</p>`).join('')}</div>`;
+    return {lang, paras: P, html, text, cls, kind, box, sumNote, sumNames};
+  }
+
+  /* 답 카드 마무리(영어 · 일본어 화면) — 위의 연결 코드가 한국어 문장으로만 찾는 곳을 그 언어의 문장으로 맞춘다. 숫자 · 판정은 그대로 */
+  const NEG_PRE = ['You asked "should I not?", but the energy right now helps you do it.', '「やめておこうか」とのご質問ですが、今の気は「する」方を後押ししています。'];
+  function tidyCard(a) {
+    const wrap = document.getElementById('askAnswers'), card = wrap && wrap.firstElementChild, o = a.out, ja = a.lang === 'ja';
+    if (!card) return;
+    const adv = card.querySelector('.fadvice');
+    if (adv && a.qtype === 'yesno' && !o.box) {
+      /* 「하지 말까」로 물었을 때 앞에 붙는 한 줄과 판정 문장 — 첫머리가 이미 같은 말을 했다 */
+      const baseAdv = verdictLines(a.score, a.ev, a.picks, a.polSum).adv;
+      let h = adv.innerHTML.trim();
+      NEG_PRE.forEach(p => { if (h.startsWith(p)) h = h.slice(p.length).trim(); });
+      if (h.startsWith(baseAdv)) h = h.slice(baseAdv.length).trim();
+      if (h !== adv.innerHTML.trim()) adv.innerHTML = h;
+      if (!adv.textContent.trim()) adv.style.display = 'none';
+    }
+    /* 점수표의 「합계」 줄 — 답의 이름을 첫머리와 같은 말로(숫자는 그대로) */
+    const why = [...card.querySelectorAll('.combo')].find(el => el.innerHTML.includes(ja ? '<b>合計</b>' : '<b>Total</b>'));
+    if (why && o.sumNote) why.innerHTML = why.innerHTML.replace(ja ? /(<b>合計<\/b> — [^<]*?点。)[\s\S]*$/ : /(<b>Total<\/b> — [^<]*? = -?\d+\.)[\s\S]*$/, '$1' + (ja ? '' : ' ') + o.sumNote);
+    else if (why && o.sumNames) {
+      const VD = ja ? VERDICTS_JA : VERDICTS_EN, qo = ja ? ['「', '」'] : ['“', '”'];
+      [0, 1, 2, 3].forEach(i => { why.innerHTML = why.innerHTML.split(qo[0] + VD[i].t + qo[1]).join(qo[0] + o.sumNames[i] + qo[1]); });
+    }
+  }
+
+  /* ───────────── 리더 B — 「궁합」 총평 ─────────────
+     받는 값: {me, gN, total, grade, bonds, rubs, nk1, nk2, same, yearOnly} — 이름 · 등급 · 역할은 앱이 그 언어로 만든 값.
+     me 는 한국어 방식('○○ 님' 또는 빈 값)으로 온다 — 이름만 꺼내 그 언어의 호칭을 붙인다. */
+  function gungIn(lang, K, c, opt) {
+    const G = K.gung, P = [];
+    const strip = t => String(t).replace(/<[^>]+>/g, '').replace(/\s+([.。])/g, '$1').trim();
+    let my = c.myName !== undefined && c.myName !== null ? String(c.myName) : String(c.me || '').replace(/\s*님$/, '');
+    if (my === '당신' || NO_NAME.includes(my)) my = '';
+    const me = G.me(clean(my));
+    const wrap = () => ({lang, paras: P, text: P.map(p => p.t).join('\n\n'),
+      /* 기존 총평 문단과 같은 모양(.fadvice) 하나 안에 문단을 넣는다 — 줄(위 테두리)은 한 번만 */
+      html: `<div class="fadvice rv-gung">${P.map((p, i) => `<p class="pb"${i ? '' : ' style="margin-top:0"'} data-rv="${p.dev}">${p.t}</p>`).join('')}</div>`});
+    /* 역할 이름이 한국어로 넘어왔으면 그 문단은 건너뛴다(한국어 낱말이 섞이지 않게) */
+    const okNk = v => !!v && !/[가-힣]/.test(String(v));
+    if (c.yearOnly) {
+      /* 태어난 해만 아는 상대 — 점수가 없으므로 관계의 이름과 한계를 같은 뼈대로 짧게 */
+      P.push({dev: 'M2·M3', t: G.y1({grade: strip(c.grade)})});
+      if (okNk(c.nk1)) P.push({dev: 'M11', t: G.y11({gN: c.gN, me, nk1: c.nk1})});
+      P.push({dev: 'M4·M5', t: G.y45()});
+      P.push({dev: 'M8·M9', t: G.y89()});
+      P.push({dev: 'M10', t: G.m10()});
+      return wrap();
+    }
+    /* M2·M3 결론 먼저 + 점수의 뜻을 바로잡는다(다섯 구간) */
+    P.push({dev: 'M2·M3', t: G.p1({grade: strip(c.grade), total: c.total, lvl: G.lvl(c.total)})});
+    /* M11 두 사람의 기본값 — 서로에게 어떤 사람인지. 같은 역할이면 같다고 말한다 */
+    if (okNk(c.nk1) && okNk(c.nk2)) P.push({dev: 'M11', t: c.same ? G.same({nk1: c.nk1}) : G.m11({gN: c.gN, me, nk1: c.nk1, nk2: c.nk2})});
+    /* M12 든든한 것 먼저 */
+    if (c.bonds && c.bonds.length) P.push({dev: 'M12', t: G.bond({t: strip(c.bonds[0].t)})});
+    /* M4 "근데" + 탓하지 않기 + M5 조건부 */
+    if (c.rubs && c.rubs.length) {
+      const first = c.rubs[0].adv ? (strip(c.rubs[0].adv).match(/^[^.。]*/) || [''])[0].trim() : '';   // 첫 문장만
+      P.push({dev: 'M4·M5', t: G.rub({t: strip(c.rubs[0].t), adv: first || G.advFallback})});
+    } else P.push({dev: 'M4·M5', t: G.norub()});
+    /* M8·M9 다음에 해 볼 것 하나 */
+    P.push({dev: 'M8·M9', t: G.m89()});
+    /* M10 한계 */
+    P.push({dev: 'M10', t: G.m10()});
+    return wrap();
+  }
+
+  /* ───────────── 연결 — 화면 언어에 따라 고른다 ───────────── */
+
+  const packOf = (lang, part) => (!coreTri && PACKS[lang] && PACKS[lang][part]) || null;
+
+  W.rvOpening = function (R, opt) {
+    opt = opt || {};
+    const lang = langOf(opt);
+    const R2 = Object.assign({}, R, {myName: clean(R && R.myName)});
+    const K = packOf(lang, 'A');
+    if (K) return openingIn(lang, K, R2, opt);
+    return base.opening ? base.opening(R2, opt) : EMPTY();
+  };
+
+  W.rvAskLead = function (q, ev, score, picks, polSum, opt) {
+    opt = opt || {};
+    const lang = langOf(opt);
+    if (!coreTri && isCrisis(q)) return crisisOut(lang);
+    const K = packOf(lang, 'B');
+    if (K && K.safe) {
+      const out = askIn(lang, K, q, ev, score, picks, polSum, opt);
+      lastAsk = {out, lang, score, ev, picks, polSum, qtype: opt.qtype || 'yesno'};
+      return out;
+    }
+    return base.ask ? base.ask(q, ev, score, picks, polSum, opt) : EMPTY();
+  };
+
+  W.rvGungLead = function (c, opt) {
+    opt = opt || {};
+    const lang = langOf(opt);
+    const K = packOf(lang, 'B');
+    if (K && K.gung && K.gung.y1) return gungIn(lang, K, c || {}, opt);
+    return base.gung ? base.gung(c, opt) : EMPTY();
+  };
+
+  /* 답을 그린 뒤 — 영어 · 일본어 화면에서만 답 카드를 마무리한다(한국어 화면은 위의 연결 코드가 이미 했다) */
+  try {
+    if (typeof finishDraw === 'function') {
+      const _finish = finishDraw;
+      finishDraw = function () {
+        lastAsk = null;
+        const r = _finish.apply(this, arguments);
+        const a = lastAsk; lastAsk = null;
+        try { if (a && a.lang !== 'ko' && a.out.html && !a.out.crisis) tidyCard(a); } catch (e) { console.warn('rvLang', e); }
+        return r;
+      };
+    }
+    /* 「이 질문은 이렇게 읽었어요」 칩은 한국어 화면의 것 — 카드를 고르는 도중에 언어를 바꾸면 가려 둔다 */
+    const sw = document.getElementById('langSwitch');
+    if (sw) sw.addEventListener('click', () => { const el = document.getElementById('rvRead'); if (el) el.hidden = typeof LANG !== 'undefined' && LANG !== 'ko'; });
+  } catch (e) { console.warn('rvLang', e); }
+})();
+/* =====================================================================
+   SAN · English — the two readers' sentences (영어 문장)
+   - 이 파일에는 영어 문장만 있다. 문장을 조립하는 코드는 rv-lang.js 에 있다.
+   - A = 리더 A(통합 리딩 첫 화면 「리더의 말」), B = 리더 B(「하늘에 묻기」 답의 첫머리 · 「궁합」 총평 · 위기 표현 안내)
+   - 한국어를 직역한 것이 아니라, 같은 순서(D1~D14 · M1~M14)를 영어로 다시 쓴 것이다. 규칙: en-ja-guide.md
+   - 붙이는 자리: 본문 스크립트 끝 `applyLang();` 앞(rv-lang.js 와 함께). 전역 이름은 window.RV_PACKS 하나만 쓴다.
+   ===================================================================== */
+(function (P) {
+  P.en = {
+
+    /* ── 리더 A — 「리더의 말」 ── */
+    A: {
+      label: 'From your reader',
+      n: h => (h ? 'eight' : 'six'),
+      el: [
+        {k: 'Wood',  nat: 'the force that starts things and reaches outward', season: 'spring'},
+        {k: 'Fire',  nat: 'the force that shows itself and warms things up', season: 'summer'},
+        {k: 'Earth', nat: 'the force that takes things in and holds steady',  season: 'a turn of the season'},
+        {k: 'Metal', nat: 'the force that cuts away and finishes things',     season: 'autumn'},
+        {k: 'Water', nat: 'the force that soaks in and takes things in',      season: 'winter'}
+      ],
+      ilgan: {
+        갑: {img: "a tall tree that keeps growing straight up", base: "A tree's whole job is to grow upward, right?", so: "So staying in one place for too long makes you restless. You breathe easier when you can feel you're a little further along than yesterday.", inner: "Can I still grow from here?", good: "the drive to see things through to the end", hard: "a stubbornness that would rather snap than bend", back: "A tree doesn't grow overnight. But whatever it has grown, it keeps."},
+        을: {img: "a vine that bends but does not break", base: "A vine doesn't stand up straight — it winds its way up, right?", so: "So instead of meeting things head-on, you're good at finding the way around. You look soft, but your staying power is the toughest kind.", inner: "Do I really have to fight this? I can just go around.", good: "the adaptability to survive anywhere", hard: "losing your own shape while fitting in with everyone else", back: "Pick the right thing to lean on, and a vine climbs higher than anything."},
+        병: {img: "the midday sun", base: "The sun can't really hide, right?", so: "So you get noticed wherever you are, and what you like and don't like shows on your face. You light people up — and you find it hard to sit quietly by yourself.", inner: "If I don't step up, the room goes flat.", good: "a warmth that heats up everyone around you", hard: "burning through everything by yourself and going out first", back: "The sun sets every day. It has to set to rise again."},
+        정: {img: "a candle that lights one spot", base: "A candle can't light a whole field, but nothing warms what's close to it better, right?", so: "So you give your heart deeply — to one person rather than many, to one thing rather than a wide range.", inner: "This person really needs me.", good: "a care so fine it can carry one person through", hard: "a heart that flickers hard at a small draft", back: "A candle is small. In a dark room, it's all you need."},
+        무: {img: "a big mountain that stays where it is", base: "A mountain doesn't move first, right?", so: "So you're not easily shaken, and people come to lean on you. The other side of that: once you've decided something, changing it takes a long time.", inner: "If I wobble, everything wobbles.", good: "a steadiness everyone can lean on", hard: "growing heavy alone because you can't say it's hard", back: "A mountain just stays put, and people still come to it."},
+        기: {img: "the soil of a field that grows whatever is planted", base: "A field takes in whatever you plant and raises it, right?", so: "So once something is in your care — a person or a job — you look after it to the end. You keep things running without making a show of it.", inner: "If I don't take care of it, who will?", good: "a care that makes anything grow", hard: "tending everyone else's crop while your own field sits empty", back: "Even a field needs a season of rest to grow well the next year."},
+        경: {img: "solid iron, hammered into shape", base: "Iron is hard, and once it takes a shape it doesn't change easily, right?", so: "So when something feels right you push, and when it doesn't you cut it off cleanly. You don't waste words, and you're loyal.", inner: "Do it properly, or don't do it at all.", good: "the decisiveness that gets things finished", hard: "words that come out sharp and hurt the people closest to you", back: "The more iron is hammered, the more useful it becomes."},
+        신: {img: "a well-cut jewel", base: "A jewel only shines after it's been cut and polished, right?", so: "So letting things slide doesn't come easily to you. A tiny flaw nobody else notices looks the biggest to you.", inner: "It's not ready to show anyone yet.", good: "a level of finish nobody else can match", hard: "cutting yourself more sharply than anyone else would", back: "A jewel is already a jewel. It doesn't need more cutting to become one."},
+        임: {img: "the deep, wide sea", base: "The sea takes in whatever water flows into it, right?", so: "So your thinking has a wide reach, and most things don't startle you. You run deep, and you don't show all of it.", inner: "I can hold this much.", good: "a breadth that can hold almost anything", hard: "churning alone, with no one knowing what has piled up inside", back: "Even when the waves are rough, the deep part of the sea stays still."},
+        계: {img: "clear morning dew", base: "Dew settles without a sound, right?", so: "So you notice things quickly — even the mood nobody put into words. Even when you're quiet, your thoughts keep flowing underneath.", inner: "They didn't say it, but I can feel it.", good: "a sensitivity that picks up what people feel", hard: "taking on other people's feelings until you feel heavy", back: "Dew is small, but it's there again every single morning."}
+      },
+      func: {
+        비겁: {name: 'the force on your side', gloss: 'pride · stamina · your own will',
+          many: "you know your own mind and don't sway easily. The other side of that: you tend to think “I'll just do it myself” and end up carrying everything alone",
+          none: "The strength to hold out on your own doesn't fill up by itself. Having one person firmly on your side, and time that is only yours, makes things much easier"},
+        식상: {name: 'the force that puts things out', gloss: 'expression · making · words',
+          many: "when an idea comes, you need to get it out, and you make things fast. The other side of that: the next idea arrives before you've finished the last one",
+          none: "The way out for what's inside you doesn't open by itself. Pick one channel — writing, talking, making something — and that's enough"},
+        재성: {name: 'the force that gathers', gloss: 'money · results · a sense for what is real',
+          many: "you have a good sense for what's real, and you look first at “so what do I actually get out of this?” The other side of that: there's always a lot to manage, so your hands are always full",
+          none: "Holding on to results doesn't happen by itself. Just writing down the numbers and the deadlines where you can see them changes a lot"},
+        관성: {name: 'the force that gives structure', gloss: 'responsibility · rules · belonging · deadlines',
+          many: "you see whatever you take on through to the end. The other side of that: even things nobody asked of you start to feel like “things I have to do,” so your shoulders are always heavy",
+          none: "There's no built-in frame that tells you “this far is enough.” So you have to make your own standards, and it gets much easier when a person or a deadline sets the finish line for you"},
+        인성: {name: 'the force that fills you up', gloss: 'learning · thinking · rest · receiving',
+          many: "you look into things and think them through before you move. The other side of that: with so much thinking, the start button gets pressed late",
+          none: "Receiving and resting don't happen by themselves. Don't feel sorry about being helped, and put rest in your schedule like an appointment"}
+      },
+      year: {
+        비견: {say: "I want to do this on my own now.", feel: "You may notice other people's opinions landing less than before, and yourself digging in more", use: "This luck comes in so you can practice standing on your own", subj: "standing on your own", past: "Stop leaning on others — I'll do it myself.", rx: "I'd love for you to start one thing you've been putting off — something that's yours — under your own name", min: "even thirty minutes a day on something that is nobody's work but yours is enough"},
+        겁재: {say: "If I just sit here, my share will disappear.", feel: "You may compare yourself more and feel rushed", use: "It's a year for practicing how to use your competitive streak as fuel without letting it choose the direction", subj: "protecting what is yours", past: "Why am I the only one losing out?", rx: "I'd love for you to sleep on any decision that sends a lot of money out the door", min: "just staying away from guarantees and lending is enough"},
+        식신: {say: "I want to make something — anything.", feel: "Your hands get itchy, and you're drawn to eating well and enjoying yourself", use: "It's a year where what you make is what stays. If you don't use this luck, it just passes as eating and resting", subj: "making things steadily", past: "This is more fun than I expected.", rx: "I'd love for you to make one small thing every week and put it out there", min: "finishing just one thing a month is enough"},
+        상관: {say: "This isn't right, is it?", feel: "Things you used to put up with get harder to put up with, and set rules may start to feel tight", use: "It's a year when you can see what needs fixing. If it only comes out as words, it turns into arguments; if it comes out as a proposal or a piece of work, it turns into skill", subj: "saying it once it's polished", past: "Why does everyone do it this way?", rx: "I'd love for you to write down what you want to say, and send it the next day", min: "just holding your reply for a day when you're angry is enough"},
+        편재: {say: "Maybe I should go bigger.", feel: "Chances show up here and there, so you feel excited and busy", use: "It's a year that opens up as much as you get out and meet people. If you stay home, it just goes by", subj: "choosing instead of grabbing everything", past: "Should I try this too? And that?", rx: "I'd love for you to pick just one of the offers that come in and take it all the way", min: "just wrapping up one thing you're already doing before starting something new is enough"},
+        정재: {say: "I want to build this up bit by bit.", feel: "It's not thrilling, but you feel settled", use: "It's a year where what you do steadily adds up exactly as it is", subj: "looking after what you have", past: "It wasn't a lot, but it did add up.", rx: "I'd love for you to write down what comes in and what goes out, where you can see it, for just one month", min: "setting up a single automatic transfer is enough"},
+        편관: {say: "Why is everything landing on me at once?", feel: "You may feel chased, or like you're sitting an exam", use: "Even hard luck has a use. It comes in to slow you down and to filter out what is too much", subj: "holding on while putting things down", past: "Why does all the work come to me?", rx: "I'd love for you to stop trying to do everything well, and choose the one thing you will protect", min: "just protecting your sleep is enough"},
+        정관: {say: "I want to really find my place now.", feel: "There's more responsibility, so your shoulders feel heavy — and a sense of being recognized comes along with it", use: "It's a year when you get a place and a name. The more you keep to what was agreed, the more your reputation builds", subj: "holding the place you were given", past: "So now I have things I'm responsible for.", rx: "I'd love for you to take one job you've been given and finish it cleanly, all the way", min: "just being on time is enough"},
+        편인: {say: "I need to think by myself for a while.", feel: "Seeing people starts to feel like a chore, and you want to dig into things alone", use: "It's a year when you see what others don't. It's well spent on going deep by yourself — study, or a skill", subj: "going deep", past: "I can't be bothered — I just want to be alone.", rx: "I'd love for you to pick one thing you've wanted to learn and dig into it for just three months", min: "keeping one evening a week free of plans is enough"},
+        정인: {say: "I'd like to lean on someone for once.", feel: "The wish to rest, and to have someone look after you, grows", use: "It's a year when helpers show up. This luck is telling you to practice receiving", subj: "receiving and resting", past: "I wish someone would help.", rx: "I'd love for you to accept an offer of help just once, without turning it down", min: "just saying “thank you” instead of “I'm fine” is enough"}
+      },
+      t: {
+        d1: c => `${c.name ? `${c.name}, you're like ` : "You're like "}${c.I.img}. ${c.I.base} ${c.I.so} Somewhere in the back of your mind, there's probably always a quiet voice saying, “${c.I.inner}”`,
+        d3: c => `This isn't something to fix — it's simply the shape you were born with. When it's working well, it shows up as ${c.I.good}. When you're worn out, it turns into ${c.I.hard}. They're two faces of the same trait, so you can't keep one and throw away the other.`,
+        d4: c => `Of the ${c.n} letters in your chart, ${c.el.k} shows up the most — ${c.max} times. By nature, ${c.el.k} is ${c.el.nat}, and for you it plays the part of “${c.role}” (${c.gloss}). So ${c.many}.`,
+        d5: c => `On the other hand, there's no ${c.el.k} at all. That doesn't mean you can't do it. It means this part doesn't run by itself, so it needs looking after on purpose. For you, ${c.el.k} is “${c.role}.” ${c.none}.`,
+        d6: c => `Let's start with last year (${c.year - 1}). Looking back, there were probably moments when you thought, “${c.prev.past}” If one comes to mind, that was the energy in the air that year.`,
+        d789: c => {
+          let s = `In seasons, this year (${c.year}) is ${c.season}.`;
+          if (c.mode === 'new') s += ` But your chart never had any ${c.yel.k}, right? Energy you didn't have is arriving through luck, so it's normal for it to feel unfamiliar and heavy — like using a muscle you haven't used. It's also a year when an empty spot gets filled.`;
+          else if (c.mode === 'much') s += ` Your chart already has plenty of ${c.yel.k}, and more comes in this year. It's a year that overflows easily, so taking away suits it better than adding.`;
+          return `${s} If I had to put this year into one line, it's “${c.cur.say}” ${c.cur.feel}. Nothing is wrong with you — that's simply how this year's luck feels. ${c.cur.use}.`;
+        },
+        d10: c => `Your birth chart points to “${c.th[0]},” your birth-date number to “${c.th[1]},” and the stars to “${c.th[2]}.” ` + (c.same === 1 ? "All three say the same thing. This one I can say with confidence." : c.same === 2 ? "Two of the three point the same way. You can take this fairly seriously." : "The three say slightly different things. When that happens, treat the birth chart as the main line, and hear the other two as “so there's this side too.”"),
+        d1112: c => `So this year's subject is “${c.cur.subj}.” ${c.cur.rx}. If you don't have room for that, ${c.cur.min}. That alone is plenty for using this year's luck.`,
+        d1314: c => `Next year (${c.year + 1}) moves toward “${c.next.say}” ${c.hard ? "So if you take a moment this year to tidy up what you've started, next year gets much lighter." : "What you don't finish this year can carry over, so there's no need to rush."} ${c.I.back}`,
+        foot: c => `Basis · the letter of your birth day (${c.stemH}) · the count of the five energies · the energy arriving in ${c.year - 1}–${c.year + 1} · this year's three readings`
+      }
+    },
+
+    /* ── 리더 B — 질문 답의 첫머리 · 궁합 총평 · 위기 표현 안내 ── */
+    B: {
+      verdict: {
+        3: {head: "The short answer: yes — you can do it now.",          tone: "It leans clearly toward yes",                          advise: "My advice points the same way. Rather than asking again, try moving, even in a small way."},
+        2: {head: "The short answer: yes, you can — with one condition.", tone: "It leans toward yes, but without much room to spare",  advise: "My advice is: go ahead, but keep the order."},
+        1: {head: "The short answer: not now.",                          tone: "It hasn't crossed over to yes yet",                    advise: "It isn't “no” — it's “not yet.” My advice isn't to give up, but to get ready."},
+        0: {head: "The short answer: I wouldn't go this way.",           tone: "Almost nothing is holding this path up right now",     advise: "Before asking when, it's worth choosing again which way to go."}
+      },
+      band: sum => sum >= 5 ? "the “you can do it now” range" : sum >= 3 ? "the “yes, with a condition” range" : sum >= 1 ? "the “still early” range" : "the “look at the direction again” range",
+      sum: sum => sum < 0 ? `below zero (${sum})` : `${sum} point${sum === 1 ? '' : 's'}`,
+      /* 앱의 영어 권고문은 "please ..." 로 시작하는 소문자 절 — 명령 대신 "It would help to ..." 로 받는다 */
+      todo: t => { const s = String(t).trim(); return /^please\s+/i.test(s) ? 'It would help to ' + s.replace(/^please\s+/i, '') : s.charAt(0).toUpperCase() + s.slice(1); },
+      microFallback: 'please finish the smallest piece of this today',
+      ask: {
+        m1: c => (c.head ? `Your question is about ${c.head}${c.time ? ` (${c.time})` : ''}.` : "Let me take your question just as you asked it.")
+          + (c.emo ? ` I can also see ${c.emo} riding along with it. There's nothing odd about feeling that.` : ''),
+        m23: c => `${c.V.head} Adding up all the grounds gives ${c.sumTxt}, which is ${c.band}. ${c.V.tone}.`,
+        m45top: c => `But there's one thing worth taking care of alongside it: the “${c.card}” card. ${c.todo}. If you do it too, things go more smoothly; if you skip it, you take a small detour.`,
+        m45cond: c => `But one thing is in the way: the “${c.card}” card. ${c.todo}. If you do this first, it goes the way the answer says; if you skip it, you get stuck once more in the same spot.`,
+        m45free: () => `But there's no need to bet big all at once. If you start with something small that you can undo, it goes the way the answer says; if you bet big from the start, you may wobble.`,
+        m45no: c => `But this isn't ${c.score === 1 ? "a “no.”" : "a “you got it all wrong.”"} The “${c.card}” card is simply blocking the road right now. When the situation changes, the answer changes too. If you push now, you only spend your strength; if you wait one beat, you lose less.`,
+        m14: () => `Your birth chart, the stars, your birth numbers and the cards you drew all say the same thing. It isn't common to get the same answer from every side.`,
+        m6: c => c.up
+          ? (c.top ? `One more thing. Going by your birth chart, the stars and your birth numbers alone, the answer was lower — the cards you drew raised it. It means the flow right now is giving you an extra push, so “now” matters. If you put it off, that push fades.`
+                   : `One more thing. Going by your birth chart, the stars and your birth numbers alone, the answer was lower — the cards you drew raised it. Read an answer like this as “the direction is right; take the pace slowly.”`)
+          : `One more thing. Going by your birth chart, the stars and your birth numbers alone, the answer was higher — the cards you drew lowered it. Read an answer like this as “the ground is fine; it's this moment that's the catch.”`,
+        m7: c => `That's the answer to “will it work?” Whether it's a good idea is a separate question. ${c.V.advise}`,
+        whenYes: c => `The short answer: “${c.tp}” fits best. That isn't one exact date — it means the flow around then runs the same way as what you asked about.`,
+        whenNo: () => `The short answer: between today and the end of this year, I can't see a time that truly fits yet. I can't say there is one when there isn't. I've noted the closest one below instead.`,
+        whenBut: () => `But “when” isn't a date that arrives if you just wait. If you're ready when that time comes, it really becomes the time; if you aren't, even a good time simply passes.`,
+        open1: c => `The short answer: this isn't a yes-or-no question, so let me tell you where you are and which way things are moving. The card in your “now” spot is “${c.first}” (${c.kw1}), and the flow is ${c.trend > 0 ? "heading somewhere lighter than now" : c.trend < 0 ? "getting a little heavier if it's left as it is" : "not going to change much by itself — so one thing needs changing"}.`,
+        open2: c => `But knowing the reason and getting unstuck are two different things. The second card, “${c.gate}” (${c.kw2}), shows what to untangle first. If you do that first, things get lighter; if you leave it, the same feeling comes round once more.`,
+        m11: c => `You're probably wondering about the other person, too. Going by the second card, ${c.mood > 0 ? "their door doesn't look closed" : c.mood < 0 ? "something on their side still looks unsettled" : "they don't seem to have made up their mind yet"}. But this is only a mood read from a card — I can't tell you what's in their heart. There's one way to check: ask them directly, or listen to what they bring up first the next time you meet.`,
+        m89: c => `For today, one thing is enough: ${c.micro}. And for one week, watch just one thing — when you think about this, does your chest feel lighter or heavier? That will be your best clue the next time you ask. If something here made you think “that's not quite it,” narrow the question down and ask again.`,
+        m10: () => `This answer reads the flow as it is now. It doesn't lock in a fixed future. If things change, it's fine to ask again.`
+      },
+      gung: {
+        me: () => 'you',
+        lvl: t => t >= 70 ? "a lot fits without effort" : t >= 55 ? "about half fits without effort, and half is for the two of you to work out" : "less fits without effort than needs working out",
+        p1: c => `The short answer: the two of you are “${c.grade}.” ${c.total} points isn't a grade for good or bad. It shows how much fits even when you do nothing. For you two, ${c.lvl}.`,
+        m11: c => `${c.gN} is “${c.nk1}” for you, and you are “${c.nk2}” for ${c.gN}. You play different parts for each other. So even over the same thing, what each of you expects can differ.`,
+        bond: c => `First, what holds steady: ${c.t}. This isn't something you built by trying — it was there from the start, so it doesn't vanish on hard days.`,
+        rub: c => `But to be honest, there's a catch too: ${c.t}. It's nobody's fault — it comes from the two of you having different defaults. ${c.adv}. If you do that, the same argument gets shorter; if you leave it, the same scene keeps repeating.`,
+        advFallback: "It helps to talk through small hurts as they come up",
+        norub: () => `But having no big clash marked doesn't mean there's no homework. A couple that never argues also gets fewer chances to say what hurt. If you say the small hurts as they come, things stay comfortable; if you let them pile up, they arrive all at once.`,
+        m89: () => `The next time you clash, try just one thing: say to yourself, “ah, this is that scene,” and simply name it. That alone makes your words come out one beat later.`,
+        m10: () => `Compatibility doesn't decide what becomes of you two. It only tells you ahead of time where it's easy and where it catches. What you do with it is up to the two of you.`
+      },
+      /* Checked 2026-11-18: 988 Suicide & Crisis Lifeline (US) · Samaritans 116 123 (UK & Ireland) · findahelpline.com (directory by country) */
+      crisis: [
+        "What you wrote stays with me. This isn't a question for cards.",
+        "If things are this heavy, I hope you won't carry it alone. There are people you can talk to right now. In the US, call or text 988 (Suicide & Crisis Lifeline, 24 hours). In the UK and Ireland, call Samaritans on 116 123 (free, 24 hours). Anywhere else, findahelpline.com lists free helplines by country. If you are in immediate danger, call your local emergency number.",
+        "Even one line to someone close — “I'm having a hard time right now” — is enough. We can look for the answer together after that."
+      ]
+    }
+  };
+})(window.RV_PACKS = window.RV_PACKS || {});
+/* =====================================================================
+   SAN · 日本語 — 二人の鑑定士のことば (일본어 문장)
+   - 이 파일에는 일본어 문장만 있다. 문장을 조립하는 코드는 rv-lang.js 에 있다.
+   - A = 리더 A(통합 리딩 첫 화면 「리더의 말」), B = 리더 B(「하늘에 묻기」 답의 첫머리 · 「궁합」 총평 · 위기 표현 안내)
+   - 한국어를 직역한 것이 아니라, 같은 순서(D1~D14 · M1~M14)를 일본어로 다시 쓴 것이다. 규칙: en-ja-guide.md
+   - 붙이는 자리: 본문 스크립트 끝 `applyLang();` 앞(rv-lang.js 와 함께). 전역 이름은 window.RV_PACKS 하나만 쓴다.
+   ===================================================================== */
+(function (P) {
+  P.ja = {
+
+    /* ── 리더 A — 「리더의 말」 ── */
+    A: {
+      label: '鑑定士のことば',
+      n: h => (h ? '八つ' : '六つ'),
+      el: [
+        {k: '木', nat: '新しく始めて、のびていく力',     season: '春'},
+        {k: '火', nat: '外にあらわして、あたためる力',   season: '夏'},
+        {k: '土', nat: '受けとめて、ささえる力',         season: '季節の変わり目'},
+        {k: '金', nat: '切り分けて、仕上げる力',         season: '秋'},
+        {k: '水', nat: 'しみこんで、受け入れる力',       season: '冬'}
+      ],
+      ilgan: {
+        갑: {img: 'まっすぐのびる大きな木', base: '木は、上へのびるのが仕事ですよね', so: 'だから、同じ場所にじっとしていると、かえって息がつまります。昨日より少しでも進んでいると感じられるとき、楽に息ができる人です', inner: 'ここから、もっと大きくなれるかな', good: '最後までやりぬく推進力', hard: '曲がることができず、ひとりで折れてしまうがんこさ', back: '木は一日では育ちません。でも、一度育った分は、小さくなりません'},
+        을: {img: '曲がっても折れないつる草', base: 'つる草は、まっすぐ立つのではなく、巻きつきながらのぼっていきますよね', so: 'だから、正面からぶつかるより、回り道を見つけるのが上手です。やわらかく見えても、ねばり強さはいちばんの人です', inner: 'わざわざ戦わなくても、回っていけばいい', good: 'どこでも生きていける適応力', hard: 'まわりに合わせるうちに、自分の形をなくしてしまうこと', back: 'つる草は、寄りかかる場所さえうまく選べば、だれよりも高くのぼります'},
+        병: {img: '真昼の太陽', base: '太陽は、かくれることができませんよね', so: 'だから、どこにいても目立ち、好ききらいがそのまま顔に出ます。まわりを明るくするかわりに、ひとりで静かにしているのは苦手な人です', inner: '自分が動かないと、場が明るくならない', good: 'まわりをあたためる熱さ', hard: 'ひとりで燃えつきて、先に消えてしまうこと', back: '太陽は毎日しずみます。しずむから、次の日またのぼれます'},
+        정: {img: 'ひとつの場所を照らすろうそくの火', base: 'ろうそくは、広くは照らせなくても、近くをいちばんあたたかく照らしますよね', so: 'だから、たくさんの人よりひとりの人に、広いことよりひとつのことに、深く心を注ぐ人です', inner: 'この人には、自分が必要だ', good: 'ひとりの人をささえる細やかさ', hard: '小さな風にも、心が大きくゆれること', back: 'ろうそくは小さくても、暗い部屋では、それひとつで十分です'},
+        무: {img: 'どっしりと動かない大きな山', base: '山は、自分から先には動きませんよね', so: 'だから、かんたんにはゆれず、人が寄りかかりに来るほうです。そのかわり、一度決めたことを変えるには時間がかかります', inner: '自分がゆれたら、みんながゆれてしまう', good: 'みんなが寄りかかれる安心感', hard: 'つらいと言えずに、ひとりで重くなること', back: '山はじっとしていても、人のほうから会いに来ます'},
+        기: {img: '何でも育てる畑の土', base: '畑は、何を植えても受けとめて、育てますよね', so: 'だから、人でも仕事でも、まかされたら最後まで世話をします。目立たないところで、暮らしを回している人です', inner: '自分がやらなければ、だれがやるの', good: '何でも育てる世話の力', hard: '人のものばかり育てて、自分の畑が空になること', back: '畑も、ひと季節休むと、次の年によく育ちます'},
+        경: {img: 'たたいて形をつくる、かたい鉄', base: '鉄はかたくて、一度決まった形はなかなか変わりませんよね', so: 'だから、これだと思えば進み、ちがうと思えばすぐに切ります。言葉にむだがなく、義理がたい人です', inner: 'やるならきちんと。やらないなら、やらない', good: '物ごとを終わらせる決断力', hard: '言葉がするどく出て、近くの人を傷つけること', back: '鉄は、たたかれるほど使える形になります'},
+        신: {img: 'ていねいにみがかれた宝石', base: '宝石は、けずってみがいてこそ光りますよね', so: 'だから、いいかげんに済ませることがなかなかできません。ほかの人は気づかない小さな傷が、自分の目にはいちばん大きく見える人です', inner: 'このままでは、まだ人に見せられない', good: 'だれにもまねできない仕上がり', hard: '自分をいちばんするどくけずってしまうこと', back: '宝石は、もう宝石です。もっとけずらなければ宝石になれない、ということはありません'},
+        임: {img: '広くて深い海', base: '海は、どんな水が流れこんでも受けとめますよね', so: 'だから、考えの幅が広く、たいていのことではおどろきません。心が深く、すべてを見せるわけではない人です', inner: 'これくらいなら、自分で受けとめられる', good: '何でもつつみこむ広さ', hard: '心にたまったものをだれにも知られないまま、ひとりでゆれること', back: '海は波が立っていても、深いところは静かです'},
+        계: {img: '澄んだ朝つゆ', base: '朝つゆは、音もなくおりてきますよね', so: 'だから、気づくのが早く、言葉にならない空気まで読みとります。静かにしていても、心の中では考えがずっと流れている人です', inner: '言われなくても、ぜんぶ伝わってくる', good: '人の気持ちに気づく細やかさ', hard: '人の感情までぜんぶ受けとって、重くなること', back: '朝つゆは小さくても、毎朝かならずおります'}
+      },
+      func: {
+        비겁: {name: '自分の味方になる力', gloss: '自尊心・体力・自分の意志',
+          many: '自分の考えがはっきりしていて、人の言葉にあまりゆれません。そのかわり、「自分でやったほうが早い」と、ひとりで全部かかえやすいです',
+          none: 'ひとりでふんばる力は、自然にはたまりません。味方になってくれる人がひとりいること、ひとりで使える時間があることで、ずっと楽になります'},
+        식상: {name: '外に出す力', gloss: '表現・ものづくり・言葉',
+          many: '思いついたらすぐ外に出したくなり、つくるのも速いです。そのかわり、仕上げる前に次の考えが先に来ます',
+          none: '心の中にあるものを外に出す出口は、自然には開きません。書く、話す、つくる。出す道をひとつ決めておけば大丈夫です'},
+        재성: {name: '手に入れる力', gloss: 'お金・成果・現実を見る目',
+          many: '現実を見る目がよく、何をするにも「それで、何が残るのか」を先に見ます。そのかわり、気を配ることが多く、いつも手がふさがっています',
+          none: '成果を手ににぎることは、自然にはできません。数字としめ切りを、目に見えるように書いておくだけで、ずいぶん変わります'},
+        관성: {name: 'わくをつくる力', gloss: '責任・ルール・所属・しめ切り',
+          many: 'まかされたことは最後まで責任を持ちます。そのかわり、だれにも言われていないことまで「やらなければ」と感じて、肩がいつも重くなります',
+          none: '「ここまで」を決めてくれるわくが、自分の中にありません。だから基準を自分でつくることになり、終わりを決めてくれる人やしめ切りがあると、ずっと楽になります'},
+        인성: {name: '満たしてくれる力', gloss: '学び・考え・休み・受けとること',
+          many: 'じゅうぶんに調べて、考えてから動きます。そのかわり、考えが多くて、スタートのボタンを押すのがおそくなります',
+          none: '受けとること、休むことは、自然にはできません。助けてもらうことを申しわけなく思わず、休む時間を予定として入れておけば大丈夫です'}
+      },
+      year: {
+        비견: {say: 'これからは、自分の力でやってみたい', feel: '人の言葉が前ほど入ってこなくなり、がんこになったように感じるかもしれません', use: 'ひとりで立つ練習をするために入ってくる運です', subj: 'ひとりで立つこと', past: '人にたよらず、自分でやろう', rx: '先のばしにしてきた「自分のこと」をひとつ、自分の名前で始めてみてほしいです', min: '一日30分、だれのためでもない自分のことに使えれば十分です'},
+        겁재: {say: 'じっとしていたら、自分の分がなくなりそう', feel: '人とくらべることがふえて、気持ちが急ぐかもしれません', use: '競う気持ちを力としては使い、行き先までは決めさせない。その練習をする年です', subj: '自分の分を守ること', past: 'どうして自分だけ損をしているのだろう', rx: '大きなお金が出ていく決断は、一日おいてからにしてほしいです', min: '保証人になることと、お金を貸すことをさけるだけで十分です'},
+        식신: {say: '何でもいいから、つくりたい', feel: '手がうずうずして、食べること、楽しむことに気持ちが向きます', use: 'つくった分だけ残る年です。この運を使わないと、食べて休むだけで過ぎていきます', subj: 'こつこつつくること', past: 'これ、思ったよりおもしろい', rx: '小さくてもいいので、毎週ひとつ、つくって外に出してみてほしいです', min: '月にひとつ、最後まで仕上げるだけで十分です'},
+        상관: {say: 'これは、ちょっとちがうのでは', feel: '前はがまんできたことが、がまんしにくくなり、決まったわくが息苦しく感じられるかもしれません', use: '直すところがよく見える年です。言葉だけで出ると言い争いになり、提案や作品として出ると実力になります', subj: 'みがいてから伝えること', past: 'どうしてみんな、こうするのだろう', rx: '言いたいことは一度文字にして、次の日に送ってみてほしいです', min: 'かっとなったとき、返事を一日おくだけで十分です'},
+        편재: {say: 'もう少し、大きくやってみようか', feel: 'あちこちにチャンスが見えて、気持ちがうきうきして、いそがしくなります', use: '人に会った分だけ開ける年です。家にいるだけだと、そのまま過ぎていきます', subj: '全部つかまずに、選ぶこと', past: 'あれもこれも、やってみようか', rx: '入ってくる話の中からひとつだけ選んで、最後まで進んでみてほしいです', min: '新しく始める前に、今していることをひとつ片づけるだけで十分です'},
+        정재: {say: 'こつこつ、積み上げていきたい', feel: '大きな楽しさはなくても、気持ちが落ち着きます', use: 'こつこつ続けた分が、そのまま積み上がる年です', subj: '管理すること', past: '大きくはないけれど、たまるにはたまった', rx: '入ってくるお金と出ていくお金を、ひと月だけ目に見えるように書いてみてほしいです', min: '自動の積み立てをひとつ決めるだけで十分です'},
+        편관: {say: 'どうして、やることが一度に集まるのだろう', feel: '追われている感じ、試験を受けているような感じがするかもしれません', use: 'つらい運にも役目があります。スピードを落として、無理なものをふるい落とすために入ってくる運です', subj: 'ふんばりながら、へらすこと', past: 'どうして自分にばかり、仕事が集まるのだろう', rx: '全部うまくやろうとせず、かならず守るものをひとつだけ決めてほしいです', min: 'ねむる時間を守るだけで十分です'},
+        정관: {say: 'そろそろ、ちゃんと自分の場所をつくりたい', feel: '責任がふえて肩は重くなりますが、みとめられる感じもいっしょに来ます', use: '場所と名前ができる年です。決められた約束を守るほど、評判が積み上がります', subj: 'まかされた場所を守ること', past: '自分にも、責任を持つものができた', rx: 'まかされた仕事をひとつ、最後まできれいに仕上げてみてほしいです', min: '約束の時間を守るだけで十分です'},
+        편인: {say: '少し、ひとりで考えたい', feel: '人に会うのがおっくうになり、ひとりで深く調べたくなります', use: 'ほかの人が見ないものが見える年です。勉強や技術のように、ひとりで深めることに使うとよいです', subj: '深くほること', past: '何もかもめんどうで、ひとりでいたい', rx: '学びたかったことをひとつ選んで、三か月だけ深めてみてほしいです', min: '週に一日、夜の予定を空けておくだけで十分です'},
+        정인: {say: '自分も、少しだれかにたよりたい', feel: '休みたい、だれかに気にかけてほしい、という気持ちが大きくなります', use: '助けてくれる人があらわれる年です。受けとる練習をしなさい、という運です', subj: '受けとること、休むこと', past: 'だれか、助けてくれないかな', rx: '「手伝うよ」と言われたら、一度はえんりょせずに受けとってみてほしいです', min: '「大丈夫です」のかわりに「ありがとう」と言うだけで十分です'}
+      },
+      t: {
+        d1: c => `${c.name ? `${c.name}さんは、` : 'あなたは、'}${c.I.img}のような人です。${c.I.base}。${c.I.so}。心のどこかに、いつも「${c.I.inner}」という声があるのではないでしょうか。`,
+        d3: c => `これは直すところではなく、生まれ持った形です。うまく生かせているときは「${c.I.good}」になり、つかれているときは「${c.I.hard}」になります。同じ性質のふたつの顔なので、片方だけを取りのぞくことはできません。`,
+        d4: c => `${c.n}の文字のうち、${c.el.k}の気が${c.max}個で、いちばん多いです。${c.el.k}はもともと${c.el.nat}ですが、${c.name ? `${c.name}さんにとっては` : 'この命式では'}「${c.role}」(${c.gloss})の役目をします。だから、${c.many}。`,
+        d5: c => `反対に、${c.el.k}の気はひとつもありません。ないからできない、ということではありません。自然にはできないので、意識して補う役目だ、という意味です。${c.name ? `${c.name}さんにとって、` : 'この命式では、'}${c.el.k}は「${c.role}」です。${c.none}。`,
+        d6: c => `まず、去年(${c.year - 1}年)から見てみます。少し「${c.prev.past}」と感じる年だったのではないでしょうか。思い当たる場面があれば、それがその年に入っていた気です。`,
+        d789: c => {
+          const my = c.name ? `${c.name}さんの命式` : 'あなたの命式';
+          let s = `今年(${c.year}年)は、季節でいえば${c.season}です。`;
+          if (c.mode === 'new') s += `でも、${my}には、もともと${c.yel.k}の気がありませんよね。なかった気が運として入ってくる年なので、使っていなかった筋肉を使うように、なれなくて重く感じるのは自然なことです。そのかわり、空いていた場所がうまる年でもあります。`;
+          else if (c.mode === 'much') s += `${my}には${c.yel.k}の気がすでに多いのに、今年もまた入ってきます。あふれやすい年なので、足すよりへらすほうが合っています。`;
+          return `${s}今年をひとことで言うと、「${c.cur.say}」です。${c.cur.feel}。おかしいことではありません。今年の運は、もともとそう感じる運です。${c.cur.use}。`;
+        },
+        d10: c => `四柱推命は「${c.th[0]}」、誕生日の数字は「${c.th[1]}」、星は「${c.th[2]}」のほうを指しています。` + (c.same === 1 ? '三つとも同じことを言っています。これは、はっきり言えます。' : c.same === 2 ? '三つのうち二つが同じ方向を指しています。かなり信じて聞いてくださって大丈夫です。' : '三つが少しずつちがうことを言っています。こういうときは、四柱推命を大きな流れとして見て、ほかは「こういう面もあるのだな」くらいに聞けば大丈夫です。'),
+        d1112: c => `だから、今年の科目は「${c.cur.subj}」です。${c.cur.rx}。余裕がなければ、${c.cur.min}。それだけでも、今年の運はじゅうぶんに使えています。`,
+        d1314: c => `来年(${c.year + 1}年)は、「${c.next.say}」のほうへ移っていきます。${c.hard ? 'だから、今年広げたことは、今年のうちに一度整理しておくと、来年がずっと軽くなります。' : '今年やりきれなくても続きからできるので、急がなくて大丈夫です。'}${c.I.back}。`,
+        foot: c => `根拠 · 生まれた日の文字 ${c.stemH} · 五つの気の数 · ${c.year - 1}〜${c.year + 1}年に入ってくる気 · 今年の三つの読み`
+      }
+    },
+
+    /* ── 리더 B — 질문 답의 첫머리 · 궁합 총평 · 위기 표현 안내 ── */
+    B: {
+      verdict: {
+        3: {head: '結論から言うと、今、動いて大丈夫です。',                     tone: 'はっきりと「できる」のほうにかたむいています',                       advise: 'おすすめも同じです。これ以上たずねるより、小さくても動いてみるほうです。'},
+        2: {head: '結論から言うと、進めて大丈夫です。ただ、条件がひとつあります。', tone: '「できる」のほうにかたむいていますが、余裕が大きいわけではありません', advise: 'おすすめは「進める。ただし、順番を守って」です。'},
+        1: {head: '結論から言うと、今ではありません。',                         tone: 'まだ「できる」のほうへこえていません',                               advise: '「だめ」ではなく「まだ」です。おすすめは、やめることではなく、準備することです。'},
+        0: {head: '結論から言うと、この方向はおすすめしません。',               tone: '今の道では、ささえてくれるものがほとんどありません',                 advise: '「いつ」より先に、「どちらへ行くか」を選びなおすほうが先です。'}
+      },
+      band: sum => sum >= 5 ? '「今、動いてよい」範囲' : sum >= 3 ? '「条件つきで進める」範囲' : sum >= 1 ? '「まだ早い」範囲' : '「方向を見なおす」範囲',
+      sum: sum => sum < 0 ? `0点より下(${sum}点)` : `${sum}点`,
+      /* 앱의 일본어 권고문은 「…てください」로 끝나는 공손한 부탁 — 그대로 쓴다 */
+      todo: t => String(t).trim().replace(/。$/, ''),
+      microFallback: 'いちばん小さなことをひとつ、今日のうちに終わらせてみてください',
+      ask: {
+        m1: c => (c.head ? `${c.time ? `「${c.time}」の` : ''}「${c.head}」についてのご質問ですね。` : 'ご質問を、そのまま受けとって見てみます。')
+          + (c.emo ? `ご質問の中に、${c.emo}もいっしょに入っているのが見えます。そう感じるのは、おかしいことではありません。` : ''),
+        m23: c => `${c.V.head}根拠をすべて足すと${c.sumTxt}で、これは${c.band}です。${c.V.tone}。`,
+        m45top: c => `でも、ひとつだけ、いっしょに気をつけるとよいことがあります。「${c.card}」のカードです。${c.todo}。いっしょにすれば、よりなめらかに進み、とばせば、少し回り道になります。`,
+        m45cond: c => `でも、気になることがひとつあります。「${c.card}」のカードです。${c.todo}。これを先にすれば、そのまま進むほうになり、とばせば、同じ場所でもう一度止まります。`,
+        m45free: () => `でも、一度に大きく賭ける必要はありません。もどせる小さなことから始めれば、そのまま進むほうになり、最初から大きく賭ければ、ゆれるかもしれません。`,
+        m45no: c => `でも、これは${c.score === 1 ? '「だめ」という答えではありません' : '「全部まちがい」という答えではありません'}。「${c.card}」のカードが、今の道をふさいでいるだけです。状況が変われば、答えも変わります。今おし進めれば、力を使うだけになり、ひと呼吸おけば、失うものが少なくなります。`,
+        m14: () => `四柱推命も、星も、誕生日の数字も、お引きになったカードも、同じことを言っています。どこから見ても同じ答えになるのは、よくあることではありません。`,
+        m6: c => c.up
+          ? (c.top ? `もうひとつ。四柱推命・星・誕生日の数字だけなら、これより低い答えでしたが、お引きになったカードが答えを上げました。今の流れが、とくに後押ししているという意味です。だから「今」が大切です。先にのばすと、この力はぬけていきます。`
+                   : `もうひとつ。四柱推命・星・誕生日の数字だけなら、これより低い答えでしたが、お引きになったカードが答えを上げました。こういう答えは「方向は合っている。速さはゆっくり」と読めば大丈夫です。`)
+          : `もうひとつ。四柱推命・星・誕生日の数字だけなら、これより高い答えでしたが、お引きになったカードが答えを下げました。こういう答えは「土台は悪くない。今この時期が引っかかっている」と読めば大丈夫です。`,
+        m7: c => `ここまでが「できるか」への答えです。「したほうがよいか」は、別に見ます。${c.V.advise}`,
+        whenYes: c => `結論から言うと、「${c.tp}」がいちばん合っています。日付をひとつ決めるのではなく、そのころの流れが、ご質問のことと同じ方向だという意味です。`,
+        whenNo: () => `結論から言うと、今日から今年の終わりまでに、ぴったり合う時期はまだ見えません。ないものを、あるとは言えません。そのかわり、いちばん近い時期を下に書いておきました。`,
+        whenBut: () => `でも、「いつ」は、待っていれば来る日付ではありません。そのとき準備ができていれば、そのころが本当に「その時」になり、準備がなければ、よい時期もそのまま過ぎていきます。`,
+        open1: c => `結論から言うと、これは「はい・いいえ」で答える質問ではありません。だから、今いる場所と流れをお伝えします。今の場所に置かれたカードは「${c.first}」(${c.kw1})で、流れは${c.trend > 0 ? '今より軽くなるほうへ向かっています' : c.trend < 0 ? 'そのままにすると、少し重くなるほうです' : 'ひとりでに大きく変わる流れではありません。だから、ひとつ変えてあげることが必要です'}。`,
+        open2: c => `でも、理由がわかることと、ほどけることはちがいます。二枚目のカード「${c.gate}」(${c.kw2})が、先にほどくものを教えています。それを先にすれば、軽くなるほうになり、そのままにすれば、同じ気持ちがもう一度来ます。`,
+        m11: c => `相手のことも気になりますよね。二枚目のカードで見ると、あちらは${c.mood > 0 ? '扉がしまっている雰囲気ではありません' : c.mood < 0 ? 'まだ整理できていないことが残っている雰囲気です' : 'まだ気持ちを決められていない雰囲気です'}。ただ、これはカードで見た雰囲気です。その人の気持ちを、私が決めつけることはできません。たしかめる方法はひとつです。直接たずねるか、次に会ったとき、その人が先に話すことを聞いてみることです。`,
+        m89: c => `今日は、ひとつだけで大丈夫です。${c.micro}。そして一週間、ひとつだけ見ていてください。このことを思いうかべたとき、気持ちが軽くなるか、重くなるかです。それが、次にたずねるときのいちばんよい手がかりになります。読みながら「それはちがう」と思うところがあったら、質問をもう少ししぼって、もう一度たずねてみてください。`,
+        m10: () => `この答えは、今の流れを見たものです。決まった未来を言い切るものではありません。状況が変わったら、もう一度たずねても大丈夫です。`
+      },
+      gung: {
+        me: n => n ? `${n}さん` : 'あなた',
+        lvl: t => t >= 70 ? '自然に合うところが多いほうです' : t >= 55 ? '自然に合うところと、合わせていくところが半分ずつくらいです' : '自然に合うところより、合わせていくところのほうが多いです',
+        p1: c => `結論から言うと、おふたりは「${c.grade}」です。${c.total}点は、良い悪いをつけた点数ではありません。何もしなくても合うところがどれくらいあるかを見たものです。おふたりは、${c.lvl}。`,
+        m11: c => `${c.gN}は${c.me}にとって「${c.nk1}」で、${c.me}は${c.gN}にとって「${c.nk2}」です。おたがいに受け持つ役目がちがいます。だから、同じことでも、期待するものがちがうことがあります。`,
+        bond: c => `まず、心強いところからです。${c.t}です。これは努力してつくったものではなく、もともとあるものなので、つらい日にもなくなりません。`,
+        rub: c => `でも、正直に言うと、引っかかるところもあります。${c.t}です。どちらかが悪いのではなく、おふたりのもともとの形がちがうから起きることです。${c.adv}。そうすれば、同じけんかが短くなり、そのままにすれば、同じ場面がくり返されます。`,
+        advFallback: '小さなさびしさは、そのときに言葉にしておくとよいでしょう',
+        norub: () => `でも、大きくぶつかるしるしがないからといって、宿題がないわけではありません。けんかのない関係は、さびしさを伝える機会も少なくなります。小さなさびしさをそのとき伝えれば、ずっとおだやかでいられ、ためておけば、一度に大きく来ます。`,
+        m89: () => `次にぶつかったとき、ひとつだけやってみてください。心の中で「あ、今があの場面だ」と名前をつけるだけです。それだけで、言葉がひと呼吸おくれて出てきます。`,
+        m10: () => `相性は、おふたりがどうなるかを決めるものではありません。どこが楽で、どこが引っかかるかを、前もって教えてくれるだけです。どうするかは、おふたりが決めることです。`
+      },
+      /* 確認日 2026-11-18: 厚生労働省「まもろうよ こころ」電話相談窓口 — よりそいホットライン 0120-279-338 · #いのちSOS 0120-061-338 (どちらも24時間・無料) */
+      crisis: [
+        '書いてくださった言葉が、気にかかっています。これは、カードで答える質問ではありません。',
+        'とてもつらいのなら、ひとりでかかえないでほしいです。今すぐ話せる場所があります。よりそいホットライン 0120-279-338(24時間・無料)、#いのちSOS 0120-061-338(24時間・無料)です。命の危険があるときは、119番か110番に電話してください。',
+        '身近な人ひとりに「今、少しつらい」とひとこと送るだけでも大丈夫です。答えは、そのあとでいっしょに探しても、おそくありません。'
+      ]
+    }
+  };
+})(window.RV_PACKS = window.RV_PACKS || {});
+/* =====================================================================
+   SAN · English · 日本語 — 이 페이지에 맞춰 더한 문장(위의 영어 · 일본어 문장 묶음에 얹는다)
+   - B.safe : 될지를 묻는 질문 · 「하지 말까」 · 대신 정하지 않는 질문(다른 사람의 사실과 마음 / 건강 · 법 · 큰돈 / 되돌리기 어려운 결정)의 결론 문단
+   - B.gung : 점수의 뜻 다섯 구간 · 같은 역할 · 태어난 해만 아는 상대
+   - 말투 규칙은 en-ja-guide.md 1 · 3장. 숫자를 지어내지 않는다.
+   ===================================================================== */
+(function (P) {
+  if (P.en && P.en.B) {
+    const B = P.en.B, cap = s => { s = String(s); return s.charAt(0).toUpperCase() + s.slice(1); };
+    const WATCH = "And for one week, watch just one thing — when you think about this, does your chest feel lighter or heavier? That will be your best clue the next time you ask.";
+    const up6 = "One more thing. Going by your birth chart, the stars and your birth numbers alone, the answer was lower — the cards you drew raised it.";
+    const down6 = "One more thing. Going by your birth chart, the stars and your birth numbers alone, the answer was higher — the cards you drew lowered it.";
+    B.safe = {
+      todoFallback: "It would help to sort out what that card points to first",
+      /* 될지를 묻는 질문 — 허락하는 말(“you can do it now”) 대신 쓴다 */
+      outcome: {
+        3: {head: "The short answer: it looks like a yes.",                      tone: "It leans clearly toward yes",                         name: "Looks like a yes",                  advise: "My advice: keep up the preparation you're already doing."},
+        2: {head: "The short answer: it looks like a yes — with one condition.", tone: "It leans toward yes, but without much room to spare", name: "Looks like a yes, with a condition", advise: "My advice: carry on as you are, and take care of the one condition first."},
+        1: {head: "The short answer: it doesn't look like a yes yet.",           tone: "It hasn't crossed over to yes yet",                   name: "Not a yes yet",                     advise: "It isn't “no” — it's “not yet.” My advice isn't to give up, but to get ready."},
+        0: {head: "The short answer: it looks hard along this path.",            tone: "Almost nothing is holding this path up right now",    name: "Hard along this path",              advise: "Before asking when, it's worth choosing again which way to go."}
+      },
+      beBand: "the “looks like a yes” range",
+      beFree: "But “looks like a yes” doesn't mean it happens by itself. If you keep up what you've been doing, it goes the way the answer says; if you let go, the answer changes.",
+      m6topBe: `${up6} It means the flow right now is giving you an extra push. It's a good time to keep your preparation going while that push is there.`,
+      m6down0: `${down6} Read an answer like this as “there's ground under you, but this particular road isn't carrying the weight.”`,
+      m7be: c => `That's the answer to “will it work?” What would be a good idea to do about it is a separate question. ${c.advise}`,
+      /* 「Should I not …?」 — 판정 상자(no = go ahead / yes = hold back)와 같은 말 */
+      neg: {
+        3: {head: "The short answer: to “should I not?”, the answer is no — you can go ahead as it is.",          tone: "Going ahead has clear support"},
+        2: {head: "The short answer: to “should I not?”, the answer is no — you can go ahead, with one condition.", tone: "Going ahead has support, but without much room to spare"},
+        1: {head: "The short answer: to “should I not?”, the answer is yes — it's better to hold back for now.",    tone: "Going ahead doesn't have enough support yet"},
+        0: {head: "The short answer: to “should I not?”, the answer is yes — I wouldn't go this way.",              tone: "Almost nothing is holding this path up right now"}
+      },
+      /* 낮은 판정의 “But” — 「막고 있다」는 말은 막는 카드가 나왔을 때만 */
+      drag: c => c.block ? `The “${c.card}” card is simply blocking the road right now.` : `No blocking card came up. The “${c.card}” card is one that asks you to do one thing first.`,
+      no: c => `But this isn't ${c.score === 1 ? "a “no.”" : "a “you got it all wrong.”"} ${c.drag} When the situation changes, the answer changes too. ${c.tail}`,
+      tail1: "If you push now, you only spend your strength; if you wait one beat, you lose less.",
+      tail0: "If you keep pushing as it is, you only spend your strength; if you choose the direction again, you lose less.",
+      tailBe: "If you add one more piece of preparation, the answer can change; if you leave things as they are, you get the same answer.",
+      /* 오늘 할 것 — 낮은 판정이면 움직임이 아니라 준비 하나 */
+      m8prep: s => `For today, one thing is enough — and it's getting ready, not moving. ${s === 1 ? "Write down the one thing you most want to protect in this" : "Write down two other roads you could take besides this one"}. ${WATCH}`,
+      m8cond: `For today, one thing is enough: the one I mentioned above. ${WATCH}`,
+      m8cls: `For today, one thing is enough: write down, in one sentence, what weighs on you most right now. ${WATCH}`,
+      whenYesCls: c => `The short answer: on your side of things, “${c.tp}” fits best. That isn't one exact date — it means the flow around then runs the same way as what you asked about.`,
+      /* 예·아니오가 아닌 질문에 안전 분류가 걸렸을 때 먼저 하는 말 */
+      pre: {
+        pro: "This is something to decide with a professional. Here I'll only look at how ready your mind is. I'd love for you to read the timing and the cards below that way, too.",
+        brk: "This is a decision that's hard to undo, so I won't make it for you. What follows reads the flow. The deciding is yours.",
+        third: "Cards can't know another person's heart or the facts about them. What follows isn't about that person. It's about the flow on your side and the mood between you."
+      },
+      sumNote: {
+        third: "This score shows how much the flow on your side is behind you. It doesn't turn into a yes or a no about the other person.",
+        pro: "This score looks at how ready your mind is. Whether to do it is decided with a professional, so it doesn't turn into a yes or a no.",
+        brk: "This score shows how much the flow is behind this. It's a decision that's hard to undo, so it doesn't turn into a yes or a no."
+      },
+      /* 다른 사람의 사실 · 마음 */
+      third: {
+        m2: "The short answer: this isn't a yes-or-no question I can answer. What another person is really doing or feeling isn't something cards can know. All I can read from here is the mood.",
+        m3: c => `Adding up all the grounds gives ${c.sumTxt}. That number is about the flow on your side, not about them.`,
+        m11: c => `Going by the second card, the mood between you two is ${c.mood > 0 ? "one where there's still room to talk" : c.mood < 0 ? "one where something still hasn't been said" : "one that hasn't settled either way"}. But this is only a mood read from a card. It doesn't mean that's the fact, and I can't tell you what's in their heart. If you ask them directly, you get something real to stand on; if you only guess, the guess keeps growing.`,
+        m8: "For today, one thing is enough: write down, in one sentence, what you want to check. And for one week, watch just one thing — not your guesses, but what they actually say and do.",
+        box: {vh: "Mood", vt: "Cards can't know the facts about another person", vd: "I won't answer yes or no — only the mood between you, and a way to check"}
+      },
+      /* 건강 · 법 · 큰돈 */
+      pro: {
+        ready: ["almost nothing in the flow is holding you up right now", "the flow hasn't come over to your side yet", "the flow is on your side, but without much room to spare", "the flow is on your side right now"],
+        m2: "The short answer: this isn't a yes-or-no question for cards. It's something to decide with a professional — a doctor, a lawyer or a financial adviser. So I'll only look at how ready your mind is, and I won't say “do it” or “don't.”",
+        m3: c => `In terms of readiness, ${c.ready}. Adding up all the grounds gives ${c.sumTxt}. I hope you won't decide on that number alone.`,
+        cond: c => `But there's one thing to take care of first, on the inside: the “${c.card}” card. ${c.todo}. If you do that, you'll be steadier when you hear the explanation; if you skip it, the same worry comes round once more.`,
+        free: "But even when the flow is with you, the decision is a separate matter. If you decide after hearing the professional out, you'll be steadier; if you let your feelings run ahead, you'll miss things.",
+        low: "But this isn't a “don't.” It means your mind can easily get rushed right now. If you decide after hearing the professional out, you'll be steadier; if you decide in a hurry, the same worry comes round once more.",
+        m8: "For today, one thing is enough: write down three things to ask the professional. And watch just one thing — after you've heard the explanation, does your chest feel lighter or heavier?",
+        box: ready => ({vh: "Prep", vt: "This is something to decide with a professional", vd: `Here I only look at how ready your mind is — ${ready}`})
+      },
+      /* 되돌리기 어려운 결정 */
+      brk: {
+        m2: c => ["The short answer: I wouldn't settle this as things stand. Choosing again comes first.",
+          "The short answer: I wouldn't settle this right now.",
+          "The short answer: the flow isn't standing in the way of this decision — but one condition comes with it.",
+          "The short answer: the flow isn't standing in the way of this decision."][c.score]
+          + " And this is something that's hard to undo. So I won't decide it for you. That part is yours."
+          + (c.neg ? " You asked “should I not?”, but here I'll speak from the side of making that decision." : ""),
+        m3: c => `Adding up all the grounds gives ${c.sumTxt}. That number shows how much the flow is behind this.`,
+        cond: c => `But there's one thing to take care of before you decide: the “${c.card}” card. ${c.todo}. If you do this first, you'll be steadier whichever way you decide; if you skip it, the same doubt comes back after you've decided.`,
+        free: "But “not in the way” doesn't mean “hurry.” If you decide after weighing it fully, you'll be steadier; if you decide in a rush, the same doubt comes back.",
+        tail: "If you decide now, you only spend your strength; if you wait one beat, you lose less.",
+        m6: up => up ? `${up6} Read an answer like this as “nothing is in the way, and there's no reason to rush either.”`
+                     : `${down6} Read an answer like this as “the ground is fine; something catches on deciding right now.”`,
+        m7: s => `That's only the answer to “will it work?” Whether it's a good idea is a separate question, and cards can't decide that one for you. ${s >= 2 ? "This answer won't disappear if you don't decide today." : s === 1 ? "My advice isn't to decide, but to get ready." : "My advice isn't to decide, but to look again at the roads open to you."}`,
+        m8: `You don't have to decide today. For today, one thing is enough: write one line on why you want to do this, and one line on why you're hesitating. ${WATCH}`,
+        box: s => ({vh: "Flow", vt: s >= 2 ? "The flow isn't in the way — the decision is yours" : s === 1 ? "I wouldn't settle this right now — not yet" : "I wouldn't settle this as things stand", vd: "It's hard to undo, so I won't decide it for you with a yes or a no"})
+      },
+      choiceBox: {
+        pro: {vh: "Prep", vt: "This is something to decide with a professional", vd: "I won't say which one — I only look at how ready your mind is"},
+        brk: {vh: "Flow", vt: "I won't decide this one for you", vd: "It's hard to undo, so I won't say which one"},
+        third: {vh: "Mood", vt: "Cards can't know the facts about another person", vd: "I won't say which one — only the mood"}
+      }
+    };
+    /* 궁합 — 다섯 구간 · 같은 역할 · 이름 없는 상대(“your partner”)로 문장이 시작될 때 · 태어난 해만 아는 상대 */
+    const G = B.gung;
+    G.lvl = t => t >= 85 ? "a great deal fits without any effort" : t >= 70 ? "a lot fits without effort" : t >= 55 ? "about half fits without effort, and half is for the two of you to work out" : t >= 40 ? "less fits without effort than needs working out" : "little fits without effort — which makes this a bond where the skill of talking things through matters all the more";
+    G.m11 = c => `${cap(c.gN)} is “${c.nk1}” for you, and you are “${c.nk2}” for ${c.gN}. You play different parts for each other. So even over the same thing, what each of you expects can differ.`;
+    G.same = c => `For each other, the two of you are the same thing: “${c.nk1}.” You're the same kind of person to one another, so it's easy to guess how the other feels. The other side of that: when you both want the same thing at once, one of you has to give way first.`;
+    G.y1 = c => `The short answer: going by birth year alone, the two of you are “${c.grade}.” This reads only the birth-year animals and the energy of that year. It isn't a score.`;
+    G.y11 = c => `The energy of the year ${c.gN} was born in sits, for you, in the seat of “${c.nk1}.” That doesn't mean that's who they are. It means that's the seat they easily end up in between the two of you.`;
+    G.y45 = () => `But a birth year shows only part of the picture. Once the birth month and day go in, this answer often changes. Even if a sign of friction came up, it's nobody's fault. If you take this as a first impression, you can use it lightly; if you take it as a conclusion, you miss things.`;
+    G.y89 = () => `The next time you meet, try just one thing: notice whether you feel more at ease or more tense when you're together.`;
+  }
+
+  if (P.ja && P.ja.B) {
+    const B = P.ja.B;
+    const WATCH = 'そして一週間、ひとつだけ見ていてください。このことを思いうかべたとき、気持ちが軽くなるか、重くなるかです。それが、次にたずねるときのいちばんよい手がかりになります。';
+    const up6 = 'もうひとつ。四柱推命・星・誕生日の数字だけなら、これより低い答えでしたが、お引きになったカードが答えを上げました。';
+    const down6 = 'もうひとつ。四柱推命・星・誕生日の数字だけなら、これより高い答えでしたが、お引きになったカードが答えを下げました。';
+    B.safe = {
+      todoFallback: 'そのカードが示すことを、先に整理してみてください',
+      /* 될지를 묻는 질문 — 허락하는 말(「動いて大丈夫です」) 대신 쓴다 */
+      outcome: {
+        3: {head: '結論から言うと、うまくいくほうです。',             tone: 'はっきりと「できる」のほうにかたむいています',                       name: 'うまくいくほう',           advise: 'おすすめは、今の準備をそのまま続けることです。'},
+        2: {head: '結論から言うと、条件つきで、うまくいくほうです。', tone: '「できる」のほうにかたむいていますが、余裕が大きいわけではありません', name: '条件つきでうまくいくほう', advise: 'おすすめは「今までどおりに。ただし、条件をひとつ先に」です。'},
+        1: {head: '結論から言うと、まだそこまで届いていません。',     tone: 'まだ「できる」のほうへこえていません',                               name: 'まだ届いていない',         advise: '「だめ」ではなく「まだ」です。おすすめは、やめることではなく、準備することです。'},
+        0: {head: '結論から言うと、この方向ではむずかしそうです。',   tone: '今の道では、ささえてくれるものがほとんどありません',                 name: 'この方向ではむずかしそう', advise: '「いつ」より先に、「どちらへ行くか」を選びなおすほうが先です。'}
+      },
+      beBand: '「うまくいく」範囲',
+      beFree: 'でも、うまくいくほうだからといって、ひとりでにそうなるわけではありません。今の準備を続ければ、そのまま進むほうになり、手を止めれば、答えは変わります。',
+      m6topBe: `${up6}今の流れが、とくに後押ししているという意味です。この力があるうちに、準備を続けるとよいです。`,
+      m6down0: `${down6}こういう答えは「土台はある。でも、今選んでいるこの道には力がのらない」と読めば大丈夫です。`,
+      m7be: c => `ここまでが「できるか」への答えです。「どうしたほうがよいか」は、別に見ます。${c.advise}`,
+      /* 「やめておこうか」 — 판정 상자(いいえ = 進めて大丈夫 / はい = やめておく)와 같은 말 */
+      neg: {
+        3: {head: '結論から言うと、「やめておこうか」への答えは「いいえ」です。そのまま進めて大丈夫です。',                 tone: '進めるほうに、はっきりかたむいています'},
+        2: {head: '結論から言うと、「やめておこうか」への答えは「いいえ」です。進めて大丈夫です。ただ、条件がひとつあります。', tone: '進めるほうにかたむいていますが、余裕が大きいわけではありません'},
+        1: {head: '結論から言うと、「やめておこうか」への答えは「はい」です。今は、やめておくほうがよさそうです。',           tone: 'まだ、進めるほうへこえていません'},
+        0: {head: '結論から言うと、「やめておこうか」への答えは「はい」です。この方向はおすすめしません。',                   tone: '今の道では、ささえてくれるものがほとんどありません'}
+      },
+      /* 낮은 판정의 「でも」 — 「ふさいでいる」는 막는 카드가 나왔을 때만 */
+      drag: c => c.block ? `「${c.card}」のカードが、今の道をふさいでいるだけです。` : `ふさぐカードが出たわけではありません。「${c.card}」のカードは、先にすることがひとつあると伝えるカードです。`,
+      no: c => `でも、これは${c.score === 1 ? '「だめ」という答えではありません' : '「全部まちがい」という答えではありません'}。${c.drag}状況が変われば、答えも変わります。${c.tail}`,
+      tail1: '今おし進めれば、力を使うだけになり、ひと呼吸おけば、失うものが少なくなります。',
+      tail0: 'このままおし進めれば、力を使うだけになり、方向を選びなおせば、失うものが少なくなります。',
+      tailBe: '準備をもうひとつ重ねれば、答えは変わることがあり、そのままにすれば、同じ答えになります。',
+      /* 오늘 할 것 — 낮은 판정이면 움직임이 아니라 준비 하나 */
+      m8prep: s => `今日は、ひとつだけで大丈夫です。動くことではなく、準備をひとつです。${s === 1 ? 'このことで、どうしても守りたいことをひとつ、紙に書いてみてください' : 'この道のほかに進める道をふたつ、書いてみてください'}。${WATCH}`,
+      m8cond: `今日は、ひとつだけで大丈夫です。上でお伝えした、そのひとつです。${WATCH}`,
+      m8cls: `今日は、ひとつだけで大丈夫です。今いちばん気にかかっていることを、ひとつの文にして書いてみてください。${WATCH}`,
+      whenYesCls: c => `結論から言うと、あなたの側の流れでは、「${c.tp}」がいちばん合っています。日付をひとつ決めるのではなく、そのころの流れが、ご質問のことと同じ方向だという意味です。`,
+      /* 예·아니오가 아닌 질문에 안전 분류가 걸렸을 때 먼저 하는 말 */
+      pre: {
+        pro: 'これは、専門家と決めることです。ここでは、心の準備のほうだけを見ます。下に出てくる時期やカードも、心の準備の話として読んでほしいです。',
+        brk: 'これは、元にもどしにくい決断です。だから、かわりに決めることはしません。下のお話は流れを見たもので、決めるのはご自分です。',
+        third: 'その人の気持ちや事実は、カードではわかりません。下のお話は、その人のことではなく、あなたの側の流れと、おふたりのあいだの雰囲気を見たものです。'
+      },
+      sumNote: {
+        third: 'この点数は、あなたの側の流れがどれくらいささえているかを見たものです。その人についての「はい・いいえ」にはなりません。',
+        pro: 'この点数は、心の準備を見たものです。するかしないかは専門家と決めることなので、「はい・いいえ」にはなりません。',
+        brk: 'この点数は、流れがどれくらいささえているかを見たものです。元にもどしにくい決断なので、「はい・いいえ」にはなりません。'
+      },
+      /* 다른 사람의 사실 · 마음 */
+      third: {
+        m2: '結論から言うと、これは「はい・いいえ」で答える質問ではありません。その人が実際にどうなのか、どんな気持ちなのかは、カードではわかりません。ここで見えるのは、雰囲気までです。',
+        m3: c => `根拠をすべて足すと${c.sumTxt}です。この点数は、その人のことではなく、あなたの側の流れを見たものです。`,
+        m11: c => `二枚目のカードで見ると、おふたりのあいだは${c.mood > 0 ? '言葉をかわせるすき間が開いている雰囲気です' : c.mood < 0 ? 'まだ言えていない言葉が残っている雰囲気です' : 'どちらにも決まっていない雰囲気です'}。でも、これはカードで見た雰囲気です。事実がそうだという意味ではありません。その人の気持ちを、私が決めつけることはできません。直接たずねれば、たしかな言葉が返ってきますし、想像だけでいれば、不安がふくらんでいきます。`,
+        m8: '今日は、ひとつだけで大丈夫です。たしかめたいことを、ひとつの文にして書いてみてください。そして一週間、ひとつだけ見ていてください。想像ではなく、その人が実際に言ったことと、したことです。',
+        box: {vh: '雰囲気', vt: 'その人のことは、カードではわかりません', vd: '「はい・いいえ」では答えず、おふたりのあいだの雰囲気と、たしかめる方法だけをお伝えします'}
+      },
+      /* 건강 · 법 · 큰돈 */
+      pro: {
+        ready: ['今の流れには、ささえてくれるものがほとんどありません', 'まだ、ささえるほうへこえていません', 'ささえるほうですが、余裕が大きいわけではありません', '今の流れは、ささえるほうです'],
+        m2: '結論から言うと、これは「はい・いいえ」で答える質問ではありません。お医者さんや弁護士、お金の専門家など、専門家と決めることです。ここでは、心の準備のほうだけを見ます。だから「してください」「やめてください」とは言いません。',
+        m3: c => `心の準備として見ると、${c.ready}。根拠をすべて足すと${c.sumTxt}です。この点数だけで、するかしないかを決めないでほしいです。`,
+        cond: c => `でも、心のほうで先にしておくとよいことがひとつあります。「${c.card}」のカードです。${c.todo}。これをしておけば、説明を聞くときにゆれにくくなり、とばせば、同じ心配がもう一度来ます。`,
+        free: 'でも、流れがささえていても、決めることは別です。専門家の説明をすべて聞いてから決めれば、ゆれにくくなり、気持ちだけが先に進めば、見落とすものが出てきます。',
+        low: 'でも、これは「やめなさい」という答えではありません。今は気持ちが急ぎやすい時期だ、という意味です。専門家の説明をすべて聞いてから決めれば、ゆれにくくなり、急いで決めれば、同じ心配がもう一度来ます。',
+        m8: '今日は、ひとつだけで大丈夫です。専門家に聞きたいことを三つ、書いておいてください。そして、ひとつだけ見ていてください。説明を聞いたあと、気持ちが軽くなるか、重くなるかです。',
+        box: ready => ({vh: '準備', vt: '専門家と決めることです', vd: `ここでは心の準備だけを見ます — ${ready}`})
+      },
+      /* 되돌리기 어려운 결정 */
+      brk: {
+        m2: c => ['結論から言うと、今のまま決めることはおすすめしません。選びなおすほうが先です。',
+          '結論から言うと、今決めることはおすすめしません。',
+          '結論から言うと、流れがこの決断をふさいでいるわけではありません。ただ、条件がひとつついています。',
+          '結論から言うと、流れがこの決断をふさいでいるわけではありません。'][c.score]
+          + 'そして、これは元にもどしにくいことです。だから、かわりに決めることはしません。決めるのは、ご自分です。'
+          + (c.neg ? '「しないほうがいいか」というご質問ですが、ここでは、その決断をするほうを基準にお話しします。' : ''),
+        m3: c => `根拠をすべて足すと${c.sumTxt}です。この点数は、流れがどれくらいささえているかを見たものです。`,
+        cond: c => `でも、決める前にしておくとよいことがひとつあります。「${c.card}」のカードです。${c.todo}。これを先にすれば、どちらに決めてもゆれにくくなり、とばせば、決めたあとに同じ迷いがもどってきます。`,
+        free: 'でも、ふさいでいないというのは、急いでよいという意味ではありません。じゅうぶんに考えてから決めれば、ゆれにくくなり、急いで決めれば、同じ迷いがもどってきます。',
+        tail: '今決めれば、力を使うだけになり、ひと呼吸おけば、失うものが少なくなります。',
+        m6: up => up ? `${up6}こういう答えは「ふさいではいない。でも、急ぐ理由もない」と読めば大丈夫です。`
+                     : `${down6}こういう答えは「土台は悪くない。今決めるには引っかかるものがある」と読めば大丈夫です。`,
+        m7: s => `ここまでが「できるか」への答えです。「したほうがよいか」は別に見ますが、それはカードが決められることではありません。${s >= 2 ? '今日決めなくても、この答えはなくなりません。' : s === 1 ? 'おすすめは、決めることではなく、準備することです。' : 'おすすめは、決めることではなく、進める道を選びなおすことです。'}`,
+        m8: `今日は決めなくても大丈夫です。今日は、ひとつだけで十分です。そうしたい理由と、迷っている理由を、一行ずつ書いてみてください。${WATCH}`,
+        box: s => ({vh: '流れ', vt: s >= 2 ? '流れはふさいでいません — 決めるのはご自分です' : s === 1 ? '今決めることはおすすめしません — まだです' : '今のまま決めることはおすすめしません', vd: '元にもどしにくい決断なので、「はい・いいえ」でかわりに決めることはしません'})
+      },
+      choiceBox: {
+        pro: {vh: '準備', vt: '専門家と決めることです', vd: 'どちらとは答えず、心の準備だけを見ます'},
+        brk: {vh: '流れ', vt: 'これは、かわりに決めることはしません', vd: '元にもどしにくい決断なので、どちらとは答えません'},
+        third: {vh: '雰囲気', vt: 'その人のことは、カードではわかりません', vd: 'どちらとは答えず、雰囲気だけを見ます'}
+      }
+    };
+    /* 궁합 — 다섯 구간 · 같은 역할 · 태어난 해만 아는 상대 */
+    const G = B.gung;
+    G.lvl = t => t >= 85 ? '何もしなくても合うところが、とても多いです' : t >= 70 ? '自然に合うところが多いほうです' : t >= 55 ? '自然に合うところと、合わせていくところが半分ずつくらいです' : t >= 40 ? '自然に合うところより、合わせていくところのほうが多いです' : '自然に合うところは少ないです。そのぶん、言葉で合わせていく力が大切なご縁です';
+    G.same = c => `おふたりは、おたがいにとって同じ「${c.nk1}」です。おたがいに同じ種類の人、という意味です。だから、相手の気持ちを想像しやすいです。そのかわり、同じものを同時にほしくなったときは、どちらかが先にゆずることになります。`;
+    G.y1 = c => `結論から言うと、生まれ年で見たおふたりは「${c.grade}」です。これは、干支とその年の気だけを見たものです。点数をつけたものではありません。`;
+    G.y11 = c => `${c.gN}が生まれた年の気は、${c.me}にとって「${c.nk1}」のような場所にあります。その人がそういう人だ、という意味ではありません。おふたりのあいだで、そういう場所に立ちやすい、という意味です。`;
+    G.y45 = () => `でも、生まれ年だけでは、一部しか見えません。生まれた月と日まで入れると、この答えが変わることも多いです。引っかかるしるしが出ていても、どちらかが悪いのではありません。この答えを第一印象くらいに受けとれば、軽く使うことができ、結論として受けとれば、見落とすものが出てきます。`;
+    G.y89 = () => `次に会ったとき、ひとつだけやってみてください。いっしょにいるとき、気持ちが楽になるか、かたくなるかを見ることです。`;
+  }
+})(window.RV_PACKS = window.RV_PACKS || {});
 applyLang();
 </script>
 </body>
