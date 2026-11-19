@@ -1107,7 +1107,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.34.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.34.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -10331,7 +10331,7 @@ function rvOpening(R, opt) {
   P.push({dev: 'D13·D14', t: `내년(${year + 1}년)은 ‘${next.say}’ 쪽으로 넘어가요. ${bridge} ${I.back}.`});
 
   const text = P.map(p => p.t).join('\n\n');
-  const html = `<div class="card rv-opening"><p class="hl-label">리더의 말</p>${P.map(p => `<p data-rv="${p.dev}">${p.t}</p>`).join('')}<p class="small" style="margin-top:10px">근거 · 태어난 날의 글자 ${dk.k}(${dk.h}) · 다섯 기운의 개수 · ${year - 1}~${year + 1}년에 들어오는 기운 · 올해의 세 가지 풀이</p></div>`;
+  const html = `<div class="card rv-opening"><p class="hl-label">한눈에 읽기</p>${P.map(p => `<p data-rv="${p.dev}">${p.t}</p>`).join('')}<p class="small" style="margin-top:10px">근거 · 태어난 날의 글자 ${dk.k}(${dk.h}) · 다섯 기운의 개수 · ${year - 1}~${year + 1}년에 들어오는 기운 · 올해의 세 가지 풀이</p></div>`;
   return {paras: P, html, text};
 }
 
@@ -11364,7 +11364,7 @@ function rvGungLead(c, opt) {
 
     /* ── 리더 A — 「리더의 말」 ── */
     A: {
-      label: 'From your reader',
+      label: 'At a glance',
       n: h => (h ? 'eight' : 'six'),
       el: [
         {k: 'Wood',  nat: 'the force that starts things and reaches outward', season: 'spring'},
@@ -11502,7 +11502,7 @@ function rvGungLead(c, opt) {
 
     /* ── 리더 A — 「리더의 말」 ── */
     A: {
-      label: '鑑定士のことば',
+      label: 'ひと目で読む',
       n: h => (h ? '八つ' : '六つ'),
       el: [
         {k: '木', nat: '新しく始めて、のびていく力',     season: '春'},
