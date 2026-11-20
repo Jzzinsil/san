@@ -1115,7 +1115,7 @@ gtag('config', 'G-L7QPQ5GGL7');
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.36.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.37.0</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -5056,13 +5056,38 @@ const gyeolFormsJA = [
   (a, b) => `${b}を知っている${a}`
 ];
 
+/* E3 · English only — the first-word card: every line names a second fact of the same person.
+   Lens lines: day pillar × birth season · Sun × Moon × Rising (the Moon only when it is sure, as in 「At a glance」) ·
+   the birth-date number's energy (the same number → energy pairing the numerology tab uses) against the day letter.
+   Strong-mark line: the mark's name × this person's season and day letter. Calculation untouched; test people are made up. */
+const HL_NUM_EL = {1: 0, 2: 4, 3: 1, 4: 2, 5: 3, 6: 2, 7: 4, 8: 3, 9: 1, 11: 1, 22: 2, 33: 4};
+const HL_GS_EN = ['friends · rivals', 'expression · skill', 'money · results', 'job · rules', 'learning · help'];
+function hlMoonSure(inp, astro) {
+  if (inp.time) return true;
+  try { const g = inp.geo, a0 = computeAstro(inp.y, inp.m, inp.d, {h: 0, m: 0}, g), a1 = computeAstro(inp.y, inp.m, inp.d, {h: 23, m: 59}, g);
+    return a0.moon.sign === a1.moon.sign && a1.moon.sign === astro.moon.sign; } catch (e) { return false; }
+}
+function hlLensEn(inp, saju, astro, num) {
+  try {
+    const dk = STEMS[saju.day.stem], sun = astro.sun.sign, lp = num.lifePath;
+    const sky = hlMoonSure(inp, astro) ? `${SIGNS_EN[sun]} Sun · ${SIGNS_EN[astro.moon.sign]} Moon${astro.rising ? ` · ${SIGNS_EN[astro.rising.sign]} Rising` : ''}` : `star sign ${SIGNS_EN[sun]}`;
+    const ne = HL_NUM_EL[lp], road = ne === undefined ? '' : `; ${lp} is ${ELEMENTS_EN[ne].k}, the “${HL_GS_EN[(ne - dk.el + 5) % 5]}” side for your ${dk.h}`;
+    return `You in three lines<br>Inborn nature (saju · ${dk.h}${BRANCHES[saju.day.branch].h} day, ${U3A_MW.en[saju.month.branch]}) — <b>${ILGAN_SHORT_EN[dk.k]}</b><br>Everyday character (${sky}) — <b>${SIGN_PLAIN_EN[sun]}</b><br>Main direction in life (birth-date number ${lp}) — <b>the ${NUM_ESSENCE_EN[lp].t}</b>${road}`;
+  } catch (e) {
+    return `You in three lines<br>Inborn nature (saju) — <b>${ILGAN_SHORT_EN[STEMS[saju.day.stem].k]}</b><br>Everyday character (star sign ${SIGNS_EN[astro.sun.sign]}) — <b>${SIGN_PLAIN_EN[astro.sun.sign]}</b><br>Main direction in life (birth-date number ${num.lifePath}) — <b>the ${NUM_ESSENCE_EN[num.lifePath].t}</b>`;
+  }
+}
+function hlSalEn(name, saju) {
+  const dk = STEMS[saju.day.stem], sh = U3A_SHORT.en[dk.k];
+  return ` The ${name} isn’t bad luck. For ${[6, 9].includes(saju.day.stem) ? '' : 'a '}${sh} like you (${dk.h}), it’s a strong force, so what matters is how you use it.`;
+}
 function renderHeadline(inp, saju, astro, num) {
   const el = $('#headline');
   const dk = STEMS[saju.day.stem];
   const u3p = U3B.headPillars();
   const lensLine = L(
     `세 줄로 줄이면<br>타고난 성격(사주) — <b>${ILGAN_SHORT[dk.k]}</b><br>평소 성격(별자리 ${SIGNS[astro.sun.sign].k}) — <b>${SIGN_PLAIN[astro.sun.sign]}</b><br>인생의 큰 방향(생일 숫자 ${num.lifePath}) — <b>${NUM_ESSENCE[num.lifePath].t}</b>`,
-    `You in three lines<br>Inborn nature (saju) — <b>${ILGAN_SHORT_EN[dk.k]}</b><br>Everyday character (star sign ${SIGNS_EN[astro.sun.sign]}) — <b>${SIGN_PLAIN_EN[astro.sun.sign]}</b><br>Main direction in life (birth-date number ${num.lifePath}) — <b>the ${NUM_ESSENCE_EN[num.lifePath].t}</b>`, `三行でまとめると<br>生まれつきの性格(四柱推命)— <b>${ILGAN_SHORT_JA[dk.k]}</b><br>ふだんの性格(星座 ${SIGNS_JA[astro.sun.sign]})— <b>${SIGN_PLAIN_JA[astro.sun.sign]}</b><br>人生の大きな方向(誕生日の数字 ${num.lifePath})— <b>${NUM_ESSENCE_JA[num.lifePath].t}</b>`);
+    (LANG === 'en' ? hlLensEn(inp, saju, astro, num) : ''), `三行でまとめると<br>生まれつきの性格(四柱推命)— <b>${ILGAN_SHORT_JA[dk.k]}</b><br>ふだんの性格(星座 ${SIGNS_JA[astro.sun.sign]})— <b>${SIGN_PLAIN_JA[astro.sun.sign]}</b><br>人生の大きな方向(誕生日の数字 ${num.lifePath})— <b>${NUM_ESSENCE_JA[num.lifePath].t}</b>`);
   /* 표시 전용 — 일본어 신살 이름의 읽는 법, 기둥 자리의 쉬운 말 */
   const HL_YOMI = {dohwa:'とうか', yeokma:'えきば', hwagae:'かがい', jangseong:'しょうせい', banan:'はんあん', geopsal:'ごうさつ', jaesal:'さいさつ', cheonsal:'てんさつ', jisal:'ちさつ', wolsal:'げっさつ', mangsin:'ぼうしん', yukhae:'りくがい', yangin:'ようじん', baekho:'びゃっこ', goegang:'かいごう', wonjin:'げんしん', gwimun:'きもん', hongyeom:'こうえん', gongmang:'くうぼう', cheoneul:'てんおつきじん', munchang:'ぶんしょう'};
   const posKO = w => w.replace(/연지/g, '태어난 해의 아랫글자').replace(/월지/g, '태어난 달의 아랫글자').replace(/일지/g, '태어난 날의 아랫글자').replace(/시지/g, '태어난 시간의 아랫글자')
@@ -5117,11 +5142,11 @@ function renderHeadline(inp, saju, astro, num) {
       + (inDay ? `나 자신을 뜻하는 태어난 날의 자리에 놓여 있어서${U3B.headOthers(bestS.key) ? `, 함께 있는 표시${U3B.headOthers(bestS.key)} 가운데` : ''}` : `이 사주표에 있는 표시${U3B.headOthers(bestS.key)} 가운데 힘이 가장 세서`)
       + ' 성격과 살아가는 모습에 가장 크게 영향을 줘요.'
       + (isSal ? ' 이름에 붙은 ‘살’은 옛날에 조심하라고 붙인 말이에요. 나쁜 운이라는 뜻이 아니라, 힘이 센 만큼 잘 다뤄서 쓰면 된다는 뜻이에요.' : ''),
-    (u3p ? `Saju looks for special signs, called marks, in the letters of your birth year, month, day and hour (${u3p}). ` : 'Saju looks for special signs, called marks, in the letters of your birth year, month, day and hour. ')
+    (u3p ? `Saju looks for special marks in the letters of your birth year, month, day and hour (${u3p}). ` : 'Saju looks for special marks in the letters of your birth year, month, day and hour. ')
       + (bestS.count > 1 ? `This mark appears in ${['', 'one', 'two', 'three', 'four', 'five'][bestS.count] || bestS.count} places, and it ` : 'This one ')
       + (inDay ? `sits on your birth-day letters, the spot that stands for you${U3B.headOthers(bestS.key)}` : `is the strongest of the marks in your chart${U3B.headOthers(bestS.key)}`)
-      + ', so it shapes your character and your life more than any other mark.'
-      + (isSal ? ' A strong mark like this isn’t bad luck. It’s a strong force, so what matters is how you use it.' : ''), (u3p ? `四柱推命では、生まれた年・月・日・時間の文字(${u3p})の組み合わせから、特別なしるし(神殺)を探します。このしるしは、` : '四柱推命では、生まれた年・月・日・時間の文字の組み合わせから、特別なしるし(神殺)を探します。このしるしは、')
+      + ', so it shapes your character and life more than any other.'
+      + (isSal ? hlSalEn(stE.name, saju) : ''), (u3p ? `四柱推命では、生まれた年・月・日・時間の文字(${u3p})の組み合わせから、特別なしるし(神殺)を探します。このしるしは、` : '四柱推命では、生まれた年・月・日・時間の文字の組み合わせから、特別なしるし(神殺)を探します。このしるしは、')
       + (bestS.count > 1 ? `同じものが${bestS.count}か所に重なっており、` : '')
       + (inDay ? `あなた自身を表す、生まれた日の二文字の場所にあるため、${U3B.headOthers(bestS.key) ? `ほかのしるし${U3B.headOthers(bestS.key)}の中でも、` : ''}` : `あなたの命式にあるしるし${U3B.headOthers(bestS.key)}の中でいちばん力が強いため、`)
       + '性格や生き方にいちばん大きく影響します。'
@@ -5524,8 +5549,44 @@ function srcJA(s) {
 }
 
 /* ---- 통합 리딩 ---- */
+/* E3 · English only — one person's facts for the combination clauses of the cross-reading tab.
+   Reads only what the app already computed (pillars, counts, signs, numbers) and its own tables:
+   ZOD2EL (a star sign seen as one of saju's five energies, as in the saju tab's “How you differ”), the five roles,
+   the tag tables, the U3A season / day-letter words. Calculation untouched; test people are made up. */
+function synthFactsEn(saju, astro, num) {
+  const dk = STEMS[saju.day.stem], inp = window.__lastInput || {};
+  const gz = p => STEMS[p.stem].h + BRANCHES[p.branch].h;
+  const pil = ['year', 'month', 'day', 'hour'].filter(k => saju[k]);
+  const sh = U3A_SHORT.en[dk.k], mass = [6, 9].includes(saju.day.stem);
+  const ROLE = ['the energy like yours', 'the energy you put out', 'the energy you handle', 'the energy that governs you', 'the energy that feeds you'];
+  const GS = ['friends · rivals', 'expression · skill', 'money · results', 'job · rules', 'learning · help'];
+  const g = el => (el - dk.el + 5) % 5;
+  const an = w => (/^[AEIOU]/i.test(w) ? 'an ' : 'a ') + w;
+  const listAnd = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  let moonOk = !!inp.time; try { moonOk = hlMoonSure(inp, astro); } catch (e) { moonOk = !!inp.time; }
+  const S = i => SIGNS_EN[i];
+  const X = {dh: dk.h, sh, aSh: (mass ? '' : 'a ') + sh, mw: U3A_MW.en[saju.month.branch], dayGz: gz(saju.day), dayAni: ANIMALS_EN[saju.day.branch],
+    mGz: gz(saju.month), mStemH: STEMS[saju.month.stem].h, gzAll: pil.map(k => gz(saju[k])).join(' · '), moonOk, an, listAnd,
+    role: el => `${ROLE[g(el)]} (${GS[g(el)]})`,
+    pos: els => listAnd(pil.filter(k => els.some(el => STEMS[saju[k].stem].el === el || BRANCHES[saju[k].branch].el === el)).map(k => `${gz(saju[k])} ${k}`)),
+    tags: set => listAnd([...set].map(t => TAG_NAME_EN[t] || t))};
+  X.lpName = NUM_ESSENCE_EN[num.lifePath].t;
+  X.risingCross = astro.rising ? (() => { const el = ZOD2EL[astro.rising.sign % 4]; return ` In saju terms ${S(astro.rising.sign)} counts as ${ELEMENTS_EN[el].k}, which for ${X.aSh} born on ${an(X.dayAni)} day (${X.dayGz}) is ${ROLE[g(el)]}.`; })() : '';
+  X.moonCross = (() => { const el = ZOD2EL[astro.moon.sign % 4]; return ` Read with saju’s five energies, ${an(S(astro.moon.sign))} Moon is ${ELEMENTS_EN[el].k} — for ${X.aSh} (${X.dh}) born in ${X.mw}, ${ROLE[g(el)]}.`; })();
+  X.outL = astro.rising ? `${S(astro.rising.sign)} Rising` : `${X.mGz} month`;
+  X.inL = `${S(astro.moon.sign)} Moon, ${X.dh} day letter`;
+  /* which of your own Moon / Rising already sit in the sign group suggested for a partner */
+  X.ownIn = compEl => { if (!moonOk && !astro.rising) return '';
+    const own = [], not = [];
+    if (moonOk) (astro.moon.sign % 4 === compEl ? own : not).push(`Moon (${S(astro.moon.sign)})`);
+    if (astro.rising) (astro.rising.sign % 4 === compEl ? own : not).push(`Rising (${S(astro.rising.sign)})`);
+    return own.length ? ` Your own ${listAnd(own)} ${own.length > 1 ? 'are' : 'is'} one of them, so part of you already knows this side.`
+      : ` ${not.length > 1 ? `Neither your ${not[0]} nor your ${not[1]} is` : `Your ${not[0]} isn’t`} one of them, so this person would bring that side.`; };
+  return X;
+}
 function renderSynth(saju, astro, num) {
   const dk = STEMS[saju.day.stem];
+  const XE = LANG === 'en' ? synthFactsEn(saju, astro, num) : null;
   const lp = NUM_ESSENCE[num.lifePath];
   const lpEN = NUM_ESSENCE_EN[num.lifePath];
   const lpJA = NUM_ESSENCE_JA[num.lifePath];
@@ -5566,10 +5627,14 @@ function renderSynth(saju, astro, num) {
     </div>`;
     } else if (LANG === 'en') {
       html += `<div class="card trait">
-      <p class="tsub">${i === 0 ? 'The trait that shows up most' : tieTop ? 'Another trait that shows up as often' : 'The second most common trait'} · ${sysL.length === 1 ? `${nS === 1 ? 'found once' : `found in ${nS} places`} in your ${SYS_EN[sysL[0]]}` : `found in both ${andEN(sysL.map(x => SYS_EN[x]))}`}</p>
+      <p class="tsub">${i === 0 ? 'Top trait' : tieTop ? 'Also top' : 'Second trait'} · ${sysL.length === 1 ? `${nS === 1 ? 'once' : `${nS} places`} in your ${SYS_EN[sysL[0]]}` : sysL.length > 2 ? 'in all three readings' : `in ${andEN(sysL.map(x => SYS_EN[x]))}`}</p>
       <p class="tname">${TAG_NAME_EN[tag]}</p>
       <div class="srcchips">${info.srcs.map(s => `<span class="srcchip">${srcEN(s)}</span>`).join('')}</div>
-      <p>${TAG_TEXT_EN[tag]}</p>
+      <p>${TAG_TEXT_EN[tag]}${(f => f.length ? ` In you, it shows in ${andEN(f)}.` : '')(info.srcs.map(srcEN).map(c => {
+        const v = c.replace(/^[^·]*·\s*/, '').trim();
+        return /^Birth-day letter/.test(c) ? `your base (${c.replace('Birth-day letter', '').trim()} day letter)` : /^Strongest energy/.test(c) ? `how you work and act (your strongest energy, ${v.replace(/\(.*$/, '')})`
+          : /^Sun sign/.test(c) ? `your everyday character (${v} Sun)` : /^Moon sign/.test(c) ? `your inner feelings (${v} Moon)` : /^Rising sign/.test(c) ? `your first impression (${v} Rising)`
+          : /^Life Path/.test(c) ? `your direction in life (${c})` : /^Name number/.test(c) ? `your talents (${c.replace('Name number', 'name number')})` : ''; }).filter(Boolean))}</p>
     </div>`;
     } else {
       html += `<div class="card trait">
@@ -5678,11 +5743,11 @@ function renderSynth(saju, astro, num) {
       + `<p class="small" style="margin-top:12px">この地域から、生年月日と星座をもとに選んだ都市は<b>${city}</b>${cityKo2 !== cityKo ? `と<b>${city2}</b>` : ''}です(都市は国とは別に選ぶため、上の国の外にあることもあります)。遠くへ行けないときは、近くにある${pl.why}でもかまいません。<br>上のお相手は「足りない気」で選びましたが、場所は休むところなので「似ている気」で選んでいます。「今日の運勢」タブの旅先は、足りない気をおぎなう場所なので、こことちがうことがあります。どこにいらしても、「${LP_STAY_JA[num.lifePath]}」暮らし方が合います(誕生日の数字 ${num.lifePath}・${lpJA.t})。</p>`;
   } else if (LANG === 'en') {
     $('#synthPlace').innerHTML = `<h3>Places that suit you — Region · Country · City</h3>`
-      + `<p class="small">Your birth chart has ${tieEl ? `the most <b>${elK(domEl)}</b> and <b>${elK(secondEl)}</b> (${domC} letters each)` : `the most <b>${elK(domEl)}</b> (${domC} letters), then <b>${elK(secondEl)}</b>`}. Together they point to a land ${pl.why}. It's close to the energy you already have, so it's a place where you can feel at ease.</p>`
+      + `<p class="small">Your birth chart has ${tieEl ? `the most <b>${elK(domEl)}</b> and <b>${elK(secondEl)}</b> (${domC} letters each, across your ${XE.pos([domEl, secondEl])})` : `the most <b>${elK(domEl)}</b> (${domC} letters, across your ${XE.pos([domEl])}), then <b>${elK(secondEl)}</b>`}. Together they point to a land ${pl.why}. It's close to the energy you already have, so it's a place where you can feel at ease.</p>`
       + worldMapSVG(hi)
       + `<div class="maplegend"><span><i style="background:var(--earth)"></i>Region</span><span><i style="background:var(--accent)"></i>Country</span><span><i style="background:var(--water)"></i>City</span></div>`
-      + `<div class="lucky"><span style="color:var(--earth);border-color:var(--earth)">Region : ${pl.con}</span><span style="color:var(--accent);border-color:var(--accent)">Country : ${country} · ${country2}</span><span style="color:var(--water);border-color:var(--water)">City : ${city}${cityKo2 !== cityKo ? ' · ' + city2 : ''}</span></div>`
-      + `<p class="small" style="margin-top:12px">From this region, the cities picked by your birth date and star signs are <b>${city}</b>${cityKo2 !== cityKo ? ` and <b>${city2}</b>` : ''} (cities are picked apart from countries, so one may lie outside the countries shown). If you can't travel far, a place near you ${pl.why} is enough.<br>The partner above was picked by the energy you lack. Places are for resting, so they are picked by the energy you already have. The trips in the Today's Fortune tab fill in what you lack, so they may differ from these. Wherever you live, the way of living that fits you is ${LP_STAY_EN[num.lifePath]} (birth-date number ${num.lifePath}, the ${lpEN.t}).</p>`;
+      + `<div class="lucky"><span style="color:var(--earth);border-color:var(--earth)">Region: ${pl.con}</span><span style="color:var(--accent);border-color:var(--accent)">Country: ${country} · ${country2}</span><span style="color:var(--water);border-color:var(--water)">City: ${city}${cityKo2 !== cityKo ? ' · ' + city2 : ''}</span></div>`
+      + `<p class="small" style="margin-top:12px">From this region, the cities picked by your ${XE.dayGz} day, your Life Path and your ${XE.moonOk ? `${SIGNS_EN[astro.moon.sign]} Moon` : 'Moon sign'} are <b>${city}</b>${cityKo2 !== cityKo ? ` and <b>${city2}</b>` : ''} (cities are picked apart from countries, so one may lie outside the countries shown). If you can't travel far, a place near you ${pl.why} is enough.<br>The partner above was picked by the ${elK(saju.counts.indexOf(Math.min(...saju.counts)))} you lack. Places are for resting, so they are picked by the ${elK(domEl)} you already have. The trips in the Today's Fortune tab fill in what you lack, so they may differ from these. Wherever you live, the way of living that fits you is ${LP_STAY_EN[num.lifePath]} (birth-date number ${num.lifePath}, the ${lpEN.t}).</p>`;
   } else {
     $('#synthPlace').innerHTML = `<h3>잘 맞는 곳 — 지역 · 나라 · 도시</h3>`
       + `<p class="small">사주표에는 ${tieEl ? `<b>${EL_PL[domEl]}</b>${jWa(EL_PL[domEl])} <b>${EL_PL[secondEl]}</b> 기운이 가장 많아요(둘 다 ${domC}개)` : `<b>${EL_PL[domEl]}</b> 기운이 가장 많고(${domC}개), 그다음은 <b>${EL_PL[secondEl]}</b> 기운이에요`}. 이 두 기운을 함께 보면, ${pl.why} 땅이 잘 맞아요. 이미 가진 기운과 닮아서 마음이 편안한 곳이에요.</p>`
@@ -5716,13 +5781,13 @@ function renderSynth(saju, astro, num) {
       + `<p class="small"><b>見分け方</b> — 三つすべてがそろう人は、めったにいません。まず四柱推命の気を見て、星座と数字は、合えばなおよい、くらいに見るので十分です。${elK(weakEl)}の気を多く持つ人は、${elBorn}生まれに多くいます。気になる人がいたら、「相性」タブにその人の誕生日を入れて、確かめてみてほしいです。<br>もうそばにいる人がいるなら、その人の中にさがしてみる点や、ふたりで育てていく点として読めば大丈夫です。友だちや、いっしょに働く人を見るときに使ってもかまいません。</p>`;
   } else if (LANG === 'en') {
     $('#synthPartner').innerHTML = `<h3>The partner who suits you best — as seen by three readings</h3>`
-      + `<div class="partner-art">${elArt(weakEl)}<span class="pacap">In saju terms: plenty of ${elK(weakEl)} (${ELEMENTS[weakEl].h}) energy</span></div>`
-      + `<p style="font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:4px"><b style="color:var(--gold-soft)">${cap(PARTNER_EL_EN[weakEl])}</b> suits you best. ${cap(PARTNER_WHY_EN[weakEl])}. Even better if they're also ${PARTNER_EL_EN[secondWeakEl]}.${num.name ? ` And if they're ${NUM_PLAIN_EN[num.name.soulUrge]}, they're already living the life you've wished for deep down.` : ''}</p>`
+      + `<div class="partner-art">${elArt(weakEl)}<span class="pacap">Saju: plenty of ${elK(weakEl)} (${ELEMENTS[weakEl].h}) energy</span></div>`
+      + `<p style="font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:4px">For ${XE.aSh} (${XE.dh}) born in ${XE.mw}, <b style="color:var(--gold-soft)">${PARTNER_EL_EN[weakEl]}</b> suits you best. ${cap(PARTNER_WHY_EN[weakEl])}. Even better if they're also ${PARTNER_EL_EN[secondWeakEl]}.${num.name ? ` And if they're ${NUM_PLAIN_EN[num.name.soulUrge]}, they're already living the life you've wished for deep down.` : ''}</p>`
       + `<div class="combo"><b>Why you're happiest with this person — three reasons</b><br>`
-      + `<b>Saju</b> · ${tieW ? `<b>${elK(weakEl)}</b> and ${elK(secondWeakEl)} are the energies you have the least of in your birth chart (${ascEl[0].c} letters each). This person has plenty of ${elK(weakEl)}` : `<b>${elK(weakEl)}</b> is the energy you have the least of in your birth chart. This person has plenty of it`}, so together your five energies even out. Couples who fill in what the other is missing last the longest.<br>`
-      + `<b>Astrology</b> · Your star sign, ${SIGNS_EN[astro.sun.sign]}, is <b>${ZOD_EL_EN[sunEl]}</b> in nature (${ZOD_EL_TEXT_EN[sunEl]}). It goes well with someone <b>${ZOD_EL_EN[compEl]}</b> in nature (${ZOD_EL_TEXT_EN[compEl]}), because your differences pull you together in a good way. The ${ZOD_EL_EN[compEl]} signs are <b>${compSigns}</b>.<br>`
-      + `<b>Numerology</b> · Your birth-date number (Life Path) is ${num.lifePath} (the ${lpEN.t}). For you, ${lpm.length ? `people whose Life Path is <b>${lpm.join(' · ')}</b> are an especially good match` : `someone who doesn't rush you or themselves is a good match`}.</div>`
-      + `<p class="small"><b>How to spot them</b> — almost no one matches all three. Look at the saju energy first; a matching star sign or number is a bonus. People with plenty of ${elK(weakEl)} energy are often born in ${elBorn}. If you have someone in mind, I'd love for you to enter their birthday in the Compatibility tab and see how you fit.<br>If you already have someone, it's fine to read this as qualities to notice in them or to build together. It works for friends and coworkers, too.</p>`;
+      + `<b>Saju</b> · ${tieW ? `<b>${elK(weakEl)}</b> and ${elK(secondWeakEl)} are the energies you have the least of in your birth chart (${XE.gzAll}: ${ascEl[0].c === 0 ? 'none of either' : ascEl[0].c === 1 ? 'one of each' : `${ascEl[0].c} of each`}). For your ${XE.dh}, ${elK(weakEl)} is ${XE.role(weakEl)}, and this person has plenty of it` : `<b>${elK(weakEl)}</b> is the energy you have the least of in your birth chart (${XE.gzAll}). For your ${XE.dh}, it’s ${XE.role(weakEl)}, and this person has plenty of it`}, so together your five energies even out. Couples who fill in what the other is missing last the longest.<br>`
+      + `<b>Astrology</b> · Your star sign, ${SIGNS_EN[astro.sun.sign]}, is <b>${ZOD_EL_EN[sunEl]}</b> in nature (${ZOD_EL_TEXT_EN[sunEl]}). It goes well with someone <b>${ZOD_EL_EN[compEl]}</b> in nature (${ZOD_EL_TEXT_EN[compEl]}), because your differences pull you together in a good way. The ${ZOD_EL_EN[compEl]} signs are <b>${compSigns}</b>.${XE.ownIn(compEl)}<br>`
+      + `<b>Numerology</b> · Your birth-date number (Life Path) is ${num.lifePath} (the ${lpEN.t}). For you, ${lpm.length ? `people whose Life Path is <b>${lpm.join(' · ')}</b> are an especially good match` : `someone who doesn't rush you or themselves is a good match`}.${(h => h.length ? ` Of these, ${h.join(' and ')} ${h.length > 1 ? 'count' : 'counts'} as ${elK(weakEl)} in five-energy terms, the energy your chart has least of, so for a ${XE.dh} like you ${h.length > 1 ? 'they fit' : 'it fits'} on two counts.` : lpm.length ? ` None of them counts as ${elK(weakEl)} in five-energy terms, so for a ${XE.dh} like you, let the saju energy lead.` : '')(lpm.filter(n => HL_NUM_EL[n] === weakEl))}</div>`
+      + `<p class="small"><b>How to spot them</b> — almost no one matches all three (plenty of ${elK(weakEl)}, ${XE.an(ZOD_EL_EN[compEl])} sign${lpm.length ? `, Life Path ${lpm.join(' · ')}` : ''}). Look at the saju energy first; a matching star sign or number is a bonus. People with plenty of ${elK(weakEl)} energy are often born in ${elBorn}; you were born in ${XE.mw}. If you have someone in mind, I'd love for you to enter their birthday in the Compatibility tab and see how you fit.<br>If you already have someone, it's fine to read this as qualities to notice in them or to build together. It works for friends and coworkers, too.</p>`;
   } else {
     $('#synthPartner').innerHTML = `<h3>가장 잘 맞는 사람 — 세 가지 풀이로 본 상대</h3>`
       + `<div class="partner-art">${elArt(weakEl)}<span class="pacap">사주로는 ${EL_PL[weakEl]}(${ELEMENTS[weakEl].h}) 기운이 많은 사람</span></div>`
@@ -5764,18 +5829,18 @@ function renderSynth(saju, astro, num) {
     innerOne = `心の中では、<b>${SIGN_ESSENCE_JA[astro.moon.sign]}</b>を大切にする人です。`;
     coreText = `外と内をつなぐ中心は、いちばん上の「三行でまとめると」の三つです。ふだんの性格(${SIGNS_JA[astro.sun.sign]})では、${SIGN_ESSENCE_JA[astro.sun.sign]}が目立ちます。`;
   } else if (LANG === 'en') {
-    outer = [`<b>In society</b> · In saju, the letters of your birth month show the role you take among people (at school or work). The picture above comes from them.`];
-    if (astro.rising) outer.push(`<b>First impression</b> · The sign rising in the east when you were born (Rising sign) is ${SIGNS_EN[astro.rising.sign]}. ${RISING_TEXT_EN[astro.rising.sign]}`);
-    else outer.push(`<b>First impression</b> · Your first-impression sign (Rising sign) can only be read with a birth time, so this part is left blank for now.`);
+    outer = [`<b>In society</b> · In saju, the letters of your birth month show the role you take among people (at school or work).`];
+    if (astro.rising) outer.push(`<b>First impression</b> · The sign rising in the east when you were born (Rising sign) is ${SIGNS_EN[astro.rising.sign]}. ${RISING_TEXT_EN[astro.rising.sign]}${XE.risingCross}`);
+    else outer.push(`<b>First impression</b> · needs a birth time`);
     if (num.name) outer.push(`<b>Impression from your name</b> · The number from the consonants in your name (Personality number) is ${num.name.personality}. People remember you as ${NUM_PLAIN_EN[num.name.personality]}.`);
-    outerSrc = 'birth-month letters' + (astro.rising ? ' + Rising sign' : '') + (num.name ? ' + name consonants' : '');
-    inner = [`<b>Inner feelings</b> · Your Moon sign, which shows your inner feelings, is ${SIGNS_EN[astro.moon.sign]}. ${MOON_TEXT_EN[astro.moon.sign]}`];
+    outerSrc = `${XE.mGz} month` + (astro.rising ? ` + ${SIGNS_EN[astro.rising.sign]} Rising` : '') + (num.name ? ' + name consonants' : '');
+    inner = [`<b>Inner feelings</b> · Your Moon sign, which shows your inner feelings, is ${SIGNS_EN[astro.moon.sign]}. ${MOON_TEXT_EN[astro.moon.sign]}${XE.moonCross}`];
     if (num.name) inner.push(`<b>Deep wish</b> · The number from the vowels in your name (Soul Urge number) is ${num.name.soulUrge}. Deep down, you want to be ${NUM_PLAIN_EN[num.name.soulUrge]}.`);
-    inner.push(`<b>Your base</b> · The letter of your birth day (Day Master) is ${dk.h}. It stands for ${ILGAN_SHORT_EN[dk.k]}. So you're ${ILGAN_PLAIN_EN[dk.k]}.`);
-    innerSrc = 'Moon sign' + (num.name ? ' + name vowels' : '') + ' + letter of your birth day';
-    outerOne = `People first see you as <b>${TG_ROLE[mTg][1]}</b>.`;
-    innerOne = `Inside, what matters most to you is <b>${SIGN_ESSENCE_EN[astro.moon.sign]}</b>.`;
-    coreText = `The three lines at the top (“You in three lines”) are what link your outside and inside. In your everyday character (${SIGNS_EN[astro.sun.sign]}), ${SIGN_ESSENCE_EN[astro.sun.sign]} stand out most.`;
+    inner.push(`<b>Your base</b> · The letter of your birth day (Day Master) is ${dk.h}, on ${XE.an(XE.dayAni)} day in ${XE.mw}. It stands for ${ILGAN_SHORT_EN[dk.k]}. So you're ${ILGAN_PLAIN_EN[dk.k]}.`);
+    innerSrc = `${SIGNS_EN[astro.moon.sign]} Moon` + (num.name ? ' + name vowels' : '') + ` + ${dk.h} day letter`;
+    outerOne = `People first see you as <b>${TG_ROLE[mTg][1]}</b>: that’s the part the ${XE.mStemH} of your birth month (${XE.mGz}) plays for ${XE.aSh} like you (${dk.h}).`;
+    innerOne = `Inside, what matters most to you is <b>${SIGN_ESSENCE_EN[astro.moon.sign]}</b> (${SIGNS_EN[astro.moon.sign]} Moon), resting on the ${XE.tags(ILGAN_TAGS[dk.k])} of your ${XE.dayGz} day.`;
+    coreText = `The three lines at the top (“You in three lines”) — your ${dk.h} ${XE.sh}, your ${SIGNS_EN[astro.sun.sign]} Sun and the ${XE.lpName} in your number — are what link your outside and inside. In your everyday character (${SIGNS_EN[astro.sun.sign]}), ${SIGN_ESSENCE_EN[astro.sun.sign]} stand out most.`;
   } else {
     outer = [`<b>사회에서의 모습</b> · 사주에서는 태어난 달의 글자가 밖에서(학교·직장에서) 맡는 역할을 보여 줘요. 위의 모습은 이 글자에서 읽은 거예요.`];
     if (astro.rising) outer.push(`<b>첫인상</b> · 태어난 순간 동쪽 하늘에 떠오르던 별자리(상승궁)는 ${SIGNS[astro.rising.sign].k}예요. ${RISING_TEXT[astro.rising.sign]}`);
@@ -5842,15 +5907,16 @@ function renderSynth(saju, astro, num) {
         : `Your first impression (${SIGNS_EN[astro.rising.sign]}) is ${ZOD_EL_EN[oe]} in nature (${ZOD_EL_TEXT_EN[oe]}), but your inner feelings (${SIGNS_EN[astro.moon.sign]}) are ${ZOD_EL_EN[ie]} in nature (${ZOD_EL_TEXT_EN[ie]}). They're different, so you may often hear, “You're not who I thought you were.”`;
       gap = relWord;
     } else {
-      gap = 'Without a birth time, your first-impression sign (Rising sign) can’t be read, so this check is left out.';
+      gap = 'left out (no birth time)';
     }
     const hv = s => s.includes(' and ') ? 'have' : 'has';
     const rows = [{ok: okStar, nm: 'Star signs', txt: gap}];
-    rows.push({ok: okSaju, nm: 'Birth chart', txt: `The ${saju.total} letters of your chart each belong to one of five energies (wood, fire, earth, metal, water). ${maxEls} ${hv(maxEls)} the most letters (${maxC}${maxEls.includes(' and ') ? ' each' : ''}), and ${minEls} ${hv(minEls)} ${minC === 0 ? 'none' : `only ${minC}`}. ${okSaju ? 'The energies are fairly even, so your outside and inside don’t split much.' : `When a chart leans this much, the strong energy shows on the outside and the weak one stays hidden inside, so your outside and inside look ${spread >= 4 ? 'very' : 'clearly'} different.`}`});
+    rows.push({ok: okSaju, nm: 'Birth chart', txt: `The ${saju.total} letters of your chart each belong to one of five energies (wood, fire, earth, metal, water). ${maxEls.replace(/ and (?=.* and )/g, ', ')} ${hv(maxEls)} the most letters (${maxC}${maxEls.includes(' and ') ? ' each' : ''}), and ${minEls.replace(/ and (?=.* and )/g, ', ')} ${hv(minEls)} ${minC === 0 ? 'none' : `only ${minC}${minEls.includes(' and ') ? ' each' : ''}`}. ${okSaju ? 'The energies are fairly even, so your outside and inside don’t split much.' : `When a chart leans this much, the strong energy shows on the outside and the weak one stays hidden inside, so your outside and inside look ${spread >= 4 ? 'very' : 'clearly'} different.`}`});
     if (num.name) rows.push({ok: okName, nm: 'Name numbers', txt: `The number for how others see you (Personality number) is ${num.name.personality}, and the number for what you want inside (Soul Urge number) is ${num.name.soulUrge}. ${nDiff === 0 ? 'They are the same, so the face you show matches what you want inside.' : nDiff <= 2 ? 'They are close, so the face you show is close to how you really feel.' : 'They are far apart, so the face you show differs from what you want inside.'}`});
     const agN = namesOf(rows, true).join(' and ').toLowerCase().replace(/birth chart/g, 'birth-chart').replace(/name numbers/g, 'name-number').replace(/star signs/g, 'star-sign'), farN = namesOf(rows, false).join(' and ').toLowerCase().replace(/birth chart/g, 'birth-chart').replace(/name numbers/g, 'name-number').replace(/star signs/g, 'star-sign');
     gap = `<b>${gFar === 0 ? 'Your outside and inside are almost the same. People can take you as they see you.' : gClose === 0 ? 'Your outside and inside are quite different. So you may sometimes think, “Hardly anyone really knows me.” Only people who’ve known you a long time see the real you.' : gClose > gFar ? `Your outside and inside mostly match. Of the ${gChecks.length} checks, only the ${farN} check says “different”.` : gClose < gFar ? `Your outside and inside are rather different. Of the ${gChecks.length} checks, only the ${agN} check says “alike”.` : `Your outside and inside are half alike, half different: the ${agN} check says “alike” and the ${farN} check says “different”.`}</b>`
       + orderRows(rows).map(r => `<br><b>${r.nm}</b>${isOdd(r) ? ' (the odd one out)' : ''} · ${r.txt}`).join('');
+    gap = gap.replace('<b>Your outside and inside', `<b>Your outside (${XE.outL}) and inside (${XE.inL})`);
   } else {
     const spreadWord = spread >= 4 ? '크게' : spread >= 2 ? '뚜렷하게' : '조금만';
     if (astro.rising) {
@@ -5898,10 +5964,10 @@ function renderSynth(saju, astro, num) {
       ? (shared.length
         ? `<br><b>On both sides</b> · Outside, ${sOut[1]}, and inside, ${sIn[1]}, both point to “${TAG_NAME_EN[shared[0]]}”. It comes out by itself, even when you try to hide it.`
         : gapClose
-        ? `<br>Still, even though your outside and inside share the same nature, the detailed traits are different. People only notice this when they know you up close.`
+        ? `<br>Still, even though your outside and inside share the same nature, the detailed traits differ: ${XE.tags(outTags)} outside, ${XE.tags(inTags)} inside. People only notice this when they know you up close.`
         : gClose > gFar
-        ? `<br>Still, the finer traits differ a little between outside and inside, so some sides of you only show up close.`
-        : `<br>When the traits are compared one by one, the ones people see and the ones you hold inside are of different kinds. So people only see the real you after knowing you for a long time.`)
+        ? `<br>Still, the finer traits differ a little (${XE.tags(outTags)} outside, ${XE.tags(inTags)} inside), so some sides of you only show up close.`
+        : `<br>Compared one by one, the traits people see (${XE.tags(outTags)}) and the ones you hold inside (${XE.tags(inTags)}) are of different kinds. So people only see the real you after knowing you for a long time.`)
       : '';
   } else {
     sharedLine = outTags.size && inTags.size
@@ -5983,6 +6049,7 @@ const MONTH_CHAR = ['밤이 가장 긴 달', '겨울이 깊어지는 달', '봄�
 /* ---- 리포트 (한 장 요약) ---- */
 function renderReport(inp, saju, astro, num, f) {
   const dk = STEMS[saju.day.stem];
+  const e2 = (...x) => (LANG === 'en' ? U3B.noRising(...x) : '');   // English-only extra lines (U3B PACK.en e2…); '' elsewhere
   const hp = headlinePick(saju);
   const first = hp.elScore > hp.bs && hp.elScore > 0
     ? L(`다섯 가지 기운 중 ${['나무', '불', '흙', '쇠', '물'][hp.domEl]}(${ELEMENTS[hp.domEl].h}) 기운이 유난히 많아요 — 사주 ${saju.total}글자 중 ${hp.maxC}글자가 같은 기운이에요`,
@@ -6050,10 +6117,10 @@ function renderReport(inp, saju, astro, num, f) {
     [L('가장 큰 특징', 'Main Trait', '大きな特徴'), L(`「${top[0]}」 — ${u3t || `풀이 ${top[1].n}곳(${topSys.join(' · ')})에서 같은 특징이 나왔어요`}`, `“${TAG_NAME_EN[top[0]] || top[0]}” — ${u3t || `${top[1].n} ${top[1].n === 1 ? 'place' : 'places'} in your reading (${topSys.join(', ')}) ${top[1].n === 1 ? 'points' : 'point'} to this same trait`}`, `「${TAG_NAME_JA[top[0]] || top[0]}」 — ${u3t || `${topSys.join('・')}の合わせて${top[1].n}か所が、同じ特徴を示しています`}`)],
     [L('타고난 바탕', 'Basic Nature', 'もとの性質'), L(
       `태어난 날의 글자 ${dk.k} — ${ILGAN_SHORT[dk.k]}${u3se} · 가장 많은 기운 ${saju.counts.map((c, i) => c === saju.counts[dom] ? ['나무', '불', '흙', '쇠', '물'][i] : '').filter(Boolean).join('·')}${saju.counts.filter(x => x === saju.counts[dom]).length > 1 ? `(${saju.counts[dom]}글자씩)` : ''}${saju.counts[weak] === 0 ? ` · ${['나무', '불', '흙', '쇠', '물'][weak]} 기운은 하나도 없음` : ''}`,
-      `Letter of your birth day ${dk.h} — ${ILGAN_SHORT_EN[dk.k]}${u3se} · strongest energy ${saju.counts.map((c, i) => c === saju.counts[dom] ? ELEMENTS_EN[i].k : '').filter(Boolean).join(' and ')}${saju.counts.filter(x => x === saju.counts[dom]).length > 1 ? ` (${saju.counts[dom]} letters each)` : ''}${saju.counts[weak] === 0 ? ` · no ${ELEMENTS_EN[weak].k} energy at all` : ''}`, `生まれた日の文字 ${dk.h} — ${ILGAN_SHORT_JA[dk.k]}${u3se}・いちばん多い気は${saju.counts.map((c, i) => c === saju.counts[dom] ? ELEMENTS_JA[i].k : '').filter(Boolean).join('・')}${saju.counts.filter(x => x === saju.counts[dom]).length > 1 ? `(${saju.counts[dom]}文字ずつ)` : ''}${saju.counts[weak] === 0 ? `・${ELEMENTS_JA[weak].k}の気はひとつもなし` : ''}`)],
+      `Letter of your birth day ${dk.h} — ${ILGAN_SHORT_EN[dk.k]}${u3se} · strongest energy ${saju.counts.map((c, i) => c === saju.counts[dom] ? ELEMENTS_EN[i].k : '').filter(Boolean).join(', ').replace(/, ([^,]*)$/, ' and $1')}${saju.counts.filter(x => x === saju.counts[dom]).length > 1 ? ` (${saju.counts[dom]} letters each)` : ''}${saju.counts[weak] === 0 ? ` · no ${ELEMENTS_EN[weak].k} energy at all` : ''}`, `生まれた日の文字 ${dk.h} — ${ILGAN_SHORT_JA[dk.k]}${u3se}・いちばん多い気は${saju.counts.map((c, i) => c === saju.counts[dom] ? ELEMENTS_JA[i].k : '').filter(Boolean).join('・')}${saju.counts.filter(x => x === saju.counts[dom]).length > 1 ? `(${saju.counts[dom]}文字ずつ)` : ''}${saju.counts[weak] === 0 ? `・${ELEMENTS_JA[weak].k}の気はひとつもなし` : ''}`)],
     [L('별자리 셋', 'Three Signs', '三つの星座'), L(
       `겉모습(해) ${SIGNS[astro.sun.sign].k} · 속마음(달) ${SIGNS[astro.moon.sign].k} · ${astro.rising ? '첫인상(상승궁) ' + SIGNS[astro.rising.sign].k : '첫인상(상승궁)은 태어난 시간이 필요해요'}`,
-      `The you people see (Sun) ${SIGNS_EN[astro.sun.sign]} · inner feelings (Moon) ${SIGNS_EN[astro.moon.sign]} · ${astro.rising ? 'first impression (Rising) ' + SIGNS_EN[astro.rising.sign] : 'first impression (Rising) — needs your birth time'}`, `表のあなた（太陽）${SIGNS_JA[astro.sun.sign]}・心の中（月）${SIGNS_JA[astro.moon.sign]}・${astro.rising ? '第一印象（上昇宮）' + SIGNS_JA[astro.rising.sign] : '第一印象（上昇宮）は生まれた時刻が必要です'}`)],
+      `The you people see (Sun) ${SIGNS_EN[astro.sun.sign]} · inner feelings (Moon) ${SIGNS_EN[astro.moon.sign]} · ${astro.rising ? 'first impression (Rising) ' + SIGNS_EN[astro.rising.sign] : 'first impression (Rising) — needs your birth time' + e2('RepRise')}`, `表のあなた（太陽）${SIGNS_JA[astro.sun.sign]}・心の中（月）${SIGNS_JA[astro.moon.sign]}・${astro.rising ? '第一印象（上昇宮）' + SIGNS_JA[astro.rising.sign] : '第一印象（上昇宮）は生まれた時刻が必要です'}`)],
     [L('숫자', 'Numbers', '数字'), L(
       `생일 숫자 ${num.lifePath} ${NUM_ESSENCE[num.lifePath].t}${num.name ? ` · 재능 ${num.name.expression} · 속마음 ${num.name.soulUrge} · 기억에 남는 인상 ${num.name.personality}` : ''}`,
       `Life Path ${num.lifePath} ${NUM_ESSENCE_EN[num.lifePath].t}${num.name ? ` · talents ${num.name.expression} · inner wish ${num.name.soulUrge} · how people remember you ${num.name.personality}` : ''}`, `ライフパス ${num.lifePath} ${NUM_ESSENCE_JA[num.lifePath].t}${num.name ? `・才能 ${num.name.expression}・心の奥の望み ${num.name.soulUrge}・記憶に残る印象 ${num.name.personality}` : ''}`)],
@@ -6063,12 +6130,12 @@ function renderReport(inp, saju, astro, num, f) {
       : L('없음 — 특별한 표시 없이 고르게 흐르는 사주표예요', 'None — your birth chart runs evenly, with no special marks', 'なし — 特別なしるしがなく、おだやかに流れる命式です')],
     [L('요즘 흐름', 'Current Flow', 'いまの流れ'), L(
       `오늘 ${tsh(f.periods[0].theme)} · 이번 달 ${tsh(f.periods[2].theme)} · 올해 ${tsh(f.periods[4].theme)}`,
-      `Today ${tsh(f.periods[0].theme)} · This month ${tsh(f.periods[2].theme)} · This year ${tsh(f.periods[4].theme)}`, `今日 ${tsh(f.periods[0].theme)}・今月 ${tsh(f.periods[2].theme)}・今年 ${tsh(f.periods[4].theme)}`)],
+      `Today ${tsh(f.periods[0].theme)} · This month ${tsh(f.periods[2].theme)} · This year ${tsh(f.periods[4].theme)}${e2('RepFlow')}`, `今日 ${tsh(f.periods[0].theme)}・今月 ${tsh(f.periods[2].theme)}・今年 ${tsh(f.periods[4].theme)}`)],
     [L('평소 행운', 'Everyday luck', 'ふだんの幸運'), L(
       `색 ${EL_COLOR[weak]} · 방향 ${EL_DIR[weak]} · 숫자 ${EL_NUM[weak]} — 따로 챙기는 ${['나무', '불', '흙', '쇠', '물'][weak]} 기운을 채워 줘요. ${u3lk ? u3lk + '. ' : ''}오늘 하루의 행운은 「오늘의 운세」에 따로 있어요`,
       `Color ${EL_COLOR_EN[weak]} · Direction ${EL_DIR_EN[weak]} · Number ${EL_NUM[weak]} — these top up ${ELEMENTS_EN[weak].k}, the energy you look after separately. ${u3lk ? u3lk + '. ' : ''}Today’s own lucky picks are in “Today’s Fortune”`, `色 ${EL_COLOR_JA[weak]}・方角 ${EL_DIR_JA[weak]}・数字 ${EL_NUM[weak]} — ふだん意識して補う${ELEMENTS_JA[weak].k}の気を、満たしてくれます。${u3lk ? u3lk + '。' : ''}今日だけの幸運は「今日の運勢」にあります`)]
   ];
-  const adv = U3B.themeAdv(f.periods[4].theme, true) || L(THEMES[f.periods[4].theme].adv, THEMES_EN[f.periods[4].theme].adv, THEMES_JA[f.periods[4].theme].adv);
+  const adv = e2('RepAdv', f.periods[4].theme) || U3B.themeAdv(f.periods[4].theme, true) || L(THEMES[f.periods[4].theme].adv, THEMES_EN[f.periods[4].theme].adv, THEMES_JA[f.periods[4].theme].adv);
   const nameLine = inp.name || inp.ename || L('이름 없는 별', 'An unnamed star', '名もなき星');
   const metaLine = `${inp.y}. ${inp.m}. ${inp.d}.${inp.time ? ` ${String(inp.time.h).padStart(2, '0')}:${String(inp.time.m).padStart(2, '0')}` : ''} · ${L(inp.geo.nameKo, inp.geo.nameEn, inp.geo.nameJa)}`;
   const fpLine = L(
@@ -6960,7 +7027,7 @@ const U3B = (() => {
     const houseS = (F, h) => (F.minor && h === 2 ? 'belongings' : HOUSE_SHORT[h]);
     const arr = (F, el) => { let a = null; try { a = F.arriveOf ? F.arriveOf(el) : null; } catch (e) { a = null; } if (!a || !a.p) return '';
       const nm = `${STEMS[a.p.st].h}${BRANCHES[a.p.br].h}`;
-      return a.when === 'now' ? ` — your current decade (${nm}) is filling it in` : a.when === 'future' ? ` — the decade from age ${a.p.from} (${nm}) fills it in` : a.when === 'past' ? ` — the decade up to age ${a.p.to} (${nm}) filled it in once` : ''; };
+      return a.when === 'now' ? ` — your current decade (${nm}) is filling it in` : a.when === 'future' ? ` — the decade from age ${a.p.from} (${nm}) will fill it in` : a.when === 'past' ? ` — the decade up to age ${a.p.to} (${nm}) once filled it in` : ''; };
     const ROLE_USE = ['as holding to your own will', 'as speaking and making', 'as handling and gathering', 'as taking on duties', 'as learning and taking in'];
     const RV = {clash: 'clashes with', hap: 'pairs up with', same: 'repeats', sam: 'teams up with'};
     const RVP = {clash: 'clashed with', hap: 'paired up with', same: 'repeated', sam: 'teamed up with'};
@@ -6975,6 +7042,27 @@ const U3B = (() => {
     const firstSent = s => { const t = String(s).trim(), e = sentEnds(t); return e.length ? t.slice(0, e[0]) : t; };
     const restSent = s => { const t = String(s).trim(), e = sentEnds(t); return e.length ? t.slice(e[0]).trim() : ''; };
     const TAGN = t => TAG_NAME_EN[t] || t;
+    /* E1 (fortune · life): short names so one line can carry two of the person's own facts — the reading it comes from and where that energy sits */
+    const PWD = {day: 'today’s', week: 'this week’s', month: 'this month’s', quarter: 'this season’s', year: 'this year’s'};
+    const posS = x => x.part === 'stem' ? `your birth-${x.k} top letter ${STEMS[x.p.stem].h} (${h2(x.p)})` : `your birth-${x.k} ${ani(x.p.branch)} (${h2(x.p)})`;
+    const pilS = (k, p) => `your birth-${k} ${ani(p.branch)} (${h2(p)})`;
+    /* the decade that brings a missing energy is named once per element per reading (older readers would otherwise see the same bracket on every line) */
+    const arrSeen = new WeakMap();
+    const arrS = (F, el) => { let a = null; try { a = F.arriveOf ? F.arriveOf(el) : null; } catch (e) { a = null; } if (!a || !a.p) return '';
+      let seen = arrSeen.get(F); if (!seen) { seen = new Set(); arrSeen.set(F, seen); } if (seen.has(el)) return ''; seen.add(el);
+      const nm = `${STEMS[a.p.st].h}${BRANCHES[a.p.br].h}`;
+      return a.when === 'now' ? `your chart lacks, though your current ${nm} decade brings it` : a.when === 'future' ? `your chart lacks until your ${nm} decade (from age ${a.p.from})` : a.when === 'past' ? `your chart lacks (your ${nm} decade brought it until age ${a.p.to})` : ''; };
+    const cntS = (F, el) => { const c = cntOf(F, el);   // ends a “…, which ___” clause
+      if (onlyMe(F, el)) return `only your own ${STEMS[F.ds].h} (${h2(F.s.day)}) carries`;
+      if (c <= 0) return arrS(F, el) || 'your chart lacks';
+      const ps = posOf(F, el); return c >= 3 ? `already fills your chart, starting with ${posS(ps[0])}` : `sits in ${posS(ps[0])}`; };
+    const cntX = (F, el, also) => { const c = cntOf(F, el);   // cntPred + the second fact it was missing (same verbs)
+      if (c <= 0) return el === F.dEl ? `isn’t anywhere else in your chart besides your own ${STEMS[F.ds].h} (${h2(F.s.day)})` : `isn’t in your chart at all${arr(F, el).replace(/^ — /, '; ')}`;
+      return c >= 3 ? `${cntPred(F, el, also)}, starting with ${posS(posOf(F, el)[0])}` : cntPred(F, el, also); };
+    const cntT2 = (F, el) => { const c = cntOf(F, el);   // cntTail + the second fact
+      if (onlyMe(F, el)) return `held only by your own ${STEMS[F.ds].h} (${h2(F.s.day)})`;
+      if (c <= 0) return (arrS(F, el) || 'your chart lacks').replace('your chart lacks', 'not in your chart');
+      return c >= 3 ? `already plentiful in your chart, starting with ${posS(posOf(F, el)[0])}` : `in ${posN(posOf(F, el)[0])}`; };
     const tagSrc = v => v.type === 'stem' ? `the ${SHORT[STEMS[v.v].k]} (${C.F ? h2(C.F.s.day) : STEMS[v.v].h}) of the day of your birth` : v.type === 'el' ? `your strongest energy (${EL[v.v]})` : v.type === 'lp' ? `Life Path ${v.v}`
       : v.type === 'expr' ? `your name number ${v.v}` : v.type === 'sun' ? `your Sun in ${SIGNS_EN[v.v]}` : v.type === 'moon' ? `your Moon in ${SIGNS_EN[v.v]}` : `your Rising sign ${SIGNS_EN[v.v]}`;
     const andL = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
@@ -6984,38 +7072,58 @@ const U3B = (() => {
     const bodiesIn = (F, sg) => { const a = F.a, o = []; [['sun', a.sun], ['moon', a.moon]].concat(['mercury', 'venus', 'mars', 'jupiter', 'saturn'].map(k => [k, a.planets && a.planets[k]])).forEach(([k, x]) => { if (x && x.sign === sg) o.push(BODY[k]); }); return o; };
     const P = {
       /* ── fortune tab ── */
+      dayPil(F, tb) { const r = rels(F, tb, 'day')[0]; return r ? `today’s ${ani(tb)} ${r.type === 'sam' ? 'teams up (Three Harmony) with' : RV[r.type]} ${pilS('day', F.s.day)}` : `${pilS('day', F.s.day)} doesn’t clash with today’s ${ani(tb)}`; },
+      todo(F, p, j) {   // E1: one to-do line — the reading it comes from (0 saju → work · 1 stars → people · 2 number → you) × your own chart; a fact already used on this page is not repeated
+        const W = PWD[p.key] || 'this', T = C.td || (C.td = new Set());
+        const pick = cs => { const ok = cs.filter(Boolean), c = ok.find(x => !T.has(x[0])) || ok[0]; if (!c) return ''; T.add(c[0]); return c[1]; };
+        const elC = (e, lead) => [`e${e}`, `${lead} ${EL[e]}, which ${cntS(F, e)}`];
+        if (j === 0) {
+          if (p.key === 'quarter') { const m = String(p.saju.gz).match(/^(.+?)\((.+?)\)$/); if (!m) return ''; const e = ELEMENTS.findIndex(x => x.k === m[2]); if (e < 0) return '';
+            return pick([elC(e, 'this season brings')]); }
+          const ix = gzIdx(String(p.saju.gz)); if (!ix) return '';
+          const rv = r => `${W} ${ani(ix.br)} ${r.type === 'sam' ? 'teams up (Three Harmony) with' : RV[r.type]} ${pilS(r.k, r.p)}`;
+          const rm = rels(F, ix.br, 'month')[0], ro = rels(F, ix.br).find(r => r.k !== 'month'), es = STEMS[ix.st].el, eb = BRANCHES[ix.br].el;   // work is read from the month of your birth first
+          return pick([rm && [`r${ix.br}m`, rv(rm)], ro && [`r${ix.br}${ro.k}`, rv(ro)], eb !== es && elC(eb, `${W} ${ani(ix.br)} brings`), elC(es, `${W} ${STEMS[ix.st].h} brings`)]);   // the top letter's energy is the theme's own (said in the advice above), so it comes last
+        }
+        if (j === 1) { const sg = p.astro.sign, e = ZOD2EL[sg % 4], who = {달: 'the Moon', 태양: 'the Sun', 목성: 'Jupiter'}[p.astro.who] || 'the sky';
+          const hb = bodiesIn(F, sg).filter(b => F.moonSure || b !== 'Moon');
+          return pick([[`e${e}`, `${who} in ${SIGNS_EN[sg]} is ${EL[e]} in saju terms, which ${cntS(F, e)}`], hb.length && [`b${sg}`, `${who} is ${who === 'the Sun' && hb.includes('Sun') ? 'back ' : ''}in ${SIGNS_EN[sg]}, where your ${andL(hb)} ${hb.length > 1 ? 'were' : 'was'} at birth`]]); }
+        const e = NUM2EL[Math.min(p.num.n, 9)]; if (e === undefined) return '';
+        return pick([elC(e, `your number ${p.num.n} is`)]);
+      },
       hour(F, st, br, tg, rate) {
         const voice = (TENGOD_FORTUNE_EN[tg] || '').split(' — ')[0]; if (!voice) return '';
-        const r = rels(F, br, null, 'hour')[0], cw = (pol, t) => (pol > 0 && rate === 1 ? 'still, ' : pol < 0 && rate === 3 ? 'that said, ' : '') + t;
-        if (r) return `${voice} — ${cw(POL[r.type], `it ${RV[r.type]} ${pil(r.k, r.p)}${tri(r)}, so ${eff(F, r)}`)}`;
+        const rs = rels(F, br, null, 'hour'), r = rs[0], cw = (pol, t) => (pol > 0 && rate === 1 ? 'still, ' : pol < 0 && rate === 3 ? 'that said, ' : '') + t;
+        const r2 = r && r.k === 'day' ? rs.find(q => q.k !== 'day') : null;   // E1: the birth-day pillar alone is shared by everyone born on that day → name the next pillar the hour meets
+        if (r) return `${voice} — ${cw(POL[r.type], `it ${RV[r.type]} ${pil(r.k, r.p)}${tri(r)}, so ${eff(F, r)}`)}${r2 ? `; it ${r2.type === r.type ? 'does the same with' : 'also ' + (r2.type === 'sam' ? 'teams up (Three Harmony) with' : RV[r2.type])} ${pilS(r2.k, r2.p)}` : ''}`;
         const e = STEMS[st].el, c = cntOf(F, e);
-        if (onlyMe(F, e)) return `${voice} — ${cw(1, `this hour brings ${EL[e]}, which only your own letter carries in your chart, so you get some backup`)}`;
+        if (onlyMe(F, e)) return `${voice} — ${cw(1, `this hour brings ${EL[e]}, which only your own ${STEMS[F.ds].h} (${h2(F.s.day)}) carries, so you get some backup`)}`;
         if (c <= 0) return `${voice} — ${cw(1, `this hour brings ${EL[e]}, which your chart lacks, so it may feel new but it fills a gap`)}`;
-        if (c >= 3) return `${voice} — ${cw(-1, `more ${EL[e]} on top of plenty, so easing off suits you`)}`;
-        if (e === F.need) return `${voice} — ${cw(1, `this hour brings ${EL[e]}, which the old books see your chart looking for first`)}`;
+        if (c >= 3) return `${voice} — ${cw(-1, `this hour adds ${EL[e]} to a chart already full of it, starting with ${posS(posOf(F, e)[0])}, so easing off suits you`)}`;
+        if (e === F.need) return `${voice} — ${cw(1, `this hour brings ${EL[e]}, which old texts say a ${STEMS[F.ds].h} born in ${MW[F.mb]} looks for first`)}`;
         const ps = posOf(F, e);
         return `${voice} — this hour adds to the ${EL[e]} in ${posN(ps[0])}, so ${area(F, ps[0].k)} can get a lift`;
       },
       nowBody(F, st, br, tg) {
         const TF = TENGOD_FORTUNE_EN[tg] || '', i = TF.indexOf(' — '); if (i < 0) return '';
         const r = rels(F, br, null, 'hour')[0], e = STEMS[st].el;
-        const mine = r ? `${relS(`this hour’s ${ani(br)} (${STEMS[st].h}${BRANCHES[br].h})`, r)}. So ${eff(F, r)}` : `the ${EL[e]} this hour brings ${cntPred(F, e, true)}`;
+        const mine = r ? `${relS(`this hour’s ${ani(br)} (${STEMS[st].h}${BRANCHES[br].h})`, r)}. So ${eff(F, r)}` : `the ${EL[e]} this hour brings ${cntX(F, e, true)}`;
         return `${TF.slice(0, i)} — ${mine}. ${cap(TF.slice(i + 3))}.`;
       },
       nowNext(F, st, br) {
         const r = rels(F, br, null, 'hour')[0], e = STEMS[st].el;
-        return r ? ` ${relS(`That hour’s ${subjB(br)}`, r)}.` : ` The ${EL[e]} it brings ${cntPred(F, e, true)}.`;
+        return r ? ` ${relS(`That hour’s ${subjB(br)}`, r)}.` : ` The ${EL[e]} it brings ${cntX(F, e, true)}.`;
       },
       nowWhy(F, st, br, tg) {
         const e = STEMS[st].el;
-        return `This hour’s ${STEMS[st].h} (${EL[e]}) brings <b>${TG_NICK_EN[tg]}</b> to the ${STEMS[F.ds].h} of the day of your birth; ${EL[e]} ${cntPred(F, e, true)}.`;
+        return `This hour’s ${STEMS[st].h} (${EL[e]}) brings <b>${TG_NICK_EN[tg]}</b> to ${STEMS[F.ds].h}, the top letter of your birth day${cntX(F, e, true).includes(h2(F.s.day)) ? '' : ` (${h2(F.s.day)})`}; ${EL[e]} ${cntX(F, e, true)}.`;
       },
-      luckWhy(F, el) { const g = F.grpOf(el); return ` For you, ${EL[el]} is ${ROLE[g]}, so today is a good day to ${(F.minor && TIPL_MINOR[g]) || TIPL[g]}.`; },
+      luckWhy(F, el) { const g = F.grpOf(el); return ` For you, ${EL[el]} is ${ROLE[g]}, which ${cntS(F, el)}, so today is a good day to ${(F.minor && TIPL_MINOR[g]) || TIPL[g]}.`; },
       luckSaju(F, el) {   // one sentence placed after the +20 line's parenthesis
         const c = cntOf(F, el), n = F.s.total >= 8 ? 'eight' : 'six';
-        return ` ${onlyMe(F, el) ? `The only ${EL[el]} among the ${n} letters in your chart is your own letter, ${STEMS[F.ds].h}, the top letter of the day of your birth` : c <= 0 ? `None of the ${n} letters in your chart is ${EL[el]}` : `${EL[el]} shows up only in ${posL(posOf(F, el))}`}.`;
+        return ` ${onlyMe(F, el) ? `The only ${EL[el]} among the ${n} letters in your chart is your own letter, ${STEMS[F.ds].h}, the top letter of your birth day (${h2(F.s.day)})` : c <= 0 ? `None of the ${n} letters in your chart is ${EL[el]}${arr(F, el)}` : `${EL[el]} shows up only in ${posL(posOf(F, el))}`}.`;
       },
-      luckToday(F, el) { return ` ${EL[el]} ${cntPred(F, el)}.`; },
+      luckToday(F, el) { return ` ${EL[el]} ${cntX(F, el)}.`; },
       skyMoon(F, ms) {
         const a = F.a, hits = [];
         [['sun', a.sun], ['moon', a.moon]].concat(['mercury', 'venus', 'mars', 'jupiter', 'saturn'].map(k => [k, a.planets && a.planets[k]])).forEach(([k, x]) => { if (x && x.sign === ms) hits.push(BODY[k]); });
@@ -7027,7 +7135,7 @@ const U3B = (() => {
       },
       skyJie(F, s2) {
         const m = s2.month, r = rels(F, m.branch, null, 'month')[0], e = STEMS[m.stem].el;
-        return r ? ` ${relS(`The new month’s ${ani(m.branch)} (${h2(m)})`, r)} — ${eff(F, r)}.` : ` The new month brings ${EL[e]} (${STEMS[m.stem].h}), which ${cntPred(F, e, true)}.`;
+        return r ? ` ${relS(`The new month’s ${ani(m.branch)} (${h2(m)})`, r)} — ${eff(F, r)}.` : ` The new month brings ${EL[e]} (${STEMS[m.stem].h}), which ${cntX(F, e, true)}.`;
       },
       themeMine(F, theme) {
         if (theme in THG) {
@@ -7040,7 +7148,20 @@ const U3B = (() => {
         if (theme === 2) return `Close ties are looked after by ${pil('day', F.s.day)}; turning to those people first opens this theme up.`;
         return `Clearing out is Metal’s job, and for you Metal is ${ROLE[F.grpOf(3)]} — it ${cntPred(F, 3)}.`;
       },
-      themeAdv(F, theme, short) { const adv = (THEMES_EN[theme] || {}).adv; return adv ? `${short ? firstSent(adv) : dropLast(adv)} ${P.themeMine(F, theme)}` : ''; },
+      themeAdv(F, theme, short) { const adv = (THEMES_EN[theme] || {}).adv; return adv ? (short ? `${firstSent(adv)} ${P.themeMine(F, theme)}` : `${dropLast(adv)} ${P.themeMineF(F, theme)}`) : ''; },
+      themeMineF(F, theme) {   // E1: fortune's period advice — like themeMine, but a count names where it starts, and close ties name a second fact
+        if (!(theme in THG) && theme !== 2) return `Clearing out is Metal’s job, and for you Metal is ${ROLE[F.grpOf(3)]} — it ${cntX(F, 3)}.`;
+        if (theme === 2) { const v = F.a.planets && F.a.planets.venus; return `Close ties are read from ${pilS('day', F.s.day)}${v ? `, and in the stars from your Venus in ${SIGNS_EN[v.sign]}` : ''}; turning to those people first opens this theme up.`; }
+        const g = THG[theme], e = md(F.dEl + g, 5), c = cntOf(F, e);
+        if (c >= 3) return `This theme runs on ${EL[e]}, ${ROLE[g]}, which already shows up ${NUMW[c] || c} times in your chart, starting with ${posS(posOf(F, e)[0])}, so choosing beats adding.`;
+        return P.themeMine(F, theme);
+      },
+      sameMine(F, p, prev) {   // E1: a period whose theme repeats an earlier one — what still carries it in your chart
+        const PE = {day: 'today', week: 'this week', month: 'this month', quarter: 'this quarter', year: 'this year'}, th = p.theme, v = F.a.planets && F.a.planets.venus;
+        const why = th in THG ? (e => `It still runs on ${EL[e]}, which ${cntS(F, e)}.`)(md(F.dEl + THG[th], 5))
+          : th === 2 ? `Close ties are still read from ${pilS('day', F.s.day)}${v ? ` and your Venus in ${SIGNS_EN[v.sign]}` : ''}.` : `Clearing out is still the job of Metal, which ${cntS(F, 3)}.`;
+        return `Same theme as ${PE[prev]}, so what I said above carries on through ${PE[p.key]}. ${why}`;
+      },
       agree(F, p, sys) {
         const nc = NUM_CYCLE_EN[Math.min(p.num.n, 9)]; if (!nc) return '';
         const s = `Saju: “${nick(F, p.saju.tg, p.saju.theme)}”. Stars: ${houseS(F, p.astro.house)}. Number: “${nc.split(' — ')[0]}”.`;
@@ -7053,45 +7174,50 @@ const U3B = (() => {
         if (p.key === 'quarter') {
           const m = String(p.saju.gz).match(/^(.+?)\((.+?)\)$/); if (!m) return '';
           const e = ELEMENTS.findIndex(x => x.k === m[2]); if (e < 0) return '';
-          return `${head}${SEASON_EN[m[1]] || m[1]}’s ${EL[e]} ${cntPred(F, e, true)}.`;
+          return `${head}${SEASON_EN[m[1]] || m[1]}’s ${EL[e]} ${cntX(F, e, true)}.`;
         }
         const ix = gzIdx(String(p.saju.gz)); if (!ix) return '';
         const dup = p.key === 'week' && f && f.periods[0].saju.gz === p.saju.gz;
         const r = dup ? null : rels(F, ix.br, null, {day: 'day', week: 'day', month: 'month', year: 'year'}[p.key])[0], e = STEMS[ix.st].el;
-        return r ? `${head}${relC(F, `its ${subjB(ix.br)}`, r)}.` : `${head}its ${STEMS[ix.st].h} brings ${EL[e]}, which ${cntPred(F, e, true)}.`;
+        return r ? `${head}${relC(F, `its ${subjB(ix.br)}`, r)}.` : `${head}its ${STEMS[ix.st].h} brings ${EL[e]}, which ${cntX(F, e, true)}.`;
       },
       pAstro(F, p) {
         const sg = p.astro.sign, key = (p.key === 'day' ? 'm' : 's') + sg;
-        if (C.seen.has(key)) { const hb = bodiesIn(F, sg); return hb.length ? ` ${SIGNS_EN[sg]} is where your ${andL(hb)} ${hb.length > 1 ? 'were' : 'was'} at birth.` : ''; } C.seen.add(key);
+        if (C.seen.has(key)) { const hb = bodiesIn(F, sg).filter(b => F.moonSure || b !== 'Moon'), e2 = ZOD2EL[sg % 4]; return hb.length ? ` ${SIGNS_EN[sg]} is where your ${andL(hb)} ${hb.length > 1 ? 'were' : 'was'} at birth.` : ` In saju terms that’s still ${EL[e2]} — ${cntT2(F, e2)}.`; } C.seen.add(key);
         const e = ZOD2EL[sg % 4], g = F.grpOf(e);
-        return ` In saju terms, that’s ${EL[e]}, ${ROLE[g]} — ${cntTail(F, e)}.`;
+        return ` In saju terms, that’s ${EL[e]}, ${ROLE[g]} — ${cntT2(F, e)}.`;
       },
       pNum(F, p) {
         const n = Math.min(p.num.n, 9), full = NUM_CYCLE_EN[n]; if (!full) return '';
         const e = NUM2EL[n], g = F.grpOf(e), fs = firstSent(full);
-        return `${fs}${/[.!?][”’]?$/.test(fs) ? '' : '.'} As an energy, that’s ${EL[e]}, ${ROLE[g]} — ${cntTail(F, e)}.`;
+        return `${fs}${/[.!?][”’]?$/.test(fs) ? '' : '.'} As an energy, that’s ${EL[e]}, ${ROLE[g]} — ${cntT2(F, e)}.`;
       },
       sub(F, i, tier, t) {
         const line = SUBCATS_EN[i].lines[tier], head = firstSent(line), rest = restSent(line);
         const tb = t.day.branch, te = STEMS[t.day.stem].el, tbe = BRANCHES[tb].el;
         let obs;
         if (i === 0) { const W = md(F.dEl + 2, 5), lab = F.minor ? `${EL[W]} (${ROLE[2]})` : `${EL[W]} (your money energy)`;
-          obs = (te === W || tbe === W) ? conn(1, tier, `Today’s letters bring ${EL[W]}, ${F.minor ? ROLE[2] : 'your money energy'}.`) : `${lab} ${cntPred(F, W)}${cntOf(F, W) <= 0 ? arr(F, W) : ''}.`; }
+          obs = (te === W || tbe === W) ? conn(1, tier, `Today’s letters bring ${EL[W]}, ${F.minor ? ROLE[2] : 'your money energy'}, which ${cntS(F, W)}.`) : `${lab} ${cntX(F, W)}.`; }
         else if (i === 1) { const r = rels(F, tb, 'day')[0];
           obs = r ? conn(POL[r.type], tier, `${relS(`Today’s ${subjB(tb)}`, r)}.`) : `${cap(pil('day', F.s.day))} doesn’t clash with today’s ${subjB(tb)}.`; }
         else if (i === 2) { const r = rels(F, tb, 'month')[0], O = md(F.dEl + 3, 5);
-          obs = r ? conn(POL[r.type], tier, `${relS(`Today’s ${subjB(tb)}`, r)}.`) : `${EL[O]}, ${ROLE[3]}, ${cntPred(F, O)}${cntOf(F, O) <= 0 ? arr(F, O) : ''}.`; }
+          obs = r ? conn(POL[r.type], tier, `${relS(`Today’s ${subjB(tb)}`, r)}.`) : `${EL[O]}, ${ROLE[3]}, ${cntX(F, O)}.`; }
         else if (i === 3) { const c = cntOf(F, te), wk = thinOf(F);
-          obs = onlyMe(F, te) ? conn(1, tier, `Today’s ${EL[te]} is held in your chart only by ${meN(F)}, so it adds strength rather than strain.`)
-            : c <= 0 ? conn(-1, tier, `Today’s ${EL[te]} isn’t in your chart, so your body may find it unfamiliar.`)
-            : te === F.strong ? conn(-1, tier, `Today’s ${EL[te]} is already the strongest energy in your chart, so just don’t overdo it.`)
-            : te === F.need ? conn(1, tier, `Today’s ${EL[te]} is what the old books see your chart looking for first.`)
-            : `${EL[wk]}, your thinnest energy, ${cntPred(F, wk)}${cntOf(F, wk) <= 0 ? arr(F, wk) : ''}.`; }
-        else obs = `${EL[F.dEl]}, ${ROLE[0]}, ${cntPred(F, F.dEl)}${cntOf(F, F.dEl) <= 0 ? arr(F, F.dEl) : ''}.`;
+          obs = onlyMe(F, te) ? conn(1, tier, `Today’s ${EL[te]} is held in your chart only by your own ${STEMS[F.ds].h} (${h2(F.s.day)}), so it adds strength rather than strain.`)
+            : c <= 0 ? conn(-1, tier, `Today’s ${EL[te]} is one ${arrS(F, te) || 'your chart lacks'}, so your body may find it unfamiliar.`)
+            : te === F.strong ? conn(-1, tier, `Today’s ${EL[te]} is already the strongest energy in your chart${posOf(F, te).length ? `, starting with ${posS(posOf(F, te)[0])}` : ''}, so just don’t overdo it.`)
+            : te === F.need ? conn(1, tier, `Today’s ${EL[te]} is what old texts say a ${STEMS[F.ds].h} born in ${MW[F.mb]} looks for first.`)
+            : `${EL[wk]}, your thinnest energy, ${cntX(F, wk)}.`; }
+        else obs = `${EL[F.dEl]}, ${ROLE[0]}, ${cntX(F, F.dEl)}.`;
         return `${head} ${obs}${rest ? ' ' + rest : ''}`;
       },
       /* ── life map ── */
-      lifeRow(F, ci, Y, past, rating) {
+      lifeRow(F, ci, Y, past, rating, ph) {
+        const dn = (el, yh = true) => { if (!ph) return ''; const yb0 = md(Y - 4, 12), dk = `${STEMS[ph.st].h}${BRANCHES[ph.br].h}`, b = ph.br;   // E1: the decade that year falls in — how the year meets it, else what it adds
+          const t = inPairs(JIJI_CHUNG, yb0, b) ? 'clash' : inPairs(JIJI_HAP, yb0, b) ? 'hap' : yb0 === b ? 'same' : groupOf12(yb0) === groupOf12(b) ? 'sam' : '';
+          if (t) return `. That year’s ${ani(yb0)} ${t === 'sam' ? (past ? 'teamed up (Three Harmony) with' : 'teams up (Three Harmony) with') : (past ? RVP : RV)[t]} your ${dk} decade, so ${{clash: past ? 'things may have been stirred up' : 'things can get stirred up', hap: past ? 'things probably clicked' : 'things tend to click', same: past ? 'that energy probably weighed double' : 'that energy can weigh double', sam: past ? 'it probably gathered strength' : 'it tends to gather strength'}[t]}`;
+          const dh = STEMS[ph.st].el === el || BRANCHES[ph.br].el === el;   // yh: does that year bring it too?
+          return `. Your ${dk} decade ${dh ? (yh ? `${past ? 'brought' : 'brings'} ${EL[el]} too` : `${past ? 'did' : 'does'} bring ${EL[el]}`) : `${past ? 'brought' : 'brings'} no ${EL[el]}${yh ? '' : ' either'}`}`; };
         const ys = md(Y - 4, 10), yb = md(Y - 4, 12), es = STEMS[ys].el, eb = BRANCHES[yb].el, sub = `That year’s ${ani(yb)} (${STEMS[ys].h}${BRANCHES[yb].h})`;
         const SOFT = {hap: past ? 'there were probably moments when things clicked' : 'there are moments when things click', sam: past ? 'it probably gathered strength at times' : 'it gathers strength at times'};
         const E0 = {clash: past ? 'it may have been stirred up' : 'it can get stirred up', hap: past ? 'things probably clicked' : 'things tend to click', same: past ? 'it may have carried extra weight' : 'it can carry extra weight', sam: past ? 'it probably gathered strength' : 'it tends to gather strength'};
@@ -7105,29 +7231,34 @@ const U3B = (() => {
         if (ci === 1) {
           const W = md(F.dEl + 2, 5), has = es === W || eb === W, c = cntOf(F, W), ps = posOf(F, W);
           const lab = F.minor ? `${EL[W]} (${ROLE[2]})` : `${EL[W]} (your money energy)`;
-          if (has && c <= 0) return rating === 1 ? `Still, ${lab}, missing from your chart, ${past ? 'did come' : 'does come'} in with that year’s letters` : `${lab}, missing from your chart, ${past ? 'came' : 'comes'} in with that year’s letters — unfamiliar, but the road ${past ? 'probably widened' : 'tends to widen'}`;
-          if (has && c >= 3) return conn(-1, rating, `More ${lab}, already plentiful, ${past ? 'piled' : 'piles'} on that year, so what comes in ${past ? 'may have gone' : 'can go'} out just as easily`);
+          if (has && c <= 0) return rating === 1 ? `Still, ${lab}, missing from your chart, ${past ? 'did come' : 'does come'} in with that year’s letters` : `${lab}, missing from your chart, ${past ? 'came' : 'comes'} in with that year’s letters — unfamiliar, but the road ${past ? 'probably widened' : 'tends to widen'}${dn(W)}`;
+          if (has && c >= 3) return conn(-1, rating, `More ${lab}, already plentiful, ${past ? 'piled' : 'piles'} on that year, so what ${past ? 'came in may have gone' : 'comes in can go'} out just as easily${dn(W)}`);
           if (has) return `${lab} ${past ? 'came' : 'comes'} in that year, joining ${posN(ps[0])}`;
-          if (c <= 0) return `${lab} ${past ? 'was' : 'is'} in neither your chart nor that year’s letters, so just writing down what comes and goes ${past ? 'was' : 'is'} enough`;
+          if (c <= 0) return `${lab} ${past ? 'was' : 'is'} in neither your chart nor that year’s letters, so just writing down what ${past ? 'came and went was' : 'comes and goes is'} enough${dn(W, false)}`;
           return `${lab} ${past ? 'wasn’t' : 'isn’t'} in that year’s letters but sits in ${posN(ps[0])}`;
         }
-        const wk = thinOf(F), sg = F.strong, wl = onlyMe(F, wk) ? `${EL[wk]}, which only your own letter carries in your chart` : F.cnt[wk] <= 0 ? `${EL[wk]}, which your chart lacks` : `${EL[wk]}, your thinnest energy`;
-        if (es === wk || eb === wk) return rating === 1 ? `Still, that year’s letters ${past ? 'did top' : 'do top'} up ${wl}` : `That year’s letters ${past ? 'topped' : 'top'} up ${wl}, so you ${past ? 'probably tired less easily' : 'tend to tire less easily'}`;
-        if (es === sg || eb === sg) return conn(-1, rating, `That year ${past ? 'added' : 'adds'} to ${EL[sg]}, already your strongest energy, so ${past ? 'rest days probably mattered' : 'a few planned rest days help'}`);
-        if (es === F.need || eb === F.need) return conn(1, rating, `That year ${past ? 'brought' : 'brings'} ${EL[F.need]}, which the old books see your chart looking for first`);
-        return `That year ${past ? 'didn’t bring' : 'doesn’t bring'} ${wl}, so tending just that ${past ? 'was' : 'is'} enough`;
+        const wk = thinOf(F), sg = F.strong, wl = onlyMe(F, wk) ? `${EL[wk]}, which only your own ${STEMS[F.ds].h} (${h2(F.s.day)}) carries` : F.cnt[wk] <= 0 ? `${EL[wk]}, which your chart lacks` : `${EL[wk]}, your thinnest energy, held in ${posS(posOf(F, wk)[0])}`;
+        if (es === wk || eb === wk) return (rating === 1 ? `Still, that year’s letters ${past ? 'did top' : 'do top'} up ${wl}` : `That year’s letters ${past ? 'topped' : 'top'} up ${wl}, so you ${past ? 'probably tired less easily' : 'tend to tire less easily'}`) + dn(wk);
+        if (es === sg || eb === sg) return conn(-1, rating, `That year ${past ? 'added' : 'adds'} to ${EL[sg]}, already your strongest energy${posOf(F, sg).length ? `, starting with ${posS(posOf(F, sg)[0])}` : ''}, so ${past ? 'rest days probably mattered' : 'a few planned rest days help'}`) + dn(sg);
+        if (es === F.need || eb === F.need) return conn(1, rating, `That year ${past ? 'brought' : 'brings'} ${EL[F.need]}, which old texts say a ${STEMS[F.ds].h} born in ${MW[F.mb]} looks for first`) + dn(F.need);
+        return `That year ${past ? 'didn’t bring' : 'doesn’t bring'} ${wl}, so tending just that ${past ? 'was' : 'is'} enough` + dn(wk, false);
       },
       lifeFlow(F, Y, past) {
         const ys = md(Y - 4, 10), yb = md(Y - 4, 12), r = rels(F, yb, 'year')[0] || rels(F, yb, 'hour')[0], e = STEMS[ys].el;
-        return r ? ` ${relS(`That year’s ${ani(yb)} (${STEMS[ys].h}${BRANCHES[yb].h})`, r, past)}.` : ` That year ${past ? 'brought' : 'brings'} ${EL[e]} (${STEMS[ys].h}), which ${cntPred(F, e, true)}.`;
+        return r ? ` ${relS(`That year’s ${ani(yb)} (${STEMS[ys].h}${BRANCHES[yb].h})`, r, past)}.` : ` That year ${past ? 'brought' : 'brings'} ${EL[e]} (${STEMS[ys].h}), which ${cntX(F, e, true)}.`;
       },
-      lifeDeep(F, text, Y) {
+      lifeDeep(F, text, Y, past) {
         if (!text) return ''; const yb = md(Y - 4, 12), eb = BRANCHES[yb].el;
-        return `${text} The ${ani(yb)} year’s ${EL[eb]} ${cntPred(F, eb, true)}.`;
+        return `${text} The ${ani(yb)} year ${past ? 'brought' : 'brings'} ${EL[eb]}, which ${cntX(F, eb, true)}.`;
+      },
+      lifeDeepP(F, text, Y) { return P.lifeDeep(F, text, Y, true); },   // E1: the same clause for the three years behind (English only)
+      lifeGw(F, list) {   // E1: the good three years — the first one whose animal meets one of your pillars kindly (not the birth year: the helper-year line names that)
+        for (const x of (list || []).slice().sort((a, b) => !!a.ally - !!b.ally)) { const r = rels(F, md(x.Y - 4, 12)).find(q => q.type !== 'clash' && q.k !== 'year'); if (r) return ` In ${x.Y}, the ${ani(md(x.Y - 4, 12))} ${r.type === 'sam' ? 'teams up (Three Harmony) with' : RV[r.type]} ${pilS(r.k, r.p)}.`; }
+        return '';
       },
       lifeDae(F, st, br, which) {
         const lead = which === 'next' ? 'The next decade’s' : 'This decade’s', r = rels(F, br, null, 'month')[0], e = BRANCHES[br].el, nm = `${lead} ${ani(br)} (${STEMS[st].h}${BRANCHES[br].h})`;
-        return r ? `${relC(F, nm, r)}.` : `${nm} is ${EL[e]} energy, and ${EL[e]} ${cntPred(F, e, true)}.`;
+        return r ? `${relC(F, nm, r)}.` : `${nm} is ${EL[e]} energy, and ${EL[e]} ${cntX(F, e, true)}.`;
       },
       lifePeak(F, st, br, past) {
         const e = F.D && F.D.evalLuck(st, br); if (!e) return '';
@@ -7146,11 +7277,11 @@ const U3B = (() => {
       /* ── astrology tab ── */
       sunEcho(F) {
         const tags = SIGN_TAGS[F.sun], other = F.votes.filter(v => ['stem', 'el', 'lp', 'expr'].includes(v.type));
-        for (const t of tags) { const src = other.filter(v => v.t === t); if (src.length) return ` ${andL(src.map(tagSrc)).replace(/^./, c => c.toUpperCase())} says “${TAGN(t)}” too, so it runs deep.`; }
+        for (const t of tags) { const src = other.filter(v => v.t === t); if (src.length) return ` ${andL(src.map(tagSrc)).replace(/^./, c => c.toUpperCase())} ${src.length > 1 ? 'say' : 'says'} “${TAGN(t)}” too, so it runs deep.`; }
         const sv = F.votes.find(v => v.type === 'stem'), lv = F.votes.find(v => v.type === 'lp'); if (!sv || !lv) return '';
         return ` Underneath, ${tagSrc(sv)} speaks of “${TAGN(sv.t)}” and ${tagSrc(lv)} of “${TAGN(lv.t)}”, so your surface and your base carry different strengths.`;
       },
-      sunCount(F) { const e = ZOD2EL[F.sun % 4]; return ` Its saju energy, ${EL[e]}, ${cntPred(F, e)}.`; },
+      sunCount(F) { const e = ZOD2EL[F.sun % 4]; P.e2Seen(F, e, F.sun); return ` Its saju energy, ${EL[e]}, ${cntPred(F, e)}.`; },
       moonEcho(F) {
         const m = SIGN_TAGS[F.moon][0], stT = ILGAN_TAGS[F.dk.k], lab = `the ${SHORT[F.dk.k]} (${h2(F.s.day)}) of your birth day`;
         const rel = F.sun % 4 === F.moon % 4 ? `shares the ${ZOD_EL_EN[F.moon % 4]} element with your Sun in ${SIGNS_EN[F.sun]}` : (F.sun - F.moon) % 2 === 0 ? `fits your Sun in ${SIGNS_EN[F.sun]}` : `differs from your Sun in ${SIGNS_EN[F.sun]}, so outside and inside keep different beats`;
@@ -7162,18 +7293,97 @@ const U3B = (() => {
         const rel = rz % 4 === sz % 4 ? `shares the ${ZOD_EL_EN[rz % 4]} element with your Sun in ${SIGNS_EN[sz]}, so first impressions match who you are`
           : (rz - sz) % 2 === 0 ? `fits your Sun in ${SIGNS_EN[sz]}, so first impressions lead into who you are` : `differs from your Sun in ${SIGNS_EN[sz]}, so first impressions and the later you differ a little`;
         const t = SIGN_TAGS[rz][0], src = F.votes.filter(v => ['stem', 'el', 'lp', 'expr'].includes(v.type) && v.t === t);
-        return ` This Rising sign ${rel}.${src.length ? ` Its “${TAGN(t)}” is echoed by ${andL(src.map(tagSrc))}.` : ''}`;
+        return ` This Rising sign ${rel}.${src.length ? ` Its “${TAGN(t)}” is echoed by ${andL(src.map(tagSrc))}.` : ''} ${P.e2SajuOf(F, rz)}.`;
       },
-      noRising(F) { return ` Until then, read your first impression from your Sun in ${SIGNS_EN[F.sun]} and ${pil('day', F.s.day)}, which stands for you.`; },
+      noRising(F, x, ...a) { if (x) return typeof P['e2' + x] === 'function' ? P['e2' + x](F, ...a) : '';   // with a name: the English-only e2… lines below (renderers call that on English paths only)
+        return ` Until then, read your first impression from your Sun in ${SIGNS_EN[F.sun]} and ${pil('day', F.s.day)}, which stands for you.`; },
       elNote(F) {
         const mx = Math.max(...F.cnt), d = [0, 1, 2, 3, 4].filter(e => F.cnt[e] === mx).map(e => EL[e]);
         return ` (By the ${F.s.total >= 8 ? 'eight' : 'six'} letters of your saju chart, ${andL(d)} ${d.length > 1 ? 'are' : 'is'} the most common — the two are counted differently, so they may not match.)`;
       },
       modNote(F, tops) {
         const so = tops.includes(F.sun % 3), mo = tops.includes(F.moon % 3);
+        if (tops.length === 1) return so && mo ? ' With your Sun and Moon both among them, it shows on the outside first.' : so ? ' With your Sun among them, it shows on the outside first.' : mo ? ' With your Moon among them, it moves inside you first.' : ' Your Sun and Moon aren’t among them, so it works more in the background.';
         const S = `your Sun (${SIGNS_EN[F.sun]})`, M = `your Moon (${SIGNS_EN[F.moon]})`; return so && mo ? ` ${cap(S)} and ${M} are both among them, so it shows on the outside first.` : so ? ` ${cap(S)} is among them (${M} isn’t), so it shows on the outside first.` : mo ? ` ${cap(M)} is among them (${S} isn’t), so it moves inside you first.` : ` Neither ${S} nor ${M} is among them, so the other planets carry it.`;
       },
+      /* ── E2 (English only): astrology tab ── */
+      e2BigThree(F) {   // the Sun card's one-line summary names the person's own Sun · Moon · Rising
+        const an = w => (/^[AEIOU]/.test(w) ? 'an ' : 'a ') + w;
+        return `${an(SIGNS_EN[F.sun])} Sun with ${an(SIGNS_EN[F.moon])} Moon${F.rising !== null && F.rising !== undefined ? ` and ${SIGNS_EN[F.rising]} Rising` : ''}`;
+      },
+      e2MoonNote(F) {   // no birth time: xrFacts already checked whether the Moon kept one sign from 0:00 to 23:59 on that day
+        const m = SIGNS_EN[F.moon], day = `the ${ani(F.s.day.branch)} (${h2(F.s.day)}) day you were born`;
+        if (F.moonSure) return `Worked out for noon, because the birth time is unknown. The Moon stayed in ${m} all through ${day}, so this holds at any hour.`;
+        const A = F.moonAlt || [], alt = A.filter(x => x !== F.moon)[0]; if (alt === undefined) return '';
+        const early = A.indexOf(alt) < A.indexOf(F.moon);
+        return `Worked out for noon, because the birth time is unknown. On ${day}, the Moon moved from ${SIGNS_EN[early ? alt : F.moon]} into ${SIGNS_EN[early ? F.moon : alt]} ${early ? 'before' : 'after'} noon, so if you were born ${early ? 'early' : 'late'} that day, your Moon may be in ${SIGNS_EN[alt]}.`;
+      },
+      e2Pts(F, sg, skip, all) {   // the person's own points in sign sg (the Moon only when its sign is sure for the day, unless all)
+        const pl = F.a.planets || {}, at = x => (pl[x] ? pl[x].sign : null);
+        return [['Sun', F.sun], ['Moon', F.moon], ['Rising', F.rising], ['Mercury', at('mercury')], ['Venus', at('venus')], ['Mars', at('mars')]].filter(([n, s]) => s === sg && n !== skip && (all || n !== 'Moon' || F.moonSure)).map(([n]) => n);
+      },
+      e2Seen(F, e, sg) { const M = F.__e2 || (F.__e2 = {}), m = M[e] || (M[e] = {n: 0, sg}); m.n++; return m; },   // how often an energy has been read on this page, and through which sign first
+      e2Pos(F, x) { return `${x.part === 'stem' ? `the top letter ${STEMS[x.p.stem].h}` : `the ${ani(x.p.branch)}`} (${h2(x.p)}) of your birth ${x.k}`; },
+      e2SajuOf(F, sg) {   // the app's sign → saju energy pairing (ZOD2EL, as in sunCount), then where that energy sits in the chart
+        const e = ZOD2EL[sg % 4], c = cntOf(F, e), ps = posOf(F, e), m = P.e2Seen(F, e, sg), again = m.n > 1, x = ps.length ? ps[(m.n - 1) % ps.length] : null;
+        const head = `In saju terms ${SIGNS_EN[sg]} is ${EL[e]}${!again ? '' : m.sg === sg ? ' again' : `, like ${SIGNS_EN[m.sg]}`}`;
+        return `${head}: ${onlyMe(F, e) ? `only your own letter (${STEMS[F.ds].h}) has it${again ? '' : arr(F, e)}` : c <= 0 ? `your chart has none${again ? '' : arr(F, e)}` : c >= 3 ? `${e === F.dEl ? 'besides your own letter, ' : ''}your chart has it ${NUMW[c] || c} times, as in ${P.e2Pos(F, x)}` : `you ${again && ps.length > 1 ? 'also ' : ''}have it in ${P.e2Pos(F, x)}`}`;
+      },
+      e2Sat(F, sg, en) {   // same rule as before (Saturn shares a sign with the Sun, Moon or Mercury → "already have"), now naming which
+        const w = P.e2Pts(F, sg, null, true).filter(n => ['Sun', 'Moon', 'Mercury'].includes(n)), say = w.filter(n => n !== 'Moon' || F.moonSure);
+        if (w.length && !say.length) return '';   // only a Moon that may sit in the next sign matches: keep the original line, which names no body
+        return w.length ? `Your ${andL(say)} ${say.length > 1 ? 'are' : 'is'} in ${SIGNS_EN[sg]} too, so ${en} are already part of you. Learning to use them in the right amount is what takes you years.`
+          : `You build up ${en} slowly: clumsy at first, but strong over time. ${P.e2SajuOf(F, sg)}.`;
+      },
+      e2Gen(F, sg, head) {   // the three slow planets: the generation's line × the person's own points and chart
+        const pts = P.e2Pts(F, sg);
+        return `${head} ${pts.length ? `Your ${andL(pts)} ${pts.length > 1 ? 'are' : 'is'} in ${SIGNS_EN[sg]} too, so it’s personal for you as well. ` : ''}${P.e2SajuOf(F, sg)}.`;
+      },
+      e2ElCross(F, tops) {   // the star signs' leading element × the saju's own most common energy (ZOD2EL: Air counts as Wood)
+        const mx = Math.max(...F.cnt), d = [0, 1, 2, 3, 4].filter(e => F.cnt[e] === mx), n = F.s.total >= 8 ? 'eight' : 'six';
+        const hit = (tops || []).find(t => d.includes(ZOD2EL[t])), ps = d.length === 1 ? posOf(F, d[0]) : [], at = ps.length ? `, as in ${posN(ps[0])}` : '';
+        if (hit !== undefined) { const e = ZOD2EL[hit]; return ` Your saju agrees: ${ZOD_EL_EN[hit] === EL[e] ? '' : `${ZOD_EL_EN[hit]} signs count as ${EL[e]} in saju terms, and `}${EL[e]} is the most common of its ${n} letters${d.length === 1 ? at : ''}.`; }
+        return ` Your saju, counted another way, leans elsewhere: of its ${n} letters, ${andL(d.map(e => EL[e]))} ${d.length > 2 ? 'are tied for the most' : d.length > 1 ? 'are the most common' : 'is the most common'}${at}.`;
+      },
+      e2PosL(F, ps) { const a = ps.slice(0, 2); return a.length === 2 && a[0].k === a[1].k ? `both letters of your birth ${a[0].k} (${h2(a[0].p)})` : andL(a.map(x => P.e2Pos(F, x))); },
+      /* ── E2 (English only): one-page summary ── */
+      e2RepFlow(F) {   // this year's animal × the birth pillars (the same reading as the Personal Year card), or its energy × the chart
+        const y = F.yrs.cur, r = rels(F, y.br, null, 'year')[0];
+        return r ? ` — ${relS(`this year’s ${ani(y.br)} (${STEMS[y.st].h}${BRANCHES[y.br].h})`, r)}` : ` — this year’s ${STEMS[y.st].h} brings ${EL[y.yEl]}, which ${cntPred(F, y.yEl, true)}`;
+      },
+      e2RepAdv(F, theme) {   // year advice: when the theme's energy is already plentiful, also say where it sits (as the Korean line does)
+        if (!(theme in THG)) return '';
+        const g = THG[theme], e = md(F.dEl + g, 5), c = cntOf(F, e), adv = (THEMES_EN[theme] || {}).adv; if (c < 3 || !adv) return '';
+        return `${firstSent(adv)} This theme runs on ${EL[e]}, ${ROLE[g]}, which already shows up ${NUMW[c] || c} times in your chart, as in ${P.e2PosL(F, posOf(F, e))}, so choosing beats adding.`;
+      },
+      e2RepRise(F) { return `; until then, read it from your Sun in ${SIGNS_EN[F.sun]} and your ${h2(F.s.day)} day`; },
       /* ── numerology tab ── */
+      e2NumShort(F) {   // the Life Path card's one-line summary names one fact from each of the three readings
+        const T = (NUM_ESSENCE_EN[F.lp] || {}).t; if (!T) return '';
+        const DM = ['a tall tree', 'a vine', 'a midday sun', 'a candle', 'a mountain', 'a field', 'iron', 'a jewel', 'the sea', 'morning dew'];   // STEMS order, as SHORT
+        const an = w => (/^[AEIOU]/.test(w) ? 'an ' : 'a ') + w;
+        return `${an(T)} by number and ${DM[F.ds]} (${h2(F.s.day)}) by birth day, with ${an(SIGNS_EN[F.sun])} Sun`;
+      },
+      e2LpText(F, t) {   // the Life Path text × the person: the road's five-energy fuel and its role for you (NUM2EL, as on the Birthday card),
+                         // and the Birthday talent as a tool for the homework (the Birthday card's own "tool for your Life Path" idea)
+        const e = NUM2EL[F.lp], i = String(t || '').indexOf('. '); if (e === undefined || i < 0) return '';
+        let s = `${t.slice(0, i)} — a path that draws on ${EL[e]} (for you, ${ROLE[F.grpOf(e)]})${t.slice(i)}`;
+        const bdT = (NUM_ESSENCE_EN[F.bd] || {}).t;
+        const hw = [/(Your homework is [^.]*)\./, /(So your lesson isn’t [^.]*)\./, /(What matters isn’t [^.]*)\./].find(re => re.test(s));
+        if (bdT && F.bd !== F.lp && hw) s = s.replace(hw, `$1; your ${bdT} talent (Birthday ${F.bd}) is a tool for that.`);
+        return s;
+      },
+      e2NameRel(F, x) {   // the talent (Expression) number set against the Life Path, with the Birthday card's five-energy pairing
+        const e = NUM2EL[x], eL = NUM2EL[F.lp]; if (e === undefined || eL === undefined) return '';
+        if (x === F.lp) return ` It is the same number as your Life Path, so your talents and your road are one.`;
+        return eL === e ? ` Like your Life Path ${F.lp}, it runs on ${EL[e]}, so your talents and your road point the same way.`
+          : md(eL - e, 5) === 1 ? ` Its ${EL[e]} feeds the ${EL[eL]} of your Life Path ${F.lp}, so these talents lend strength to that road.`
+          : md(e - eL, 5) === 1 ? ` The ${EL[eL]} of your Life Path ${F.lp} feeds its ${EL[e]}, so these talents grow as you walk that road.`
+          : ` Its ${EL[e]} runs on a different grain from the ${EL[eL]} of your Life Path ${F.lp}, so these talents shine when you bring them out on their own.`;
+      },
+      e2NameMirror(F, s, p) {   // the same closeness check the one-page summary uses for "Outside & Inside" (a gap of 2 or less)
+        return Math.abs(p - s) <= 2 ? ` It sits close to your inner-wish number (${s}), so what you want inside tends to show.` : ` It sits far from your inner-wish number (${s}), so people may not see what you want inside unless you say it.`;
+      },
       lpEcho(F) {
         const tags = NUM_TAGS[F.lp] || [], other = F.votes.filter(v => ['stem', 'el', 'sun', 'moon', 'rising'].includes(v.type));
         for (const t of tags) { const src = other.filter(v => v.t === t); if (src.length) return ` The “${TAGN(t)}” side of this path also comes from ${andL(src.map(tagSrc))}, so it isn’t the number’s voice alone.`; }
@@ -7196,8 +7406,9 @@ const U3B = (() => {
       },
       pyCross(F) {
         const y = F.yrs.cur, r = rels(F, y.br, null, 'year')[0], rh = F.s.hour ? rels(F, y.br, 'hour')[0] : null;
-        const hx = rh && (!r || r.k !== 'hour') ? `, and it ${RV[rh.type]} ${pil('hour', F.s.hour)}${tri(rh)}` : '';
-        return ` In saju, it’s a year of “${nick(F, y.tg)}”, and ${r ? relS(`this year’s ${ani(y.br)} (${STEMS[y.st].h}${BRANCHES[y.br].h})`, r) : `this year’s ${STEMS[y.st].h} brings ${EL[y.yEl]}, which ${cntPred(F, y.yEl, true)}`}${hx}.`;
+        const both = !!(rh && r && r.k !== 'hour' && rh.type === r.type && h2(rh.p) === h2(r.p));
+        const hx = !both && rh && (!r || r.k !== 'hour') ? `, and it ${RV[rh.type]} ${pil('hour', F.s.hour)}${tri(rh)}` : '';
+        return ` In saju, it’s a year of “${nick(F, y.tg)}”, and ${r ? (both ? `this year’s ${ani(y.br)} (${STEMS[y.st].h}${BRANCHES[y.br].h}) ${RV[r.type]} the ${ani(r.p.branch)} (${h2(r.p)}) in both the ${r.k} and the hour of your birth${tri(r)}` : relS(`this year’s ${ani(y.br)} (${STEMS[y.st].h}${BRANCHES[y.br].h})`, r)) : `this year’s ${STEMS[y.st].h} brings ${EL[y.yEl]}, which ${cntPred(F, y.yEl, true)}`}${hx}.`;
       },
       /* ── report ── */
       repFirst(F, hp) {
@@ -7205,16 +7416,24 @@ const U3B = (() => {
         if (hp.bestS) { const ks = whereKs(hp.bestS.where).filter(k => F.s[k]); return ks.length ? ` · in ${andL(ks.map(k => pil(k, F.s[k])))}` : ''; }
         return ` · its center is ${pil('day', F.s.day)}`;
       },
-      repMirror(F) { return F.rising !== null && F.rising !== undefined ? ` (first impression ${SIGNS_EN[F.rising]} · inner feelings ${SIGNS_EN[F.moon]})` : ` (inner feelings ${SIGNS_EN[F.moon]} · the ${SHORT[F.dk.k]} of the day of your birth)`; },
-      repTop(F, tag, n) { const T = F.tags.find(x => x.t === tag); if (!T) return ''; return `${andL(T.src.map(tagSrc))}: ${n === 1 ? 'one place points' : `${NUMW[n] || n} places point`} to this same trait`; },
+      repMirror(F) {
+        const mx = Math.max(...F.cnt), mn = Math.min(...F.cnt), lead = [0, 1, 2, 3, 4].filter(e => F.cnt[e] === mx).map(e => EL[e]), thin = [0, 1, 2, 3, 4].filter(e => F.cnt[e] === mn).map(e => EL[e]);
+        const sj = mx - mn < 2 ? 'your saju’s five energies are nearly even' : `in your saju, ${andL(lead)} ${lead.length > 1 ? 'lead' : 'leads'} and ${andL(thin)} ${mn === 0 ? (thin.length > 1 ? 'are missing' : 'is missing') : (thin.length > 1 ? 'are thinnest' : 'is thinnest')}`;
+        return F.rising !== null && F.rising !== undefined ? ` (first impression ${SIGNS_EN[F.rising]} · inner feelings ${SIGNS_EN[F.moon]}; ${sj})` : ` (inner feelings ${SIGNS_EN[F.moon]} · the ${SHORT[F.dk.k]} of the day of your birth; ${sj})`;
+      },
+      repTop(F, tag, n) { const T = F.tags.find(x => x.t === tag); if (!T) return ''; const src = v => (v.type === 'el' && posOf(F, v.v).length ? `your strongest energy (${EL[v.v]}, as in ${(x => `the ${x.part === 'stem' ? STEMS[x.p.stem].h : ani(x.p.branch)} of your ${h2(x.p)} birth ${x.k}`)(posOf(F, v.v)[0])})` : tagSrc(v));
+        return `${andL(T.src.map(src))}: ${n === 1 ? 'one place points' : `${NUMW[n] || n} places point`} to this same trait`; },
       repSeason(F) { return ` · born in ${MW[F.mb]}`; },
-      repLuck(F, el) { const g = F.grpOf(el), c = cntOf(F, el); return `For you, ${EL[el]} is ${ROLE[g]}, ${onlyMe(F, el) ? `held in your chart only by ${meN(F)}` : c <= 0 ? 'missing from your chart' : `found only in ${posN(posOf(F, el)[0])}`}`; },
+      repLuck(F, el) { const g = F.grpOf(el), c = cntOf(F, el);
+        const th = F.R && F.R.fortune && F.R.fortune.periods && F.R.fortune.periods[4] ? F.R.fortune.periods[4].theme : null;   // the year card below already names the decade when its theme runs on this same energy
+        const tail = th in THG && md(F.dEl + THG[th], 5) === el ? '' : arr(F, el);
+        return `For you, ${EL[el]} is ${ROLE[g]}, ${onlyMe(F, el) ? `held in your chart only by ${meN(F)}${tail}` : c <= 0 ? `missing from your chart${tail}` : `found only in ${posN(posOf(F, el)[0])}`}`; },
       /* ── first word ── */
       headFirst(F, bestS) {
         const ks = whereKs(bestS.where).filter(k => F.s[k]).sort((x, y) => PK[x] - PK[y]); if (!ks.length) return '';
         const pair = (bestS.where || []).some(w => String(w).includes('·'));
         return pair ? ` It sits between ${andL(ks.map(k => pil(k, F.s[k])))}.`
-          : ` It sits in ${pil(ks[0], F.s[ks[0]])}, so it shows up first in your ${area(F, ks[0])}.`;
+          : ` It sits in ${pil(ks[0], F.s[ks[0]])}, so for this ${U3A_MW.en[F.mb].replace(' ', '-')} ${U3A_SHORT.en[F.dk.k]} it shows up first in your ${area(F, ks[0])}.`;
       },
       headPillars(F) { return F.pil.map(([, p]) => h2(p)).join('·'); },
       headMany(F, bestS) { const ks = whereKs(bestS.where).filter(k => F.s[k]).sort((x, y) => PK[x] - PK[y]); if ((bestS.where || []).some(w => String(w).includes('·')) || ks.length < 2) return '';
@@ -7534,11 +7753,11 @@ const U3B = (() => {
   })();
   /* ── 부르는 이름 — 어느 함수든 실패하면 ''(부르는 쪽이 원래 문장을 쓴다) ── */
   const api = {};
-  ['hour', 'nowBody', 'nowNext', 'nowWhy', 'luckWhy', 'luckSaju', 'luckToday', 'skyMoon', 'skyJie', 'themeAdv', 'agree', 'pSaju', 'pAstro', 'pNum', 'sub',
-    'lifeRow', 'lifeFlow', 'lifeDeep', 'lifeDae', 'lifePeak', 'lifeAlly', 'lifeSam', 'sunEcho', 'sunCount', 'moonEcho', 'risingEcho', 'noRising', 'elNote', 'modNote',
+  ['todo', 'sameMine', 'dayPil', 'hour', 'nowBody', 'nowNext', 'nowWhy', 'luckWhy', 'luckSaju', 'luckToday', 'skyMoon', 'skyJie', 'themeAdv', 'agree', 'pSaju', 'pAstro', 'pNum', 'sub',
+    'lifeRow', 'lifeFlow', 'lifeDeep', 'lifeDeepP', 'lifeGw', 'lifeDae', 'lifePeak', 'lifeAlly', 'lifeSam', 'sunEcho', 'sunCount', 'moonEcho', 'risingEcho', 'noRising', 'elNote', 'modNote',
     'lpEcho', 'bdCross', 'pyCross', 'repFirst', 'repMirror', 'repTop', 'repSeason', 'repLuck', 'headFirst', 'headPillars', 'headMany', 'headWhere', 'headOthers', 'headDay', 'headLean', 'headClear']
     .forEach(n => { api[n] = guard((F, P, ...a) => (typeof P[n] === 'function' ? P[n](F, ...a) : '')); });
-  api.reset = () => { C.seen = new Set(); };
+  api.reset = () => { C.seen = new Set(); C.td = new Set(); };
   return api;
 })();
 
@@ -7572,7 +7791,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
         ['글·그림·말로 속마음을 밖으로 꺼내기', 'put your feelings into words, writing or drawing', '気持ちを言葉・文・絵にして外に出す']],
     4: [['새 일보다 하던 일을 꼼꼼히 다지기', 'do your current work carefully rather than adding new work', '新しいことより、今の仕事をていねいに固める'],
         ['오래 믿어 온 사람과의 약속을 지키기', 'keep your promises to people you have trusted for a long time', '長く信頼してきた人との約束を守る'],
-        ['잠·식사·지출 같은 매일의 습관을 지키기', 'keep your daily habits — sleep, meals and spending', '睡眠・食事・お金の使い方など、毎日の習慣を守る']],
+        ['잠·식사·지출 같은 매일의 습관을 지키기', 'keep your daily habits (sleep, meals and spending)', '睡眠・食事・お金の使い方など、毎日の習慣を守る']],
     5: [['늘 하던 방식 한 가지를 바꿔 보기', 'change one thing about how you usually work', 'いつものやり方を一つ変えてみる'],
         ['새로운 사람을 만나거나 새로운 자리에 나가 보기', 'meet someone new or go somewhere new', '新しい人に会う、新しい場所に出かける'],
         ['계획이 바뀌어도 그대로 받아들이기', 'accept it calmly when a plan changes', '予定が変わっても、そのまま受け入れる']],
@@ -7596,7 +7815,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
   const toTheme = t => L(` → 그래서 주제는 ‘${tn(t)}’ 쪽이에요.`, ` → So the theme leans toward “${tn(t)}”.`, ` → だから、テーマは「${tn(t)}」と読みます。`);
   const periodCard = (p, extra = '', hero = null) => {
     const th = THEMES[p.theme];
-    const u3s = U3B.pSaju(p, f), u3a = U3B.pAstro(p), u3n = U3B.pNum(p);
+    const u3s = U3B.pSaju(p, f), u3a = U3B.pAstro(p), u3n = U3B.pNum(p), tdM = {}, td = j => (j in tdM ? tdM[j] : (tdM[j] = U3B.todo(p, j)));
     const gzD = LANG === 'ja' ? gzJA(p.saju.gz, p.key) : LANG === 'en' ? gzEN(p.saju.gz, p.key) : p.saju.gz;
     let agreeLine, splitHtml = '';
     /* 표시 전용: 반대 방향의 할 일은 함께 권하지 않는다 (inTension + 행동이 정반대인 쌍) */
@@ -7611,8 +7830,8 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
         ? `<p class="fsplit"><b>다만</b> — ${SYS_KO[diss[0]]} 풀이는 반대쪽(${tShort(diss[1])})을 가리켜요. 그래서 ${DOM_NAME[di]} 쪽의 ‘${tDo(diss[1], di)}’는 짧게만 해도 돼요. 나머지는 위의 큰 주제를 따라갔으면 좋겠어요.</p>`
         : `<p class="fsplit"><b>곁들여</b> — ${DOM_NAME[di]}: ${tDo(diss[1], di)} (${SYS_KO[diss[0]]} 풀이)</p>`,
         clash(p.theme, diss[1])
-        ? `<p class="fsplit"><b>But</b> — ${SYS_EN[diss[0]]} points the other way (${tShort(diss[1])}). ${DOM_NAME[di]}, a short version of “${tDo(diss[1], di)}” is enough. For the rest, I’d love for you to follow the main theme above.</p>`
-        : `<p class="fsplit"><b>Also</b> — ${DOM_NAME[di]}: ${tDo(diss[1], di)} (from ${SYS_EN[diss[0]]})</p>`,
+        ? `<p class="fsplit"><b>But</b> — ${SYS_EN[diss[0]]} points the other way (${tShort(diss[1])})${td(di) ? `: ${td(di)}` : ''}. ${DOM_NAME[di]}, a short version of “${tDo(diss[1], di)}” is enough. For the rest, I’d love for you to follow the main theme above.</p>`
+        : `<p class="fsplit"><b>Also</b> — ${DOM_NAME[di]}: ${tDo(diss[1], di)} (from ${SYS_EN[diss[0]]})${td(di) ? `. ${capF(td(di))}.` : ''}</p>`,
         clash(p.theme, diss[1])
         ? `<p class="fsplit"><b>ただし</b> — ${SYS_JA[diss[0]]}の読みは反対の向き（${tShort(diss[1])}）を指しています。だから、${DOM_NAME[di]}で「${tDo(diss[1], di)}」ことは、手短にすませるだけで大丈夫です。あとは、上の大きなテーマにそって進んでほしいです。</p>`
         : `<p class="fsplit"><b>あわせて</b> — ${DOM_NAME[di]}：${tDo(diss[1], di)}（${SYS_JA[diss[0]]}の読み）</p>`);
@@ -7624,7 +7843,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
       agreeLine = U3B.agree(p, L(SYS_KO[sk], SYS_EN[sk], SYS_JA[sk])) || L(`세 가지가 조금씩 다른 말을 해요. 그래서 ${SYS_KO[sk]} 풀이를 큰 줄기로 삼았어요. 나머지는 ‘이런 면도 있구나’ 정도로만 들으면 돼요.`, `The three readings differ a little, so I’ve gone with ${SYS_EN[sk]} as the main thread. Take the rest as “there’s this side too.”`, `三つの読みが、少しずつちがうことを言っています。なので、${SYS_JA[sk]}の読みを大きな流れとして見ました。ほかは「こういう面もあるんだな」くらいに聞いてもらえば十分です。`);
       splitHtml = L(
         `<p class="fsplit"><b>가장 먼저</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}${others.length ? `<br><b>여유가 있으면</b>${others.map(j => `<br>· ${DOM_NAME[j]}: ${tDo(vt[j], j)}`).join('')}<br>여유가 없으면 맨 위 하나만 해도 충분해요.` : ''}</p>`,
-        `<p class="fsplit"><b>Main thing</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}${others.length ? `<br><b>If you have time</b>${others.map(j => `<br>· ${DOM_NAME[j]}: ${tDo(vt[j], j)}`).join('')}<br>${({day: 'If you’re short on time, the top one alone is enough.', week: 'On a busy week, the first one will do.', month: 'In a crowded month, the first will do.', quarter: 'Short on time? Keep just the first.', year: 'In a full year, the first is enough.'})[p.key] || 'If you’re short on time, the top one alone is enough.'}` : ''}</p>`,
+        `<p class="fsplit"><b>Main thing</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}${td(ai) ? ' — ' + td(ai) : ''}${others.length ? `<br><b>If you have time</b>${others.map(j => `<br>· ${DOM_NAME[j]}: ${tDo(vt[j], j)}${td(j) ? ' — ' + td(j) : ''}`).join('')}<br>${({day: 'Busy today? The first one is enough.', week: 'On a busy week, the first one will do.', month: 'In a crowded month, the first will do.', quarter: 'Short on time? Keep just the first.', year: 'In a full year, the first is enough.'})[p.key] || 'Busy today? The first one is enough.'}` : ''}</p>`,
         `<p class="fsplit"><b>まず一つ</b> · ${DOM_NAME[ai]}：${tDo(p.theme, ai)}${others.length ? `<br><b>余裕があれば</b>${others.map(j => `<br>・${DOM_NAME[j]}：${tDo(vt[j], j)}`).join('')}<br>余裕がなければ、いちばん上のひとつだけで十分です。` : ''}</p>`);
     }
     /* 표시 전용: 앞 기간과 주제가 같으면 같은 조언을 되풀이하지 않는다 */
@@ -7636,7 +7855,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
       </div>
       <p class="ftheme">${L(th.name, THEMES_EN[p.theme].name, THEMES_JA[p.theme].name)}</p>
       <p class="fadvice">${prevSame
-        ? L(`${PERIOD_META[prevSame.key].kr}${jWa(PERIOD_META[prevSame.key].kr)} 같은 주제예요. 위에서 드린 말이 이 기간에도 그대로 이어져요.`, `Same theme as ${PERIOD_EN[prevSame.key]} — what I said above carries on through this period.`, `${PERIOD_JA[prevSame.key]}と同じテーマです。上でお伝えしたことが、この期間もそのまま続きます。`)
+        ? L(`${PERIOD_META[prevSame.key].kr}${jWa(PERIOD_META[prevSame.key].kr)} 같은 주제예요. 위에서 드린 말이 이 기간에도 그대로 이어져요.`, U3B.sameMine(p, prevSame.key) || `Same theme as ${PERIOD_EN[prevSame.key]} — what I said above carries on through this period.`, `${PERIOD_JA[prevSame.key]}と同じテーマです。上でお伝えしたことが、この期間もそのまま続きます。`)
         : (U3B.themeAdv(p.theme) || L(THEMES[p.theme].adv, THEMES_EN[p.theme].adv, THEMES_JA[p.theme].adv))}</p>`;
     return `<div class="fcard${hero ? ' day-hero' : ''}">
       ${hero || stdHead}
@@ -7695,7 +7914,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
         <span class="htime">${h.range}</span>
         <span class="hrate hr${h.rate}">${RATE_ICON[h.rate]}</span>
         <span class="hline"><b>${L(TG_NICK[h.tg], TG_NICK_EN[h.tg], TG_NICK_JA[h.tg])}</b> · ${h.i <= 2
-          ? L('잠자는 시간 — 푹 자는 게 제일 좋아요', 'Sleep time — a good rest helps you most', 'おやすみの時間 — ぐっすり休むのがいちばんです') /* 표시 전용: 23~05시에는 깨어 할 일 대신 쉼을 권한다 */
+          ? L('잠자는 시간 — 푹 자는 게 제일 좋아요', 'Sleep time — rest well', 'おやすみの時間 — ぐっすり休むのがいちばんです') /* 표시 전용: 23~05시에는 깨어 할 일 대신 쉼을 권한다 */
           : (U3B.hour(h.st, h.i, h.tg, h.rate) || L(TENGOD_FORTUNE[h.tg], TENGOD_FORTUNE_EN[h.tg], TENGOD_FORTUNE_JA[h.tg]))}</span>
       </div>`;
   const good = hours.filter(h => h.rate === 3);
@@ -7712,7 +7931,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
   const enList = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
   const sumLine = L(
     `<b>한 줄 정리</b> — 오늘 하루 전체는 ‘${RATE_WORD[dRate]}’ 쪽이에요.${gN.length ? ` ${gN.join('·')} 쪽이 특히 좋${cN.length ? '고,' : '아요.'}` : ''}${cN.length ? ` ${cN.join('·')} 쪽은 조금만 조심하면 돼요.` : ''} (점수: 85 이상 좋음 · 70~84 무난 · 69 이하 주의. 전체 표시는 오늘의 두 글자로, 분야 점수는 분야마다 따로 정해요.)`,
-    `<b>In short</b> — Today is “${RATE_WORD_EN[dRate]}” overall.${gN.length ? ` ${enList(gN)} ${gN.length > 1 ? 'are' : 'is'} especially good${cN.length ? ';' : '.'}` : ''}${cN.length ? `${gN.length ? ' a' : ' A'} little care with ${enList(cN)} is enough.` : ''} (Scores: 85+ Good · 70–84 Fair · 69 or less Caution. The overall mark comes from today’s two letters; each area is scored on its own.)`,
+    `<b>In short</b> — Today is “${RATE_WORD_EN[dRate]}” overall.${gN.length ? ` ${enList(gN)} ${gN.length > 1 ? 'are' : 'is'} especially good${cN.length ? ';' : '.'}` : ''}${cN.length ? `${gN.length ? ' a' : ' A'} little care with ${enList(cN)} is enough.` : ''} (Scores: 85+ Good · 70–84 Fair · 69 or less Caution. The overall mark comes from what today’s ${STEMS[t.day.stem].h} brings your birth-day ${STEMS[dayStem].h} (${STEMS[dayStem].h}${BRANCHES[natalSaju.day.branch].h}); each area is scored on its own.)`,
     `<b>まとめ</b> — 今日一日を全体で見ると「${RATE_WORD_JA[dRate]}」です。${gN.length ? `とくに${gN.join('・')}がよ${cN.length ? 'く、' : 'い日です。'}` : ''}${cN.length ? `${cN.join('・')}は、少し気をつけるだけで大丈夫です。` : ''}（点数：85以上 好調・70〜84 まずまず・69以下 注意。全体の印は今日の二文字から、分野の点数は分野ごとに決めています。）`);
   const dayExtra = `
     <div class="subgrid">${subs.map((s, i) => `
@@ -7796,7 +8015,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
   const nhBadge = L(`${curH.name}(${blkRange}시)의 ${isJeong ? '뒤' : '앞'} 한 시간`, `${isJeong ? 'second' : 'first'} half of the ${curH.name} hour (${blkRange})`, `${curH.name}（${YOMI_JA[nowIdx]}）の刻（${blkRange}時）の${isJeong ? '後半' : '前半'}`);
   const nhVerdict = L(
     `${given ? koCall + ' 님, ' : ''}지금은 <b>${TG_NOW[curH.tg][0]}</b> 시간이에요`,
-    `${given ? given + ', right' : 'Right'} now the hour says <b>${TG_NOW[curH.tg][1]}</b>`, `${given ? given + 'さん、' : ''}いまは<b>${TG_NOW[curH.tg][2]}</b>時間です`);
+    `${given ? given + ', right now the hour says ' : ''}<b>${TG_NOW[curH.tg][1]}</b>`, `${given ? given + 'さん、' : ''}いまは<b>${TG_NOW[curH.tg][2]}</b>時間です`);
   const u3nb = U3B.nowBody(curH.st, nowIdx, curH.tg), u3nw = U3B.nowWhy(curH.st, nowIdx, curH.tg);
   const nhBody = L(
     (isJeong
@@ -7979,11 +8198,11 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
           L('날마다 두 글자가 붙는데, 같은 글자는 60일에 한 번만 돌아와요. 오늘이 바로 그 ‘나의 날’이에요. 나를 위한 결정 하나를 내리기 좋은 날이에요.', 'Every day has two letters, and the same pair comes back only once in 60 days. Today is that “day of your own.” It’s a good day to make one decision just for yourself.', '一日ごとに二つの文字がつき、同じ組み合わせは60日に一度しかめぐってきません。今日がその「わたしの日」です。自分のための決断をひとつするのに、よい日です。')]);
       } else if (t.day.stem === natalSaju.day.stem) {
         items.push(['★',
-          L(`오늘은 태어난 날과 같은 글자 ‘${STEMS[t.day.stem].k}(${STEMS[t.day.stem].h})’${({갑: '으로', 을: '로', 병: '으로', 정: '으로', 무: '로', 기: '로', 경: '으로', 신: '으로', 임: '으로', 계: '로'})[STEMS[t.day.stem].k] || '로'} 시작하는 날이에요`, `Today starts with the same letter as your birth day (${STEMS[t.day.stem].h})`, `今日は、生まれた日と同じ文字「${STEMS[t.day.stem].h}」で始まる日です`),
-          L('오늘의 기운이 타고난 성격과 같은 쪽이에요. 그래서 평소 하던 방식대로만 해도 일이 잘 풀려요.', 'Today’s energy runs the same way as your own nature. So doing things your usual way is enough today.', '今日の気は、あなたの生まれつきの性格と同じ向きです。だから、いつものやり方でするだけで、うまく進みます。')]);
+          L(`오늘은 태어난 날과 같은 글자 ‘${STEMS[t.day.stem].k}(${STEMS[t.day.stem].h})’${({갑: '으로', 을: '로', 병: '으로', 정: '으로', 무: '로', 기: '로', 경: '으로', 신: '으로', 임: '으로', 계: '로'})[STEMS[t.day.stem].k] || '로'} 시작하는 날이에요`, `Today starts with ${STEMS[t.day.stem].h}, the same letter as your birth day (${STEMS[natalSaju.day.stem].h}${BRANCHES[natalSaju.day.branch].h})`, `今日は、生まれた日と同じ文字「${STEMS[t.day.stem].h}」で始まる日です`),
+          L('오늘의 기운이 타고난 성격과 같은 쪽이에요. 그래서 평소 하던 방식대로만 해도 일이 잘 풀려요.', `Today’s energy runs the same way as your own nature${U3B.dayPil(t.day.branch) ? (/clashes/.test(U3B.dayPil(t.day.branch)) ? ', though ' : ', and ') + U3B.dayPil(t.day.branch) : ''}. So doing things your usual way is enough today.`, '今日の気は、あなたの生まれつきの性格と同じ向きです。だから、いつものやり方でするだけで、うまく進みます。')]);
       } else if (inPairs(JIJI_CHUNG, t.day.branch, natalSaju.day.branch)) {
         items.push(['⇄',
-          L(`오늘의 아랫글자가 태어난 날의 아랫글자와 부딪혀요(충)`, `Today's bottom letter bumps heads with the bottom letter of your birth day (clash)`, `今日の下の文字が、生まれた日の下の文字とぶつかります(冲)`),
+          L(`오늘의 아랫글자가 태어난 날의 아랫글자와 부딪혀요(충)`, `Today's bottom letter ${BRANCHES[t.day.branch].h} bumps heads with the ${BRANCHES[natalSaju.day.branch].h} of your birth day, ${STEMS[natalSaju.day.stem].h}${BRANCHES[natalSaju.day.branch].h} (clash)`, `今日の下の文字が、生まれた日の下の文字とぶつかります(冲)`),
           L('‘어, 이게 왜 바뀌지?’ 싶은 일이 생길 수 있는 날이에요. 이상한 게 아니라 오늘 기운이 원래 그래요. 약속과 이동에 시간만 넉넉히 잡아 둬도 충분해요.', 'You may think, “Wait, why is this changing?” today — that’s just today’s energy. Leaving extra time for appointments and travel is enough.', '「あれ、どうして急に変わるの」と思うことが起きるかもしれない日です。おかしなことではなく、今日の気がもともとそういう気なのです。約束や移動に、時間のゆとりをとっておくだけで十分です。')]);
       }
 
@@ -8142,7 +8361,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
     if (!rs.length) rs.push(L(`여러 기운의 점수가 비슷해서, 그 가운데 ${elP}${jEul(elP)} 골랐어요.`, `Several energies scored about the same, so I picked ${elEN} from among them.`, `いくつかの気の点数が近かったため、その中から${elJA}を選びました。`));
     const why = openEl === weakEl
       ? L(`오늘 하루는 <b>${elP}(${elH})</b> 기운이 힘이 돼요. 평소에 따로 챙기는 기운이 바로 이거예요. 저절로 채워지지 않으니까 아래의 색·음식·장소로 따로 챙겨 주면 돼요. 여유가 없으면 하나만 골라도 충분해요.`,
-          `Today, <b>${elEN} (${elH})</b> energy helps you most. It’s the one you usually look after separately — it doesn’t fill up by itself, so the picks below do that for you. Picking just one is enough.`,
+          `Today, <b>${elEN} (${elH})</b> energy helps you most. It’s the one you usually look after separately; the picks below top it up, and one of them is enough.`,
           `今日一日は<b>${elJA}</b>の気が力になります。ふだん意識して補う気が、ちょうどこれです。自然にはたまらない気なので、下の色・食べ物・場所で補えば大丈夫です。余裕がなければ、ひとつ選ぶだけで十分です。`)
       : L(`오늘 하루는 <b>${elP}(${elH})</b> 기운이 힘이 돼요. ${rs.join(' ')} 평소의 행운(${EL_COLOR[weakEl]} · ${EL_DIR[weakEl]} · 숫자 ${EL_NUM[weakEl]})은 따로 챙기는 ${wkP} 기운에 맞춘 거예요. 오늘 하루만 아래 것으로 바꿔 쓰면 돼요.`,
           `Today, <b>${elEN} (${elH})</b> energy helps you most. ${rs.join(' ')} Your usual lucky set — ${EL_COLOR_EN[weakEl].toLowerCase()}, ${EL_DIR_EN[weakEl].toLowerCase()}, numbers ${EL_NUM[weakEl]} — is for ${wkEN}, the energy you look after separately. Just for today, swapping to the picks below is enough.`,
@@ -8168,7 +8387,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename) {
         <div class="fev">
           <div class="frow"><span class="fsys">${L('사주','Saju', '四柱推命')}</span><span class="ftxt">${L(`평소 따로 챙기는 기운 <b>${EP[weakEl]}</b> +20점 (저절로 채워지지 않는 것을 채우는 것이 기본이라 가장 큰 점수)${u3ls ? '.' + u3ls : ''}`, `The energy you look after separately, <b>${ELEMENTS_EN[weakEl].k}</b>: +20 (topping up what doesn’t fill by itself is the basic rule, so this is the biggest score)${u3ls ? '.' + u3ls : ''}`, `ふだん意識して補う気 <b>${ELEMENTS_JA[weakEl].k}</b> +20点(自然にはたまらないものを補うのが基本なので、いちばん大きい点数)${u3ls ? '。' + u3ls : ''}`)}</span></div>
           <div class="frow"><span class="fsys">${L('별자리','Astrology', '占星術')}</span><span class="ftxt">${L(`태양 별자리 ${sunName}(${zK}) → <b>${EP[sunEl]}</b> +10점`, `Sun sign ${sunName} (${zK}) → <b>${ELEMENTS_EN[sunEl].k}</b> +10`, `太陽の星座 ${sunName}(${zK}) → <b>${ELEMENTS_JA[sunEl].k}</b> +10点`)}</span></div>
-          <div class="frow"><span class="fsys">${L('수비학','Numerology', '数秘術')}</span><span class="ftxt">${L(`생일 숫자(라이프패스) ${num.lifePath} → <b>${EP[numEl]}</b> +10점`, `Birth-date number (Life Path) ${num.lifePath} → <b>${ELEMENTS_EN[numEl].k}</b> +10`, `誕生日の数字(ライフパス) ${num.lifePath} → <b>${ELEMENTS_JA[numEl].k}</b> +10点`)}</span></div>
+          <div class="frow"><span class="fsys">${L('수비학','Numerology', '数秘術')}</span><span class="ftxt">${L(`생일 숫자(라이프패스) ${num.lifePath} → <b>${EP[numEl]}</b> +10점`, `Life Path ${num.lifePath} → <b>${ELEMENTS_EN[numEl].k}</b> +10`, `誕生日の数字(ライフパス) ${num.lifePath} → <b>${ELEMENTS_JA[numEl].k}</b> +10点`)}</span></div>
           <div class="frow"><span class="fsys">${L('오늘','Today', '今日')}</span><span class="ftxt">${L(`오늘의 두 글자 ${p0.saju.gz} → <b>${EP[todayEl]}</b> +16점. 따로 챙기는 ${wkP}${jEul(wkP)} 키워 주는 ${EP[feedEl]} +8점. 날마다 바뀌는 작은 점수(0~9)도 더해요.${u3lt}`, `Today's two letters ${gzEN(p0.saju.gz, 'day')} → <b>${ELEMENTS_EN[todayEl].k}</b> +16. ${ELEMENTS_EN[feedEl].k}, which feeds ${wkEN}: +8. A small daily score (0–9) is added too.${u3lt}`, `今日の二文字 ${gzJA(p0.saju.gz, 'day')} → <b>${ELEMENTS_JA[todayEl].k}</b> +16点。意識して補う${wkJA}を育てる${ELEMENTS_JA[feedEl].k} +8点。日ごとに変わる小さな点数(0〜9)も足します。${u3lt}`)}</span></div>
           <div class="frow"><span class="fsys">${L('합계','Total', '合計')}</span><span class="ftxt">${tally}${openEl === weakEl ? '' : L(` — 한 번에 받는 점수는 ${wkP}${jIga(wkP)} 가장 크지만, 오늘은 ${elP}의 합계가 더 높아요.`, ` — ${wkEN} gets the biggest single score, but today ${elEN} adds up to more.`, ` — 一つの点数は${wkJA}がいちばん大きいのですが、今日は${elJA}の合計のほうが高くなります。`)}</span></div>
         </div>
@@ -8286,11 +8505,11 @@ function computeGilil(saju, fromDate, todayIdx60) {
   }
   return out;
 }
-/* ===== 내 달력에 저장 — 기기별로 길이 다르다 =====
-   · 아이폰 Safari: 달력 파일(blob)을 열면 iOS가 「모두 추가」 창을 띄운다. data: 주소는 iOS 26.6부터 막혀서 쓰지 않는다
-   · 아이폰의 다른 브라우저(Chrome 등)·홈 화면 앱: 만든 파일을 받을 길이 없어 Safari로 여는 길을 안내한다
-   · 안드로이드 Chrome·삼성 인터넷: 파일을 내려받은 뒤 「열기」 → 캘린더 앱. 앱마다 여러 일정 가져오기가 들쭉날쭉해 날짜별 Google 캘린더 링크를 함께 준다
-   · 인앱 브라우저(인스타 등): 파일 받기가 막혀 있어 기본 브라우저로 여는 길을 안내한다 */
+/* ===== 내 달력에 저장 — 누르는 순간 모든 날짜가 든 달력 파일(.ics) 하나를 바로 받는다 =====
+   · 아이폰 Safari: 받은 파일을 iOS가 「모두 추가」 창으로 연다. 아이폰 Chrome 등도 같은 파일을 받는다(파일을 열면 「모두 추가」)
+   · 아이폰의 앱 안 브라우저(카카오톡 등): blob 받기가 막혀 있어 data: 주소로 받는다
+   · 안드로이드 · PC: 파일을 받은 뒤 열면 캘린더 앱으로 한꺼번에 들어간다
+   · 날짜를 하나씩 넣는 목록과, 다른 브라우저로 옮겨 가라는 단계는 두지 않는다(앱이 받기를 막을 때만 짧게 알린다) */
 function gililEvents() {
   const G = window.__gililBase; if (!G) return [];
   const list = computeGilil(G.saju, new Date(G.t), G.idx);
@@ -8338,7 +8557,7 @@ function calPlatform() {
   const webview = IS_INAPP || /DaumApps|everytimeApp|BAND\/|; wv\)/i.test(ua) || (ios && !/Safari\//i.test(ua));
   /* iOS에서는 Safari만 만든 파일을 달력으로 넘길 수 있다. 홈 화면에 추가한 앱(standalone)도 안 된다 */
   const iosOther = ios && (/CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|YaBrowser|DuckDuckGo|Ddg\/|Whale|SamsungBrowser|GSA\//i.test(ua) || navigator.standalone === true);
-  return {ios, android, inapp: webview || iosOther, kakao: /KAKAOTALK/i.test(ua), line: /Line\//i.test(ua)};
+  return {ios, android, webview, inapp: webview || iosOther, kakao: /KAKAOTALK/i.test(ua), line: /Line\//i.test(ua)};
 }
 /* 달력 파일 열기/받기 — 반드시 탭 이벤트 안에서 곧바로 불러야 한다(늦으면 브라우저가 막음) */
 function sendGililFile(url) {
@@ -8348,86 +8567,59 @@ function sendGililFile(url) {
   document.body.appendChild(a); a.click();
   setTimeout(() => a.remove(), 1000);
 }
-function gcalLink(e) {
-  /* 일반 https 주소 — 안드로이드에서는 Google 캘린더 앱이, 그 밖에서는 웹 화면이 열린다. 종일 일정은 끝 날짜가 '다음 날' */
-  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(e.title) + '&dates=' + e.start + '%2F' + e.end + '&details=' + encodeURIComponent(e.desc);
-}
-function externalBrowserUrl(pf) {
-  const here = location.href;
-  if (pf.kakao) return 'kakaotalk://web/openExternal?url=' + encodeURIComponent(here);
-  if (pf.line) { try { const u = new URL(here); u.searchParams.set('openExternalBrowser', '1'); return u.href; } catch (e) { return ''; } }
-  /* 패키지를 못박지 않는다 — Chrome이 없는 폰에서도 기본 브라우저가 열리도록 */
-  if (pf.android) return 'intent://' + here.replace(/^https?:\/\//, '').replace(/#.*$/, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;S.browser_fallback_url=' + encodeURIComponent(here) + ';end';
-  if (pf.ios) return 'x-safari-' + here;
-  return '';
-}
 function openCalSheet() {
   const evs = gililEvents(); if (!evs.length) return;
   const pf = calPlatform();
   const ics = buildGililICS(evs);
-  let fileUrl = '';
-  if (!pf.inapp) { try { fileUrl = URL.createObjectURL(new Blob([ics], {type: 'text/calendar;charset=utf-8'})); sendGililFile(fileUrl); } catch (e) {} }
-  const old = document.getElementById('calSheet'); if (old) { const c = old.querySelector('#calClose'); if (c) c.click(); else old.remove(); }
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
-  const bn = pf.ios ? 'Safari' : L('Chrome이나 삼성 인터넷', 'Chrome or Samsung Internet', 'ChromeかSamsung Internet');
-  const steps = pf.inapp
-    ? L('지금 열려 있는 화면에서는 달력 파일을 받을 수 없습니다. 아래 버튼으로 ' + bn + '에서 여신 뒤, 다시 「내 달력에 저장」을 눌러 주시기 바랍니다. 버튼이 듣지 않으면 주소를 복사해 ' + bn + '에 붙여 넣으시면 됩니다.',
-        'The calendar file cannot be saved from the screen you have open now. Please open this page in ' + bn + ' with the button below, then tap “Save to my calendar” again. If the button does nothing, copy the address and paste it into ' + bn + '.',
-        'いま開いている画面では、カレンダーのファイルを保存できません。下のボタンで' + bn + 'で開いてから、もう一度「カレンダーに保存」を押してください。ボタンがきかないときは、アドレスをコピーして' + bn + 'に貼りつけてください。')
-    : pf.ios
-    ? L('<b>1.</b> 달력 창이 뜨면 <b>모두 추가</b>를 누릅니다. 그러면 끝입니다.<br><b>2.</b> 「다운로드하겠습니까?」라고 물으면 <b>다운로드</b>를 누른 뒤, 주소창 옆의 <b>↓ 표시</b> → <b>san-days</b> 파일을 누릅니다. 달력 창이 열리면 <b>모두 추가</b>를 누릅니다.<br><b>3.</b> 아무 창도 뜨지 않았으면 아래 <b>달력 파일 열기</b>를 눌러 주시기 바랍니다.',
-        '<b>1.</b> If a calendar window opens, tap <b>Add All</b>. That is all.<br><b>2.</b> If you are asked “Do you want to download?”, tap <b>Download</b>, then tap the <b>↓ mark</b> next to the address bar and tap the <b>san-days</b> file. When the calendar window opens, tap <b>Add All</b>.<br><b>3.</b> If no window opened, please tap <b>Open the calendar file</b> below.',
-        '<b>1.</b> カレンダーの画面が出たら<b>すべて追加</b>を押します。これで終わりです。<br><b>2.</b> 「ダウンロードしますか？」と出たら<b>ダウンロード</b>を押し、アドレスバーの横の<b>↓の印</b> → <b>san-days</b>のファイルを押します。カレンダーの画面が開いたら<b>すべて追加</b>を押します。<br><b>3.</b> 何も出なかったときは、下の<b>カレンダーのファイルを開く</b>を押してください。')
+  /* 누르는 순간 모든 날짜가 든 파일 하나를 바로 받는다 — 날짜를 하나씩 넣거나 다른 브라우저로 옮겨 가는 단계는 없다.
+     · 아이폰 Safari · Chrome 같은 보통 브라우저, 안드로이드, PC: blob 파일 받기
+     · 아이폰의 다른 브라우저(Chrome 등)와 앱 안 브라우저(카카오톡 등): blob 받기가 막혀 있을 수 있어 data: 주소로 받는다 */
+  const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+  let fileUrl = dataUrl, isBlob = false;
+  if (!(pf.ios && pf.inapp)) { try { fileUrl = URL.createObjectURL(new Blob([ics], {type: 'text/calendar;charset=utf-8'})); isBlob = true; } catch (e) { fileUrl = dataUrl; } }
+  try { sendGililFile(fileUrl); } catch (e) {}
+  const old = document.getElementById('calSheet'); if (old) old.remove();
+  const nDays = new Set(evs.map(e => e.start)).size;
+  const msg = pf.ios
+    ? L(`날짜 ${nDays}개가 든 달력 파일을 받았어요. 달력 창이 뜨면 <b>모두 추가</b>를 누르면 끝이에요. 창 대신 파일이 받아졌다면 그 파일(<b>san-days</b>)을 열고 <b>모두 추가</b>를 누르면 돼요.`,
+        `Your calendar file with all ${nDays} days is downloading. If a calendar window opens, tap <b>Add All</b> — that’s it. If you get a file instead, open it (<b>san-days</b>) and tap <b>Add All</b>.`,
+        `${nDays}日分が入ったカレンダーのファイルを受け取りました。カレンダーの画面が出たら<b>すべて追加</b>を押せば終わりです。画面のかわりにファイルが届いたときは、そのファイル(<b>san-days</b>)を開いて<b>すべて追加</b>を押してください。`)
     : pf.android
-    ? L('<b>1.</b> 파일을 받았다는 알림이 뜨면 <b>열기</b>를 누릅니다. (안 보이면 화면 맨 위를 아래로 쓸어내려 <b>san-days</b>를 누릅니다.)<br><b>2.</b> 앱을 고르라고 하면 <b>캘린더</b>를 고릅니다.<br><b>3.</b> <b>저장</b> 또는 <b>추가</b>를 누릅니다.',
-        '<b>1.</b> When you see that the file was downloaded, tap <b>Open</b>. (If you do not see it, swipe down from the top of the screen and tap <b>san-days</b>.)<br><b>2.</b> If you are asked to pick an app, pick <b>Calendar</b>.<br><b>3.</b> Tap <b>Save</b> or <b>Add</b>.',
-        '<b>1.</b> ファイルを受け取ったというお知らせが出たら<b>開く</b>を押します。(見えないときは、画面のいちばん上から下へなぞって<b>san-days</b>を押します。)<br><b>2.</b> アプリを選ぶ画面が出たら<b>カレンダー</b>を選びます。<br><b>3.</b> <b>保存</b>または<b>追加</b>を押します。')
-    : L('<b>san-days.ics</b> 파일을 받았습니다. 그 파일을 여시면 달력 프로그램에 날짜가 들어갑니다.',
-        'The file <b>san-days.ics</b> was downloaded. Open it, and the days go into your calendar program.',
-        '<b>san-days.ics</b>というファイルを受け取りました。そのファイルを開くと、カレンダーに日付が入ります。');
-  const ext = pf.inapp ? externalBrowserUrl(pf) : '';
+    ? L(`날짜 ${nDays}개가 든 달력 파일을 받았어요. 받은 파일(<b>san-days</b>)을 열고 캘린더 앱을 고르면 한꺼번에 들어가요.`,
+        `Your calendar file with all ${nDays} days is downloading. Open it (<b>san-days</b>) and pick your calendar app — all the days go in at once.`,
+        `${nDays}日分が入ったカレンダーのファイルを受け取りました。届いたファイル(<b>san-days</b>)を開いてカレンダーのアプリを選ぶと、まとめて入ります。`)
+    : L(`날짜 ${nDays}개가 든 달력 파일(<b>san-days.ics</b>)을 받았어요. 파일을 열면 달력 프로그램에 한꺼번에 들어가요.`,
+        `Your calendar file (<b>san-days.ics</b>) with all ${nDays} days is downloading. Open it, and all the days go into your calendar at once.`,
+        `${nDays}日分が入ったカレンダーのファイル(<b>san-days.ics</b>)を受け取りました。ファイルを開くと、カレンダーにまとめて入ります。`);
+  /* 앱 안 브라우저(카카오톡 · 인스타그램 등)는 앱이 파일 받기를 막을 때가 있다 — 그때만 쓸 수 있게 짧게 알려 둔다(옮겨 가라고 보내지 않는다) */
+  const note = pf.webview ? L('이 앱 안의 화면은 파일 받기를 막을 때가 있어요. 받아지지 않았다면 주소를 복사해 휴대폰의 기본 브라우저에서 연 뒤 다시 눌러 주세요.',
+      'Some apps block downloads inside their own browser. If nothing arrived, copy the address, open it in your phone’s usual browser and tap the button again.',
+      'アプリの中の画面では、ファイルの受け取りが止められることがあります。届かなかったときは、アドレスをコピーしてスマホのいつものブラウザで開き、もう一度押してください。') : '';
   const bS = 'display:inline-block;background:#2e2a23;color:#f2ecdf;border:none;padding:12px 20px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;margin:4px';
   const bG = 'display:inline-block;background:none;color:#2e2a23;border:1px solid rgba(46,42,35,.5);padding:11px 18px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;margin:4px';
-  const rows = evs.map(e => `<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(46,42,35,.15)">
-      <span style="flex:0 0 44px;font-size:13px;white-space:nowrap">${+e.start.slice(4, 6)}/${+e.start.slice(6, 8)}</span>
-      <span style="flex:1;font-size:12.5px;line-height:1.5${e.tp === 'ch' ? ';color:#a63d28' : ''}">${esc(e.title.replace(/^山 /, ''))}</span>
-      <a class="cal-g" href="${esc(gcalLink(e))}" target="_blank" rel="noopener" style="flex:0 0 auto;font-size:12px;color:#2e2a23;border:1px solid rgba(46,42,35,.5);padding:7px 10px;text-decoration:none;white-space:nowrap">${L('넣기', 'Add', '入れる')}</a>
-    </div>`).join('');
   const ov = document.createElement('div');
   ov.id = 'calSheet';
   ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', L('내 달력에 저장', 'Save to my calendar', 'カレンダーに保存'));
-  ov.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(24,21,17,.6);display:flex;align-items:flex-end;justify-content:center';
-  ov.innerHTML = `<div style="background:#f2ecdf;color:#2e2a23;width:100%;max-width:520px;max-height:88vh;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:22px 20px calc(20px + env(safe-area-inset-bottom));box-sizing:border-box">
+  ov.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(24,21,17,.45);display:flex;align-items:flex-end;justify-content:center';
+  ov.innerHTML = `<div style="background:#f2ecdf;color:#2e2a23;width:100%;max-width:520px;padding:20px 20px calc(18px + env(safe-area-inset-bottom));box-sizing:border-box">
     <p style="font-size:10px;font-weight:700;letter-spacing:.3em;border-bottom:1px solid #2e2a23;padding-bottom:8px;margin-bottom:12px">CALENDAR · ${L('내 달력에 저장', 'Save to my calendar', 'カレンダーに保存')}</p>
-    <p style="font-size:14px;line-height:1.8;margin-bottom:14px">${steps}</p>
-    <div style="text-align:center;margin-bottom:6px;position:sticky;top:-22px;z-index:1;background:#f2ecdf;padding:6px 0">
-      ${pf.inapp
-        ? (ext ? `<a id="calExt" href="${esc(ext)}" style="${bS}">${pf.ios ? L('Safari에서 열기', 'Open in Safari', 'Safariで開く') : L('다른 브라우저에서 열기', 'Open in another browser', 'ほかのブラウザで開く')}</a>` : '')
-          + `<button type="button" id="calCopy" style="${bG}">${L('주소 복사', 'Copy the address', 'アドレスをコピー')}</button>`
-        : `<a id="calFile" href="${fileUrl}" download="san-days.ics" target="_self" style="${bS}">${pf.ios ? L('달력 파일 열기', 'Open the calendar file', 'カレンダーのファイルを開く') : L('달력 파일 다시 받기', 'Get the calendar file again', 'カレンダーのファイルをもう一度受け取る')}</a>`
-          + (pf.ios ? `<a id="calFile2" href="${fileUrl}" target="_self" style="${bG}">${L('다른 방법으로 열기', 'Open it another way', 'べつの方法で開く')}</a>` : '')}
+    <p style="font-size:14px;line-height:1.8;margin-bottom:12px">${msg}</p>
+    ${note ? `<p style="font-size:12px;line-height:1.7;color:#6a6354;margin-bottom:10px">${note}</p>` : ''}
+    <div style="text-align:center">
+      <a id="calFile" href="${fileUrl}" download="san-days.ics" target="_self" style="${bS}">${L('달력 파일 다시 받기', 'Download it again', 'もう一度受け取る')}</a>
+      ${pf.webview ? `<button type="button" id="calCopy" style="${bG}">${L('주소 복사', 'Copy the address', 'アドレスをコピー')}</button>` : ''}
       <button type="button" id="calClose" style="${bG}">${L('닫기', 'Close', '閉じる')}</button>
     </div>
-    <details style="margin-top:14px;border-top:1px solid rgba(46,42,35,.5);padding-top:12px"${pf.inapp ? '' : (pf.android ? ' open' : '')}>
-      <summary style="font-size:13px;font-weight:700;cursor:pointer;padding:4px 0">${L('잘 안 되면 — 날짜를 하나씩 Google 캘린더에 넣기', 'If that does not work — add the days one by one to Google Calendar', 'うまくいかないとき — 日付を一つずつGoogleカレンダーに入れる')}</summary>
-      <p style="font-size:12px;line-height:1.7;color:#6a6354;margin:8px 0 4px">${L('「넣기」를 누르면 Google 캘린더가 열립니다. 거기서 <b>저장</b>을 누르시면 됩니다. Google 계정이 필요하고, 이때는 그 날짜와 제목이 Google로 전달됩니다.', 'Tap “Add” and Google Calendar opens. Then tap <b>Save</b> there. You need a Google account, and that day and its title are sent to Google.', '「入れる」を押すとGoogleカレンダーが開きます。そこで<b>保存</b>を押してください。Googleアカウントが必要で、このときはその日付と題名がGoogleに送られます。')}</p>
-      ${rows}
-    </details>
   </div>`;
   document.body.appendChild(ov);
-  /* 창이 떠 있는 동안 뒤 화면은 움직이지 않게 — 닫을 때 되돌린다 */
-  const root = document.documentElement, prevOverflow = root.style.overflow;
-  root.style.overflow = 'hidden';
   const onKey = e => { if (e.key === 'Escape') close(); };
   const close = () => {
-    root.style.overflow = prevOverflow;
     document.removeEventListener('keydown', onKey);
     ov.remove();
-    if (fileUrl) setTimeout(() => URL.revokeObjectURL(fileUrl), 120000);
+    if (isBlob) setTimeout(() => URL.revokeObjectURL(fileUrl), 120000);
     const b = document.getElementById('gililBtn'); if (b) { try { b.focus({preventScroll: true}); } catch (e) {} }
   };
   document.addEventListener('keydown', onKey);
-  ov.addEventListener('touchmove', e => { if (e.target === ov) e.preventDefault(); }, {passive: false});
   try { ov.querySelector('#calClose').focus({preventScroll: true}); } catch (e) {}
   ov.addEventListener('click', e => {
     if (e.target === ov || e.target.closest('#calClose')) { close(); return; }
@@ -8436,10 +8628,7 @@ function openCalSheet() {
       const done = () => { cp.textContent = L('복사했습니다 ✓', 'Copied ✓', 'コピーしました ✓'); };
       const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = location.href; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); } catch (e3) {} };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(done, fallback); else fallback();
-      return;
     }
-    const g = e.target.closest('.cal-g');
-    if (g) { g.textContent = '✓'; g.style.opacity = '.55'; }
   });
 }
 /* 관계 날씨 저장·삭제 / 길일 다운로드 — 위임 핸들러 */
@@ -9526,7 +9715,7 @@ const U3AS = {
     },
     echo: (tag, srcs) => `Its ${tag} side is echoed by ${srcs}, so you can trust it fairly well.`,
     dae: (gz, gs) => `The ${gz} decade you’re in now moves the “${gs}” side, so this drive fits well there.`,
-    zh: (mw, short, el) => `Old books say a ${short} born in ${mw} looks for ${el} first, so this deserves a little extra care.`,
+    zh: (mw, short, el) => `Old books say ${/^(iron|dew)$/.test(short) ? '' : 'a '}${short} born in ${mw} looks for ${el} first, so this deserves a little extra care.`,
     cover: (tag, srcs) => `That ${tag} side also shows in ${srcs}, so you already use a little of it from outside your saju chart.`,
     yr: (cyc, dw) => `By your birth-date number, this year is “${cyc}”${dw ? `, and your current decade reads as “${dw}”` : ''}.`,
     dw: [, 'a slower stretch', 'a fair stretch', 'a supportive stretch'],
@@ -9706,6 +9895,37 @@ function u3aAct(F, g) {
 }
 /* ==U3A-END== */
 
+/* E3 · English only, the user's own deep reading (deepParts calls these only when `me`) — a second fact on lines many people shared:
+   the decade's own energy and its role for the day letter (header) · where a role's letters sit (family / work / close ties / results) ·
+   the birth-date number's year for past and coming years without another tail (the same cycle names as the year tip) · the decade you are in, for the age note.
+   DEEP_EN is not touched, so the third-person readings of parents and partners stay as they are. Calculation untouched; test people are made up. */
+const E3_AREA = {year: 'family', month: 'work', day: 'close ties', hour: 'results'};
+const e3DaeTag = (F, p) => { if (LANG !== 'en' || !p) return ''; try { const el = BRANCHES[p.br].el; return ` · brings ${ELEMENTS_EN[el].k} (${String(DEEP_EN.gName[(el - F.dEl + 5) % 5]).toLowerCase()})`; } catch (e) { return ''; } };
+const e3RoleWhere = (s, F, x, act) => {
+  if (LANG !== 'en' || !x) return '';
+  try {
+    const and = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0];
+    const ks = ['year', 'month', 'day', 'hour'].filter(k => s[k] && (((k !== 'day' || x.g !== 0) && STEMS[s[k].stem].el === x.el) || BRANCHES[s[k].branch].el === x.el));
+    if (ks.length) return ` It sits in your ${and(ks.map(k => `${STEMS[s[k].stem].h}${BRANCHES[s[k].branch].h} ${k}`))}, so it shows most in ${and([...new Set(ks.map(k => (F.yAge < 19 && k === 'month') ? 'school' : E3_AREA[k]))])}.`;
+    if (act || x.c > 0) return '';
+    const L = (F.dae && F.dae.list) || [], p = L.find(q => q.from > F.yAge && q.from <= 85 && BRANCHES[q.br].el === x.el);
+    return p ? ` The ${deepGz(p.st, p.br)} decade from age ${p.from} will bring it in.` : '';
+  } catch (e) { return ''; }
+};
+const e3YearPy = (inp, y) => {
+  if (LANG !== 'en' || !y || y.rel === 'now') return '';
+  try { const py = reduceNum(reduceNum(inp.m, false) + reduceNum(inp.d, false) + reduceNum(digitSum(y.Y), false), false), cyc = String(NUM_CYCLE_EN[py] || '').split(' — ')[0];
+    return cyc ? ` By your birth-date number, ${y.rel === 'past' ? 'that was' : 'that year is'} “${cyc}”.` : ''; } catch (e) { return ''; }
+};
+const e3Dbl = (s, y, t) => {
+  if (LANG !== 'en') return t;
+  try {
+    const el = STEMS[y.st].el, ks = ['year', 'month', 'day', 'hour'].filter(k => s[k] && (STEMS[s[k].stem].el === el || BRANCHES[s[k].branch].el === el));
+    const and = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0];
+    return ks.length ? t.replace('The same energy comes in twice over, so its nature comes out very strongly.', `The same energy comes in twice over, on top of the ${ELEMENTS_EN[el].k} already in your ${and(ks.map(k => `${STEMS[s[k].stem].h}${BRANCHES[s[k].branch].h} ${k}`))}, so its nature comes out very strongly.`) : t;
+  } catch (e) { return t; }
+};
+const e3AgeNote = F => { if (LANG !== 'en' || !F.cur) return ''; try { return ` You’re in your ${deepGz(F.cur.st, F.cur.br)} decade now.`; } catch (e) { return ''; } };
 function renderDeep(inp, s, astro, now) {
   const box = document.getElementById('sajuDeep'); if (!box) return;
   let F;
@@ -9738,7 +9958,7 @@ function deepParts(inp, s, F, T, o) {
 
   /* B. 다섯 역할 */
   const B = `<p class="small">${f.roleIntro}</p>` + F.grp.map(x =>
-    `<div class="dp-row"><p class="dp-k">${f.roleHead(T.gName[x.g], T.gs[x.g], T.el[x.el], x.c, T.lv[x.lv], me ? u3aLets(s, x.el, x.g) : '')}</p><p>${(T.role[x.g][x.lv] || T.role[x.g][1]) + (x.lv < x.raw ? sp + f.adjDown(x.c, u3aCause(s, x.el, false)) : x.lv > x.raw ? sp + f.adjUp(x.c, u3aCause(s, x.el, true)) : '') + (me ? u3aAct(F, x.g) : '')}</p></div>`).join('')
+    `<div class="dp-row"><p class="dp-k">${f.roleHead(T.gName[x.g], T.gs[x.g], T.el[x.el], x.c, T.lv[x.lv], me ? u3aLets(s, x.el, x.g) : '')}</p><p>${(T.role[x.g][x.lv] || T.role[x.g][1]) + (x.lv < x.raw ? sp + f.adjDown(x.c, u3aCause(s, x.el, false)) : x.lv > x.raw ? sp + f.adjUp(x.c, u3aCause(s, x.el, true)) : '') + (me ? (a => a + e3RoleWhere(s, F, x, a))(u3aAct(F, x.g)) : '')}</p></div>`).join('')
     + P(F.clashes.map(c => c.ga === c.gb ? f.clashSame(T.gs[c.ga]) : f.clash(T.gs[c.ga], T.gs[c.gb])));
 
   /* C. 장면별 */
@@ -9752,15 +9972,15 @@ function deepParts(inp, s, F, T, o) {
     F.starG < 0 ? T.love.noGender : f.star(F.starG === 3 ? f.female : f.male, T.el[g[F.starG].el]) + sp + (F.starClash && g[F.starG].lv > 0 ? T.love.starClash : T.love.star[g[F.starG].lv])].join(sp);
   const bodyLines = [...F.missing.map(e => f.bLack(T.el[e], T.organ[e])), ...F.over.map(e => f.bOver(T.el[e], T.organ[e]))].slice(0, 2);
   const body = (bodyLines.length ? bodyLines.join(sp) : T.body.none);
-  const C = (young ? `<p class="small">${T.body.young}</p>` : F.yAge >= 65 ? `<p class="small">${T.body.elder}</p>` : '') + [['money', money], ['work', work], ['people', people], ['love', young ? '' : love], ['mind', ((me && u3aScene(s, F, 'mind')) || T.mind.lead) + sp + T.mind[F.mind]], ['body', o.noBody ? '' : body]]
+  const C = (young ? `<p class="small">${T.body.young}${me ? e3AgeNote(F) : ''}</p>` : F.yAge >= 65 ? `<p class="small">${T.body.elder}${me ? e3AgeNote(F) : ''}</p>` : '') + [['money', money], ['work', work], ['people', people], ['love', young ? '' : love], ['mind', ((me && u3aScene(s, F, 'mind')) || T.mind.lead) + sp + T.mind[F.mind]], ['body', o.noBody ? '' : body]]
     .filter(x => x[1]).map(([k, t]) => `<div class="dp-row"><p class="dp-k">${T.title[k]}</p><p>${t}</p></div>`).join('') + `<p class="small" style="margin-top:12px">${T.body.note}</p>`;
 
   /* D. 10년 흐름 */
   const d = F.dae, ages = d.list.slice(1, 4).map(p => p.from).join(' · ');
   let Dh = (inp.gender !== 'M' && inp.gender !== 'F' ? `<p class="small">${f.dGender}</p>` : '') + P([f.dIntro(d.startAge, d.startAge % 10, ages) + sp + f.dBranch]);
-  if (F.cur) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.now}</span> ${f.dCur(F.cur.from, F.cur.to, deepGz(F.cur.st, F.cur.br), T.animal[F.cur.br])}</p><p>${deepLuckText(T, F, F.curE, 'branch', false)}${me ? u3aSp(sp, u3aRelText(s, F.cur.br, 'dae', false, F.yAge < 19)) : ''}</p></div>`;
+  if (F.cur) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.now}</span> ${f.dCur(F.cur.from, F.cur.to, deepGz(F.cur.st, F.cur.br), T.animal[F.cur.br])}${me ? e3DaeTag(F, F.cur) : ''}</p><p>${deepLuckText(T, F, F.curE, 'branch', false)}${me ? u3aSp(sp, u3aRelText(s, F.cur.br, 'dae', false, F.yAge < 19)) : ''}</p></div>`;
   else if (F.yAge < d.startAge) Dh += P([f.dBefore(d.startAge)]);
-  if (F.next) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.next}</span> ${f.dNext(F.next.from, F.next.to, F.curYear + (F.next.from - F.yAge), deepGz(F.next.st, F.next.br), T.animal[F.next.br])}</p><p>${F.curE && F.curE.eb === F.nextE.eb && !F.nextE.stack && !F.nextE.clash && F.nextE.ks === 'norm' ? f.dSame : deepLuckText(T, F, F.nextE, 'branch', false)}${me ? u3aSp(sp, u3aRelText(s, F.next.br, 'dae', false, F.yAge < 19)) : ''}</p></div>`;
+  if (F.next) Dh += `<div class="dp-row"><p class="dp-k"><span class="dp-tag">${T.title.next}</span> ${f.dNext(F.next.from, F.next.to, F.curYear + (F.next.from - F.yAge), deepGz(F.next.st, F.next.br), T.animal[F.next.br])}${me ? e3DaeTag(F, F.next) : ''}</p><p>${F.curE && F.curE.eb === F.nextE.eb && !F.nextE.stack && !F.nextE.clash && F.nextE.ks === 'norm' ? f.dSame : deepLuckText(T, F, F.nextE, 'branch', false)}${me ? u3aSp(sp, u3aRelText(s, F.next.br, 'dae', false, F.yAge < 19)) : ''}</p></div>`;
   Dh += P([...F.missArrive.map(m => !F.missing.length
       ? (m.when === 'future' ? f.dWeakFuture(T.el[m.el], m.p.from, F.curYear + (m.p.from - F.yAge), deepGz(m.p.st, m.p.br)) : m.when === 'now' ? f.dWeakNow(T.el[m.el], deepGz(m.p.st, m.p.br)) : '')
       : m.when === 'future' ? f.dMissFuture(T.el[m.el], m.p.from, F.curYear + (m.p.from - F.yAge), T.gift[m.el], deepGz(m.p.st, m.p.br))
@@ -9771,7 +9991,7 @@ function deepParts(inp, s, F, T, o) {
   let seen = new Set();
   const E = `<p class="small">${f.yIntro}</p>` + F.years.map(y => {
     if (y.rel === 'now') seen = new Set();            // 올해는 늘 처음부터 풀어 쓴다
-    return `<div class="dp-row${y.rel === 'now' ? ' dp-now' : ''}"><p class="dp-k">${y.rel === 'now' ? `<span class="dp-tag">${T.title.thisYear}</span> ` : ''}${f.yHead(y.Y, deepGz(y.st, y.br), T.animal[y.br])}</p><p>${deepLuckText(T, F, y, 'stem', y.rel === 'past', seen)}${me ? u3aSp(sp, u3aRelText(s, y.br, 'year', y.rel === 'past', F.yAge < 19)) : ''}</p></div>`; }).join('')
+    return `<div class="dp-row${y.rel === 'now' ? ' dp-now' : ''}"><p class="dp-k">${y.rel === 'now' ? `<span class="dp-tag">${T.title.thisYear}</span> ` : ''}${f.yHead(y.Y, deepGz(y.st, y.br), T.animal[y.br])}</p><p>${(t => me && y.rel === 'now' ? e3Dbl(s, y, t) : t)(deepLuckText(T, F, y, 'stem', y.rel === 'past', seen))}${me ? (t => u3aSp(sp, t) + (t ? '' : e3YearPy(inp, y)))(u3aRelText(s, y.br, 'year', y.rel === 'past', F.yAge < 19)) : ''}</p></div>`; }).join('')
     + `<p class="small" style="margin-top:12px">${f.change}</p>`;
 
   /* F. 이번 달 + 처방 */
@@ -11317,10 +11537,10 @@ function renderSaju(s, time, inp, astro, num) {
       oc += `On the other hand, you have ${weakV === 0 ? 'no' : `only ${weakV}`} <b class="${elCls(weakI)}">${ELEMENTS_EN[weakI].k}</b>${u3aWeak(s, weakI, weakV === 0)}. So what’s worth tending is <b>${EL_NEED_EN[weakI]}</b>. Looking after just this is enough to bring you into balance.`;
     }
     if (strongV !== weakV) oc += coreSame
-      ? `<br><br>Your most common energy and your birth-day letter below (the letter that stands for you) are both <b>${ELEMENTS_EN[myEl].k}</b>. So this energy shows clearly, both in how you feel inside and in how you act.`
-      : `<br><br>Your inner character comes from your birth-day letter below (${ELEMENTS_EN[myEl].k}). The count above shows how you come across when you work and act. Read it as: <b>${ELEMENTS_EN[myEl].k} inside, ${tiedI.map(i => ELEMENTS_EN[i].k).join(' and ')} in action</b>.`;
+      ? `<br><br>Your most common energy and your birth-day letter below (${STEMS[s.day.stem].h}, born on ${/^[AEIOU]/.test(ANIMALS_EN[s.day.branch]) ? 'an' : 'a'} ${ANIMALS_EN[s.day.branch]} day) are both <b>${ELEMENTS_EN[myEl].k}</b>. So this energy shows clearly, both in how you feel inside and in how you act.`
+      : `<br><br>Your inner character comes from your birth-day letter below (${STEMS[s.day.stem].h}, ${ELEMENTS_EN[myEl].k}, born on ${/^[AEIOU]/.test(ANIMALS_EN[s.day.branch]) ? 'an' : 'a'} ${ANIMALS_EN[s.day.branch]} day). The count above shows how you come across when you work and act. Read it as: <b>${ELEMENTS_EN[myEl].k} inside, ${tiedI.map(i => ELEMENTS_EN[i].k).join(' and ')} in action</b>.`;
     oc += u3aInner(astro, time);
-    if (!time) oc += `<br><br>※ Your birth time is unknown, so this uses 6 letters and leaves out the two birth-hour letters. If you know your birth time, the result becomes more exact.`;
+    if (!time) oc += `<br><br>※ Your birth time is unknown, so this uses the 6 letters of ${u3aGz3(s, 'en')} and leaves out the two birth-hour letters. If you know your birth time, the result becomes more exact.`;
   } else {
     oc = `태어난 여덟 글자는 저마다 <b>다섯 가지 기운</b>(목·화·토·금·수) 가운데 하나예요. 어떤 기운이 몇 개 있는지를 보면 <b>타고난 성격</b>이 어느 쪽으로 기우는지 알 수 있어요.<br><br>`;
     oc += ELEMENTS.map((e, i) => `<b class="${elCls(i)}">${e.k}(${e.h}) ${s.counts[i]} · ${statusOf(s.counts[i])}</b> — ${EL_MEANING[i]}. ${u3aElLine(s, i, effectOf(i, s.counts[i]), astro, num, time, inp)}.`).join('<br>');
@@ -11345,7 +11565,7 @@ function renderSaju(s, time, inp, astro, num) {
   $('#ilganTitle').textContent = LANG === 'ja'
     ? `生まれた日の文字(日干)${dk.h}(${['きのえ','きのと','ひのえ','ひのと','つちのえ','つちのと','かのえ','かのと','みずのえ','みずのと'][s.day.stem]}) — あなた自身`
     : LANG === 'en'
-    ? `Your birth-day letter ${dk.h} (Day Master) — this is you`
+    ? `Your Day Master, ${dk.h} — this is you`
     : `태어난 날의 글자(일간) ${dk.k}(${dk.h}) — 나 자신`;
   const sunSign = astro.sun.sign;
   const [ilRel, ilRelDesc] = elRelation(ZOD2EL[sunSign % 4], dk.el);
@@ -11413,11 +11633,12 @@ function renderSaju(s, time, inp, astro, num) {
       (s.hour ? `時計の時刻と、実際の太陽の位置は少しずれています。${sunAbs ? `お生まれの場所と日では、太陽が時計より${sunAbs}分${sunShift < 0 ? 'おくれて' : '進んで'}いましたので、そのぶん直した時間で見ています` : 'お生まれの場所と日では、ずれがありませんでした'} → <b>${STEMS[s.hour.stem].h}${BRANCHES[s.hour.branch].h}</b>時（生まれた時間の二文字・時柱）<br>` : '') +
       `<br>上の表の小さな言葉 — それぞれの文字があなたにとって果たす役目です(通変星)<br>${godLines || '生まれた日の文字のほかに、上の文字はありません'}`
     : LANG === 'en'
-    ? `The year starts at Ipchun, the first day of spring (${s.ipchun}) → <b>${STEMS[s.year.stem].h}${BRANCHES[s.year.branch].h}</b> year (the two letters of your birth year · Year pillar)<br>` +
-      `Months are counted from the seasonal point ${JIE_NAMES_EN[s.jieName]} (${s.jieDate}) → month #${s.monthNum} (this calendar counts from the start of spring in early February) — <b>${STEMS[s.month.stem].h}${BRANCHES[s.month.branch].h}</b> month (the two letters of your birth month · Month pillar)<br>` +
-      `Each day gets one of 60 names that repeat in order. The name of your birth day → <b>${STEMS[s.day.stem].h}${BRANCHES[s.day.branch].h}</b> day (the two letters of your birth day · Day pillar)` +
-      (s.lateNight ? ' · you were born in the 11 pm hour, so the next day’s letters are used' : '') + '<br>' +
-      (s.hour ? `Clocks and the real Sun do not quite agree. ${sunAbs ? `At your birthplace on your birthday the Sun was ${sunAbs} min ${sunShift < 0 ? 'behind' : 'ahead of'} the clock, so we used the corrected time` : 'At your birthplace on your birthday there was no gap'} → <b>${STEMS[s.hour.stem].h}${BRANCHES[s.hour.branch].h}</b> hour (the two letters of your birth hour · Hour pillar)<br>` : '') +
+    ? `Each of your pillars (two letters each) starts at its own point: the year at Ipchun, the first day of spring; the month at a seasonal point (this calendar counts months from early February); the day in a cycle of 60 names that repeat in order; the hour by true Sun time at your birthplace, which can run behind or ahead of the clock.<br>` +
+      `Year → <b>${STEMS[s.year.stem].h}${BRANCHES[s.year.branch].h}</b> · from Ipchun (${s.ipchun})<br>` +
+      `Month → <b>${STEMS[s.month.stem].h}${BRANCHES[s.month.branch].h}</b> · from ${JIE_NAMES_EN[s.jieName]} (${s.jieDate})<br>` +
+      `Day → <b>${STEMS[s.day.stem].h}${BRANCHES[s.day.branch].h}</b>` +
+      (s.lateNight ? ' · 11 pm birth, so the next day’s letters' : '') + '<br>' +
+      (s.hour ? `Hour → <b>${STEMS[s.hour.stem].h}${BRANCHES[s.hour.branch].h}</b> · by true Sun time (${sunAbs ? `${sunShift < 0 ? '−' : '+'}${sunAbs} min` : 'no gap'})<br>` : '') +
       `<br>The small words in the chart above — the part each letter plays for you (Ten Gods)<br>${godLines ||'there are no top letters besides the letter of your birth day'}`
     : `한 해의 시작은 입춘(봄이 시작되는 날, ${s.ipchun})으로 봐요 → <b>${STEMS[s.year.stem].k}${BRANCHES[s.year.branch].k}년</b> (태어난 해의 두 글자 · 연주)<br>` +
       `달은 계절의 마디(절기)인 ${s.jieName}(${s.jieDate}) 뒤부터 세요 → ${s.monthNum}번째 달(2월 초 입춘이 든 달이 첫째 달) — <b>${STEMS[s.month.stem].k}${BRANCHES[s.month.branch].k}월</b> (태어난 달의 두 글자 · 월주)<br>` +
@@ -11474,12 +11695,15 @@ function renderSaju(s, time, inp, astro, num) {
       /* display only: plain position name + the part of life that spot stands for */
       const posEN1 = w => w.replace(/연[지주]/g, 'Birth-year spot (family roots)').replace(/월[지주]/g, 'Birth-month spot (how you grew up)').replace(/일[지주]/g, 'Birth-day spot (you and your partner)').replace(/시[지주]/g, 'Birth-hour spot (later life)');
       const posEN = w => w.includes('·') ? 'Between the ' + w.split('·').map(p => posEN1(p).toLowerCase()).join(' and the ') : posEN1(w);
+      /* E3 · English only — the real spot: animal, its two letters and the part of life that spot stands for */
+      const AREA_EN = {year: 'family roots', month: 'how you grew up', day: 'you and your partner', hour: 'later life'};
+      const spotEN = w => { const k = (posEN1(w).match(/^Birth-(year|month|day|hour) spot/) || [])[1], p = k && s[k]; return p ? `the ${ANIMALS_EN[p.branch]} (${STEMS[p.stem].h}${BRANCHES[p.branch].h}) of your birth ${k} (${AREA_EN[k]})` : posEN1(w); };
+      const whereEN = w => w.includes('·') ? 'between ' + w.split('·').map(spotEN).join(' and ') : spotEN(w);
       const GONG_EN = {연: 'You tend to make your own way rather than lean on your family or hometown.', 월: 'You are not tied much to your parents’ hopes or how you were raised, and you choose your own path.', 시: 'You don’t cling much to the far future, so I’d love for you to prepare for later life early, a little at a time.'};
       let intro = `Your chart has ${sinsal.length} special mark${sinsal.length > 1 ? 's' : ''}${u3aSsNames(sinsal)}. Some of the old names sound harsh, but they’re only names — they don’t mean bad things will happen.`;
       if (goods.length) intro += ` ${goods.length === sinsal.length ? (goods.length > 1 ? 'All of them are' : 'It is') : (['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][goods.length - 1] || goods.length) + (goods.length > 1 ? ' are' : ' is')} simply <b>lucky</b>.`;
       if (sals.length) intro += ` ${sals.length === sinsal.length ? (sals.length > 1 ? 'All of them are' : 'It is') : (['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][sals.length - 1] || sals.length) + (sals.length > 1 ? ' are' : ' is')} <b>two-sided</b>: one face when it’s working well, another when you’re worn out.`;
-      intro += ' The “spot” under each name tells you which part of life it shows up in.';
-      if (ssFolded) intro += ' The first three are shown; the rest are folded below.';
+      intro += ' The spot after each name tells you which part of life it shows up in.';
       if (!time) intro += ' <span style="color:var(--dim)">(based on 6 letters, without the two birth-hour letters)</span>';
       $('#sinsalIntro').innerHTML = intro;
       $('#sinsalList').innerHTML = ssFold(sinsal.map(x => {
@@ -11492,9 +11716,7 @@ function renderSaju(s, time, inp, astro, num) {
         </div>
         <div>
           <div class="ss-head">
-            <span class="ss-name">${t.name} — ${t.tag}</span>
-            ${x.count > 1 ? `<span class="ss-count">×${x.count} found</span>` : ''}
-            <span class="ss-where">${x.where.map(posEN).join('; ')}</span>
+            <span class="ss-name">${t.name} — ${t.tag}${x.count > 1 ? ` <span class="ss-count">×${x.count} found</span>` : ''} <span class="ss-where" style="letter-spacing:0;font-weight:400">· ${x.where.map(whereEN).join('; ')}</span></span>
           </div>
           <p class="ss-desc">${x.count > 1 ? t.many : t.desc}${x.key === 'gongmang' ? ` In your chart the empty spot is the ${x.where.map(w => posEN(w).toLowerCase()).join(' and the ')}. ${gongTips(x, GONG_EN)}` : ''}${u3aSinsalTail(s, x)}</p>
         </div>
@@ -13617,6 +13839,7 @@ const PLANET_META_JA = {
 function renderAstro(a, geo, ename, saju) {
   $('#astroDesc').textContent = L(`${geo.nameKo}의 하늘 기준`, `Based on the sky over ${geo.nameEn}`, `${geo.nameJa}の空を基準に`) + (ename ? ` · ${ename.toUpperCase()}` : '') + L(' — 태어난 순간 태양과 달, 그리고 동쪽 하늘이 어느 별자리에 있었는지 봅니다. 태양은 겉으로 드러나는 나, 달은 속마음, 동쪽 하늘에 떠오르던 별자리(상승궁)는 첫인상을 뜻합니다. 별자리 이름 아래 작은 글(기운·움직이는 방식)의 뜻은 아래 ‘균형’ 칸에 적어 두었습니다.', ' — This looks at which signs the Sun, the Moon and the eastern sky were in when you were born. The Sun is the you people see, the Moon is your inner feelings, and the sign rising in the east (Rising sign) is your first impression. The small words under each sign are explained in the “Balance” boxes below.', ' — 生まれた瞬間に、太陽と月、そして東の空がどの星座にあったかを見ます。太陽は表に出るあなた、月は心の中、東の空にのぼっていた星座(上昇宮／アセンダント)は第一印象を表します。星座名の下の小さな文字の意味は、下の「バランス」に書きました。');
   const adk = STEMS[saju.day.stem];
+  const e2 = (...x) => (LANG === 'en' ? U3B.noRising(...x) : '');   // English-only extra lines (U3B PACK.en e2…); '' elsewhere
   /* 표시 전용 — 일본어 별자리 한자 읽기(ふりがな) */
   const SIGN_KANA = ['おひつじざ', 'おうしざ', 'ふたござ', 'かにざ', 'ししざ', 'おとめざ', 'てんびんざ', 'さそりざ', 'いてざ', 'やぎざ', 'みずがめざ', 'うおざ'];
   const kanaOf = i => LANG === 'ja' ? `<small style="font-size:.7em;color:var(--muted)">(${SIGN_KANA[i]})</small>` : '';
@@ -13632,7 +13855,7 @@ function renderAstro(a, geo, ename, saju) {
   const sunCross = '<br>' + L(`사주와 함께 보면(태어난 날의 글자 ${adk.k}·${adk.h}), 이 ${SIGNS[a.sun.sign].k}의 성격은 ${SUN_X[sunRel]}.`, `Read together with your saju (your birth-day letter is ${adk.h}), this ${SIGNS_EN[a.sun.sign]} side of you ${SUN_X[sunRel]}.`, `四柱推命と合わせて見ると(生まれた日の文字は${adk.h})、この${SIGNS_JA[a.sun.sign]}らしさは、あなたにとって${SUN_X[sunRel]}。`) + U3B.sunCount();
   const cards = [
     {role: L('SUN · 태양', 'SUN · outer self', 'SUN・太陽'), s: a.sun, text: L(SUN_TEXT, SUN_TEXT_EN, SUN_TEXT_JA), note: null},
-    {role: L('MOON · 달', 'MOON · inner feelings', 'MOON・月'), s: a.moon, text: L(MOON_TEXT, MOON_TEXT_EN, MOON_TEXT_JA), note: a.timeKnown ? null : L('태어난 시간을 몰라서 낮 12시로 계산했어요. 달이 별자리를 옮겨 가는 날에 태어났다면 바로 옆 별자리일 수 있어요.', 'Worked out for noon, because the birth time is unknown. If the Moon changed signs on your birthday, yours may be the sign next to this one.', '生まれた時刻がわからないため、正午で計算しました。月が星座を移る日のお生まれなら、となりの星座のこともあります。')},
+    {role: L('MOON · 달', 'MOON · inner feelings', 'MOON・月'), s: a.moon, text: L(MOON_TEXT, MOON_TEXT_EN, MOON_TEXT_JA), note: a.timeKnown ? null : L('태어난 시간을 몰라서 낮 12시로 계산했어요. 달이 별자리를 옮겨 가는 날에 태어났다면 바로 옆 별자리일 수 있어요.', (e2('MoonNote') || 'Worked out for noon, because the birth time is unknown. If the Moon changed signs on your birthday, yours may be the sign next to this one.'), '生まれた時刻がわからないため、正午で計算しました。月が星座を移る日のお生まれなら、となりの星座のこともあります。')},
     {role: L('RISING · 상승', 'RISING · first impression', 'RISING・上昇'), s: a.rising, text: L(RISING_TEXT, RISING_TEXT_EN, RISING_TEXT_JA), note: a.rising ? L(geo.nameKo + ' 기준', `based on ${geo.nameEn}`, `${geo.nameJa}を基準に`) : null}
   ];
   $('#big3').innerHTML = cards.map(c => {
@@ -13645,7 +13868,7 @@ function renderAstro(a, geo, ename, saju) {
       <p class="glyph" aria-hidden="true">${sg.g}</p>
       <p class="sign">${signName(c.s.sign)}${kanaOf(c.s.sign)}</p>
       <p class="deg">${L(ZOD_EL[c.s.sign % 4] + '의 별자리', ZOD_EL_EN[c.s.sign % 4] + ' sign', ZOD_EL_JA[c.s.sign % 4] + 'の星座')} · ${L(ZOD_MOD[c.s.sign % 3], ZOD_MOD_EN[c.s.sign % 3], ZOD_MOD_JA[c.s.sign % 3])}${c.note ? '<br>' + c.note : ''}</p>
-      <p class="desc">${c.role.startsWith('SUN') ? `<span style="color:var(--muted)">${L('쉽게 말하면, ' + SIGN_PLAIN[c.s.sign] + '이에요.', 'In short, you are ' + SIGN_PLAIN_EN[c.s.sign] + '.', 'ひとことで言うと、' + SIGN_PLAIN_JA[c.s.sign] + 'です。')}</span><br>` : ''}${c.text[c.s.sign]}${c.role.startsWith('SUN') ? U3B.sunEcho() + sunCross : c.role.startsWith('MOON') ? U3B.moonEcho() : U3B.risingEcho()}</p>
+      <p class="desc">${c.role.startsWith('SUN') ? `<span style="color:var(--muted)">${L('쉽게 말하면, ' + SIGN_PLAIN[c.s.sign] + '이에요.', (e2('BigThree') ? 'In short, you’re ' + e2('BigThree') + ' — ' + SIGN_PLAIN_EN[c.s.sign] + '.' : 'In short, you are ' + SIGN_PLAIN_EN[c.s.sign] + '.'), 'ひとことで言うと、' + SIGN_PLAIN_JA[c.s.sign] + 'です。')}</span><br>` : ''}${c.text[c.s.sign]}${c.role.startsWith('SUN') ? U3B.sunEcho() + sunCross : c.role.startsWith('MOON') ? U3B.moonEcho() : U3B.risingEcho()}</p>
     </div>`;
   }).join('');
 
@@ -13670,11 +13893,11 @@ function renderAstro(a, geo, ename, saju) {
       jupiter: L(`${e}${jEul(e)} 살릴 때 운이 트이고 기회가 늘어나요.`, `Luck grows through ${en}.`, `${ja}を生かすと、運が開けてチャンスがふえます。`),
       /* 표시 전용 — 토성 자리가 태양·달·수성과 같으면 "이미 가진 것을 알맞게 쓰는 법"으로, 아니면 "늦게 자라는 힘"으로 읽는다 */
       saturn: [a.sun, a.moon, a.planets.mercury].some(x => x && x.sign === sign)
-        ? L(`${e}${jEun(e)} 이미 가지고 있어요. 다만 지나치지 않게 알맞게 쓰는 법은 오래 걸려서 배워요.`, `You already have ${en}. But learning to use them in the right amount takes you many years.`, `${ja}は、もう持っています。ただ、使いすぎずにほどよく使えるようになるまでには、時間がかかります。`)
-        : L(`${e}${jEun(e)} 처음에는 서툴러도, 시간을 들여 단단히 키워 가는 힘이에요.`, `You build up ${en} slowly: clumsy at first, but strong over time.`, `${ja}は、はじめは苦手でも、時間をかけてしっかり育てていく力です。`),
-      uranus: L(`(이 별부터 셋은 아주 느려서 또래 모두 같아요. 개인보다 세대 이야기라 가볍게 봐도 돼요.) 세대가 함께 겪는 변화: ${e}.`, `(This and the next two move so slowly that everyone your age shares them. They’re about your generation, so it’s fine to read them lightly.) A change your generation goes through: ${en}.`, `(ここから下の三つの星は動きがとてもおそく、同じ年ごろの人はみな同じ星座にいます。世代の話なので、軽く読んでかまいません。)世代で経験する変化:${ja}。`),
-      neptune: L(`세대가 함께 바라는 것: ${e}.`, `What your generation longs for: ${en}.`, `世代のあこがれ:${ja}。`),
-      pluto: L(`세대를 깊이 바꾸는 주제: ${e}.`, `What deeply reshapes your generation: ${en}.`, `世代を深く変えるテーマ:${ja}。`)
+        ? L(`${e}${jEun(e)} 이미 가지고 있어요. 다만 지나치지 않게 알맞게 쓰는 법은 오래 걸려서 배워요.`, (k === 'saturn' && e2('Sat', sign, en) || `You already have ${en}. But learning to use them in the right amount takes you many years.`), `${ja}は、もう持っています。ただ、使いすぎずにほどよく使えるようになるまでには、時間がかかります。`)
+        : L(`${e}${jEun(e)} 처음에는 서툴러도, 시간을 들여 단단히 키워 가는 힘이에요.`, (k === 'saturn' && e2('Sat', sign, en) || `You build up ${en} slowly: clumsy at first, but strong over time.`), `${ja}は、はじめは苦手でも、時間をかけてしっかり育てていく力です。`),
+      uranus: L(`(이 별부터 셋은 아주 느려서 또래 모두 같아요. 개인보다 세대 이야기라 가볍게 봐도 돼요.) 세대가 함께 겪는 변화: ${e}.`, (k === 'uranus' && e2('Gen', sign, `A change your generation goes through: ${en}.`) || `(This and the next two move so slowly that everyone your age shares them. They’re about your generation, so it’s fine to read them lightly.) A change your generation goes through: ${en}.`), `(ここから下の三つの星は動きがとてもおそく、同じ年ごろの人はみな同じ星座にいます。世代の話なので、軽く読んでかまいません。)世代で経験する変化:${ja}。`),
+      neptune: L(`세대가 함께 바라는 것: ${e}.`, ((t => k === 'neptune' && e2('Gen', sign, t) || t)(`What your generation longs for: ${en}.`)), `世代のあこがれ:${ja}。`),
+      pluto: L(`세대를 깊이 바꾸는 주제: ${e}.`, ((t => k === 'pluto' && e2('Gen', sign, t) || t)(`What deeply reshapes your generation: ${en}.`)), `世代を深く変えるテーマ:${ja}。`)
     })[k] || '';
   };
   /* 표시 전용 — 동점이면 동점이라고 말하고, 가장 적은 기운도 함께 알려 드린다 */
@@ -13688,15 +13911,15 @@ function renderAstro(a, geo, ename, saju) {
   const topEls = [0, 1, 2, 3].filter(i => elCnt[i] === maxEl);
   const lowEls = minEl <= 1 ? [0, 1, 2, 3].filter(i => elCnt[i] === minEl) : [];
   const elSay = (topEls.length === 1
-      ? L(`열 개의 별 가운데 ${ZOD_EL[topEl]}의 별자리에 있는 별이 가장 많아요. 별자리로 보면 ${ZOD_EL_TEXT[topEl]} 면이 가장 강하다는 뜻이에요.`, `Of the ten sky bodies above (Sun, Moon and eight planets), the most are in ${ZOD_EL_EN[topEl]} signs. By your star signs, this means your strongest side is the one that is ${ZOD_EL_TEXT_EN[topEl]}.`, `10個の星のうち、${ZOD_EL_JA[topEl]}の星座にある星がいちばん多いです。星座で見ると、${ZOD_EL_TEXT_JA[topEl]}面がいちばん強い、という意味です。`)
+      ? L(`열 개의 별 가운데 ${ZOD_EL[topEl]}의 별자리에 있는 별이 가장 많아요. 별자리로 보면 ${ZOD_EL_TEXT[topEl]} 면이 가장 강하다는 뜻이에요.`, `Of the ten, the most are in ${ZOD_EL_EN[topEl]} signs (your ${joinL(bodies.filter(b => b.s.sign % 4 === topEl).map(b => b.n))}), so by your star signs your strongest side is the one that is ${ZOD_EL_TEXT_EN[topEl]}.`, `10個の星のうち、${ZOD_EL_JA[topEl]}の星座にある星がいちばん多いです。星座で見ると、${ZOD_EL_TEXT_JA[topEl]}面がいちばん強い、という意味です。`)
       : L(`${joinL(topEls.map(elNm))}의 별자리에 별이 ${maxEl}개씩 똑같이 있어요. ${topEls.map(i => EL_SHORT[i]).join(', ')}${jEul(EL_SHORT[topEls[topEls.length - 1]])} 고루 가졌다는 뜻이에요.`, `${joinL(topEls.map(elNm))} are tied with ${maxEl} each. This means you have ${joinL(topEls.map(i => EL_SHORT[i]))} in equal measure.`, `${joinL(topEls.map(elNm))}の星座に、星が${maxEl}個ずつ同じ数だけあります。${topEls.map(i => EL_SHORT[i]).join('、')}を、同じくらい持っている、という意味です。`))
-    + (lowEls.length ? L(` 가장 적은 쪽은 ${joinL(lowEls.map(elNm))}(${minEl}개)이에요. ${lowEls.map(i => EL_LOW[i]).join(' ')}`, ` The fewest (${minEl}) are in ${joinL(lowEls.map(elNm))}. ${lowEls.map(i => EL_LOW[i]).join(' ')}`, `いちばん少ないのは${joinL(lowEls.map(elNm))}(${minEl}個)です。${lowEls.map(i => EL_LOW[i]).join('')}`) : '')
-    + (U3B.elNote() || L(' (사주의 다섯 기운과는 세는 법이 달라서 숫자가 다를 수 있어요.)', ' (These are counted differently from the five saju energies, so the numbers may not match.)', '(四柱推命の五つの気とは数え方がちがうので、数が合わないことがあります。)'));
+    + (lowEls.length ? L(` 가장 적은 쪽은 ${joinL(lowEls.map(elNm))}(${minEl}개)이에요. ${lowEls.map(i => EL_LOW[i]).join(' ')}`, `${lowEls.length === 1 && minEl <= 1 ? ` ${minEl ? `Only your ${bodies.find(b => b.s.sign % 4 === lowEls[0]).n} is` : 'None of the ten is'} in ${/^[AEIOU]/.test(ZOD_EL_EN[lowEls[0]]) ? 'an' : 'a'} ${ZOD_EL_EN[lowEls[0]]} sign.` : ` The fewest (${minEl}) are in ${joinL(lowEls.map(elNm))}.`} ${lowEls.map(i => EL_LOW[i]).join(' ')}`, `いちばん少ないのは${joinL(lowEls.map(elNm))}(${minEl}個)です。${lowEls.map(i => EL_LOW[i]).join('')}`) : '')
+    + (e2('ElCross', topEls) || U3B.elNote() || L(' (사주의 다섯 기운과는 세는 법이 달라서 숫자가 다를 수 있어요.)', ' (These are counted differently from the five saju energies, so the numbers may not match.)', '(四柱推命の五つの気とは数え方がちがうので、数が合わないことがあります。)'));
   const maxMod = Math.max(...modCnt), topMods = [0, 1, 2].filter(i => modCnt[i] === maxMod);
   const MOD_PL = [L(ZOD_MOD[0], 'cardinal signs (which start things)', ZOD_MOD_JA[0]), L(ZOD_MOD[1], 'fixed signs (which hold steady)', ZOD_MOD_JA[1]), L(ZOD_MOD[2], 'mutable signs (which adapt)', ZOD_MOD_JA[2])];
   const modTx = i => L(ZOD_MOD_TEXT[i], ZOD_MOD_TEXT_EN[i], ZOD_MOD_TEXT_JA[i]);
   const modSay = topMods.length === 1
-    ? L(`열 개의 별이 ${ZOD_MOD[topMod]}에 가장 많이 있어요. 별자리로 보면 ${ZOD_MOD_TEXT[topMod]}이 가장 크다는 뜻이에요.`, `Of the ten, the most are in ${MOD_PL[topMod]}. By your star signs, this means your biggest strength is ${ZOD_MOD_TEXT_EN[topMod]}.`, `10個の星は、${ZOD_MOD_JA[topMod]}にいちばん多くあります。星座で見ると、${ZOD_MOD_TEXT_JA[topMod]}がいちばん大きい、という意味です。`)
+    ? L(`열 개의 별이 ${ZOD_MOD[topMod]}에 가장 많이 있어요. 별자리로 보면 ${ZOD_MOD_TEXT[topMod]}이 가장 크다는 뜻이에요.`, `Of the ten, the most are in ${['cardinal', 'fixed', 'mutable'][topMod]} signs (your ${joinL(bodies.filter(b => b.s.sign % 3 === topMod).map(b => b.n))}), so by your star signs your biggest strength is ${ZOD_MOD_TEXT_EN[topMod]}.`, `10個の星は、${ZOD_MOD_JA[topMod]}にいちばん多くあります。星座で見ると、${ZOD_MOD_TEXT_JA[topMod]}がいちばん大きい、という意味です。`)
     : L(`${topMods.map(i => MOD_PL[i]).join('와 ')}에 별이 ${maxMod}개씩 똑같이 있어요. ${topMods.map(modTx).join(', ')}을 비슷하게 쓴다는 뜻이에요.`, `${capA(joinL(topMods.map(i => MOD_PL[i])))} are tied with ${maxMod} each. This means you use ${joinL(topMods.map(modTx))} about equally.`, `${topMods.map(i => MOD_PL[i]).join('と')}に、星が${maxMod}個ずつ同じ数だけあります。${topMods.map(modTx).join('と、')}を、同じくらい使っている、という意味です。`);
   const rows = bodies.map(b => `
     <div class="prow">
@@ -13707,13 +13930,13 @@ function renderAstro(a, geo, ename, saju) {
     </div>`).join('');
   $('#natalCard').innerHTML = `
     <h3>${L('태어난 순간의 하늘 지도(네이탈 차트)', 'The sky map of the moment you were born (natal chart)', '生まれた瞬間の空の地図(ネイタルチャート)')}</h3>
-    <p class="small" style="margin-bottom:12px">${L('태어난 순간 태양·달·여덟 행성이 있던 별자리예요. 별 이름 옆 작은 글은 그 별이 맡은 삶의 영역, 아랫줄은 그것이 나에게 나타나는 모습이에요.', 'The signs the Sun, the Moon and the eight planets were in when you were born. The small words by each name are the part of life it looks after; the line below is how that shows up in you.', '生まれた瞬間に、太陽・月・八つの惑星があった星座です。星の名前のとなりの小さな文字はその星が受け持つ分野、下の行はそれがあなたにどう表れるかです。')}</p>
+    <p class="small" style="margin-bottom:12px">${L('태어난 순간 태양·달·여덟 행성이 있던 별자리예요. 별 이름 옆 작은 글은 그 별이 맡은 삶의 영역, 아랫줄은 그것이 나에게 나타나는 모습이에요.', 'The signs the Sun, the Moon and the eight planets were in when you were born. The small words by each name are the part of life it looks after; the line below is how that shows up in you. The last three move so slowly that everyone your age shares them; their lines turn from your generation to your own chart.', '生まれた瞬間に、太陽・月・八つの惑星があった星座です。星の名前のとなりの小さな文字はその星が受け持つ分野、下の行はそれがあなたにどう表れるかです。')}</p>
     <div class="natal">${rows}</div>
     <div class="combo"><b>${L('네 가지 기운의 균형', 'Balance of the four elements', '四つの気のバランス')}</b> — ${L(`불(밀고 나감) ${elCnt[0]} · 흙(현실 감각) ${elCnt[1]} · 바람(생각·말) ${elCnt[2]} · 물(감정) ${elCnt[3]}`, `Fire (drive) ${elCnt[0]} · Earth (practical) ${elCnt[1]} · Air (ideas, talk) ${elCnt[2]} · Water (feelings) ${elCnt[3]}`, `火(勢い) ${elCnt[0]} ・ 地(現実) ${elCnt[1]} ・ 風(考え・言葉) ${elCnt[2]} ・ 水(気持ち) ${elCnt[3]}`)}<br>
       ${elSay}</div>
     <div class="combo"><b>${L('움직이는 방식의 균형', 'Balance of how you act', '動き方のバランス')}</b> — ${L(`시작하는(먼저 움직임) ${modCnt[0]} · 지키는(끝까지 이어 감) ${modCnt[1]} · 맞춰 가는(상황 따라 바꿈) ${modCnt[2]}`, `Cardinal (moves first) ${modCnt[0]} · Fixed (keeps going) ${modCnt[1]} · Mutable (adapts to the situation) ${modCnt[2]}`, `始める(先に動く) ${modCnt[0]} ・ 守る(続ける) ${modCnt[1]} ・ 合わせていく(状況で変える) ${modCnt[2]}`)}<br>
       ${modSay}${U3B.modNote(topMods)}</div>
-    <p class="small" style="margin-top:10px;color:var(--dim)">${L('별자리와 사주가 반대로 말할 때는, 별자리는 마음이 끌리는 쪽, 사주는 실제로 몸에 밴 습관으로 읽으면 돼요. 예를 들면 마음은 ‘먼저 시작하고 싶어’ 하는데 행동은 늦게 따라오는 식이에요.', 'When the stars and your saju say opposite things, you can read the stars as where your heart leans and the saju as the habits you actually live by. For example, your heart says, “I want to start first,” but your actions follow later.', '星座と四柱推命が反対のことを言うときは、星座は「気持ちが向かうほう」、四柱推命は「実際に身についた習慣」と読めば大丈夫です。たとえば、気持ちは「先に始めたい」と思っているのに、行動はあとからついてくる、という形です。')}</p>`;
+    <p class="small" style="margin-top:10px;color:var(--dim)">${L('별자리와 사주가 반대로 말할 때는, 별자리는 마음이 끌리는 쪽, 사주는 실제로 몸에 밴 습관으로 읽으면 돼요. 예를 들면 마음은 ‘먼저 시작하고 싶어’ 하는데 행동은 늦게 따라오는 식이에요.', 'When the stars and your saju say opposite things, you can read the stars as where your heart leans and the saju as the habits you actually live by.', '星座と四柱推命が反対のことを言うときは、星座は「気持ちが向かうほう」、四柱推命は「実際に身についた習慣」と読めば大丈夫です。たとえば、気持ちは「先に始めたい」と思っているのに、行動はあとからついてくる、という形です。')}</p>`;
 }
 
 /* ---- 수비학 ---- */
@@ -13727,10 +13950,10 @@ const LIFEPATH_TEXT_EN = {
   6:'You were born to take care of others. You feel deeply satisfied when you protect and tend the people and things you love, and people lean on you naturally. “I’ll do it for you” is probably always on your lips. Your homework is to tell the difference between taking responsibility and giving yourself up. A love that only gives everything away doesn’t last long.',
   7:'You were born to ask questions. Behind what can be seen, you keep digging: “What’s the real reason?” Time alone isn’t lonely for you — it’s how you refill your strength. You trust your own inner thoughts more than the loud opinions of the world. Your homework is to share what you’ve learned with other people.',
   8:'You were born to get things done. You have the power to turn a dream into a result people can see. You’re the one who asks first, “So what’s the result?” You can handle the big forces of the world, such as money, position and influence. What matters isn’t how much power you have but what you use it for. As long as you remember what you’re trying to win for, you achieve big things.',
-  9:'You were born to embrace people. You have a wide heart that cares for people even across borders and opposing interests. You may finish things and say goodbye more often than most. If you’ve ever thought, “Why am I always the one letting go?” — that isn’t loss. It’s the role you were given. Your homework is to hold the whole world and still look after your own happiness.',
-  11:'You were born to feel. 11 is a number with extra-strong power (a Master Number). You sense the answer first, while others work it out step by step. You probably have many moments of “I don’t know why — I just know.” You’re sensitive because you feel so much. Your homework is to share what comes to you without fear. When you find your strength, the people around you brighten too.',
-  22:'You were born to build big. 22 is a number with extra-strong power (a Master Number). You don’t stop at dreaming a big dream — you can actually make it real. Few people have both. There are probably days you think, “Can I really pull all this off?” Your homework is not to be crushed by that weight. Even a great bridge starts with one brick.',
-  33:'You were born to love. 33 is a number with extra-strong power (a Master Number). Teaching, healing hurt hearts and helping people stand up again is the theme of your whole life. “I should help that person” probably comes out first. Many people grow into better people by your side. Your homework is to take care of yourself while you take care of the world.'
+  9:'You were born to embrace people. You have a wide heart that cares for people even across borders and opposing interests. You may finish things and say goodbye more often than most. If you’ve ever thought, “Why am I always the one letting go?” — that isn’t loss but the role you were given. Your homework is to hold the whole world and still look after your own happiness.',
+  11:'You were born to feel. You sense the answer first, while others work it out step by step. You probably have many moments of “I don’t know why — I just know.” You’re sensitive because you feel so much. Your homework is to share what comes to you without fear. When you find your strength, the people around you brighten too.',
+  22:'You were born to build big. You don’t stop at dreaming a big dream — you can actually make it real, and few people have both. There are probably days you think, “Can I really pull all this off?” Your homework is not to be crushed by that weight. Even a great bridge starts with one brick.',
+  33:'You were born to love. Teaching, healing hurt hearts and helping people stand up again is the theme of your whole life. “I should help that person” probably comes out first. Many people grow into better people by your side. Your homework is to take care of yourself while you take care of the world.'
 };
 const LIFEPATH_TEXT_JA = {
   1:'ひとりで道を歩くことを、こわがらない人として生まれました。人が作った道より、自分で作った道を進むときに力が出ます。「道がないなら、自分で作ればいい」と考えるほうです。だから、この人生で学ぶのは、人に従う方法ではなく、先に立って導きながらも、ひとりきりにならない方法です。始める力は、生まれつき持っています。最後までやりとげることさえ身につければ、足りないものはありません。',
@@ -13778,17 +14001,18 @@ const NUM_PLAIN_JA = {
 function renderNumer(n, usedName, curYear, saju, astro) {
   const lp = LANG === 'ja' ? NUM_ESSENCE_JA[n.lifePath] : LANG === 'en' ? NUM_ESSENCE_EN[n.lifePath] : NUM_ESSENCE[n.lifePath];
   const ndk = STEMS[saju.day.stem];
+  const e2 = (...x) => (LANG === 'en' ? U3B.noRising(...x) : '');   // English-only extra lines (U3B PACK.en e2…); '' elsewhere
   $('#lifepath').innerHTML = `
     <p class="lrole">${L('LIFE PATH · 인생의 큰 방향', 'LIFE PATH', 'LIFE PATH・人生の大きな方向')}</p>
     <p class="lnum">${n.lifePath}</p>
     <p class="ltitle">${lp.t}</p>
     <p class="lrole" style="letter-spacing:.14em">${lp.k}</p>
-    <p style="font-size:12px;color:var(--dim);margin-top:10px">${L('생일 숫자(라이프패스) — 생년월일을 모두 더한 숫자로, 인생의 큰 방향을 보여 줘요.', 'Life Path — your whole birth date added up. It shows your main direction in life.', 'ライフパス — 生年月日を全部足した数字で、人生の大きな方向を表します。')}</p>
-    <p style="margin-bottom:10px;color:var(--muted)">${L(`한마디로 하면 ${NUM_PLAIN[n.lifePath]}이에요.`, `In short, you are ${NUM_PLAIN_EN[n.lifePath]}.`, `ひとことで言うと、あなたは${NUM_PLAIN_JA[n.lifePath]}です。`)}</p>
-    <p>${L(LIFEPATH_TEXT[n.lifePath], LIFEPATH_TEXT_EN[n.lifePath], LIFEPATH_TEXT_JA[n.lifePath])}${U3B.lpEcho()}</p>
+    <p style="font-size:12px;color:var(--dim);margin-top:10px">${L('생일 숫자(라이프패스) — 생년월일을 모두 더한 숫자로, 인생의 큰 방향을 보여 줘요.', ((di => (di.m ? `Life Path — your whole birth date, ${MONTH_EN[di.m]} ${di.d}, ${di.y}, added up (in saju, the same date is your ${ndk.h}${BRANCHES[saju.day.branch].h} day). It shows your main direction in life.` : ''))(window.__lastInput || {}) || 'Life Path — your whole birth date added up. It shows your main direction in life.'), 'ライフパス — 生年月日を全部足した数字で、人生の大きな方向を表します。')}</p>
+    <p style="margin-bottom:10px;color:var(--muted)">${L(`한마디로 하면 ${NUM_PLAIN[n.lifePath]}이에요.`, (e2('NumShort') ? `In short, you’re ${e2('NumShort')} — ${NUM_PLAIN_EN[n.lifePath]}.` : `In short, you are ${NUM_PLAIN_EN[n.lifePath]}.`), `ひとことで言うと、あなたは${NUM_PLAIN_JA[n.lifePath]}です。`)}</p>
+    <p>${L(LIFEPATH_TEXT[n.lifePath], (e2('LpText', LIFEPATH_TEXT_EN[n.lifePath]) || LIFEPATH_TEXT_EN[n.lifePath]), LIFEPATH_TEXT_JA[n.lifePath])}${U3B.lpEcho()}</p>
     <details style="max-width:560px;margin:26px auto 0;text-align:left">
       <summary>${L('계산 방법', 'How it is calculated', '計算のしかた')}</summary>
-      <div class="math"><span style="color:var(--dim)">${L('각 자리의 숫자를 한 자리 숫자가 될 때까지 계속 더해요.', 'The digits are added again and again until only one digit is left.', '数字を、一けたになるまで何度も足していきます。')}</span><br>${[['연도', 'Year', '年', n.trail.y], ['', 'Month', '', n.trail.m], ['', 'Day', '', n.trail.d]].map(([k, e, j, s]) => `${L(k, e, j) ? L(k, e, j) + ' ' : ''}${s}${/(^|= )(11|22|33)\D*$/.test(s) ? L(' (줄이지 않음 — 아래 참고)', ' (kept as it is — see below)', '(そのまま — 下を参照)') : ''}`).join('<br>')}<br>${n.trail.sum}${([11,22,33].includes(n.lifePath) || (n.trail.sum.split('=')[0].match(/\d+/g) || []).some(x => /^(11|22|33)$/.test(x))) ? L('<br><b style="color:var(--gold-soft)">11 · 22 · 33은 힘이 특별히 큰 숫자(마스터 넘버)로 봐요. 그래서 계산 중에 나오면 한 자리로 줄이지 않고 그대로 써요.</b>', '<br><b style="color:var(--gold-soft)">11, 22 and 33 are treated as extra-strong numbers (Master Numbers). So when one turns up in the sum, it is kept as it is and not made smaller.</b>', '<br><b style="color:var(--gold-soft)">11・22・33は、とくに力の大きい数字(マスターナンバー)と考えます。そのため、計算の途中で出てきたら、一けたにせずそのまま使います。</b>') : ''}</div>
+      <div class="math"><span style="color:var(--dim)">${L('각 자리의 숫자를 한 자리 숫자가 될 때까지 계속 더해요.', 'The digits are added again and again until only one digit is left.', '数字を、一けたになるまで何度も足していきます。')}</span><br>${[['연도', 'Year', '年', n.trail.y], ['', 'Month', '', n.trail.m], ['', 'Day', '', n.trail.d]].map(([k, e, j, s]) => `${L(k, e, j) ? L(k, e, j) + ' ' : ''}${s}${/(^|= )(11|22|33)\D*$/.test(s) ? L(' (줄이지 않음 — 아래 참고)', ' (kept — see below)', '(そのまま — 下を参照)') : ''}`).join('<br>')}<br>${n.trail.sum}${([11,22,33].includes(n.lifePath) || (n.trail.sum.split('=')[0].match(/\d+/g) || []).some(x => /^(11|22|33)$/.test(x))) ? L('<br><b style="color:var(--gold-soft)">11 · 22 · 33은 힘이 특별히 큰 숫자(마스터 넘버)로 봐요. 그래서 계산 중에 나오면 한 자리로 줄이지 않고 그대로 써요.</b>', '<br><b style="color:var(--gold-soft)">11 · 22 · 33 are kept as they are.</b>', '<br><b style="color:var(--gold-soft)">11・22・33は、とくに力の大きい数字(マスターナンバー)と考えます。そのため、計算の途中で出てきたら、一けたにせずそのまま使います。</b>') : ''}</div>
     </details>`;
 
   const u3bd = U3B.bdCross(false), u3bs = U3B.bdCross(true);
@@ -13807,7 +14031,7 @@ function renderNumer(n, usedName, curYear, saju, astro) {
     cards.push({role: L('EXPRESSION · 재능 숫자', 'EXPRESSION', 'EXPRESSION · あなたの才能'), num: nmE,
       desc: (nmE === nmS && nmS === nmP)
         ? L(`이름 전체로 만든 재능 숫자예요. 속마음 숫자와 인상 숫자까지 셋 다 ${nmE}, 같은 숫자예요. 가진 재능, 속으로 바라는 것, 사람들 기억에 남는 모습이 한결같다는 뜻이에요. 한마디로 ${NUM_PLAIN[nmE]}이에요.`, `The number from your whole name — your talents. Your inner-wish and impression numbers are also ${nmE}. So your talents, what you want inside and how people remember you all match: you are ${NUM_PLAIN_EN[nmE]}.`, `名前全体から出した、才能の数字です。心の望みと印象の数字も、すべて${nmE}です。才能も、心の望みも、人の記憶に残る印象も同じということです。あなたは${NUM_PLAIN_JA[nmE]}です。`)
-        : L(`이름 전체로 만든 재능 숫자예요. 재능으로 보면 ${NUM_PLAIN[nmE]}이에요.`, `The number from your whole name — your talents. Your talents make you ${NUM_PLAIN_EN[nmE]}.`, `名前全体から出した、才能の数字です。才能の面では、あなたは${NUM_PLAIN_JA[nmE]}です。`),
+        : L(`이름 전체로 만든 재능 숫자예요. 재능으로 보면 ${NUM_PLAIN[nmE]}이에요.`, `The number from your whole name — your talents. Your talents make you ${NUM_PLAIN_EN[nmE]}.${e2('NameRel', nmE)}`, `名前全体から出した、才能の数字です。才能の面では、あなたは${NUM_PLAIN_JA[nmE]}です。`),
       trail: L(`${n.name.roman}${/[가-힣]/.test(usedName) ? '(이름을 알파벳으로 적은 것)' : ''} 모든 글자의 합 ${n.name.sums.all} → ${n.name.expression}`, `${n.name.roman} — all letters added up ${n.name.sums.all} → ${n.name.expression}`, `${n.name.roman} すべての文字の合計 ${n.name.sums.all} → ${n.name.expression}`)});
     cards.push({role: L('SOUL URGE · 속마음 숫자', 'SOUL URGE', 'SOUL URGE · 心の奥の望み'), num: nmS,
       desc: (nmE === nmS && nmS === nmP)
@@ -13819,7 +14043,7 @@ function renderNumer(n, usedName, curYear, saju, astro) {
     cards.push({role: L('PERSONALITY · 인상 숫자', 'PERSONALITY', 'PERSONALITY · 記憶に残る印象'), num: nmP,
       desc: (nmE === nmS && nmS === nmP)
         ? L(`모음을 뺀 나머지 글자로 만든 인상 숫자 — 사람들 기억에 남는 모습이에요. 재능 숫자와 같아요(위 설명).`, `The number from the other letters — how people remember you. Same as your talent number (see above).`, `母音以外の文字から出した、人の記憶に残る印象の数字です。才能の数字と同じです(上の説明)。`)
-        : L(`모음을 뺀 나머지 글자로 만든 인상 숫자 — 사람들 기억에 남는 모습이에요. 주변에서는 ‘${NUM_PLAIN[nmP]}’으로 기억해요.`, `The number from the other letters — how people remember you. People remember you as ${NUM_PLAIN_EN[nmP]}.`, `母音以外の文字から出した、人の記憶に残る印象の数字です。まわりの人は、あなたを「${NUM_PLAIN_JA[nmP]}」として覚えています。`),
+        : L(`모음을 뺀 나머지 글자로 만든 인상 숫자 — 사람들 기억에 남는 모습이에요. 주변에서는 ‘${NUM_PLAIN[nmP]}’으로 기억해요.`, `The number from the other letters — how people remember you. People remember you as ${NUM_PLAIN_EN[nmP]}.${e2('NameMirror', nmS, nmP)}`, `母音以外の文字から出した、人の記憶に残る印象の数字です。まわりの人は、あなたを「${NUM_PLAIN_JA[nmP]}」として覚えています。`),
       trail: L(`자음의 합 ${n.name.sums.con} → ${n.name.personality}`, `Consonants added up ${n.name.sums.con} → ${n.name.personality}`, `子音の合計 ${n.name.sums.con} → ${n.name.personality}`)});
   }
 
@@ -14109,11 +14333,11 @@ function renderLife(inp, saju, astro, num, age, curYear) {
      (a peak decade whose season is not rated Good is explained by its single years); no season name or age range here */
   const pkHead = peakPast
     ? (aheadOk
-      ? L(`한눈에 — 앞으로 가장 좋은 때는 ${aheadIsNow ? '지금 ' : ''}${aheadD.d}대`, `At a glance — your best time still ahead is ${aheadIsNow ? 'now, ' : ''}your ${aheadD.d}s`, `ひと目で — これから先でいちばんよいのは${aheadIsNow ? '今の' : ''}${aheadD.d}代`)
-      : L(`한눈에 — 가장 높았던 때는 ${peakD.d}대`, `At a glance — your highest point was your ${peakD.d}s`, `ひと目で — いちばん高かったのは${peakD.d}代`))
+      ? L(`한눈에 — 앞으로 가장 좋은 때는 ${aheadIsNow ? '지금 ' : ''}${aheadD.d}대`, `At a glance — best ahead: ${aheadIsNow ? 'now, ' : ''}your ${aheadD.d}s`, `ひと目で — これから先でいちばんよいのは${aheadIsNow ? '今の' : ''}${aheadD.d}代`)
+      : L(`한눈에 — 가장 높았던 때는 ${peakD.d}대`, `At a glance — your peak was your ${peakD.d}s`, `ひと目で — いちばん高かったのは${peakD.d}代`))
     : peakNow
-    ? L(`한눈에 — 지금 ${peakD.d}대가 인생에서 가장 좋은 때`, `At a glance — your ${peakD.d}s, where you are now, are the best time of your life`, `ひと目で — 今の${peakD.d}代が、人生でいちばんよい時期`)
-    : L(`한눈에 — 그래프에서 가장 높은 때는 ${peakD.d}대`, `At a glance — the highest point on your graph is your ${peakD.d}s`, `ひと目で — グラフでいちばん高いのは${peakD.d}代`);
+    ? L(`한눈에 — 지금 ${peakD.d}대가 인생에서 가장 좋은 때`, `At a glance — your peak is now, your ${peakD.d}s`, `ひと目で — 今の${peakD.d}代が、人生でいちばんよい時期`)
+    : L(`한눈에 — 그래프에서 가장 높은 때는 ${peakD.d}대`, `At a glance — your peak is your ${peakD.d}s`, `ひと目で — グラフでいちばん高いのは${peakD.d}代`);
   const u3pk = U3B.lifePeak(mod(mStem + peakStep, 10), mod(mBranch + peakStep, 12), false), u3pkP = U3B.lifePeak(mod(mStem + peakStep, 10), mod(mBranch + peakStep, 12), true);
   const pkWhy = u3pk ? u3pk : peakRate === 3
     ? L(`그 무렵 10년의 큰 흐름이 ‘${pkTheme}’ 쪽으로 힘을 실어 줘요.`, `The decade around then gives strong support to <b>${pkTheme}</b>.`, `そのころの10年の流れが「${pkTheme}」を強く後押しします。`)
@@ -14254,7 +14478,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       const inSet = c.pos.includes(yTg) || c.pos.includes(bTg);
       const base = rateOf(yStem, yBranch, 'stem');
       let rating = inSet ? Math.min(3, base + 1) : base;
-      return {k: L(catK(c), catE(ci), catJ(ci)), rating, line: yrLine(c, ci, yTg, bTg, inSet, rating, false, L(YEAR_TIP[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_JA[rating][(pSeed + Y * 7 + ci) % 3]), U3B.lifeRow(ci, Y, false, rating))};
+      return {k: L(catK(c), catE(ci), catJ(ci)), rating, line: yrLine(c, ci, yTg, bTg, inSet, rating, false, L(YEAR_TIP[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3], YEAR_TIP_JA[rating][(pSeed + Y * 7 + ci) % 3]), U3B.lifeRow(ci, Y, false, rating, phAt(age + Y - curYear)))};
     });
     return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats, u3: U3B.lifeFlow(Y, false), deep: (d => U3B.lifeDeep(d, Y) || d)(deepLine(yStem, yBranch, 'stem', false, seenNext))};
   };
@@ -14267,7 +14491,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       const inSet = c.pos.includes(yTg) || c.pos.includes(bTg);
       const base = rateOf(yStem, yBranch, 'stem');
       let rating = inSet ? Math.min(3, base + 1) : base;
-      return {k: L(catK(c), catE(ci), catJ(ci)), rating, line: yrLine(c, ci, yTg, bTg, inSet, rating, true, L(PAST_TIP4[rating][(pSeed + Y * 7 + ci) % 4], PAST_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3], PAST_TIP_JA[rating][(pSeed + Y * 7 + ci) % 3]), U3B.lifeRow(ci, Y, true, rating))};
+      return {k: L(catK(c), catE(ci), catJ(ci)), rating, line: yrLine(c, ci, yTg, bTg, inSet, rating, true, L(PAST_TIP4[rating][(pSeed + Y * 7 + ci) % 4], PAST_TIP_EN[rating][(pSeed + Y * 7 + ci) % 3], PAST_TIP_JA[rating][(pSeed + Y * 7 + ci) % 3]), U3B.lifeRow(ci, Y, true, rating, phAt(age + Y - curYear)))};
     });
     const qr = [2, 5, 8, 11].map((mm, qi) => {
       const s = computeSaju(Y, mm, 15, null);
@@ -14275,7 +14499,7 @@ function renderLife(inp, saju, astro, num, age, curYear) {
       return {q: qi + 1, rate: rateOf(s.month.stem, s.month.branch, 'stem')};
     });
     const strongQ = qr.reduce((a, b) => b.rate > a.rate ? b : a);
-    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats, qr, strongQ, yTheme: TG_THEME[yTg], u3: U3B.lifeFlow(Y, true), deep: deepLine(yStem, yBranch, 'stem', true, seenPast)};
+    return {Y, gz: `${STEMS[yStem].k}${BRANCHES[yBranch].k}`, animal: BRANCHES[yBranch].animal, animalEN: ANIMALS_EN[yBranch], animalJA: ANIMALS_JA[yBranch], py, cats, qr, strongQ, yTheme: TG_THEME[yTg], u3: U3B.lifeFlow(Y, true), deep: (d => U3B.lifeDeepP(d, Y) || d)(deepLine(yStem, yBranch, 'stem', true, seenPast))};
   };
   const past = [curYear - 3, curYear - 2, curYear - 1].filter(Y => Y >= inp.y).map(yearReadingPast);   // 표시 전용: 태어나기 전의 해는 돌아보지 않는다
   const pastN = past.length, pastYs = past.map(y => y.Y).join(' · ');
@@ -14296,16 +14520,16 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   /* display-only: only claim the parents' details were used when some were entered */
   const hasPar = !!(inp.father || inp.mother || (inp.fatherDate && inp.fatherDate.filled) || (inp.motherDate && inp.motherDate.filled));
   /* display-only: one bridging note on a year that is rated here AND is a samjae year in the card below */
-  const samNote = Y => !isSamY(Y) ? '' : L(
+  const samNote = (Y, yy) => !isSamY(Y) ? '' : L(
     `<br>※ 조심할 해(삼재)이기도 해요. 겁낼 해가 아니라 속도를 줄여 가는 해예요. 아래에서 좋게 나온 분야도 지금 하는 일 · 지금의 관계 안에서 키우는 쪽이 편해요. 새로 크게 벌이려던 일이 있다면 한 번 더 살펴볼 만한 때예요.${Y === curYear || !isSamY(Y - 1) ? ' 큰 결정은 풀이로 정하는 게 아니라, 곁의 사람 · 전문가와 따져 보고 정하는 일이에요.' : ''}`,
-    `<br>Note: this is also a careful year (samjae). It isn’t a year to fear — it’s a year for easing your pace. Even where the reading below says Good, growing what you already have — your current work, your current relationships — is the easier way. If you were about to start something big and new, it’s worth one more look.${Y === curYear || !isSamY(Y - 1) ? ' Big decisions aren’t made by a reading — they’re worked out with the people beside you and with experts.' : ''}`,
+    `<br>Note: counted from your birth-year ${ANIMALS_EN[saju.year.branch]} (${STEMS[saju.year.stem].h}${BRANCHES[saju.year.branch].h}), this is also a careful year (samjae). It isn’t a year to fear — it’s a year for easing your pace. ${(g => g.length ? `Even where the reading below says Good for your ${g.length < 2 ? g[0] : g.slice(0, -1).join(', ') + ' and ' + g[g.length - 1]}, growing` : 'Growing')(yy ? yy.cats.map((c, ci) => c.rating === 3 ? areaE(ci) : '').filter(Boolean) : [])} what you already have — your current work, your current relationships — is the easier way. If you were about to start something big and new, it’s worth one more look.${Y === curYear || !isSamY(Y - 1) ? ' Big decisions aren’t made by a reading — they’re worked out with the people beside you and with experts.' : ''}`,
     `<br>※ 気をつける年(三災)でもあります。こわがる年ではなく、スピードを落として進む年です。下で「好調」の分野も、今の仕事や今の関係の中で伸ばすほうが楽です。新しく大きく始めようとしていたことがあれば、もう一度見なおしておくとよい時期です。${Y === curYear || !isSamY(Y - 1) ? '大きな決断は、リーディングで決めるものではありません。身近な人や専門家と、よく話し合って決めることです。' : ''}`);
   $('#lifeYears').innerHTML = L(`<h3>다가오는 3년 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`, `<h3>The three years ahead — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`, `<h3>これから来る3年 — ${curYear} · ${curYear + 1} · ${curYear + 2}</h3>`)
     + L(`<p class="small">해마다 ${plainAge ? '관계' : '연애'} · 돈 · 일 · 건강으로 나누어 읽어 드려요. 이름과 생년월일${hasPar ? ', 부모님 정보까지' : '을'} 넣어서 딱 한 사람에게 맞게 풀었어요.</p>`,
-        `<p class="small">Each year is read in four parts: ${plainAge ? 'relationships' : 'love'}, money, work and health. Your name${hasPar ? ', your birth date and even your parents’ details' : ' and your birth date'} are used, so this reading is made for you.</p>`, `<p class="small">一年ごとに、${plainAge ? '人間関係' : '恋愛'}・お金・仕事・健康の四つに分けてお読みします。お名前と生年月日${hasPar ? '、ご両親の情報も' : 'を'}使って、あなたに合わせてお出ししました。</p>`)
+        `<p class="small">Each year is read in four parts: ${plainAge ? 'relationships' : 'love'}, money, work and health — that year’s two letters set against your birth day (${STEMS[saju.day.stem].h}${BRANCHES[saju.day.branch].h}) and birth month (${STEMS[mStem].h}${BRANCHES[mBranch].h}). Your name${hasPar ? ', your birth date and even your parents’ details' : ' and your birth date'} are used, so this reading is made for you.</p>`, `<p class="small">一年ごとに、${plainAge ? '人間関係' : '恋愛'}・お金・仕事・健康の四つに分けてお読みします。お名前と生年月日${hasPar ? '、ご両親の情報も' : 'を'}使って、あなたに合わせてお出ししました。</p>`)
     + yrs.map(y => `<div class="yrblock">`
       + L(`<p class="yrhead">${y.Y}년 · ${y.gz}(${y.animal}의 해) · 그 해의 내 숫자 ${y.py}</p>`, `<p class="yrhead">${y.Y} · ${gzEN(y.gz)} (Year of the ${y.animalEN}) · your year number ${y.py}</p>`, `<p class="yrhead">${y.Y}年 · ${gzJA(y.gz)}(${y.animalJA}〈${ANIMALS_JA_KANA[mod(y.Y - 4, 12)]}〉年) · その年の数字 ${y.py}</p>`)
-      + L(`<p class="yrflow">숫자로 보면 ${NUM_CYCLE[y.py]}.${y.u3}${samNote(y.Y)}</p>`, `<p class="yrflow">By your year number: ${NUM_CYCLE_EN[y.py]}.${y.u3}${samNote(y.Y)}</p>`, `<p class="yrflow">数字で見ると、${NUM_CYCLE_JA[y.py]}。${y.u3}${samNote(y.Y)}</p>`)
+      + L(`<p class="yrflow">숫자로 보면 ${NUM_CYCLE[y.py]}.${y.u3}${samNote(y.Y)}</p>`, `<p class="yrflow">By your year number: ${NUM_CYCLE_EN[y.py]}.${y.u3}${samNote(y.Y, y)}</p>`, `<p class="yrflow">数字で見ると、${NUM_CYCLE_JA[y.py]}。${y.u3}${samNote(y.Y)}</p>`)
       + (y.deep ? `<p class="yrflow">${y.deep}</p>` : '') + `<div class="yrcats">` + y.cats.map(c => `<div class="yrcat"><span class="yck">${c.k}</span><span class="ycr hr${c.rating}">${RATE_ICON[c.rating]} ${L(RATE_WORD[c.rating], RATE_WORD_EN[c.rating], RATE_WORD_JA[c.rating])}</span><span class="ycl">${c.line}</span></div>`).join('') + `</div></div>`).join('');
 
   /* ===== 밀어도 좋은 3년 vs 삼재 3년 — 사주 삼합/삼재 + 세운 + 개인연도 ===== */
@@ -14352,15 +14576,15 @@ function renderLife(inp, saju, astro, num, age, curYear) {
     : L(` 다만 이 3년은 ‘주의’인 10년 안에 있어요. 그래서 새로 크게 벌이기보다 하던 일을 키우는 데 쓰기 좋아요.`, ` But these years fall inside a Caution decade. So they’re good for growing what you already do, rather than starting big new things.`, `ただ、この3年は「注意」の10年の中にあります。だから、新しく大きく始めるより、今していることを伸ばすのに使うと合っています。`);
   $('#lifePush').innerHTML = L(`<h3>밀고 나갈 때와 조심할 때 — 앞으로 15년</h3>`, `<h3>When to go for it, when to be careful — the next 15 years</h3>`, `<h3>進んでよい時、気をつける時 — これからの15年</h3>`)
     + L(`<p class="small">그 해의 흐름, 그 해의 내 숫자, 띠의 궁합을 함께 보고 골랐어요.<br>· 나와 잘 맞는 띠의 해: ${allyNames}띠 해<br>· 조심할 해(삼재): ${samNames}띠 해${ovNote}</p>`,
-        `<p class="small">Picked by looking at each year's flow, your number for that year and the zodiac animals together.<br>· Helper years (their animal goes well with yours): ${allyNamesEN}<br>· Careful years (samjae): ${samNamesEN}${ovNote}</p>`, `<p class="small">その年の流れ、その年の数字、干支の相性をあわせて見てお選びしました。<br>· 相性のよい干支の年:${allyNamesJA}<br>· 気をつける年(三災・さんさい):${samNamesJA}${ovNote}</p>`)
+        `<p class="small">Picked by looking at each year's flow, your number for that year and the zodiac animals together.<br>· Helper years (their animal teams up with your birth-year ${ANIMALS_EN[saju.year.branch]}, ${STEMS[saju.year.stem].h}${BRANCHES[saju.year.branch].h}): ${allyNamesEN}${(x => x ? ` — next: ${x.Y}, rated ${RATE_WORD_EN[x.r]} for you` : '')(scan.find(x => x.ally && !x.sam))}<br>· Careful years (samjae): ${samNamesEN}${ovNote}${sam.length === 1 ? ` — on its own rating, the next one is ${RATE_WORD_EN[sam[0].r]}` : sam.length ? ` — on their own ratings, the next ${sam.length} are ${(g => g.slice(0, -1).join(', ') + ' and ' + g[g.length - 1])(sam.map(x => RATE_WORD_EN[x.r]))}` : ''}</p>`, `<p class="small">その年の流れ、その年の数字、干支の相性をあわせて見てお選びしました。<br>· 相性のよい干支の年:${allyNamesJA}<br>· 気をつける年(三災・さんさい):${samNamesJA}${ovNote}</p>`)
     + L(`<div class="combo"><b>▲ ${gwWeak ? '이 가운데 가장 나은 3년' : '밀고 나가도 좋은 3년'} — ${gw[0].Y}~${gw[2].Y}년 (${gw[0].age}~${gw[2].age}세)</b><br>`
         + (gwWeak ? `앞으로 15년 가운데서는 가장 나은 3년이에요. 중요한 일을 준비하고 있다면 이 무렵을 눈여겨봐도 좋아요. 무리하지 않는 선이면 충분해요.` : `앞으로 15년 가운데 점수가 가장 높은 3년이에요. ${gwPlain ? '중요한 일을' : '이직 · 결혼 · 새 시작처럼 중요한 일을'} 준비하고 있다면, 이 무렵이 힘을 받기 좋은 때예요.`) + `${gwAlly.length ? ` 특히 ${gwAlly.map(x => x.Y + '년').join(' · ')}은 ${U3B.lifeAlly(gwAlly) || '나와 잘 맞는 띠의 해라서'} 더 든든해요.` : ''}${gwBridge}${sam.length ? '' : ' 큰 결정은 풀이로 정하는 게 아니라, 곁의 사람 · 전문가와 따져 보고 정하는 일이에요.'}</div>`,
         `<div class="combo"><b>▲ ${gwWeak ? 'The best three of the next 15 years' : 'Three good years to go for it'} — ${gw[0].Y}–${gw[2].Y} (ages ${gw[0].age}–${gw[2].age})</b><br>`
-        + (gwWeak ? `Among the next 15 years, these three come out best. If you’re preparing something important, it’s fine to keep an eye on this stretch. Staying within what doesn’t strain you is enough.` : `These are the three highest-scoring years in the next 15. If you’re preparing ${gwPlain ? 'something that matters to you' : 'something important, such as a job change, a marriage or a fresh start'}, this is a stretch that lends it strength.`) + `${gwAlly.length ? ` ${gwAlly.map(x => x.Y).join(' · ')} ${U3B.lifeAlly(gwAlly) || 'is even stronger, because its animal goes well with yours.'}` : ''}${gwBridge}${sam.length ? '' : ' Big decisions aren’t made by a reading — they’re worked out with the people beside you and with experts.'}</div>`, `<div class="combo"><b>▲ ${gwWeak ? '比較的よい3年' : '進んでよい3年'} — ${gw[0].Y}〜${gw[2].Y}年(${gw[0].age}〜${gw[2].age}歳)</b><br>`
+        + (gwWeak ? `Among the next 15 years, these three come out best. If you’re preparing something important, it’s fine to keep an eye on this stretch. Staying within what doesn’t strain you is enough.${U3B.lifeGw(gw)}` : `These are the three highest-scoring years in the next 15. If you’re preparing ${gwPlain ? 'something that matters to you' : 'something important, such as a job change, a marriage or a fresh start'}, this is a stretch that lends it strength.${U3B.lifeGw(gw)}`) + `${gwAlly.length ? ` ${gwAlly.map(x => x.Y).join(' · ')} ${U3B.lifeAlly(gwAlly) || 'is even stronger, because its animal goes well with yours.'}` : ''}${gwBridge}${sam.length ? '' : ' Big decisions aren’t made by a reading — they’re worked out with the people beside you and with experts.'}</div>`, `<div class="combo"><b>▲ ${gwWeak ? '比較的よい3年' : '進んでよい3年'} — ${gw[0].Y}〜${gw[2].Y}年(${gw[0].age}〜${gw[2].age}歳)</b><br>`
         + (gwWeak ? `これからの15年の中では、いちばんよい3年です。大切なことを準備しているなら、このころに目を向けておくとよいです。無理のない範囲で十分です。` : `これからの15年で、点数がいちばん高い3年です。${gwPlain ? '大切なこと' : '転職・結婚・新しい始まりなど、大切なこと'}を準備しているなら、このころは力をもらいやすい時期です。`) + `${gwAlly.length ? `とくに${gwAlly.map(x => x.Y).join(' · ')}年は、${U3B.lifeAlly(gwAlly) || '相性のよい干支の年なので'}、いっそう心強い年です。` : ''}${gwBridge}${sam.length ? '' : '大きな決断は、リーディングで決めるものではありません。身近な人や専門家と、よく話し合って決めることです。'}</div>`)
     + (sam.length
       ? L(`<div class="combo"><b>▽ 조심하실 해(삼재) — 앞으로 15년 안에 ${sam.length}번</b><br>${sam.map(x => `${x.Y}년(${x.age}세)`).join(' · ')}<br>${U3B.lifeSam() || '삼재는'} 12년마다 3년씩 이어서 오는, 속도를 줄여 가는 때예요. 겁낼 해가 아니에요. 하던 일을 꾸준히 키우기에는 괜찮은 때예요. ${gwPlain ? '새로 크게 벌이는 일을' : '큰 계약 · 이사 · 새 사업처럼 새로 크게 벌이는 일을'} 이미 생각하고 있다면, 이 해들에는 한 번 더 살펴볼 만해요. 큰 결정은 풀이로 정하는 게 아니라, 곁의 사람 · 전문가와 따져 보고 정하는 일이에요.</div>`,
-          `<div class="combo"><b>▽ Careful years (samjae) — ${sam.length} in the next 15 years</b><br>${sam.map(x => `${x.Y} (age ${x.age})`).join(' · ')}<br>${U3B.lifeSam() || 'Samjae'} comes once every 12 years, three years in a row — a time for easing your pace. It isn’t a time to fear. It’s a fine time for steadily growing what you already do. If you’re already thinking about something big and new${gwPlain ? '' : ', such as a big contract, a move or a new business'}, these years are worth one more look. Big decisions aren’t made by a reading — they’re worked out with the people beside you and with experts.</div>`, `<div class="combo"><b>▽ 気をつける年(三災) — これからの15年に${sam.length}回</b><br>${sam.map(x => `${x.Y}年(${x.age}歳)`).join(' · ')}<br>${U3B.lifeSam() || '三災(さんさい)は'}、12年に一度、3年続けてめぐってくる、スピードを落として進む時期です。こわがる年ではありません。今していることを続けて伸ばすには、よい時期です。${gwPlain ? '' : '大きな契約・引っ越し・新しい事業のように、'}新しく大きく始めることをもう考えているなら、これらの年には一度見なおしてみるとよいです。大きな決断は、リーディングで決めるものではありません。身近な人や専門家と、よく話し合って決めることです。</div>`)
+          `<div class="combo"><b>▽ Careful years (samjae) — ${sam.length} in the next 15 years</b><br>${sam.map(x => `${x.Y} (age ${x.age})`).join(' · ')}<br>${U3B.lifeSam() || 'Samjae'} comes once every 12 years, three years in a row — a time for easing your pace. It isn’t a time to fear.${(ph => ph ? ` The first of them, ${sam[0].Y}, falls in your ${STEMS[ph.st].h}${BRANCHES[ph.br].h} decade, rated ${RATE_WORD_EN[ph.rate]} below.` : '')(phAt(sam[0].age))} It’s a fine time for steadily growing what you already do. If you’re already thinking about something big and new${gwPlain ? '' : ', such as a big contract, a move or a new business'}, these years are worth one more look. Big decisions aren’t made by a reading — they’re worked out with the people beside you and with experts.</div>`, `<div class="combo"><b>▽ 気をつける年(三災) — これからの15年に${sam.length}回</b><br>${sam.map(x => `${x.Y}年(${x.age}歳)`).join(' · ')}<br>${U3B.lifeSam() || '三災(さんさい)は'}、12年に一度、3年続けてめぐってくる、スピードを落として進む時期です。こわがる年ではありません。今していることを続けて伸ばすには、よい時期です。${gwPlain ? '' : '大きな契約・引っ越し・新しい事業のように、'}新しく大きく始めることをもう考えているなら、これらの年には一度見なおしてみるとよいです。大きな決断は、リーディングで決めるものではありません。身近な人や専門家と、よく話し合って決めることです。</div>`)
       : L(`<div class="combo"><b>삼재</b><br>앞으로 15년 안에는 조심해야 하는 3년(삼재)이 들지 않아요. 마음 놓고 일을 해 나가기 좋은 때예요.</div>`,
           `<div class="combo"><b>Samjae</b><br>No careful years (samjae) fall within the next 15 years. It’s a good stretch to move ahead with an easy mind.</div>`, `<div class="combo"><b>三災</b><br>これから15年のあいだに、気をつける3年(三災)はめぐってきません。安心して物事を進めやすい時期です。</div>`));
 
@@ -14377,9 +14601,9 @@ function renderLife(inp, saju, astro, num, age, curYear) {
   const dirs = [...new Set([saju.year, saju.month, saju.day, saju.hour].filter(Boolean)
     .map(p => p.branch).filter(b => targ.has(b)).map(b => LANG === 'ja' ? YEOKMA_DIR_JA[b] : LANG === 'en' ? YEOKMA_DIR_EN[b] : YEOKMA_DIR[b]).filter(Boolean))];
   const cList = (LANG === 'ja' ? ecJA.list : LANG === 'en' ? ecEN.list : ec.list).map(([c, why]) => `<div class="country"><span class="cflag">${c}</span><span class="cwhy">${why}</span></div>`).join('');
-  cCard.innerHTML = L(`<h3>나와 맞는 나라 — 떠나면 좋은 곳</h3>`, `<h3>Countries that suit you — good places to go</h3>`, `<h3>あなたに合う国 — 出かけるとよい場所</h3>`)
+  cCard.innerHTML = L(`<h3>나와 맞는 나라 — 떠나면 좋은 곳</h3>`, `<h3>Countries that suit you — places to go</h3>`, `<h3>あなたに合う国 — 出かけるとよい場所</h3>`)
     + L(`<p class="small">사주표에 <b>역마살(驛馬)</b>이라는 특별한 표시가 있어요. 한곳에 머무를 때보다 움직이고 옮겨 다닐 때 운이 열린다는 뜻이에요. 그래서 한자리에 오래 있으면 ‘어디든 좀 나가고 싶다’ 싶었을 거예요. ${dirs.length ? `특히 <b>${dirs.join(' · ')}</b> 쪽으로 움직일 때 이 힘이 살아나요.` : ''} 아래는 다섯 가지 기운(나무·불·흙·쇠·물) 가운데 이 사주표에서 따로 챙기는 <b>${ELEMENTS[weak].k}(${ELEMENTS[weak].h})</b>의 기운 — ${ec.kw} — 을 채워 주는 나라들이에요.</p>`,
-        `<p class="small">Your birth chart has a special mark called <b>Yeokma (驛馬)</b>. It means your luck opens up when you move around and travel, rather than when you stay in one place. So if you’ve stayed in one spot for long, you’ve probably thought, “I just want to get out somewhere.” ${dirs.length ? `Moving toward the <b>${dirs.join(' · ')}</b> brings this power out most.` : ''} Below are countries that fill in <b>${ELEMENTS_EN[weak].k} (${ELEMENTS[weak].h})</b> — ${ecEN.kw}. Of the five energies (wood, fire, earth, metal, water), it’s the one your chart looks after on purpose.</p>`, `<p class="small">あなたの命式には<b>駅馬(えきば)</b>という特別なしるしがあります。一か所にとどまるより、動いたり場所を移したりするときに運が開ける、という意味です。だから、同じ場所に長くいると、「どこかへ出かけたいな」と感じていたのではないでしょうか。${dirs.length ? `とくに<b>${dirs.join(' · ')}</b>の方向へ動くと、この力が生きてきます。` : ''} 下は、五つの気(木・火・土・金・水)のうち、あなたの命式で、意識して取り入れたい<b>${ELEMENTS_JA[weak].k}</b>の気 — ${ecJA.kw} — を補ってくれる国です。</p>`)
+        `<p class="small">Your birth chart has a special mark called <b>Yeokma (驛馬)</b>${(k => k && saju[k] ? `, in your birth-${k} ${ANIMALS_EN[saju[k].branch]} (${STEMS[saju[k].stem].h}${BRANCHES[saju[k].branch].h})` : '')({연: 'year', 월: 'month', 일: 'day', 시: 'hour'}[String(((sinsal.find(x => x.key === 'yeokma') || {}).where || [''])[0]).charAt(0)])}. It means your luck opens up when you move around and travel, rather than when you stay in one place. So if you’ve stayed in one spot for long, you’ve probably thought, “I just want to get out somewhere.” ${dirs.length ? `Moving toward the <b>${dirs.join(' · ')}</b> brings this power out most.` : ''} Below are countries that fill in <b>${ELEMENTS_EN[weak].k} (${ELEMENTS[weak].h})</b> — ${ecEN.kw}. Of the five energies (wood, fire, earth, metal, water), it’s the one your chart looks after on purpose.</p>`, `<p class="small">あなたの命式には<b>駅馬(えきば)</b>という特別なしるしがあります。一か所にとどまるより、動いたり場所を移したりするときに運が開ける、という意味です。だから、同じ場所に長くいると、「どこかへ出かけたいな」と感じていたのではないでしょうか。${dirs.length ? `とくに<b>${dirs.join(' · ')}</b>の方向へ動くと、この力が生きてきます。` : ''} 下は、五つの気(木・火・土・金・水)のうち、あなたの命式で、意識して取り入れたい<b>${ELEMENTS_JA[weak].k}</b>の気 — ${ecJA.kw} — を補ってくれる国です。</p>`)
     + `<div class="country-list">${cList}</div>`
     + L(`<p class="small" style="margin-top:12px">여행이든 이사든, 이 방향과 이 기운이 있는 곳에 있으면 막혔던 일이 풀리기 쉬워요. 반대로 한곳에만 묶여 있으면 답답함이 쌓여서 쉽게 지쳐요. 그래서 때때로 움직이는 일을 생활 속에 넣어 뒀으면 좋겠어요. 멀리 못 가면 가까운 곳을 하루 다녀와도 충분해요.</p>`,
         `<p class="small" style="margin-top:12px">Whether you travel or move house, things that were stuck tend to loosen when you’re somewhere with this direction and this energy. On the other hand, when you’re tied to one spot, the shut-in feeling builds up and you tire easily. So I’d love for you to build some moving around into your life. If you can’t go far, a day trip somewhere close by is enough.</p>`, `<p class="small" style="margin-top:12px">旅行でも引っ越しでも、この方向とこの気のある場所に身を置くと、止まっていたことが動き出しやすくなります。反対に、一か所にしばられたままだと、息苦しさがたまって、つかれやすくなります。だから、ときどき動くことを、暮らしの中に入れておいてほしいです。遠くへ行けないときは、近くへ一日出かけるだけでも十分です。</p>`);
