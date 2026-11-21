@@ -231,7 +231,6 @@ input,select{max-width:100%}
 #fortuneCards .subcat:first-child{border-left:none}
 #fortuneCards .subcat .scscore{font-size:17px;margin-top:1px}
 #fortuneCards .subcat .scbar{margin-top:5px;height:10px}
-#fortuneCards .ah-btn .btn,#fortuneCards .nx-share .btn{display:inline-block}
 #fortuneCards .gl-n{display:block;font-family:var(--sans);font-size:11.5px;color:var(--dim);white-space:nowrap;margin-top:1px}
 #fortuneCards .tm-r{white-space:nowrap}
 #fortuneCards .tm-badge{font-size:13px;color:var(--dim);margin-top:8px}
@@ -253,13 +252,8 @@ input,select{max-width:100%}
 #fortuneCards .ah-card .gl-d{font-family:var(--serif);font-size:14.5px;color:var(--ink);flex:0 0 4.6em;white-space:nowrap;line-height:1.35}
 #fortuneCards .ah-card .gl-t{font-size:14.5px;color:var(--muted)}
 #fortuneCards .ah-card .gl-t.warn{color:var(--accent)}
-#fortuneCards .ah-btn{text-align:center;margin-top:14px}
-#fortuneCards .ah-note{font-size:14px;color:var(--dim);text-align:center;margin-top:8px;line-height:1.6}
 #fortuneCards .nx-line{font-family:var(--serif);font-size:17px;line-height:1.6;color:var(--ink);margin-top:12px}
 #fortuneCards .nx-th{font-size:14.5px;color:var(--muted);margin-top:2px}
-#fortuneCards .nx-share{text-align:center;margin-top:16px}
-#fortuneCards .nx-share .btn{width:auto;padding:13px 26px;margin:0}
-#fortuneCards .nx-msg{font-size:14px;color:var(--muted);margin-top:8px;min-height:1.2em}
 /* 읽는 글 14px 이상(한국어 · 일본어) · 이름표 11px 이상 */
 #fortuneCards .fperiod,#fortuneCards .th-label,#fortuneCards .sn-label{font-size:12px;letter-spacing:.14em}
 #fortuneCards .fdate,#fortuneCards .sn-date{font-size:12px}
@@ -287,7 +281,7 @@ input,select{max-width:100%}
 #fortuneCards .trip .prow{font-size:14px}
 #fortuneCards .prow .pn i{font-size:12px}
 /* English: 읽는 글 15px 이상 */
-.lang-en #fortuneCards .tg-say,.lang-en #fortuneCards .tg-v,.lang-en #fortuneCards .th-sum,.lang-en #fortuneCards .day-hero .th-body,.lang-en #fortuneCards .fagree,.lang-en #fortuneCards .fsplit,.lang-en #fortuneCards .fadvice,.lang-en #fortuneCards .sublines p,.lang-en #fortuneCards .sub-scale,.lang-en #fortuneCards .fev .frow,.lang-en #fortuneCards .nh-next,.lang-en #fortuneCards .nh-why,.lang-en #fortuneCards .hrow .hline,.lang-en #fortuneCards .sky-news .sn-sub,.lang-en #fortuneCards .sky-news .sn-src,.lang-en #fortuneCards .sn-more,.lang-en #fortuneCards .rw-card .rw-line,.lang-en #fortuneCards .ol-why,.lang-en #fortuneCards .tm-v,.lang-en #fortuneCards .tm-legend,.lang-en #fortuneCards .ah-card .gl-t,.lang-en #fortuneCards .ah-note,.lang-en #fortuneCards .nx-msg,.lang-en #fortuneCards .trip .prow,.lang-en #fortuneCards .lkc-v,.lang-en #fortuneCards .tg-go,.lang-en #fortuneCards .nh-rest,.lang-en #fortuneCards .nx-th,.lang-en #fortuneCards .rw-card .rw-x{font-size:15px}
+.lang-en #fortuneCards .tg-say,.lang-en #fortuneCards .tg-v,.lang-en #fortuneCards .th-sum,.lang-en #fortuneCards .day-hero .th-body,.lang-en #fortuneCards .fagree,.lang-en #fortuneCards .fsplit,.lang-en #fortuneCards .fadvice,.lang-en #fortuneCards .sublines p,.lang-en #fortuneCards .sub-scale,.lang-en #fortuneCards .fev .frow,.lang-en #fortuneCards .nh-next,.lang-en #fortuneCards .nh-why,.lang-en #fortuneCards .hrow .hline,.lang-en #fortuneCards .sky-news .sn-sub,.lang-en #fortuneCards .sky-news .sn-src,.lang-en #fortuneCards .sn-more,.lang-en #fortuneCards .rw-card .rw-line,.lang-en #fortuneCards .ol-why,.lang-en #fortuneCards .tm-v,.lang-en #fortuneCards .tm-legend,.lang-en #fortuneCards .ah-card .gl-t,.lang-en #fortuneCards .trip .prow,.lang-en #fortuneCards .lkc-v,.lang-en #fortuneCards .tg-go,.lang-en #fortuneCards .nh-rest,.lang-en #fortuneCards .nx-th,.lang-en #fortuneCards .rw-card .rw-x{font-size:15px}
 .lang-en #fortuneCards .tm-l,.lang-en #fortuneCards .tg-row{grid-template-columns:7.6em 1fr}
 .lang-en #fortuneCards .wday .wkw{display:none}   /* 영어 주제 낱말은 일곱 칸에 들어가지 않는다 — 이번 주 주제는 바로 아래 접기 제목에 있다 */
 .lang-en #fortuneCards .ah-card .gl-d{flex-basis:5.4em}
@@ -871,60 +865,9 @@ body.lang-ja{word-break:normal;line-break:strict}
   #toTop{position:fixed;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:30;width:40px;height:40px;align-items:center;justify-content:center;
     background:rgba(46,42,35,.8);color:#f2ecdf;border:none;border-radius:50%;font-size:16px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.16)}
 }
-/* ===================== 입력 폼 · 오류 자리 · 탭 · 읽기 쉬운 글자 ===================== */
-/* 입력 폼 — 버튼을 첫 화면에: 태어난 곳 · 부모님은 「더 정확하게 (선택)」 안으로, 안내문은 한 줄 + 자세히 */
-.form-card h2{margin-bottom:16px}
-.field label{font-size:13px}
-.field input[type=text]{min-height:42px}
-.field .hint{font-size:14px;line-height:1.75}
-.frow.name-row,.lang-ja .frow.name-row{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px}
-.lang-en .frow.name-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.field .lblrow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 12px;margin:-8px 0 2px}
-.field .lblrow > label[for]{margin:0}
-.field .lblrow .check{display:flex;margin:0;padding:0;min-height:40px;font-size:13px;letter-spacing:0;color:var(--muted)}
-.check input{width:17px;height:17px;flex:none}
-.err{font-size:13.5px;line-height:1.6;margin-top:6px}
-.field input[aria-invalid="true"]{border-color:var(--accent);background:rgba(166,61,40,.05)}
-.fgroup .glabel{font-size:11px;letter-spacing:.24em}
-/* 한 줄 안내 + 자세히 */
-details.fnote{margin:0;padding:0;border:0}
-.fnote > summary{display:block;min-height:40px;padding:9px 0;font-size:13.5px;line-height:22px;letter-spacing:0;color:var(--dim)}
-.fnote > summary::before{content:none}
-.fnote > summary::after,.privacy > summary::after{content:"자세히";margin-left:8px;font-size:13px;font-weight:700;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
-.fnote[open] > summary::after,.privacy[open] > summary::after{content:"접기"}
-.lang-en .fnote > summary::after,.lang-en .privacy > summary::after{content:"More"}
-.lang-en .fnote[open] > summary::after,.lang-en .privacy[open] > summary::after{content:"Less"}
-.lang-ja .fnote > summary::after,.lang-ja .privacy > summary::after{content:"くわしく"}
-.lang-ja .fnote[open] > summary::after,.lang-ja .privacy[open] > summary::after{content:"閉じる"}
-.fnote > .hint{margin:0 0 8px;font-size:14px;line-height:1.75;color:var(--muted)}
-/* 더 정확하게 (선택) */
-details.fmore{margin:12px 0 0;padding:0;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline)}
-.fmore > summary{flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-height:48px;padding:13px 0;font-size:14px;letter-spacing:0;color:var(--ink)}
-.fmore > summary::before{align-self:center;font-size:12px;color:var(--muted)}
-.fmore .fm-t{font-weight:700}
-.fmore .fm-s{font-size:13px;color:var(--dim);letter-spacing:0}
-.fmore[open] > summary{border-bottom:1px solid var(--hairline)}
-.fm-in{padding:2px 0 12px}
-.fm-in .fsub{font-size:14px;line-height:1.75;color:var(--muted);margin:12px 0 4px}
-.fm-in .fgroup{margin-top:14px}
-.fm-in .err{margin-bottom:10px}
-#enameSlot .field{margin-top:16px;border-top:1px solid var(--hairline);padding-top:14px}
-/* 기억하기 — 버튼 바로 위, 얻는 것 한 줄 */
-.remrow{display:flex;flex-wrap:wrap;align-items:center;gap:0 14px;margin-top:8px}
-.remrow .check{margin:0;padding:4px 0;min-height:44px;font-size:14px;color:var(--text)}
-.remrow .rem-t{display:flex;flex-direction:column;line-height:1.4}
-.remrow .rem-b{font-size:13px;color:var(--dim)}
-#forget{background:none;border:none;padding:0 2px;min-height:40px;font:inherit;font-size:13px;color:var(--dim);text-decoration:underline;cursor:pointer}
-.form-card .btn{margin-top:8px}
-/* 개인정보 — 약속 한 줄 + 자세히(전문 그대로) */
-details.privacy{margin-top:18px;padding-top:0;border-top:1px solid var(--hairline)}
-.privacy > summary{display:block;min-height:44px;padding:12px 0 10px;font-size:13.5px;line-height:1.6;letter-spacing:0;color:var(--muted)}
-.privacy > summary::before{content:none}
-.privacy > summary .ptitle{display:block;margin:0 0 2px;font-size:11px}
-.privacy p{font-size:14px;line-height:1.8;margin-bottom:6px}
+/* ===================== 탭 · 읽기 쉬운 글자 (입력 폼은 v3.37의 넉넉한 디자인 그대로 — 주인 결정 2026-11-21) ===================== */
 /* 녹색 ◎ — 진하게(바탕 위 4.5:1 이상)는 :root의 --wood에서 */
 /* 읽기 쉬운 글자 — 「오늘의 운세」 카드 밖: 이름표 11px 이상, 읽는 글 14px 이상 */
-.page-sub{font-size:11px}
 .page-epi .src,#loading .src,footer .epi .src,#result section.reading:not(#fortune) .epi .src{font-size:11px}
 .summary .ename{font-size:11px}
 #result section.reading .sec-label{font-size:11px}
@@ -946,16 +889,6 @@ footer p{font-size:13.5px}
 @media (max-width:640px){
   /* 언어 버튼 — 입력 화면에서도 머리와 함께 올라가 사라진다(입력 칸 위에 떠 있지 않게) */
   #langSwitch{position:absolute}
-  /* 첫 화면을 조금 덜 차지하는 머리 — 간격만 줄인다(山 상자와 SAN은 위아래 그대로) */
-  .page-sub{margin-top:10px;letter-spacing:.18em;text-indent:.18em}
-  .lang-en .page-sub,.lang-ja .page-sub{letter-spacing:.07em;text-indent:.07em}
-  .page-desc{margin-top:8px;line-height:1.65}
-  .page-divider{margin-top:13px}
-  .form-card{padding:16px 16px 18px;margin-top:10px}
-  .form-card h2{padding-bottom:8px;margin-bottom:12px}
-  .field{margin-bottom:8px}
-  .field label{line-height:1.45}
-  .field input[type=text],.field select{min-height:44px}
   /* 탭 — 오른쪽에 탭이 더 있으면 흐림 + 「›」 */
   .tabs{padding-right:0}
   .tabs::after{flex-basis:16px}
@@ -993,22 +926,6 @@ body.san-inapp #langSwitch{top:calc(var(--sanStripH,0px) + 14px)}
 .san-a2hs .a2-i{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin:0 2px;vertical-align:-6px;border:1px solid var(--hairline);background:#fff;color:#007aff}
 .san-a2hs .a2-i svg{width:15px;height:15px}
 .san-a2hs p.a2-note{font-size:12.5px;line-height:1.65;color:var(--dim);margin:10px 0 0}
-@media (max-width:640px){
-  /* 「풀이 보기」를 휴대폰 첫 화면(390×844) 안으로 — 山 상자와 SAN(머리 모양)은 그대로, 그 아래 간격만 줄인다. 누르는 곳은 모두 40px 이상 그대로 */
-  .page-head{padding-top:48px;padding-bottom:4px}
-  .page-sub{margin-top:8px}
-  .page-desc{margin-top:6px;line-height:1.4}
-  .page-divider{margin-top:8px}
-  .form-card{margin-top:6px;padding-top:12px}
-  .form-card h2{line-height:1.4;margin-bottom:8px}
-  .frow.name-row .field{margin-bottom:4px}
-  .field > label{margin-bottom:3px}
-  details.fmore{margin-top:6px}
-  .fmore > summary{min-height:44px;padding-top:11px;padding-bottom:11px}
-  .remrow{margin-top:4px}
-  .remrow .check{line-height:1.5}
-  .form-card .btn{margin-top:6px;padding-top:14px;padding-bottom:14px}
-}
 </style>
 <!-- GA4: 페이지뷰만 수집, 사주 입력값은 전송되지 않음 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-L7QPQ5GGL7"></script>
@@ -1035,50 +952,59 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
 
   <form class="form-card" id="form" novalidate>
     <h2 data-en="Make Your Birth Chart" data-ja="命式をつくる">사주표 만들기</h2>
+    <p class="fsub" data-en="Your birth chart is a record of the moment you were born, written as letters and star positions. The more you fill in below, the more closely we can compare the three." data-ja="命式は、生まれた瞬間を文字と星の位置で書いた表です。下の欄を多くご入力いただくほど、三つの方法をより正確に照らし合わせてお読みできます。">사주표는 태어난 순간을 글자와 별의 자리로 적은 표입니다. 아래 칸을 많이 채워 주실수록 세 가지 방법을 더 정확하게 맞춰 볼 수 있습니다.</p>
 
-    <div class="frow name-row" id="nameRow">
-      <div class="field ko-only">
+    <div class="fgroup" style="border-top:none;padding-top:0;margin-top:0">
+      <p class="glabel" data-en="Name" data-ja="お名前">이름</p>
+      <div class="frow name-row">
+        <div class="field ko-only">
           <label for="name" data-en="Korean name" data-ja="韓国語のお名前">한글 이름</label>
           <input type="text" id="name" autocomplete="name" placeholder="김하늘" data-en-ph="Haneul Kim" data-ja-ph="山田花子">
         </div>
-      <div class="field" id="genderField">
+        <div class="field">
+          <label for="ename" data-en-html="Name <span style=&quot;color:var(--dim)&quot;>(used for numerology)</span>" data-ja-html="お名前 <span style=&quot;color:var(--dim)&quot;>(お名前を数字に変えて読むときに使います)</span>">영문 이름 <span style="color:var(--dim)">(이름을 숫자로 바꿔 읽을 때 사용)</span></label>
+          <input type="text" id="ename" placeholder="Haneul Kim" data-en-ph="Haneul Kim" data-ja-ph="やまだ はなこ（かな／ローマ字）">
+        </div>
+      </div>
+      <p class="hint ko-only" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="You may leave the English name blank. We will turn your Korean name into English letters for you." data-ja="英語のお名前は空欄のままでかまいません。韓国語のお名前を自動でローマ字に直して使います。">영문 이름을 비워 두시면 한글 이름을 로마자로 바꿔서 사용합니다.</p>
+      <p class="hint en-only" style="font-size:12px;color:var(--dim);margin-top:-6px;display:none" data-en="Your name in English letters is enough. The saju reading itself comes from your birth date, time and place. Your name is used only for numerology (reading your name as numbers)." data-ja="お名前は、ひらがな・カタカナ、またはローマ字でご入力ください(漢字だけの場合、お名前を数字に変える計算は行いません)。四柱推命そのものは、生年月日・時間・場所から読みます。">Your name in English letters is enough. The saju reading itself comes from your birth date, time and place. Your name is used only for numerology (reading your name as numbers).</p>
+      <div class="field" style="max-width:200px;margin-top:14px">
         <label for="gender" data-en="Gender" data-ja="性別">성별</label>
         <select id="gender">
-          <option value="" data-en="Rather not say" data-ja="回答しない">선택 안 함</option>
+          <option value="" data-en="Prefer not to say" data-ja="回答しない">선택 안 함</option>
           <option value="F" data-en="Female" data-ja="女性">여성</option>
           <option value="M" data-en="Male" data-ja="男性">남성</option>
         </select>
       </div>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:6px" data-en="We ask because a few parts of the reading are worked out differently for men and women — for example, which way your decades of luck run." data-ja="性別をおたずねするのは、リーディングの一部(たとえば、10年ごとに変わる大きな流れの順番)を、男性と女性でちがう方法で計算するためです。">성별을 여쭙는 까닭은, 풀이의 몇몇 부분(예: 10년마다 바뀌는 큰 흐름의 순서)을 남성과 여성에 따라 다르게 계산하기 때문입니다.</p>
     </div>
-    <details class="fnote"><summary data-en="Your name is used only for numerology." data-ja="お名前は、かな・ローマ字でどうぞ。">일부 계산이 성별에 따라 달라집니다.</summary><p class="hint en-only" style="display:none" data-en="Your name in English letters is enough. The saju reading itself comes from your birth date, time and place. Your name is used only for numerology (reading your name as numbers)." data-ja="お名前は、ひらがな・カタカナ、またはローマ字でご入力ください(漢字だけの場合、お名前を数字に変える計算は行いません)。四柱推命そのものは、生年月日・時間・場所から読みます。">Your name in English letters is enough. The saju reading itself comes from your birth date, time and place. Your name is used only for numerology (reading your name as numbers).</p><p class="hint" data-en="We ask because a few parts of the reading are worked out differently for men and women — for example, which way your decades of luck run." data-ja="性別をおたずねするのは、リーディングの一部(たとえば、10年ごとに変わる大きな流れの順番)を、男性と女性でちがう方法で計算するためです。">성별을 여쭙는 까닭은, 풀이의 몇몇 부분(예: 10년마다 바뀌는 큰 흐름의 순서)을 남성과 여성에 따라 다르게 계산하기 때문입니다.</p></details>
 
-    <div class="field">
-      <label for="dateNum" data-en="Date of birth — 8 digits" data-ja="生年月日 — 8桁">생년월일 — 숫자 8자리</label>
-      <div class="dselrow2">
-          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19980801" data-en-ph="e.g. 19980801" data-ja-ph="例:19980801" maxlength="10" aria-label="생년월일 숫자 8자리" data-en-aria="Birth date, 8 digits" data-ja-aria="生年月日、8桁">
+    <div class="fgroup">
+      <p class="glabel" data-en="Birth moment" data-ja="生まれた瞬間">태어난 순간</p>
+      <div class="field">
+        <label for="dateNum" data-en="Date of birth — 8 digits" data-ja="生年月日 — 8桁">생년월일 — 숫자 8자리</label>
+        <div class="dselrow2">
+          <input type="text" id="dateNum" inputmode="numeric" autocomplete="bday" placeholder="예: 19980801" data-en-ph="e.g. 19980801" data-ja-ph="例:19980801" maxlength="10" aria-describedby="err" aria-label="생년월일 숫자 8자리" data-en-aria="Birth date, 8 digits" data-ja-aria="生年月日、8桁">
           <select id="cal" aria-label="양력·음력 선택" data-en-aria="Solar / lunar calendar" data-ja-aria="陽暦/陰暦">
             <option value="solar" data-en="Solar" data-ja="陽暦">양력</option>
             <option value="lunar" data-en="Lunar" data-ja="陰暦">음력</option>
             <option value="lunarLeap" data-en="Lunar (leap)" data-ja="陰暦(閏月)">음력 (윤달)</option>
           </select>
         </div>
-      <p class="err" id="err" role="alert" data-en="Please enter your date of birth." data-ja="生年月日をご入力ください。">생년월일을 입력해 주시기 바랍니다.</p>
-      <details class="fnote"><summary data-en="Not sure about the calendar? Keep “Solar”." data-ja="こよみに迷ったら「陽暦」のままで大丈夫です。">달력을 모르시면 ‘양력’ 그대로 두시면 됩니다.</summary><p class="hint" data-en="Please type just the numbers. They turn into 1998.08.01 by themselves. If you are not sure about the calendar, please pick Solar — that is the ordinary calendar. Pick Lunar only if you know your birthday by the old moon calendar, and Lunar (leap) only if that birthday fell in a leap month (an extra month the moon calendar adds every few years)." data-ja="数字だけを続けてご入力ください。1998.08.01 のように自動で整います。こよみがよくわからない場合は「陽暦」(ふつうのカレンダー)をお選びください。「陰暦」は、昔の月のこよみ(旧暦)でお誕生日をご存じの方だけお選びください。「閏月」は、そのお誕生日が閏月(うるうづき:旧暦で数年に一度足される月)だった方だけお選びください。">숫자만 이어서 입력하시면 됩니다. 1998.08.01처럼 자동으로 정리됩니다. 달력을 잘 모르시면 ‘양력’(보통 쓰는 달력)을 고르시면 됩니다. ‘음력’은 음력 생일로 넣으실 때만, ‘윤달’은 그 음력 생일이 윤달(음력에서 몇 해에 한 번 더 넣는 달)이었던 분만 고르시면 됩니다.</p></details>
-    </div>
-    <div class="field">
-      <div class="lblrow"><label for="time" data-en="Time of birth" data-ja="生まれた時間">태어난 시간</label><label class="check"><input type="checkbox" id="notime"> <span data-en="I don't know my birth time" data-ja="生まれた時間がわからない">태어난 시간을 모릅니다</span></label></div>
-      <input type="text" id="time" inputmode="numeric" placeholder="예: 1830 (오후 6시 30분)" data-en-ph="e.g. 1830 (6:30 pm)" data-ja-ph="例:1830(午後6時30分)" maxlength="5" style="max-width:260px">
-      <p class="err" id="errTime" role="alert"></p>
-      <details class="fnote"><summary data-en="Add your birth time for a deeper reading." data-ja="時間がわかれば、より深くお読みできます。">시간까지 넣으시면 더 깊이 읽어 드립니다.</summary><p class="hint" data-en="With the time, we can also read the first impression you give people, and your later life and inner feelings. If you do not know it, the rest of the reading still works." data-ja="時間までわかると、人から見た第一印象と、人生の後半・心の中までお読みできます。わからない場合も、ほかの部分はお読みできます。">시간까지 넣어 주시면 남에게 보이는 첫인상과, 인생 후반 · 속마음까지 읽어 드릴 수 있습니다. 모르셔도 나머지 풀이는 보실 수 있습니다.</p></details>
+        <p class="hint" data-en="Please type just the numbers. They turn into 1998.08.01 by themselves. If you are not sure about the calendar, please pick Solar — that is the ordinary calendar. Pick Lunar only if you know your birthday by the old moon calendar, and Lunar (leap) only if that birthday fell in a leap month (an extra month the moon calendar adds every few years)." data-ja="数字だけを続けてご入力ください。1998.08.01 のように自動で整います。こよみがよくわからない場合は「陽暦」(ふつうのカレンダー)をお選びください。「陰暦」は、昔の月のこよみ(旧暦)でお誕生日をご存じの方だけお選びください。「閏月」は、そのお誕生日が閏月(うるうづき:旧暦で数年に一度足される月)だった方だけお選びください。">숫자만 이어서 입력하시면 됩니다. 1998.08.01처럼 자동으로 정리됩니다. 달력을 잘 모르시면 ‘양력’(보통 쓰는 달력)을 고르시면 됩니다. ‘음력’은 음력 생일로 넣으실 때만, ‘윤달’은 그 음력 생일이 윤달(음력에서 몇 해에 한 번 더 넣는 달)이었던 분만 고르시면 됩니다.</p>
+        <p class="err" id="err" role="alert" data-en="Please enter your date of birth." data-ja="生年月日をご入力ください。">생년월일을 입력해 주시기 바랍니다.</p>
+      </div>
+      <div class="field">
+        <label for="time" data-en="Time of birth — 4 digits" data-ja="生まれた時間 — 4桁">태어난 시간 — 숫자 4자리</label>
+        <input type="text" id="time" inputmode="numeric" placeholder="예: 1830 (오후 6시 30분)" data-en-ph="e.g. 1830 (6:30 pm)" data-ja-ph="例:1830(午後6時30分)" maxlength="5" style="max-width:220px">
+        <label class="check"><input type="checkbox" id="notime"> <span data-en="I don't know my birth time" data-ja="生まれた時間がわからない">태어난 시간을 모릅니다</span></label>
+        <p class="hint" data-en="With the time, we can also read the first impression you give people, and your later life and inner feelings. If you do not know it, the rest of the reading still works." data-ja="時間までわかると、人から見た第一印象と、人生の後半・心の中までお読みできます。わからない場合も、ほかの部分はお読みできます。">시간까지 넣어 주시면 남에게 보이는 첫인상과, 인생 후반 · 속마음까지 읽어 드릴 수 있습니다. 모르셔도 나머지 풀이는 보실 수 있습니다.</p>
+      </div>
     </div>
 
-    <details class="fmore" id="fMore">
-      <summary><span class="fm-t" data-en="More accurate (optional)" data-ja="もっと正確に(任意)">더 정확하게 (선택)</span><span class="fm-s" data-en="Birthplace · Parents" data-ja="生まれた場所・ご両親">태어난 곳 · 부모님 · 영문 이름</span></summary>
-      <div class="fm-in">
-        <p class="fsub" data-en="Your birth chart is a record of the moment you were born, written as letters and star positions. The more you fill in below, the more closely we can compare the three." data-ja="命式は、生まれた瞬間を文字と星の位置で書いた表です。下の欄を多くご入力いただくほど、三つの方法をより正確に照らし合わせてお読みできます。">사주표는 태어난 순간을 글자와 별의 자리로 적은 표입니다. 아래 칸을 많이 채워 주실수록 세 가지 방법을 더 정확하게 맞춰 볼 수 있습니다.</p>
-        <div class="fgroup">
-          <p class="glabel" data-en="Birthplace" data-ja="生まれた場所">태어난 곳</p>
-          <div class="frow">
+    <div class="fgroup">
+      <p class="glabel" data-en="Birthplace" data-ja="生まれた場所">태어난 곳</p>
+      <div class="frow">
         <div class="field">
           <label for="country" data-en="Country" data-ja="国">나라</label>
           <select id="country"></select>
@@ -1088,11 +1014,12 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
           <select id="city"></select>
         </div>
       </div>
-          <details class="fnote"><summary data-en="Not on the list? Pick the nearest big city." data-ja="一覧になければ、近くの大きな都市で大丈夫です。">목록에 없으면 가까운 큰 도시를 고르시면 됩니다.</summary><p class="hint" data-en="Not on the list? Please pick the nearest big city. The sky looks different depending on where you were born, so we use the place in the calculation." data-ja="一覧にない場合は、いちばん近い大きな都市をお選びください。生まれた場所によってその瞬間の空がちがうため、計算に使います。">목록에 없으면 가장 가까운 큰 도시를 골라 주시기 바랍니다. 태어난 곳에 따라 그 순간 하늘의 모습이 달라지므로 계산에 사용합니다.</p></details>
-        </div>
-        <div class="fgroup">
-          <p class="glabel" data-en="Roots — Parents (optional)" data-ja="ルーツ — ご両親(任意)">뿌리 — 부모님 (선택)</p>
-          <div class="frow parentrow">
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="Not on the list? Please pick the nearest big city. The sky looks different depending on where you were born, so we use the place in the calculation." data-ja="一覧にない場合は、いちばん近い大きな都市をお選びください。生まれた場所によってその瞬間の空がちがうため、計算に使います。">목록에 없으면 가장 가까운 큰 도시를 골라 주시기 바랍니다. 태어난 곳에 따라 그 순간 하늘의 모습이 달라지므로 계산에 사용합니다.</p>
+    </div>
+
+    <div class="fgroup">
+      <p class="glabel" data-en="Roots — Parents (optional)" data-ja="ルーツ — ご両親(任意)">뿌리 — 부모님 (선택)</p>
+      <div class="frow parentrow">
         <div class="field">
           <label for="father" data-en="Father's name" data-ja="お父さまのお名前">아버지 성함</label>
           <input type="text" id="father" placeholder="김영호" data-en-ph="Youngho Kim" data-ja-ph="山田太郎">
@@ -1106,8 +1033,7 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
           <select id="fatherCal"><option value="solar" data-en="Solar" data-ja="陽暦">양력</option><option value="lunar" data-en="Lunar" data-ja="陰暦">음력</option><option value="lunarLeap" data-en="Lunar (leap)" data-ja="陰暦(閏月)">음력 윤달</option></select>
         </div>
       </div>
-          <p class="err" id="errFather" role="alert"></p>
-          <div class="frow parentrow">
+      <div class="frow parentrow">
         <div class="field">
           <label for="mother" data-en="Mother's name" data-ja="お母さまのお名前">어머니 성함</label>
           <input type="text" id="mother" placeholder="장수현" data-en-ph="Suhyun Jang" data-ja-ph="佐藤美咲">
@@ -1121,29 +1047,20 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
           <select id="motherCal"><option value="solar" data-en="Solar" data-ja="陽暦">양력</option><option value="lunar" data-en="Lunar" data-ja="陰暦">음력</option><option value="lunarLeap" data-en="Lunar (leap)" data-ja="陰暦(閏月)">음력 윤달</option></select>
         </div>
       </div>
-          <p class="err" id="errMother" role="alert"></p>
-          <details class="fnote"><summary data-en="A name alone is enough." data-ja="お名前だけでもお読みできます。">성함만 넣으셔도 읽어 드릴 수 있습니다.</summary><p class="hint" data-en="A name alone is enough. If you add birth dates too, we can tell you more about what you may have received from your parents and how your energies meet." data-ja="お名前だけでもお読みできます。生年月日もご入力いただくと、ご両親から受けついだ性格や、お一人ずつとの関係まで、よりくわしくお読みします。">성함만 넣으셔도 읽어 드릴 수 있습니다. 생년월일까지 넣어 주시면 부모님께 물려받은 성격과 두 분과의 관계까지 더 자세히 읽어 드립니다.</p></details>
-        </div>
-        <div id="enameSlot">
-          <div class="field" id="enameField">
-            <label for="ename" data-en-html="Name" data-ja-html="お名前">영문 이름 <span style="color:var(--dim)">(이름을 숫자로 바꿔 읽을 때 사용)</span></label>
-            <input type="text" id="ename" placeholder="Haneul Kim" data-en-ph="Haneul Kim" data-ja-ph="やまだ はなこ">
-            <p class="hint ko-only" data-en="You may leave the English name blank. We will turn your Korean name into English letters for you." data-ja="英語のお名前は空欄のままでかまいません。韓国語のお名前を自動でローマ字に直して使います。">영문 이름을 비워 두시면 한글 이름을 로마자로 바꿔서 사용합니다.</p>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <div class="remrow">
-      <label class="check"><input type="checkbox" id="remember"> <span class="rem-t"><span data-en="Remember my inputs on this device" data-ja="入力内容をこの端末に記憶する">이 기기에 입력 정보 기억하기</span><span class="rem-b" data-en="No typing tomorrow · kept on this device only" data-ja="明日は入力なしですぐ・この端末にだけ保存">내일은 입력 없이 바로 · 이 기기에만 저장</span></span></label>
-      <button type="button" id="forget" style="display:none" data-en="Clear saved info" data-ja="保存した情報を消去する">저장된 정보 지우기</button>
+      <p class="hint" style="font-size:12px;color:var(--dim);margin-top:-6px" data-en="A name alone is enough. If you add birth dates too, we can tell you more about what you may have received from your parents and how your energies meet." data-ja="お名前だけでもお読みできます。生年月日もご入力いただくと、ご両親から受けついだ性格や、お一人ずつとの関係まで、よりくわしくお読みします。">성함만 넣으셔도 읽어 드릴 수 있습니다. 생년월일까지 넣어 주시면 부모님께 물려받은 성격과 두 분과의 관계까지 더 자세히 읽어 드립니다.</p>
     </div>
+
     <button type="submit" class="btn" data-en="See My Reading" data-ja="結果を見る">풀이 보기</button>
 
-    <details class="privacy">
-      <summary><p class="ptitle" data-en="Privacy" data-ja="プライバシー">개인정보 안내</p><span class="psum" data-en="What you type never leaves this device." data-ja="ご入力の内容は、この端末の外に出ません。">적으신 정보는 이 기기 밖으로 나가지 않습니다.</span></summary>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px">
+      <label class="check" style="margin:0"><input type="checkbox" id="remember"> <span data-en="Remember my inputs on this device" data-ja="入力内容をこの端末に記憶する">이 기기에 입력 정보 기억하기</span> <span style="color:var(--dim)" data-en="(kept on this device only · never sent out)" data-ja="(この端末にだけ保存・外には送りません)">(이 기기에만 저장 · 밖으로 보내지 않음)</span></label>
+      <button type="button" id="forget" style="display:none;background:none;border:none;padding:0;font:inherit;font-size:12px;color:var(--dim);text-decoration:underline;cursor:pointer" data-en="Clear saved info" data-ja="保存した情報を消去する">저장된 정보 지우기</button>
+    </div>
+
+    <div class="privacy">
+      <p class="ptitle" data-en="Privacy" data-ja="プライバシー">개인정보 안내</p>
       <p data-en-html="<b>What you type (name, birthday, birthplace, family info) is used only on this phone or computer. It never leaves it.</b> No sign-up is needed. We do not collect it or give it to anyone, and it disappears when you close the page. It stays on this device only if you turn on «Remember my inputs on this device». If you choose «Get “Today, with them” daily» after a compatibility reading, that person’s name and birth date are also kept on this device only. «Clear saved info» deletes all of it any time. To count visits, we keep only the date of your last visit and the number of days you visited this month on this device (never your name or birthday), and «Clear saved info» deletes these too. SAN added to your home screen works the same way. We do use one tool that counts visitors (Google Analytics). It sees only things like your device type and how often you visit, never your name or birthday. Readings are for fun and reference only." data-ja-html="<b>ご入力の内容(お名前・誕生日・生まれた場所・ご家族の情報)は、このスマートフォンやパソコンの中だけで使い、外には出ません。</b>会員登録もいりません。集めたり、だれかに渡したりもせず、ページを閉じるとすぐに消えます。「入力内容をこの端末に記憶する」をオンにされたときだけ、この端末に残ります。相性の結果で「毎日「今日、あの人と」を受け取る」を選ばれたときは、あの人のお名前と生年月日も、この端末にだけ残ります。「保存した情報を消去する」で、いつでもすべて消せます。訪問の回数を数えるため、最後に来られた日付と今月来られた日数だけを、この端末に残します(お名前・誕生日は入りません)。これも「保存した情報を消去する」でいっしょに消えます。ホーム画面に追加したSANも同じです。ただ、何人が見に来たかを数える道具(Google Analytics)だけは使っています。わかるのは端末の種類や訪問の回数などだけで、お名前や誕生日は入りません。結果は、楽しみと参考のためのものです。"><b>적으신 이름 · 생일 · 태어난 곳 · 가족 정보는 이 휴대폰(컴퓨터) 안에서만 쓰이고, 밖으로 나가지 않습니다.</b> 회원 가입도 필요 없습니다. 저희가 모으거나 남에게 넘기지 않으며, 페이지를 닫으시면 바로 사라집니다. 「이 기기에 입력 정보 기억하기」를 켜신 경우에만 이 기기에 남습니다. 궁합 결과에서 「매일 「오늘, 그 사람과」 받기」를 누르신 경우에는 그 사람의 이름과 생년월일도 이 기기에만 남습니다. 「저장된 정보 지우기」를 누르시면 언제든 모두 지워집니다. 방문 횟수를 세기 위해 마지막으로 들르신 날짜와 이번 달에 들르신 날 수만 이 기기에 남깁니다(이름 · 생일은 들어가지 않습니다). 이 기록도 「저장된 정보 지우기」로 함께 지워집니다. 홈 화면에 추가한 SAN도 마찬가지입니다. 다만 몇 분이 다녀가셨는지 세는 도구(Google Analytics)는 씁니다. 여기에는 기기 종류나 방문 횟수 같은 정보만 들어가고, 이름이나 생일은 들어가지 않습니다. 풀이는 재미와 참고를 위한 것입니다.</p>
-    </details>
+    </div>
   </form>
 
   <p class="epi page-epi" data-en-html="People travel far to look at high mountains, big waves, long rivers and the stars.<br>Yet they seldom stop to look at themselves.<span class=&quot;src&quot;>— from a confession written 1,600 years ago</span>" data-ja-html="人は、高い山や大きな波、長い川、星を見るために遠くまで出かけます。<br>それなのに、自分自身のことはあまり見ようとしません。<span class=&quot;src&quot;>— 1,600年前に書かれた、ある告白より</span>">사람들은 높은 산과 큰 바다, 별을 보러 멀리 떠납니다.<br>그러면서 정작 자기 자신은 잘 들여다보지 않습니다.<span class="src">— 1,600년 전에 쓰인 어느 고백에서</span></p>
@@ -1367,13 +1284,11 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
               <input type="text" id="gNum" inputmode="numeric" placeholder="예: 19950316 · 연도만 1995" data-en-ph="e.g. 19950316 · year only 1995" data-ja-ph="例:19950316 ・ 年だけなら1995" maxlength="10" aria-label="상대 생년월일 — 연도만 알면 4자리, 다 알면 8자리" data-en-aria="Partner's birth date — 4 digits if only the year, 8 if you know it all" data-ja-aria="お相手の生年月日 — 年だけなら4桁、すべて分かれば8桁">
               <select id="gCal" aria-label="양력·음력" data-en-aria="Solar / lunar calendar" data-ja-aria="陽暦/陰暦"><option value="solar" data-en="Solar" data-ja="陽暦">양력</option><option value="lunar" data-en="Lunar (regular)" data-ja="陰暦(平月)">음력 (평달)</option><option value="lunarLeap" data-en="Lunar (leap)" data-ja="陰暦(閏月)">음력 (윤달)</option></select>
             </div>
-            <p class="err" id="gNumErr" role="alert"></p>
           </div>
           <div class="frow">
             <div class="field">
               <label for="gTime" data-en="Time of birth (optional) — 4 digits" data-ja="生まれた時間(任意) — 4桁">태어난 시간 (선택) — 숫자 4자리</label>
               <input type="text" id="gTime" inputmode="numeric" placeholder="예: 1830" data-en-ph="e.g. 1830" data-ja-ph="例:1830" maxlength="5">
-              <p class="err" id="gTimeErr" role="alert"></p>
               <label class="check"><input type="checkbox" id="gNotime"> <span data-en="I don't know the birth time" data-ja="生まれた時間がわからない">태어난 시간을 모릅니다</span></label>
             </div>
             <div class="field">
@@ -1414,7 +1329,7 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.38.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.38.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -4009,132 +3924,20 @@ fillCities();
 
 /* 연 → 월 → 일 셀렉트 채우기 */
 /* 날짜 8자리 · 시간 4자리 — 숫자만 치면 자동으로 구분점이 붙음 */
-/* 칠 때 있을 수 없는 숫자(13월 · 32일 · 25시 · 75분)가 되는 한 자리는 받지 않는다 — 붙여 넣은 값은 그대로 두고 칸 검사가 알려 준다 */
-const fvBadDate = d => (d.length > 4 && d[4] > '1') || (d.length > 5 && ((d[4] === '0' && d[5] === '0') || (d[4] === '1' && d[5] > '2'))) || (d.length > 6 && d[6] > '3') || (d.length > 7 && ((d[6] === '0' && d[7] === '0') || (d[6] === '3' && d[7] > '1')));
-const fvBadTime = d => (d.length > 0 && d[0] > '2') || (d.length > 1 && d[0] === '2' && d[1] > '3') || (d.length > 2 && d[2] > '5');
-function fvMask(el, max, bad, fmt) {
-  let prev = '';
-  el.addEventListener('focus', () => { prev = el.value.replace(/\D/g, '').slice(0, max); });
+function bindDate8(el) {
   el.addEventListener('input', () => {
-    let d = el.value.replace(/\D/g, '').slice(0, max);
-    el.dataset.cut = '';
-    if (bad(d) && d.length === prev.length + 1 && d.startsWith(prev) && !bad(prev)) { d = prev; el.dataset.cut = '1'; }
-    prev = d; el.value = fmt(d);
+    const d = el.value.replace(/\D/g, '').slice(0, 8);
+    el.value = d.length > 6 ? `${d.slice(0, 4)}.${d.slice(4, 6)}.${d.slice(6)}` : d.length > 4 ? `${d.slice(0, 4)}.${d.slice(4)}` : d;
   });
 }
-function bindDate8(el) { fvMask(el, 8, fvBadDate, d => d.length > 6 ? `${d.slice(0, 4)}.${d.slice(4, 6)}.${d.slice(6)}` : d.length > 4 ? `${d.slice(0, 4)}.${d.slice(4)}` : d); }
-function bindTime4(el) { fvMask(el, 4, fvBadTime, d => d.length > 2 ? `${d.slice(0, 2)}:${d.slice(2)}` : d); }
+function bindTime4(el) {
+  el.addEventListener('input', () => {
+    const d = el.value.replace(/\D/g, '').slice(0, 4);
+    el.value = d.length > 2 ? `${d.slice(0, 2)}:${d.slice(2)}` : d;
+  });
+}
 ['dateNum', 'fatherNum', 'motherNum', 'gNum'].forEach(id => bindDate8($('#' + id)));
 ['time', 'gTime'].forEach(id => bindTime4($('#' + id)));
-/* ===================== 입력 칸 검사 — 칸을 떠날 때 · 치는 동안 · 제출할 때. 오류는 그 칸 바로 아래에, 커서는 맨 위의 틀린 칸으로 =====================
-   계산과 제출 처리(parseFormInput · 궁합 처리기)는 그대로 — 여기서는 같은 규칙으로 칸마다 다시 보고 자리만 정한다 */
-const FV_MAIN = ['dateNum', 'time', 'fatherNum', 'motherNum'], FV_G = ['gNum', 'gTime'];
-const FV_BOX = {dateNum: 'err', time: 'errTime', fatherNum: 'errFather', motherNum: 'errMother', gNum: 'gNumErr', gTime: 'gTimeErr'};
-const fvDigits = id => (($('#' + id) || {}).value || '').replace(/\D/g, '');
-const fvFuture = t => { const n = new Date(); return t.y * 10000 + t.m * 100 + t.d > n.getFullYear() * 10000 + (n.getMonth() + 1) * 100 + n.getDate(); };
-const fvSolar = (d, calv) => { const t = {y: +d.slice(0, 4), m: +d.slice(4, 6), d: +d.slice(6, 8)};
-  if (calv === 'solar') { const dt = new Date(t.y, t.m - 1, t.d); return dt.getMonth() === t.m - 1 && dt.getDate() === t.d ? t : null; }
-  try { return lunarToSolar(t.y, t.m, t.d, calv === 'lunarLeap'); } catch (e) { return null; } };
-/* 말은 제출 처리기와 같은 문장 — md · hm 두 개만 새 말(치는 중에 받지 않은 숫자를 알려 줄 때) */
-const FV_MSG = {
-  d8: () => TT('생년월일을 숫자 8자리로 입력해 주시기 바랍니다 — 예: 19980801.', 'Please enter your date of birth as 8 digits — for example, 19980801.', '生年月日を数字8けたでご入力ください — 例: 19980801。'),
-  dCal: c => c === 'solar' ? TT('달력에 없는 날짜입니다. 다시 확인해 주시기 바랍니다.', 'That date is not on the calendar. Please check it again.', 'カレンダーにない日付です。もう一度ご確認ください。') : c === 'lunarLeap' ? TT('그 해에는 그 윤달이 없습니다. 윤달은 음력에서 몇 년에 한 번 더 들어가는 달입니다. 달력 선택을 확인해 주시기 바랍니다.', 'That year does not have this leap month. A leap month is an extra month that the lunar calendar adds every few years. Please check the calendar you chose.', 'その年には、その閏月(うるうづき)がありません。閏月は、旧暦で数年に一度だけ加わる月です。暦の選択をご確認ください。') : TT('음력 달력에 없는 날짜입니다. 다시 확인해 주시기 바랍니다.', 'That date is not in the lunar calendar. Please check it again.', '旧暦のカレンダーにない日付です。もう一度ご確認ください。'),
-  dFut: () => TT('생년월일이 오늘보다 뒤의 날짜입니다. 다시 확인해 주시기 바랍니다.', 'That date of birth is later than today. Please check it again.', '生年月日が今日より後の日付になっています。もう一度ご確認ください。'),
-  t4: () => TT('태어난 시간은 숫자 4자리로 입력해 주시기 바랍니다 — 예: 0930, 1830. 모르시면 「태어난 시간을 모릅니다」에 체크해 주시기 바랍니다.', 'Please enter your birth time as 4 digits — for example, 0930 or 1830. If you do not know it, please check «I don\'t know my birth time».', '生まれた時間を数字4けたでご入力ください — 例: 0930、1830。ご存じでない場合は「生まれた時間がわからない」にチェックを入れてください。'),
-  p8: w => w === 'father' ? TT('아버지 생년월일을 숫자 8자리로 입력해 주시기 바랍니다 — 예: 19650208.', "Please enter your father's date of birth as 8 digits — for example, 19650208.", 'お父さまの生年月日を数字8けたでご入力ください — 例: 19650208。') : TT('어머니 생년월일을 숫자 8자리로 입력해 주시기 바랍니다 — 예: 19670521.', "Please enter your mother's date of birth as 8 digits — for example, 19670521.", 'お母さまの生年月日を数字8けたでご入力ください — 例: 19670521。'),
-  pCal: w => w === 'father' ? TT('아버지 생년월일이 달력에 없는 날짜입니다. 다시 확인해 주시기 바랍니다.', "Your father's date of birth is not a real calendar date. Please check it again.", 'お父さまの生年月日が、カレンダーにない日付です。もう一度ご確認ください。') : TT('어머니 생년월일이 달력에 없는 날짜입니다. 다시 확인해 주시기 바랍니다.', "Your mother's date of birth is not a real calendar date. Please check it again.", 'お母さまの生年月日が、カレンダーにない日付です。もう一度ご確認ください。'),
-  pFut: w => w === 'father' ? TT('아버지 생년월일이 오늘보다 뒤의 날짜입니다. 다시 확인해 주시기 바랍니다.', "Your father's date of birth is later than today. Please check it again.", 'お父さまの生年月日が今日より後の日付になっています。もう一度ご確認ください。') : TT('어머니 생년월일이 오늘보다 뒤의 날짜입니다. 다시 확인해 주시기 바랍니다.', "Your mother's date of birth is later than today. Please check it again.", 'お母さまの生年月日が今日より後の日付になっています。もう一度ご確認ください。'),
-  g48: () => TT('상대의 생년월일을 숫자로 입력해 주시기 바랍니다. 태어난 해만 아시면 4자리(예: 1995), 모두 아시면 8자리(예: 19950316)입니다.', 'Please enter your partner’s birth date in digits. If you only know the year, enter 4 digits (e.g., 1995). If you know the full date, enter 8 digits (e.g., 19950316).', 'お相手の生年月日を数字でご入力ください。年だけおわかりの場合は4桁（例：1995）、すべておわかりの場合は8桁（例：19950316）です。'),
-  gYear: () => TT('태어난 해는 1900년부터 올해 사이로 입력해 주시기 바랍니다.', 'Please enter a year between 1900 and this year.', '年は1900年から今年までの間でご入力ください。'),
-  gCal: () => TT('달력에 없는 날짜입니다. 양력·음력 선택을 확인해 주시기 바랍니다.', 'That date does not exist. Please check whether the solar or lunar calendar is selected.', '存在しない日付です。新暦・旧暦の選択をご確認ください。'),
-  gFut: () => TT('상대의 생년월일이 오늘보다 뒤의 날짜입니다. 다시 확인해 주시기 바랍니다.', 'Your partner’s date of birth is later than today. Please check it again.', 'お相手の生年月日が今日より後の日付になっています。もう一度ご確認ください。'),
-  gT4: () => TT('상대가 태어난 시간은 숫자 4자리로 입력해 주시기 바랍니다(예: 1830). 모르시면 비워 두시거나, 시간을 모른다는 칸에 체크해 주시기 바랍니다.', 'Please enter your partner’s birth time as 4 digits (e.g., 1830). If you do not know it, leave it blank or tick the box that says the time is unknown.', 'お相手の生まれた時刻は数字4桁でご入力ください（例：1830）。おわかりにならない場合は、空欄のままにするか、時刻がわからないという欄にチェックしてください。'),
-  md: () => TT('달은 01부터 12까지, 날은 01부터 31까지입니다 — 예: 19980801.', 'Months go from 01 to 12 and days from 01 to 31 — for example, 19980801.', '月は01から12まで、日は01から31までです — 例: 19980801。'),
-  hm: () => TT('시간은 00:00부터 23:59 사이로 입력해 주시기 바랍니다 — 예: 0930, 1830.', 'Please enter a time between 00:00 and 23:59 — for example, 0930 or 1830.', '時間は00:00から23:59までの間でご入力ください — 例: 0930、1830。')
-};
-/* mode: 'type' 치는 중(확실히 틀린 것만) · 'blur' 칸을 떠날 때(덜 친 것도) · 'submit' 제출(비어 있는 생년월일도) */
-const fvDate = (d, mode, calv, m8, mCal, mFut) => {
-  if (!d.length) return '';
-  if (d.length === 8) { const s = fvSolar(d, calv); return !s ? mCal() : fvFuture(s) ? mFut() : ''; }
-  if (fvBadDate(d)) return FV_MSG.md();
-  return mode === 'type' ? '' : m8();
-};
-const fvTime = (id, cb, mode, m4) => { if ($('#' + cb).checked) return ''; const d = fvDigits(id); if (!d.length) return ''; if (fvBadTime(d)) return FV_MSG.hm(); return d.length < 4 && mode !== 'type' ? m4() : ''; };
-const FV_RULES = {
-  dateNum: mode => fvDigits('dateNum').length ? fvDate(fvDigits('dateNum'), mode, $('#cal').value, FV_MSG.d8, () => FV_MSG.dCal($('#cal').value), FV_MSG.dFut) : (mode === 'submit' ? FV_MSG.d8() : ''),
-  time: mode => fvTime('time', 'notime', mode, FV_MSG.t4),
-  fatherNum: mode => fvDate(fvDigits('fatherNum'), mode, $('#fatherCal').value, () => FV_MSG.p8('father'), () => FV_MSG.pCal('father'), () => FV_MSG.pFut('father')),
-  motherNum: mode => fvDate(fvDigits('motherNum'), mode, $('#motherCal').value, () => FV_MSG.p8('mother'), () => FV_MSG.pCal('mother'), () => FV_MSG.pFut('mother')),
-  gNum: mode => { const d = fvDigits('gNum'); if (!d.length) return mode === 'submit' ? FV_MSG.g48() : '';
-    if (d.length === 4) { const y = +d; return mode !== 'type' && (y < 1900 || y > new Date().getFullYear()) ? FV_MSG.gYear() : ''; }
-    return fvDate(d, mode, $('#gCal').value, FV_MSG.g48, FV_MSG.gCal, FV_MSG.gFut); },
-  gTime: mode => fvTime('gTime', 'gNotime', mode, FV_MSG.gT4)
-};
-function fvSet(id, msg, mode) {
-  const el = $('#' + id), box = $('#' + FV_BOX[id]); if (!el || !box) return;
-  if (msg) { if (box.textContent !== msg) box.textContent = msg; box.style.display = 'block'; box.dataset.mode = mode || 'blur'; el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', box.id); return; }
-  box.style.display = 'none'; box.dataset.mode = ''; el.removeAttribute('aria-invalid'); if (el.getAttribute('aria-describedby') === box.id) el.removeAttribute('aria-describedby');
-}
-const fvShown = id => { const b = $('#' + FV_BOX[id]); return !!(b && b.style.display === 'block'); };
-const fvMode = id => ($('#' + FV_BOX[id]) || {dataset: {}}).dataset.mode || '';
-/* 치는 동안: 받지 않은 숫자 · 이미 확실한 오류는 바로, 떠 있던 오류는 고쳐지는 대로 지운다(덜 친 것을 미리 탓하지 않는다) */
-function fvLive(id) {
-  if ($('#' + id).dataset.cut) { fvSet(id, (id === 'time' || id === 'gTime') ? FV_MSG.hm() : FV_MSG.md(), 'type'); return; }
-  const now = FV_RULES[id]('type'); if (now) { fvSet(id, now, 'type'); return; }
-  if (fvShown(id)) { const m = fvMode(id) === 'type' ? 'type' : fvMode(id); fvSet(id, FV_RULES[id](m), m); }
-}
-function fvBlur(id) { const m = fvMode(id) === 'submit' ? 'submit' : 'blur'; fvSet(id, FV_RULES[id](m), m); }
-function fvFocus(id) {
-  const el = $('#' + id); if (!el) return; const d = el.closest('details'); if (d && !d.open) d.open = true;
-  try { el.focus({preventScroll: true}); } catch (e) { el.focus(); }
-  try { (el.closest('.field') || el).scrollIntoView({block: 'center', behavior: scrollMode()}); } catch (e) {}
-}
-/* 제출 때: 칸마다 다시 보고 오류를 모두 그 칸 아래에, 맨 위의 틀린 칸으로 커서. msg/field = 제출 처리기가 찾은 오류(그 말은 꼭 보인다) */
-function fvSubmit(ids, msg, field, focus) {
-  let bad = ids.filter(id => { const m = FV_RULES[id]('submit'); fvSet(id, m, 'submit'); return !!m; });
-  if (field && msg) { fvSet(field, msg, 'submit'); if (!bad.includes(field)) bad.push(field); }
-  if (!bad.length && msg) { fvSet(ids[0], msg, 'submit'); bad = [ids[0]]; }
-  bad.forEach(id => { const d = $('#' + id).closest('details'); if (d && !d.open) d.open = true; });
-  const first = ids.find(id => bad.includes(id)) || bad[0];
-  if (focus && first) fvFocus(first);
-}
-function formErr(p) { fvSubmit(FV_MAIN, p && p.error, null, true); }
-Object.keys(FV_BOX).forEach(id => { const el = $('#' + id); if (!el) return; el.addEventListener('input', () => fvLive(id)); el.addEventListener('blur', () => fvBlur(id)); });
-[['cal', 'dateNum'], ['fatherCal', 'fatherNum'], ['motherCal', 'motherNum'], ['gCal', 'gNum']].forEach(([s, id]) => $('#' + s).addEventListener('change', () => { if (fvDigits(id).length === 8 || fvShown(id)) fvBlur(id); }));
-[['notime', 'time'], ['gNotime', 'gTime']].forEach(([c, id]) => $('#' + c).addEventListener('change', () => fvSet(id, FV_RULES[id](fvMode(id) || 'type'), fvMode(id) || 'type')));
-$('#form').addEventListener('submit', () => FV_MAIN.forEach(id => fvSet(id, '', '')));
-$('#gungForm').addEventListener('submit', () => FV_G.forEach(id => fvSet(id, '', '')));
-
-/* 영문 이름 칸 — 한국어 화면에서는 「더 정확하게」 안(비워 두면 한글 이름을 로마자로 바꿔 쓰므로), 영어 · 일본어 화면에서는 맨 위 이름 자리.
-   같은 칸을 옮길 뿐 — 값 · id · 읽는 방법은 그대로 */
-function fvPlaceEname() {
-  const f = $('#enameField'), row = $('#nameRow'), slot = $('#enameSlot'); if (!f || !row || !slot) return;
-  if (LANG === 'ko') { if (f.parentElement !== slot) slot.appendChild(f); } else if (f.parentElement !== row) row.insertBefore(f, $('#genderField'));
-}
-/* 「더 정확하게 (선택)」 안에 값이 있으면(저장된 부모님 · 기본과 다른 태어난 곳 · 영문 이름) 펼쳐서 보여 준다 — 접혀 있어도 값은 그대로 쓰인다 */
-const FV_DEF = {country: countrySel.value, city: citySel.value};
-function fvFoldSync() {
-  const f = $('#fMore'); if (!f || f.open) return; const v = id => (($('#' + id) || {}).value || '').trim();
-  if (['father', 'fatherNum', 'mother', 'motherNum'].some(v) || v('fatherCal') !== 'solar' || v('motherCal') !== 'solar'
-    || countrySel.value !== FV_DEF.country || citySel.value !== FV_DEF.city || (LANG === 'ko' && v('ename'))) f.open = true;
-}
-/* 탭 줄 — 오른쪽에 탭이 더 있으면 끝에 흐림 + 「›」(누르면 옆으로 민다), 끝까지 밀면 감춘다 */
-const fvNav = document.querySelector('nav.tabs'), fvMore = fvNav && fvNav.querySelector('.tabs-more');
-const fvTabHint = () => { if (fvMore) fvNav.classList.toggle('at-end', fvNav.scrollLeft + fvNav.clientWidth >= fvNav.scrollWidth - 4); };
-if (fvMore) {
-  fvNav.addEventListener('scroll', fvTabHint, {passive: true}); addEventListener('resize', fvTabHint);
-  fvMore.addEventListener('click', () => { try { fvNav.scrollBy({left: Math.max(140, fvNav.clientWidth * .6), behavior: scrollMode()}); } catch (e) { fvNav.scrollLeft += 160; } });
-}
-/* 화면 언어가 바뀌면(applyLang이 <html lang>을 고친다): 영문 이름 자리 · 떠 있는 오류의 말 · 탭 끝 표시를 새 언어에 맞춘다 */
-new MutationObserver(() => {
-  fvPlaceEname(); fvFoldSync(); fvTabHint();
-  Object.keys(FV_BOX).forEach(id => { if (fvShown(id)) fvSet(id, FV_RULES[id](fvMode(id) || 'blur'), fvMode(id) || 'blur'); });
-}).observe(document.documentElement, {attributes: true, attributeFilter: ['lang']});
-/* 결과가 열리면 탭 끝 표시를, 입력 화면이 다시 보이면 접기를 맞춘다 */
-new MutationObserver(() => { const b = document.body.classList; if (b.contains('viewing')) fvTabHint(); else if (!b.contains('loading')) fvFoldSync(); })
-  .observe(document.body, {attributes: true, attributeFilter: ['class']});
-fvPlaceEname();
-document.addEventListener('DOMContentLoaded', fvFoldSync); addEventListener('pageshow', fvFoldSync);
 /* 8자리 입력 → {y,m,d} */
 const readNum8 = id => {
   const d = ($('#' + id).value || '').replace(/\D/g, '');
@@ -4269,7 +4072,9 @@ $('#form').addEventListener('submit', e => {
   const err = $('#err');
   const parsed = parseFormInput();
   if (parsed.error) {
-    formErr(parsed);
+    err.textContent = parsed.error;
+    err.style.display = 'block';
+    $('#dateNum').focus();
     return;
   }
   err.style.display = 'none';
@@ -8257,7 +8062,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
   const toTheme = t => L(` → 그래서 주제는 ‘${tn(t)}’ 쪽이에요.`, ` → So the theme leans toward “${tn(t)}”.`, ` → だから、テーマは「${tn(t)}」と読みます。`);
   const periodCard0 = (p, extra = '', hero = null) => {
     const th = THEMES[p.theme];
-    const u3s = U3B.pSaju(p, f), u3a = U3B.pAstro(p), u3n = U3B.pNum(p), tdM = {}, td = j => (j in tdM ? tdM[j] : (tdM[j] = U3B.todo(p, j)));
+    const u3s = U3B.pSaju(p, f), u3a = U3B.pAstro(p), u3n = U3B.pNum(p), tdM = {}, td = j => (j in tdM ? tdM[j] : (tdM[j] = U3B.todo(p, j))), P = p.key === 'day' ? dPos : [0, 1, 2];   // P[풀이] = 보여 줄 분야(오늘 카드만 — 어제와 같은 할 일이 되는 날에 바뀐다)
     const gzD = LANG === 'ja' ? gzJA(p.saju.gz, p.key) : LANG === 'en' ? gzEN(p.saju.gz, p.key) : p.saju.gz;
     let agreeLine, splitHtml = '';
     /* 표시 전용: 반대 방향의 할 일은 함께 권하지 않는다 (inTension + 행동이 정반대인 쌍) */
@@ -8266,14 +8071,14 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
     else if (p.agree === 2) {
       agreeLine = U3B.agree(p, '') || L('세 가지 가운데 두 가지가 이 주제를 가리켜요. 꽤 믿고 들어도 돼요.', 'Two of the three readings point to this theme. You can take it fairly seriously.', '三つのうち二つが、このテーマを指しています。かなり信じてもらって大丈夫です。');
       const diss = [['사주', p.saju.theme], ['별', p.astro.theme], ['수', p.num.theme]].find(([, t]) => t !== p.theme);
-      const di = diss ? ['사주', '별', '수'].indexOf(diss[0]) : 0; /* 표시 전용: 어느 영역의 풀이인지 */
+      const si = diss ? ['사주', '별', '수'].indexOf(diss[0]) : 0, di = P[si]; /* 표시 전용: 어느 풀이인지(si) · 어느 분야에 보일지(di) */
       if (diss) splitHtml = L(
         clash(p.theme, diss[1])
         ? `<p class="fsplit"><b>다만</b> — ${SYS_KO[diss[0]]} 풀이는 반대쪽(${tShort(diss[1])})을 가리켜요. 그래서 ${DOM_NAME[di]} 쪽의 ‘${tDo(diss[1], di)}’는 짧게만 해도 돼요. 나머지는 위의 큰 주제를 따라갔으면 좋겠어요.</p>`
         : `<p class="fsplit"><b>곁들여</b> — ${DOM_NAME[di]}: ${tDo(diss[1], di)} (${SYS_KO[diss[0]]} 풀이)</p>`,
         clash(p.theme, diss[1])
-        ? `<p class="fsplit"><b>But</b> — ${SYS_EN[diss[0]]} points the other way (${tShort(diss[1])})${td(di) ? `: ${td(di)}` : ''}. ${DOM_NAME[di]}, a short version of “${tDo(diss[1], di)}” is enough. For the rest, I’d love for you to follow the main theme above.</p>`
-        : `<p class="fsplit"><b>Also</b> — ${DOM_NAME[di]}: ${tDo(diss[1], di)} (from ${SYS_EN[diss[0]]})${td(di) ? `. ${capF(td(di))}.` : ''}</p>`,
+        ? `<p class="fsplit"><b>But</b> — ${SYS_EN[diss[0]]} points the other way (${tShort(diss[1])})${td(si) ? `: ${td(si)}` : ''}. ${DOM_NAME[di]}, a short version of “${tDo(diss[1], di)}” is enough. For the rest, I’d love for you to follow the main theme above.</p>`
+        : `<p class="fsplit"><b>Also</b> — ${DOM_NAME[di]}: ${tDo(diss[1], di)} (from ${SYS_EN[diss[0]]})${td(si) ? `. ${capF(td(si))}.` : ''}</p>`,
         clash(p.theme, diss[1])
         ? `<p class="fsplit"><b>ただし</b> — ${SYS_JA[diss[0]]}の読みは反対の向き（${tShort(diss[1])}）を指しています。だから、${DOM_NAME[di]}で「${tDo(diss[1], di)}」ことは、手短にすませるだけで大丈夫です。あとは、上の大きなテーマにそって進んでほしいです。</p>`
         : `<p class="fsplit"><b>あわせて</b> — ${DOM_NAME[di]}：${tDo(diss[1], di)}（${SYS_JA[diss[0]]}の読み）</p>`);
@@ -8283,10 +8088,12 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
       const ai = Math.max(0, vt.indexOf(p.theme)), sk = ['사주', '별', '수'][ai];
       const others = [0, 1, 2].filter(j => j !== ai && !clash(p.theme, vt[j]));
       agreeLine = U3B.agree(p, L(SYS_KO[sk], SYS_EN[sk], SYS_JA[sk])) || L(`세 가지가 조금씩 다른 말을 해요. 그래서 ${SYS_KO[sk]} 풀이를 큰 줄기로 삼았어요. 나머지는 ‘이런 면도 있구나’ 정도로만 들으면 돼요.`, `The three readings differ a little, so I’ve gone with ${SYS_EN[sk]} as the main thread. Take the rest as “there’s this side too.”`, `三つの読みが、少しずつちがうことを言っています。なので、${SYS_JA[sk]}の読みを大きな流れとして見ました。ほかは「こういう面もあるんだな」くらいに聞いてもらえば十分です。`);
+      [ai, ...others].forEach(j => td(j));   // 영어 이유 줄은 늘 같은 순서로 고른다(분야가 바뀌는 날에도 같은 말)
+      const A = P[ai], oth = others.slice().sort((a, b) => P[a] - P[b]);
       splitHtml = L(
-        `<p class="fsplit"><b>가장 먼저</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}${others.length ? `<br><b>여유가 있으면</b>${others.map(j => `<br>· ${DOM_NAME[j]}: ${tDo(vt[j], j)}`).join('')}<br>여유가 없으면 맨 위 하나만 해도 충분해요.` : ''}</p>`,
-        `<p class="fsplit"><b>Main thing</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}${td(ai) ? ' — ' + td(ai) : ''}${others.length ? `<br><b>If you have time</b>${others.map(j => `<br>· ${DOM_NAME[j]}: ${tDo(vt[j], j)}${td(j) ? ' — ' + td(j) : ''}`).join('')}<br>${({day: 'Busy today? The first one is enough.', week: 'On a busy week, the first one will do.', month: 'In a crowded month, the first will do.', quarter: 'Short on time? Keep just the first.', year: 'In a full year, the first is enough.'})[p.key] || 'Busy today? The first one is enough.'}` : ''}</p>`,
-        `<p class="fsplit"><b>まず一つ</b> · ${DOM_NAME[ai]}：${tDo(p.theme, ai)}${others.length ? `<br><b>余裕があれば</b>${others.map(j => `<br>・${DOM_NAME[j]}：${tDo(vt[j], j)}`).join('')}<br>余裕がなければ、いちばん上のひとつだけで十分です。` : ''}</p>`);
+        `<p class="fsplit"><b>가장 먼저</b> · ${DOM_NAME[A]}: ${tDo(p.theme, A)}${oth.length ? `<br><b>여유가 있으면</b>${oth.map(j => `<br>· ${DOM_NAME[P[j]]}: ${tDo(vt[j], P[j])}`).join('')}<br>여유가 없으면 맨 위 하나만 해도 충분해요.` : ''}</p>`,
+        `<p class="fsplit"><b>Main thing</b> · ${DOM_NAME[A]}: ${tDo(p.theme, A)}${td(ai) ? ' — ' + td(ai) : ''}${oth.length ? `<br><b>If you have time</b>${oth.map(j => `<br>· ${DOM_NAME[P[j]]}: ${tDo(vt[j], P[j])}${td(j) ? ' — ' + td(j) : ''}`).join('')}<br>${({day: 'Busy today? The first one is enough.', week: 'On a busy week, the first one will do.', month: 'In a crowded month, the first will do.', quarter: 'Short on time? Keep just the first.', year: 'In a full year, the first is enough.'})[p.key] || 'Busy today? The first one is enough.'}` : ''}</p>`,
+        `<p class="fsplit"><b>まず一つ</b> · ${DOM_NAME[A]}：${tDo(p.theme, A)}${oth.length ? `<br><b>余裕があれば</b>${oth.map(j => `<br>・${DOM_NAME[P[j]]}：${tDo(vt[j], P[j])}`).join('')}<br>余裕がなければ、いちばん上のひとつだけで十分です。` : ''}</p>`);
     }
     /* 표시 전용: 앞 기간과 주제가 같으면 같은 조언을 되풀이하지 않는다 */
     const pIdx = f.periods.findIndex(q => q.key === p.key);
@@ -8341,7 +8148,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
           const mn = card.querySelector(':scope > .th-mine'); if (ag) box.appendChild(ag); if (mn) box.appendChild(mn); if (ev) box.appendChild(ev); det.appendChild(box);
         }
         if (p.agree >= 2) {
-          const vt = [p.saju.theme, p.astro.theme, p.num.theme], ai = Math.max(0, vt.indexOf(p.theme)), fs = document.createElement('p');
+          const vt = [p.saju.theme, p.astro.theme, p.num.theme], ai = (p.key === 'day' ? dPos : [0, 1, 2])[Math.max(0, vt.indexOf(p.theme))], fs = document.createElement('p');
           fs.className = 'fsplit';
           fs.innerHTML = L(`<b>가장 먼저</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}`, `<b>Main thing</b> · ${DOM_NAME[ai]}: ${tDo(p.theme, ai)}`, `<b>まず一つ</b> · ${DOM_NAME[ai]}：${tDo(p.theme, ai)}`);
           const at = card.querySelector(':scope > .fsplit') || card.querySelector(':scope > .subgrid'); if (at) at.before(fs); else card.appendChild(fs);
@@ -8438,6 +8245,35 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
   const dRate = TG_RATE[p0.saju.tg];
   /* 오늘 한눈에의 어제 · 내일 견주기용 — 화면은 그리지 않고 판정 · 분야 점수 · 좋은 시간만 돌려준다 */
   if (dry) return {rate: dRate, tg: p0.saju.tg, theme: p0.theme, subs: subs.map(s => s.score), lucky: luckyHour ? {i: luckyHour.i, range: luckyHour.range} : null};
+  /* 표시 전용 — 「가장 먼저」 할 일(맨 위 「먼저 할 일」은 그 짧은 이름)이 어제와 똑같아지는 날(같은 주제 · 같은 분야)에는
+     같은 주제의 나머지 두 분야 가운데 하나로 바꾼다. 둘 중 무엇인지는 그날 일진(60갑자 자리 dayIdx60)으로 정해서 하루 안에서는 늘 같다
+     (같은 주제가 이어지는 날은 거의 음의 천간 날이라 음양만 보면 늘 같은 쪽이 된다 — 그래서 두 자리씩 묶어 번갈아 고른다).
+     같은 주제가 이어진 첫날까지 거슬러 가서 날마다 같은 규칙으로 따라오므로, 어제 실제로 보인 「가장 먼저」와는 늘 다르다.
+     dPos[풀이] = 그 풀이(0 사주 · 1 별자리 · 2 숫자)의 주제를 보여 줄 분야(0 일·생활 · 1 사람·기회 · 2 나 자신) — 바꾸는 날에는 두 자리만 맞바꾼다.
+     주제 · 판정 · 점수 계산은 그대로이고, 어제 계산은 이 기기 안에서만 한다 */
+  const dPos = (() => {
+    const id = [0, 1, 2];
+    try {
+      const I = window.__lastInput; if (!I) return id;
+      const dayAt = dd => {
+        const n2 = new Date(now); n2.setDate(now.getDate() + dd);
+        const w2 = new Date(n2); w2.setDate(n2.getDate() - ((n2.getDay() + 6) % 7) + 2);
+        const f2 = computeFortune({dayStem: natalSaju.day.stem, sunLong: astro.sun.long, moonLong: astro.moon.long, birthM: I.m, birthD: I.d},
+          {today: {y: n2.getFullYear(), m: n2.getMonth() + 1, d: n2.getDate()}, wed: {y: w2.getFullYear(), m: w2.getMonth() + 1, d: w2.getDate()}}, 9);
+        return {p: f2.periods[0], ix: f2.today.dayIdx60};
+      };
+      const run = [{p: p0, ix: t.dayIdx60}];
+      for (let k = 1; k <= 14; k++) { const q = dayAt(-k); if (q.p.theme !== p0.theme) break; run.unshift(q); }
+      let prev = -1, ai = 0, r = 0;
+      run.forEach(q => {
+        const vt = [q.p.saju.theme, q.p.astro.theme, q.p.num.theme];
+        ai = Math.max(0, vt.indexOf(q.p.theme)); r = ai;
+        if (ai === prev) r = id.filter(x => x !== prev)[Math.floor(q.ix / 2) % 2];
+        prev = r;
+      });
+      const pos = id.slice(); pos[ai] = r; pos[r] = ai; return pos;
+    } catch (e) { return id; }
+  })();
   const subNm = i => L(SUBCATS[i].key, SUBCATS_EN[i].key, SUBCATS_JA[i].key);
   const gN = subs.map((s, i) => s.tier === 3 ? subNm(i) : '').filter(Boolean), cN = subs.map((s, i) => s.tier === 1 ? subNm(i) : '').filter(Boolean);
   const enList = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
@@ -8902,9 +8738,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
         .sort((a, b2) => a[0].dt - b2[0].dt).map(([x, tp]) => row(x, tp)).join('');
       /* 표시 전용 — 「앞으로의 흐름」 카드 안에 들어간다(누구에게나 같은 설명 문단은 뺐다) */
       return `<p class="ah-h">${L('앞으로 눈여겨볼 날', 'Days to watch for', 'これから心に留めたい日')}</p>
-        ${rows}
-        <div class="ah-btn"><button type="button" class="btn" id="gililBtn" style="width:auto;padding:13px 30px">${L('내 달력에 저장', 'Save to my calendar', 'カレンダーに保存')}</button></div>
-        <p class="ah-note">${L('파일은 이 기기 안에서만 만들어요.', 'The file is made on this device only.', 'ファイルはこの端末の中だけで作ります。')}</p>`;
+        ${rows}`;   /* 달력 받기 버튼과 그 안내 한 줄은 이 탭에서 뺐다 — 달력 파일을 만드는 코드는 그대로(누를 곳만 없다) */
 
     } catch (e) { return ''; }
   })();
@@ -9161,7 +8995,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
     9: [['끝나 가는 일 정리하기', 'Wrap one thing up', '終わりかけを片づける'], ['멀어지는 관계 놓아주기', 'Let it go gently', '離れる縁を追わない'], ['물건 하나, 걱정 하나 비우기', 'Clear one thing', '物と心配を一つ手放す']]
   };
   const vt0 = [p0.saju.theme, p0.astro.theme, p0.num.theme], ai0 = Math.max(0, vt0.indexOf(p0.theme));
-  const doShort = ((SHORT_DO[p0.theme] || SHORT_DO[9])[ai0] || SHORT_DO[9][0])[li];
+  const doShort = ((SHORT_DO[p0.theme] || SHORT_DO[9])[dPos[ai0]] || SHORT_DO[9][0])[li];   // 아래 「가장 먼저」와 같은 분야(어제와 같아지는 날에는 dPos가 돌린다)
   /* 그 사람 줄 · 어제 · 오늘 · 내일 · 어제와 달라진 점(판정 → 분야 점수 → 좋은 시간 순으로 가장 큰 것 하나) */
   const tgPartnerHTML = () => { const c = rwCore(); return c ? `<span class="tg-k">${L('그 사람과', 'With them', 'あの人と')}</span><span class="tg-v">${L(`${c.anon ? '그 사람' : c.pn + ' 님'}과는 ${c.W[1]}`, `${c.anon ? 'Them' : c.pn} — ${c.W[1]}`, `${c.anon ? 'あの人' : c.pn + 'さん'}とは${c.W[1]}`)}</span>` : ''; };
   window.__tgPartnerPaint = () => { const r = document.getElementById('tgPartner'); if (!r) return; const h = tgPartnerHTML(); r.innerHTML = h; r.hidden = !h; };
@@ -9262,18 +9096,13 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
       ${laterFold}
     </div>`;
 
-  /* ── 내일 미리보기와 다시 오는 방법 — 내일의 주제 한 줄(내일의 △ 는 앞세우지 않는다) · 오늘의 한 줄 공유 · 홈 화면 추가 자리 ── */
+  /* ── 내일 미리보기와 다시 오는 방법 — 내일의 주제 한 줄(내일의 △ 는 앞세우지 않는다) · 홈 화면 추가 자리 ── */
   const tmr = new Date(now); tmr.setDate(now.getDate() + 1);
   const T1 = nb && nb.t;
   const nextLine = T1 ? `<p class="nx-line">${L(`내일은 ‘${nickOf(T1.tg)}’의 날`, `Tomorrow: ${nickOf(T1.tg)}`, `明日は「${nickOf(T1.tg)}」の日`)}</p><p class="nx-th">${L(`주제 「${tn(T1.theme)}」`, `Theme: “${tn(T1.theme)}”`, `テーマ「${tn(T1.theme)}」`)}</p>` : '';
-  /* 공유 글 — 이름 · 생년월일 · 태어난 시간 · 별자리 · 그 사람은 넣지 않는다(오늘의 판정 · 기운의 뜻 · 먼저 할 일만) */
-  window.__tgShare = {text: L(`오늘 내 운세는 ${RATE_ICON[dRate]} ${TGD[dRate]} — ${tgo[0]} 날이래요. 먼저 할 일: ${doShort}.`,
-    `My SAN reading for today (${RATE_ICON[dRate]}): a day ${tgo[1]}. First thing: ${doShort.toLowerCase()}.`,
-    `今日の運勢は${RATE_ICON[dRate]}${TGD[dRate]}。${tgo[2]}日だそうです。まずは「${doShort}」。`)};
   const nextCard = `<div class="fcard nx-card">
       <div class="fhead"><span class="fperiod">${L('내일 미리보기', 'Tomorrow, in one line', '明日のひとこと')}</span><span class="fdate">${dateLong(tmr)}</span></div>
       ${nextLine}
-      <div class="nx-share"><button type="button" class="btn" id="tgShare">${L('오늘의 한 줄 공유', 'Share today’s line', '今日のひとことをシェア')}</button><p class="nx-msg" id="tgShareMsg" role="status" aria-live="polite"></p></div>
       <div id="a2hsSlot"></div>
     </div>`;
 
@@ -9295,21 +9124,10 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
   $('#fortuneCards').innerHTML = out;
 }
 
-/* 「오늘의 한 줄 공유」 · 「궁합 탭으로 가기」 — 공유 주소에는 꼬리표(utm_source=share)와 #today만 넣는다. 이름 · 생년월일 · 그 사람 정보는 넣지 않는다 */
+/* 「궁합 탭으로 가기」 — 저장한 사람이 없을 때의 「오늘, 그 사람과」 한 줄을 누르면 궁합 탭으로 */
 document.addEventListener('click', e => {
   const go = e.target.closest ? e.target.closest('#fortuneCards [data-go]') : null;
-  if (go) { try { showTab(go.dataset.go); } catch (e2) {} return; }
-  const b = e.target.closest ? e.target.closest('#tgShare') : null; if (!b) return;
-  const url = 'https://jzzinsil.github.io/san/?utm_source=share#today', text = (window.__tgShare || {}).text || '';
-  const say = s => { const m = document.getElementById('tgShareMsg'); if (m) m.textContent = s; };
-  const copy = () => {
-    sanTrack('share', {method: 'copy', content: 'today'});
-    const ok = () => say(L('링크를 복사했어요.', 'Link copied.', 'リンクをコピーしました。'));
-    const old = () => { try { const ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select(); const r = document.execCommand('copy'); ta.remove(); if (r) ok(); else say(url); } catch (e3) { say(url); } };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, old); else old();
-  };
-  if (navigator.share) navigator.share({title: 'SAN', text, url}).then(() => sanTrack('share', {method: 'webshare', content: 'today'}), err => { if (!err || err.name !== 'AbortError') copy(); });
-  else copy();
+  if (go) { try { showTab(go.dataset.go); } catch (e2) {} }
 });
 
 /* ===== 나의 길일 — 내 일주 × 앞으로 60일의 일진 (전부 기기 안 계산) ===== */
@@ -14348,7 +14166,7 @@ $('#gungForm').addEventListener('submit', e => {
   const R = window.READING;
   if (!R) return;
   const gErr = $('#gErr');
-  const show = (t, f) => fvSubmit(FV_G, t, f || 'gNum', !window.__sanSilent); // 오류는 그 칸 아래(#gNumErr · #gTimeErr)
+  const show = t => { gErr.textContent = t; gErr.style.display = 'block'; };
   const gd = ($('#gNum').value || '').replace(/\D/g, '');
   const gzH = p => STEMS[p.stem].h + BRANCHES[p.branch].h; // 일주 하냐 표기 (EN 헤더용)
   /* 표시 전용 — 호칭(님/さん)·문장 첫 글자·관계 별명. 계산·점수와 무관 */
@@ -14423,7 +14241,7 @@ $('#gungForm').addEventListener('submit', e => {
   let gTime = null;
   if (!$('#gNotime').checked) {
     gTime = readTime4('gTime');
-    if (gTime === false) { show(L('상대가 태어난 시간은 숫자 4자리로 입력해 주시기 바랍니다(예: 1830). 모르시면 비워 두시거나, 시간을 모른다는 칸에 체크해 주시기 바랍니다.', 'Please enter your partner’s birth time as 4 digits (e.g., 1830). If you do not know it, leave it blank or tick the box that says the time is unknown.', 'お相手の生まれた時刻は数字4桁でご入力ください（例：1830）。おわかりにならない場合は、空欄のままにするか、時刻がわからないという欄にチェックしてください。'), 'gTime'); return; }
+    if (gTime === false) { show(L('상대가 태어난 시간은 숫자 4자리로 입력해 주시기 바랍니다(예: 1830). 모르시면 비워 두시거나, 시간을 모른다는 칸에 체크해 주시기 바랍니다.', 'Please enter your partner’s birth time as 4 digits (e.g., 1830). If you do not know it, leave it blank or tick the box that says the time is unknown.', 'お相手の生まれた時刻は数字4桁でご入力ください（例：1830）。おわかりにならない場合は、空欄のままにするか、時刻がわからないという欄にチェックしてください。')); return; }
   }
   gErr.style.display = 'none';
   const gc = GEO[gCountrySel.value];
