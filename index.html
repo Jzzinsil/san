@@ -244,6 +244,11 @@ input,select{max-width:100%}
 #fortuneCards .tg-go{display:inline-flex;align-items:center;min-height:44px;margin-top:4px;padding:0 2px;background:none;border:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 #fortuneCards .rw-card .rw-main{margin-top:8px}
 #fortuneCards .ah-h{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--dim);margin-top:16px}
+#fortuneCards .ah-next{display:grid;grid-template-columns:7.2em 1fr;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--hairline);margin:0}
+#fortuneCards .ah-nk{font-size:12.5px;font-weight:700;color:var(--dim)}
+#fortuneCards .ah-nv{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.5}
+.lang-en #fortuneCards .ah-nv{font-size:15px}
+.lang-en #fortuneCards .ah-next{grid-template-columns:7.6em 1fr}
 #fortuneCards .ah-card .gl-row{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--hairline)}
 #fortuneCards .ah-card .gl-d{font-family:var(--serif);font-size:14.5px;color:var(--ink);flex:0 0 4.6em;white-space:nowrap;line-height:1.35}
 #fortuneCards .ah-card .gl-t{font-size:14.5px;color:var(--muted)}
@@ -963,12 +968,6 @@ footer p{font-size:13.5px}
 <style>
 /* ---------- 다시 오는 길: 재방문 카드 · 「기억하기」 질문 · 칩 접기 · 홈 화면 추가 · 앱 안 브라우저 띠 ---------- */
 html.san-boot body > .wrap{visibility:hidden}
-#sanRevisit{max-width:600px;margin:14px auto 0;background:var(--paper);border:1px solid var(--line);padding:16px 18px 6px;text-align:center}
-#sanRevisit[hidden],body.loading #sanRevisit,body.viewing #sanRevisit{display:none}
-#sanRevisit .rv-hi{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--dim)}
-#sanRevisit .btn{margin-top:10px;line-height:1.5}
-#sanRevisit .rv-foot{margin-top:6px;font-size:12px;line-height:1.5;color:var(--dim);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 10px}
-#sanRevisit .rv-not{background:none;border:none;font:inherit;font-size:12.5px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;min-height:40px;padding:0 8px;cursor:pointer}
 #sanRemQ{max-width:600px;margin:16px auto 0;border:1px solid var(--line);background:var(--paper);padding:12px 14px;text-align:center}
 #sanRemQ p{font-size:14px;line-height:1.65;color:var(--ink)}
 #sanRemQ .rq-sub{font-size:12.5px;color:var(--dim)}
@@ -994,6 +993,22 @@ body.san-inapp #langSwitch{top:calc(var(--sanStripH,0px) + 14px)}
 .san-a2hs .a2-i{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin:0 2px;vertical-align:-6px;border:1px solid var(--hairline);background:#fff;color:#007aff}
 .san-a2hs .a2-i svg{width:15px;height:15px}
 .san-a2hs p.a2-note{font-size:12.5px;line-height:1.65;color:var(--dim);margin:10px 0 0}
+@media (max-width:640px){
+  /* 「풀이 보기」를 휴대폰 첫 화면(390×844) 안으로 — 山 상자와 SAN(머리 모양)은 그대로, 그 아래 간격만 줄인다. 누르는 곳은 모두 40px 이상 그대로 */
+  .page-head{padding-top:48px;padding-bottom:4px}
+  .page-sub{margin-top:8px}
+  .page-desc{margin-top:6px;line-height:1.4}
+  .page-divider{margin-top:8px}
+  .form-card{margin-top:6px;padding-top:12px}
+  .form-card h2{line-height:1.4;margin-bottom:8px}
+  .frow.name-row .field{margin-bottom:4px}
+  .field > label{margin-bottom:3px}
+  details.fmore{margin-top:6px}
+  .fmore > summary{min-height:44px;padding-top:11px;padding-bottom:11px}
+  .remrow{margin-top:4px}
+  .remrow .check{line-height:1.5}
+  .form-card .btn{margin-top:6px;padding-top:14px;padding-bottom:14px}
+}
 </style>
 <!-- GA4: 페이지뷰만 수집, 사주 입력값은 전송되지 않음 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-L7QPQ5GGL7"></script>
@@ -1017,7 +1032,6 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
     <hr class="page-divider">
   </header>
 
-  <div id="sanRevisit" hidden></div>
 
   <form class="form-card" id="form" novalidate>
     <h2 data-en="Make Your Birth Chart" data-ja="命式をつくる">사주표 만들기</h2>
@@ -1400,7 +1414,7 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.38.0</span><br>
+        <span style="letter-spacing:.2em">SAN v3.38.1</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -8324,7 +8338,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
           det.className = 'tf'; det.setAttribute('data-fold', 'evidence');
           const sm = det.querySelector('summary'); if (sm) sm.innerHTML = L('세 가지 풀이 비교와 근거', 'How the three readings compare', '三つの読みのくらべと理由');
           const ev = det.querySelector('.fev'), box = document.createElement('div'); box.className = 'tf-in';
-          if (ag) box.appendChild(ag); if (ev) box.appendChild(ev); det.appendChild(box);
+          const mn = card.querySelector(':scope > .th-mine'); if (ag) box.appendChild(ag); if (mn) box.appendChild(mn); if (ev) box.appendChild(ev); det.appendChild(box);
         }
         if (p.agree >= 2) {
           const vt = [p.saju.theme, p.astro.theme, p.num.theme], ai = Math.max(0, vt.indexOf(p.theme)), fs = document.createElement('p');
@@ -8428,9 +8442,9 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
   const gN = subs.map((s, i) => s.tier === 3 ? subNm(i) : '').filter(Boolean), cN = subs.map((s, i) => s.tier === 1 ? subNm(i) : '').filter(Boolean);
   const enList = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
   const sumLine = L(
-    `<b>한 줄 정리</b> —${gN.length ? ` ${gN.join(' · ')} 쪽이 특히 좋${cN.length ? '고,' : '아요.'}` : ''}${cN.length ? ` ${cN.join(' · ')} 쪽은 조금만 살피면 돼요.` : ''}${gN.length || cN.length ? '' : ' 다섯 분야 모두 고르게 흘러가는 날이에요.'}`,
-    `<b>In short</b> —${gN.length ? ` ${enList(gN)} ${gN.length > 1 ? 'are' : 'is'} especially good${cN.length ? ';' : '.'}` : ''}${cN.length ? ` ${gN.length ? 'g' : 'G'}o gently with ${enList(cN)}.` : ''}${gN.length || cN.length ? '' : ' All five areas run evenly today.'}`,
-    `<b>まとめ</b> — ${gN.length ? `とくに${gN.join('・')}がよ${cN.length ? 'く、' : 'い日です。'}` : ''}${cN.length ? `${cN.join('・')}は、少し気を配れば大丈夫です。` : ''}${gN.length || cN.length ? '' : '五つの分野とも、むらなく進む日です。'}`);
+    `<b>한 줄 정리</b> —${gN.length ? ` ${gN.join(' · ')} 쪽이 특히 좋${cN.length ? '고,' : '아요.'}` : ''}${cN.length ? ` ${cN.join(' · ')} 쪽은 조금만 조심하면 돼요.` : ''}${gN.length || cN.length ? '' : ' 다섯 분야 모두 고르게 흘러가는 날이에요.'}`,
+    `<b>In short</b> —${gN.length ? ` ${enList(gN)} ${gN.length > 1 ? 'are' : 'is'} especially good${cN.length ? ';' : '.'}` : ''}${cN.length ? `${gN.length ? ' a' : ' A'} little care with ${enList(cN)} is enough.` : ''}${gN.length || cN.length ? '' : ' All five areas run evenly today.'}`,
+    `<b>まとめ</b> — ${gN.length ? `とくに${gN.join('・')}がよ${cN.length ? 'く、' : 'い日です。'}` : ''}${cN.length ? `${cN.join('・')}は、少し気をつけるだけで大丈夫です。` : ''}${gN.length || cN.length ? '' : '五つの分野とも、むらなく進む日です。'}`);
   const scaleLine = L(
     `점수: 85 이상 좋음 · 70~84 무난 · 69 이하 주의. 하루 판정은 오늘의 두 글자로, 분야 점수는 분야마다 따로 정해요.`,
     `Scores: 85+ Good · 70–84 Fair · 69 or less Caution. The overall mark comes from today’s two letters; each area is scored on its own.`,
@@ -8621,7 +8635,29 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
   };
   const mine0 = mineOf(u3h, L(THEMES[p0.theme].adv, THEMES_EN[p0.theme].adv, THEMES_JA[p0.theme].adv));
   const sp = L(' ', ' ', '');
-  const heroAdv = feel0 + (mine0 ? sp + noHan(mine0) : '');
+  /* 셋째 문장 — 오늘의 동물(일지)이 태어난 날 · 달 · 해 · 시간의 동물과 맺는 사이(충 · 육합 · 같은 동물 · 삼합 — 앱의 JIJI_CHUNG · JIJI_HAP · groupOf12 그대로, 말은 U3B와 같은 결).
+     날마다 바뀐다. 사이가 하나도 없는 날에만 「주제를 맡는 기운이 내 표의 어디에 있는지」를 쓰고, 사이가 있는 날에는 그 문장을 근거 접기로 보낸다 */
+  const dayRel = (() => {
+    const tb = t.day.branch, rk = {clash: 0, hap: 1, same: 2, sam: 3}, o = [];
+    ['day', 'month', 'year', 'hour'].forEach((k, pi) => { const p = natalSaju[k]; if (!p) return; const b = p.branch;
+      const ty = inPairs(JIJI_CHUNG, tb, b) ? 'clash' : inPairs(JIJI_HAP, tb, b) ? 'hap' : b === tb ? 'same' : groupOf12(b) === groupOf12(tb) ? 'sam' : '';
+      if (ty) o.push({k, b, ty, pi}); });
+    o.sort((a, c) => (a.k === 'day' ? 0 : 1) - (c.k === 'day' ? 0 : 1) || rk[a.ty] - rk[c.ty] || a.pi - c.pi);
+    return o[0] || null;
+  })();
+  const relLine = dayRel ? (() => {
+    const I = window.__lastInput; let age = I ? now.getFullYear() - I.y : 30;
+    if (I && (now.getMonth() + 1 < I.m || (now.getMonth() + 1 === I.m && now.getDate() < I.d))) age--;
+    const mi = age < 19, ty = dayRel.ty, kana = ['ね', 'うし', 'とら', 'う', 'たつ', 'み', 'うま', 'ひつじ', 'さる', 'とり', 'いぬ', 'い'];
+    const AR = {year: ['집안 · 윗사람', 'family', '家族や目上の人'], month: mi ? ['학교 · 바깥 생활', 'school', '学校や外での生活'] : ['일 · 사회', 'work', '仕事や社会'],
+      day: ['나 · 가까운 사이', 'close ties', 'ご自分と身近な人'], hour: mi ? ['결과 · 마무리', 'results', '結果やしめくくり'] : ['아랫사람 · 결과', 'results', '目下の人や結果']}[dayRel.k][li];
+    const PN = {year: ['해', 'year', '年'], month: ['달', 'month', '月'], day: ['날', 'day', '日'], hour: ['시간', 'hour', '時間']}[dayRel.k];
+    const ta = BRANCHES[t.day.branch].animal, na = BRANCHES[dayRel.b].animal;
+    return L(`오늘의 ${ta}${jEun(ta)} 태어난 ${PN[0]}의 ${na}${jWa(na)} ${{clash: '부딪혀서', hap: '짝을 이뤄서', same: '같은 동물이라', sam: '한 팀이라'}[ty]} ${AR} ${{clash: '쪽이 크게 움직이기 쉬워요', hap: '쪽에서 손발이 맞기 쉬워요', same: '쪽 일이 두 배로 느껴져요', sam: '쪽에 힘이 모여요'}[ty]}.`,
+      `Today’s ${ANIMALS_EN[t.day.branch]} ${{clash: 'clashes with', hap: 'pairs up with', same: 'is the same animal as', sam: 'teams up with'}[ty]} the ${ANIMALS_EN[dayRel.b]} of your birth ${PN[1]}, so ${{clash: `${AR} can get stirred up`, hap: `${AR} can click into place`, same: `${AR} can carry extra weight`, sam: `${AR} can gather strength`}[ty]}.`,
+      `今日の${kana[t.day.branch]}は、生まれた${PN[2]}の${kana[dayRel.b]}${{clash: 'とぶつかるので', hap: 'と組になるので', same: 'と同じ動物なので', sam: 'と同じチームなので'}[ty]}、${{clash: `${AR}のことが大きく動きやすいです`, hap: `${AR}のことがかみ合いやすいです`, same: `${AR}のことがいつもより強く感じられます`, sam: `${AR}に力が集まります`}[ty]}。`);
+  })() : '';
+  const heroAdv = feel0 + (relLine ? sp + relLine : (mine0 ? sp + noHan(mine0) : ''));
   const dayHero = `
     <p class="th-label">${L('오늘의 하늘', 'Today’s sky', '今日の空')}</p>
     <div class="th-main">
@@ -8631,7 +8667,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
       </div>
     </div>
     <p class="th-sum">${sumLine}</p>
-    <p class="th-body">${heroLead}${L(' ', ' ', '')}${heroAdv}</p>`;
+    <p class="th-body">${heroLead}${L(' ', ' ', '')}${heroAdv}</p>${relLine && mine0 ? `<p class="th-mine">${mine0}</p>` : ''}`;
 
   /* ===== 하늘 뉴스 — 오늘 실제 하늘의 사건(달 위상·역행·절기) × 내 명식. 전부 이 기기에서 계산 ===== */
   const skyNewsCard = (() => {
@@ -8665,11 +8701,11 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
         ['친구·모임·앞날 계획', 'friends, groups and future plans', '友だち・集まり・これからの計画'],
         ['쉼과 혼자만의 시간', 'rest and time alone', '休息や一人の時間']];
       const hMind = h => HOUSE_MIND[h][li];
-      /* 표시 전용 — 나에게 닿는 자리와 그 까닭은 한 문단 그대로(누구에게나 같은 안심 문장만 뺀다) */
-      items.push([mIco, mHead,
+      /* 표시 전용 — 겉에는 달의 모양(날마다 바뀜)만, 나에게 닿는 자리와 그 까닭은 한 문단 그대로 「나에게 닿는 곳」 접기 안으로 */
+      items.push([mIco, mHead, ['',
         L(`태어난 날 해가 있던 별자리로 보면, 지금 달은 「${hMind(mh)}」 자리를 지나고 있어요. 그래서 오늘은 이쪽 일이 생기거나 자꾸 마음이 갈 수 있어요.${u3sm ? ' ' + u3sm : ''}`,
           `Counting from the sign the Sun was in when you were born, the Moon is now passing through your area of ${hMind(mh)}. So these things may come up today, or keep pulling at your mind.${u3sm ? ' ' + u3sm : ''}`,
-          `生まれた日に太陽がいた星座から見ると、いま月は「${hMind(mh)}」の分野を通っています。だから今日は、そうしたことが起きたり、つい気になったりするかもしれません。${u3sm}`)]);
+          `生まれた日に太陽がいた星座から見ると、いま月は「${hMind(mh)}」の分野を通っています。だから今日は、そうしたことが起きたり、つい気になったりするかもしれません。${u3sm}`)]]);
 
 
       /* ② 역행 통신 — 수·금·화 (역행 중이거나 9일 안에 방향이 바뀔 때만 보도) */
@@ -8750,7 +8786,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
             const act = MDO[tg2] ? L(MDO[tg2][0], MDO[tg2][1], MDO[tg2][2]) : '';
             const yomi = JIE_YOMI[JIE_NAMES[best.i]] ? `(${JIE_YOMI[JIE_NAMES[best.i]]})` : '';
             /* 표시 전용 — 겉에는 나에게 열리는 달 한 줄, 절기 설명 · 할 일 · 기둥과의 사이는 「자세히」 접기로 */
-            return [L(`이날부터 나에게는 ‘${TG_NICK[tg2]}’의 달이 시작돼요.`, `Your “${TG_NICK_EN[tg2]}” month starts then.`, `この日から、あなたにとって「${TG_NICK_JA[tg2]}」の月が始まります。`),
+            return ['', L(`이날부터 나에게는 ‘${TG_NICK[tg2]}’의 달이 시작돼요.`, `Your “${TG_NICK_EN[tg2]}” month starts then.`, `この日から、あなたにとって「${TG_NICK_JA[tg2]}」の月が始まります。`) + L(' ', ' ', '') +
               L(`${jn}${jEun(jn)} 계절이 바뀌는 날(절기)로, 사주에서는 이날부터 새 달이 시작돼요. ${act}`,
               `${jn} is a day when the season turns (a solar term). In saju, a new month starts on that day. ${act}`,
               `${jn}${yomi}は季節の変わり目(節気)で、四柱推命ではこの日から新しい月が始まります。${act}`) + U3B.skyJie(s2)];
@@ -8773,10 +8809,12 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
           L('‘어, 이게 왜 바뀌지?’ 싶은 일이 생길 수 있는 날이에요. 이상한 게 아니라 오늘 기운이 원래 그래요. 약속과 이동에 시간만 넉넉히 잡아 둬도 충분해요.', 'You may think, “Wait, why is this changing?” today — that’s just today’s energy. Leaving extra time for appointments and travel is enough.', '「あれ、どうして急に変わるの」と思うことが起きるかもしれない日です。おかしなことではなく、今日の気がもともとそういう気なのです。約束や移動に、時間のゆとりをとっておくだけで十分です。')]);
       }
 
-      const more = items.filter(x => Array.isArray(x[2]) && x[2][1]).map(([ic, , sb]) => `<p class="sn-more"><span aria-hidden="true">${ic}</span> ${sb[1]}</p>`).join('');
+      /* 겉에는 하늘의 일(머리 줄)과 오늘만의 특이일, 나에게 닿는 풀이와 몇 주씩 이어지는 역행 풀이는 접기 안으로 */
+      const SLOW = ['☿', '♀', '♂'], subOf = ([ic, , sb]) => Array.isArray(sb) ? sb : SLOW.includes(ic) ? ['', sb] : [sb, ''];
+      const more = items.map(x => [x[0], subOf(x)[1]]).filter(x => x[1]).map(([ic, tx]) => `<p class="sn-more"><span aria-hidden="true">${ic}</span> ${tx}</p>`).join('');
       return `<div class="card sky-news">
         <div class="sn-top"><p class="sn-label">${L('하늘 뉴스', 'Sky news', '空のニュース')}</p><p class="sn-date">${y}. ${m}. ${d}.</p></div>
-        ${items.map(([ic, hd, sb]) => `<div class="sn-item"><span class="sn-ico" aria-hidden="true">${ic}</span><div><p class="sn-head">${hd}</p><p class="sn-sub">${Array.isArray(sb) ? sb[0] : sb}</p></div></div>`).join('')}
+        ${items.map(x => { const v = subOf(x)[0]; return `<div class="sn-item"><span class="sn-ico" aria-hidden="true">${x[0]}</span><div><p class="sn-head">${x[1]}</p>${v ? `<p class="sn-sub">${v}</p>` : ''}</div></div>`; }).join('')}
         ${fold('sky', L('나에게 닿는 곳 자세히', 'How it reaches you', 'あなたへの届き方をくわしく'), `${more}<p class="sn-src">${L('오늘 실제 하늘의 일(달의 모양, 별의 움직임, 계절의 마디)을 이 기기 안에서 계산해서 알려 드려요. 밖으로 보내는 정보는 없어요.', 'What is really happening in the sky today (the Moon’s shape, planet movements, season turns), worked out on this device. Nothing is sent anywhere.', '今日の実際の空のようす(月の形・星の動き・季節の節目)を、この端末の中で計算してお伝えします。外に送る情報はありません。')}</p>`)}
       </div>`;
 
@@ -8843,7 +8881,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
       </div>`;
   };
   /* 저장한 사람이 없으면 — 새 입력 칸 없이 궁합 탭으로 안내하는 작은 한 줄(누르면 궁합 탭) */
-  const rwNone = () => `<p class="rw-none"><button type="button" class="tg-go" data-go="gung">${L('오늘, 그 사람과 — 「궁합」 탭에서 한 사람을 저장하면 두 사람의 오늘이 매일 여기에 나와요 →', 'Today, with them — save someone in the Compatibility tab to see the two of you here every day →', '今日、あの人と — 「相性」タブで一人を保存すると、おふたりの今日が毎日ここに出ます →')}</button></p>`;
+  const rwNone = () => `<p class="rw-none"><button type="button" class="tg-go" data-go="gung">${L('오늘, 그 사람과 — 「궁합」 탭에서 한 사람 저장하기 →', 'Today, with them — save someone in Compatibility →', '今日、あの人と — 「相性」タブで一人を保存 →')}</button></p>`;
   /* 저장 · 삭제 때 탭 전체를 다시 그리지 않고 이 자리만 바꾼다(rwSlotPaint) — 맨 위 「오늘 한눈에」의 그 사람 줄도 함께 */
   window.__rwBuild = () => { const h = rwBuild() || rwNone(); setTimeout(() => { try { if (window.__tgPartnerPaint) window.__tgPartnerPaint(); } catch (e) {} }, 0); return h; };
   const rwCard = '<div id="rwSlot" style="display:contents">' + (rwBuild() || rwNone()) + '</div>';
@@ -9172,7 +9210,7 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
         <div class="fhead"><span class="fperiod">${L('지금과 오늘의 시간', 'Now and today’s hours', 'いまと今日の時間')}</span></div>
         <div class="day-hero nowhero tm-now">${nowEl ? SOFT(nowEl.innerHTML) : ''}</div>
         <div class="tm-lines">${g3 ? line('hr3', `◎ ${L('좋은 때', 'Good', 'よいとき')}`, g3) : ''}${c1 ? line('hr1', `△ ${L('조심할 때', 'Take care', '気をつけるとき')}`, c1) : ''}</div>
-        ${fold('hourly', L('지금 이 시간 자세히 · 열두 시간 표', 'More on this hour · all twelve blocks', 'いまの時間をくわしく・十二の時間'), `${badge ? `<p class="tm-badge">${badge}</p>` : ''}${rest ? `<p class="nh-rest">${rest}</p>` : ''}${nxt ? nxt.outerHTML : ''}${seal ? `<div class="tm-seal">${seal.outerHTML}</div>` : ''}${why ? why.outerHTML : ''}${legend ? `<p class="tm-legend">${SOFT(legend)}</p>` : ''}${grid ? grid.outerHTML : ''}`)}
+        ${fold('hourly', L('열두 시간 표 · 자세히', 'All twelve blocks · more', '十二の時間・くわしく'), `${badge ? `<p class="tm-badge">${badge}</p>` : ''}${rest ? `<p class="nh-rest">${rest}</p>` : ''}${nxt ? nxt.outerHTML : ''}${seal ? `<div class="tm-seal">${seal.outerHTML}</div>` : ''}${why ? why.outerHTML : ''}${legend ? `<p class="tm-legend">${SOFT(legend)}</p>` : ''}${grid ? grid.outerHTML : ''}`)}
       </div>`;
     } catch (e) { return nowHero + hourCard; }
   })();
@@ -9203,9 +9241,22 @@ function renderFortune(f, now, natalSaju, natalTGs, astro, num, name, ename, dry
   const laterFold = fold('later', L('이번 달 · 분기 · 올해 · 행운의 나라', 'This month · quarter · year · lucky countries', '今月・四半期・今年・幸運の国'),
     f.periods.slice(2).map(p => fold(p.key, `${PL[p.key]} — ${tn(p.theme)}`, periodCard(p, '', null, {flat: true}), 'tf tf2')).join('')
     + fold('travel', L('행운의 나라 — 시기별', 'Lucky countries — by period', '幸運の国 — 時期別'), countryCard, 'tf tf2'));
+  /* 다음 ◎ 날 — 이번 주 표와 같은 셈(나에게 그날의 기운이 ◎인 날), 오늘 다음 날부터 찾는다. 남은 날 수는 날마다 바뀐다 */
+  const nextGood = (() => {
+    for (let k = 1; k <= 21; k++) {
+      const dt = new Date(now); dt.setDate(now.getDate() + k);
+      const s2 = computeSaju(dt.getFullYear(), dt.getMonth() + 1, dt.getDate(), null), tg2 = tenGod(dayStem, s2.day.stem);
+      if (TG_RATE[tg2] !== 3) continue;
+      const wd = L('일월화수목금토'[dt.getDay()] + '요일', WDE[dt.getDay()].slice(0, 3), '日月火水木金土'[dt.getDay()]);
+      const when = k === 1 ? L('내일', 'tomorrow', '明日') : L(`${k}일 뒤`, `in ${k} days`, `${k}日後`);
+      return `<p class="ah-next"><span class="ah-nk">${L('다음 ◎ 날', 'Next ◎ day', '次の◎の日')}</span><span class="ah-nv">${L(`${dt.getMonth() + 1}/${dt.getDate()} ${wd} · ${when} · ‘${nickOf(tg2)}’`, `${wd}, ${MONTH_EN[dt.getMonth() + 1].slice(0, 3)} ${dt.getDate()} · ${when} · ${nickOf(tg2)}`, `${dt.getMonth() + 1}/${dt.getDate()}(${wd})・${when}・「${nickOf(tg2)}」`)}</span></p>`;
+    }
+    return '';
+  })();
   const aheadCard = `<div class="fcard ah-card">
       <div class="fhead"><span class="fperiod">${L('앞으로의 흐름', 'The days ahead', 'これからの流れ')}</span><span class="fdate">${dateLabel.week}</span></div>
       ${weekExtra}
+      ${nextGood}
       ${weekFold}
       ${gililCard}
       ${laterFold}
@@ -18864,7 +18915,8 @@ applyLang();
     sanTrack('daily_open', {days_since_last: GAP, visit_days_month: n, entry: ENTRY, display_mode: DISPLAY, has_profile: hp});
   })();
 
-  /* ---------- 2. 재방문 카드 — 저장된 정보가 있으면 입력 화면 위에 「하람 님의 오늘 보기」 ---------- */
+  /* ---------- 2. 재방문 카드 — 주인 결정(2026-11-21)으로 화면에서 뺐다. #sanRevisit 가 없으므로 paintRevisit 등은 아무것도 하지 않는다.
+     저장된 정보로 바로 여는 길은 탭 주소(#today · 홈 화면 아이콘)만 남는다 ---------- */
   const card = D.getElementById('sanRevisit');
   let notMe = false;              // 「제가 아니에요」를 눌렀다 — 이번 화면에서는 빈 입력 화면으로, 저장된 정보는 지우지 않는다
   let RETURNING = hasProfile();   // 저장된 정보가 있는 채로 연 사람 — 결과 위 칩을 한 줄로 접는다
