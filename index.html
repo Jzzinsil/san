@@ -1329,7 +1329,7 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on «Remember», and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 당신의 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits." data-ja="訪問者の数を知るためにGoogle Analyticsを使っています。">방문자 수를 알기 위해 Google Analytics를 사용합니다.</span><br>
-        <span style="letter-spacing:.2em">SAN v3.38.2</span><br>
+        <span style="letter-spacing:.2em">SAN v3.38.3</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
@@ -15363,6 +15363,18 @@ function renderLife(inp, saju, astro, num, age, curYear) {
 }
 
 const tabLinks = document.querySelectorAll('.tabs a');
+/* 탭 줄 — 오른쪽에 탭이 더 있으면 끝에 흐림 + 「›」(누르면 옆으로 민다), 끝까지 밀면 감춘다.
+   v3.38.2에서 입력 폼을 되돌릴 때 이 동작 코드가 함께 빠져 「›」가 마지막 탭을 가리던 것을 되살린다 */
+(() => {
+  const nav = document.querySelector('nav.tabs'), more = nav && nav.querySelector('.tabs-more');
+  if (!more) return;
+  const hint = () => nav.classList.toggle('at-end', nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4);
+  nav.addEventListener('scroll', hint, {passive: true}); addEventListener('resize', hint);
+  more.addEventListener('click', () => { try { nav.scrollBy({left: Math.max(140, nav.clientWidth * .6), behavior: scrollMode()}); } catch (e) { nav.scrollLeft += 160; } });
+  new MutationObserver(hint).observe(document.documentElement, {attributes: true, attributeFilter: ['lang']});
+  new MutationObserver(() => { if (document.body.classList.contains('viewing')) hint(); }).observe(document.body, {attributes: true, attributeFilter: ['class']});
+  hint();
+})();
 function showTab(id) {
   document.querySelectorAll('section.reading').forEach(s => s.classList.toggle('active', s.id === id));
   tabLinks.forEach(a => {
