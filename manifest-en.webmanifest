@@ -1,0 +1,33 @@
+{
+  "id": "/san/",
+  "name": "SAN",
+  "short_name": "SAN",
+  "description": "Korean saju, astrology and numerology together — the nature you were born with and today’s fortune, in plain words.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./?lang=en&utm_source=homescreen#today",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eae3d6",
+  "theme_color": "#eae3d6",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
