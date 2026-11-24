@@ -978,11 +978,15 @@ body.san-inapp #langSwitch{top:calc(var(--sanStripH,0px) + 14px)}
 .san-a2hs p.a2-note{font-size:12.5px;line-height:1.65;color:var(--dim);margin:10px 0 0}
 </style>
 <!-- GA4: 방문 수와 이름 없는 사용 기록(어느 탭 · 카드를 열었는지, 질문의 갈래 등)만 센다. 이름 · 생년월일 · 시간 · 장소 · 상대 정보 · 질문 글은 보내지 않는다.
-     gtag.js는 운영 주소(https://jzzinsil.github.io)에서만 붙인다 — 미리보기 · 테스트(file:// · localhost)에서는 dataLayer에만 쌓이고 밖으로 아무것도 나가지 않는다 -->
+     gtag.js는 운영 주소 두 곳(https://sanissan.vercel.app · https://jzzinsil.github.io)에서만 붙인다 — 미리보기 · 테스트(file:// · localhost)에서는 dataLayer에만 쌓이고 밖으로 아무것도 나가지 않는다
+     Vercel Web Analytics(/_vercel/insights/script.js)는 레포에 없는 파일이지만 Vercel이 배포 때 자동으로 제공한다 — *.vercel.app에서만 붙인다(github.io · 로컬에서는 404라 붙이지 않음). 지우지 말 것 -->
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
-(function () { try { if (location.protocol === 'https:' && location.hostname === 'jzzinsil.github.io') { var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=G-L7QPQ5GGL7'; document.head.appendChild(s); } } catch (e) {} })();
+(function () { try { var h = location.hostname; if (location.protocol !== 'https:') return;
+  if (h === 'sanissan.vercel.app' || h === 'jzzinsil.github.io') { var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=G-L7QPQ5GGL7'; document.head.appendChild(s); }
+  if (/\.vercel\.app$/.test(h)) { var v = document.createElement('script'); v.defer = true; v.src = '/_vercel/insights/script.js'; document.head.appendChild(v); }
+} catch (e) {} })();
 gtag('js', new Date());
 /* 페이지 주소는 정리해서 넘긴다(lang · 정해 둔 utm_source만, # 없이) — 꼬리표는 읽은 뒤 주소창에서 지우므로 GA가 늦게 떠도 처음 값을 읽게 */
 gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPageLoc() : location.href.split(/[?#]/)[0]});
@@ -1384,7 +1388,7 @@ gtag('config', 'G-L7QPQ5GGL7', {page_location: window.sanPageLoc ? window.sanPag
         <span data-en="Your personal details are never sent to a server. They are saved in this browser only if you turn on “Remember”, and you can delete them any time." data-ja="ご入力の個人情報がサーバーに送られることは一切ありません。「記憶する」をオンにされた場合だけこのブラウザに保存され、いつでも消していただけます。">입력하신 개인 정보는 서버로 보내지 않습니다. 「기억하기」를 켜신 경우에만 이 브라우저에 저장되며, 언제든 지우실 수 있습니다.</span><br>
         <span data-en="This reading is for fun. What you choose always matters more than what the sky says." data-ja="このリーディングは楽しみのためのものです。空の流れよりも、あなたご自身の選択のほうが、いつも大きな力を持っています。">이 리딩은 재미로 보시는 것입니다. 하늘의 흐름보다 스스로 내리시는 선택이 언제나 더 큰 힘을 가집니다.</span><br>
         <span data-en="We use Google Analytics to count visits and which tabs and cards are used (no names, birth data or question words are sent)." data-ja="訪問者の数と、どのタブやカードが使われているかを数えるために、Google Analyticsを使っています(お名前・生年月日・ご質問の文章は送りません)。">방문 수와 어느 탭 · 카드가 쓰이는지를 세기 위해 Google Analytics를 사용합니다(이름 · 생년월일 · 질문 글은 보내지 않습니다).</span><br>
-        <span style="letter-spacing:.2em">SAN v3.39.1</span><br>
+        <span style="letter-spacing:.2em">SAN v3.39.2</span><br>
         contact · <a href="mailto:jinsilee1617@gmail.com" style="color:var(--dim);text-decoration:underline">jinsilee1617@gmail.com</a>
       </p>
       <button type="button" class="again" id="again" data-en="Start over" data-ja="最初からやり直す">다시 보기</button>
