@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How SAN calculates — true solar time, daylight saving, the midnight hour, solar terms</title>
+<meta name="description" content="A plain-words guide to how SAN works out your saju, astrology and numerology: true solar time, Korea’s earlier standard time and daylight saving, the two rules for the midnight hour, the year that starts at Ipchun, the Korean lunar calendar and the 10-year periods.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eae3d6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1915" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://jzzinsil.github.io/san/en/how/">
+<link rel="alternate" hreflang="ko" href="https://jzzinsil.github.io/san/how/">
+<link rel="alternate" hreflang="en" href="https://jzzinsil.github.io/san/en/how/">
+<link rel="alternate" hreflang="ja" href="https://jzzinsil.github.io/san/ja/how/">
+<link rel="alternate" hreflang="x-default" href="https://jzzinsil.github.io/san/how/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SAN">
+<meta property="og:title" content="How SAN calculates — true solar time, daylight saving, the midnight hour, solar terms">
+<meta property="og:description" content="A plain-words guide to how SAN works out your saju, astrology and numerology: true solar time, Korea’s earlier standard time and daylight saving, the two rules for the midnight hour, the year that starts at Ipchun, the Korean lunar calendar and the 10-year periods.">
+<meta property="og:url" content="https://jzzinsil.github.io/san/en/how/">
+<meta property="og:image" content="https://jzzinsil.github.io/san/og-en-1.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="600">
+<meta property="og:image:alt" content="山 SAN — Saju · Astrology · Numerology. No two readings are the same. No sign-up · No ads · Free">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='0' fill='%23eae3d6'/%3E%3Cpath d='M4 24L12 10l4.4 7.3L20 12l8 12z' fill='%232e2a23'/%3E%3Ccircle cx='23' cy='8' r='1.6' fill='%232e2a23'/%3E%3C/svg%3E">
+<!-- SAN 「어떻게 계산하나요」 — build_site.py가 만든 파일입니다(직접 고치지 않습니다). 스크립트 없음 · 외부 요청 없음 -->
+<style>
+:root{
+  --bg:#eae3d6;
+  --paper:#f2ecdf;
+  --paper-deep:#e2dac9;
+  --ink:#2e2a23;
+  --text:#2e2a23;
+  --muted:#575146;
+  --dim:#665f51;
+  --line:rgba(46,42,35,.5);
+  --hairline:rgba(46,42,35,.22);
+  --divider:rgba(46,42,35,.16);
+  --accent:#a63d28;
+  --gold:#a63d28;
+  --gold-soft:#96371f;
+  --nowgold:#8a6209;
+  --wood:#33664a;
+  --fire:#c13b34;
+  --earth:#8d6109;
+  --metal:#666560;
+  --water:#2e719a;
+  --serif:'Noto Serif KR','Nanum Myeongjo','Apple Myungjo',AppleMyungjo,Batang,'Noto Serif CJK KR','Songti SC',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,Roboto,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic','Noto Sans',Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.8;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+html[lang=en] body,html[lang=ja] body{font-size:16px}
+html[lang=ja] body{word-break:normal;line-break:strict;font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP',var(--sans)}
+html[lang=ja] h1{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',var(--serif)}
+.wrap{position:relative;max-width:680px;margin:0 auto;padding:0 20px 56px}
+.langs{position:absolute;top:14px;right:14px;display:flex;background:var(--paper);border:1px solid var(--line)}
+.langs a{position:relative;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--muted);text-decoration:none;padding:8px 12px;line-height:1.4}
+.langs a::after{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px}
+.langs a + a{border-left:1px solid var(--hairline)}
+.langs a[aria-current]{background:var(--ink);color:var(--paper)}
+.head{padding:64px 0 0;text-align:center}
+.head a{display:inline-flex;flex-direction:column;align-items:center;color:var(--ink);text-decoration:none}
+.head .icon{font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);margin-bottom:14px}
+.head .word{font-family:var(--serif);font-size:28px;font-weight:500;letter-spacing:.3em;text-indent:.3em;line-height:1.2}
+h1{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.45;margin-top:30px;text-align:center}
+.rule{border:none;width:44px;height:1px;margin:22px auto 0;background:var(--ink)}
+.lead{margin-top:22px;color:var(--muted)}
+.glance{background:var(--paper);border:1px solid var(--line);padding:18px 18px 20px;margin-top:26px}
+.glance h2{font-size:14px;letter-spacing:.16em;border-bottom:1px solid var(--ink);padding-bottom:8px}
+section{margin-top:42px}
+h2{font-size:19px;font-weight:700;line-height:1.5;padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+p{margin-top:14px}
+ul{margin-top:12px;padding-left:1.15em}
+li{margin-top:8px}
+.ex{margin-top:14px;background:var(--paper);border:1px solid var(--hairline);padding:13px 16px}
+.cta{display:block;max-width:420px;margin:46px auto 0;padding:16px 18px;text-align:center;background:var(--ink);color:var(--paper);font-weight:700;letter-spacing:.1em;text-decoration:none}
+.foot{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--dim);text-align:center}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:480px){h1{font-size:22px}h2{font-size:18px}}
+@media (prefers-color-scheme: dark){:root{color-scheme:dark;--bg:#1c1915;--paper:#24201b;--paper-deep:#2d2822;--ink:#ebe3d3;--text:#e2d9c8;--muted:#c2b8a6;--dim:#aaa08f;--line:rgba(235,227,211,.45);--hairline:rgba(235,227,211,.2);--divider:rgba(235,227,211,.13);--accent:#e48a70;--gold:#e48a70;--gold-soft:#dd8067;--nowgold:#d6ab50;--wood:#7dbb95;--fire:#ef7b70;--earth:#d4a54c;--metal:#b3b1a9;--water:#73afd9;--st-bgtop:#201d18;--st-bgbot:#181512;--st-field:rgba(0,0,0,.22);--st-fieldh:rgba(0,0,0,.3);--st-fieldf:rgba(0,0,0,.36);--st-fline:rgba(235,227,211,.55);--st-ink04:rgba(235,227,211,.05);--st-ink08:rgba(235,227,211,.1);--st-ink80:rgba(235,227,211,.85);--st-inkh:#fbf6ea;--st-paper80:rgba(36,32,27,.8);--st-paper75:rgba(36,32,27,.75);--st-paper65:rgba(36,32,27,.68);--st-paper40:rgba(36,32,27,.4);--st-paper30:rgba(36,32,27,.3);--st-bg94:rgba(28,25,21,.94);--st-bg97:rgba(28,25,21,.97);--st-bg0:rgba(28,25,21,0);--st-goldink:#7a560f;--st-accent07:rgba(228,138,112,.1);--st-cardfg:#4a4034;--st-cardline:rgba(74,64,52,.45);--st-cardline2:rgba(74,64,52,.7);--st-cardh:#f7f0e2;--st-mut2:#b9af9d;--st-mapsh:#000;--st-mapline:rgba(235,227,211,.3);--st-earth2:#d4a54c}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="langs" aria-label="Choose language"><a href="../../how/" lang="ko" hreflang="ko">한국어</a><a href="../../en/how/" lang="en" hreflang="en" aria-current="page">EN</a><a href="../../ja/how/" lang="ja" hreflang="ja">日本語</a></nav>
+<header class="head"><a href="../../en/" aria-label="SAN home"><span class="icon" aria-hidden="true">山</span><span class="word">SAN</span></a></header>
+<main>
+<h1>How SAN calculates</h1>
+<hr class="rule">
+<p class="lead">SAN works out three things from your birth date, birth time, birthplace and name: Korean saju (the Four Pillars), Western astrology and numerology. If another saju calculator gives you a slightly different chart, it is usually because it follows different rules on the points below. Here are the rules SAN follows.</p>
+<div class="glance">
+<h2>At a glance</h2>
+<ul>
+<li>Your birth time is turned from clock time into real Sun time for the place you were born (true solar time).</li>
+<li>Korea’s earlier standard time and daylight saving are taken into account, and so are other countries’ time zones and daylight saving.</li>
+<li>In saju the year changes at Ipchun (the Start of Spring) and the months change at solar terms — decided by the time of day, not just the date.</li>
+<li>If you were born after 11 pm, your day is counted as the next day (the default). If you were born around midnight, you can switch to the other rule on the result screen.</li>
+<li>Lunar birthdays are converted with the Korean lunar calendar published by KASI (Korea Astronomy and Space Science Institute).</li>
+<li>Everything is worked out on your own phone or computer. What you type is never sent to a server.</li>
+</ul>
+</div>
+<section id="time">
+<h2>Birth time — from clock time to Sun time</h2>
+<p>In saju, your birth hour depends on where the Sun actually was in the sky. Clocks, though, follow a reference line chosen for each time zone. Korean clocks are set to 135° east, but Seoul sits at 127° east, so the Sun passes about 32 minutes later than the clock suggests. SAN therefore turns your clock time into Sun time for your birth city (true solar time). It makes two corrections:</p>
+<ul>
+<li><b>Longitude</b> — how far east or west your birth city is from the reference line of its clocks (4 minutes for each degree).</li>
+<li><b>Equation of time</b> — the few minutes the Sun runs ahead of or behind the clock, depending on the season (between about −15 and +16 minutes over a year).</li>
+</ul>
+<p class="ex">Example: born in Seoul at 12:00 noon on November 3 → about 11:44 am in Sun time (−32 minutes for longitude, +16 for the season). If you were born close to the moment the hour changes, this can change your hour pillar.</p>
+<p>If you don’t know your birth time, the two letters of the hour are left out and the chart is read with six letters. The Sun, Moon and planets are worked out for 12 noon that day, and no rising sign is given.</p>
+<p>The equation of time comes from a simple formula that can be off by a minute or two. If you were born within a few minutes of the moment the hour changes, the result may differ.</p>
+</section>
+<section id="zone">
+<h2>Korea’s earlier standard time, daylight saving and other time zones</h2>
+<p>Please enter your birth time just as the clocks showed it there and then. SAN looks up how far those clocks were from UTC on that day.</p>
+<ul>
+<li><b>Korean standard time</b> — UTC+9 today. It was UTC+8:30 from April 1908 to 1911, and again from March 1954 to August 1961.</li>
+<li><b>Daylight saving in Korea</b> — clocks were set one hour ahead in the summers of 1948–1951, 1955–1960 and 1987–1988.</li>
+<li><b>Other countries</b> — the time-zone data built into your device gives the offset and daylight saving for that day. In countries with several time zones, it depends on the city.</li>
+<li>A time the clocks skipped when daylight saving began, or a time that came twice when it ended, is read with the offset in force just before the change.</li>
+</ul>
+<p>When any of this applies to you, the Saju tab says so in one line under “How it’s calculated”.</p>
+</section>
+<section id="jasi">
+<h2>The midnight hour — born between 11 pm and midnight</h2>
+<p>The first of the twelve two-hour blocks of the day (jasi, the Rat hour) runs from 11 pm to 1 am. So for someone born between 11 pm and midnight, there are two ways to decide which day they belong to.</p>
+<ul>
+<li><b>The day changes at 11 pm</b> — once that first block begins, the next day’s two letters are used as your day pillar.</li>
+<li><b>The day changes at midnight</b> (the yajasi rule) — from 11 pm to midnight you keep that day’s letters, and only the hour is read as the first block.</li>
+</ul>
+<p>SAN uses the first rule by default. “11 pm” here means Sun time, not clock time: for a birth in Seoul, the day turns over somewhere between 11:16 and 11:47 pm on the clock, depending on the season.</p>
+<p>If you were born between 11 pm and 1 am, you can switch to the other rule in the Saju tab of your result.</p>
+</section>
+<section id="term">
+<h2>The year starts at Ipchun; the months change at solar terms</h2>
+<p>A saju year does not begin on January 1 or at Lunar New Year. It begins at Ipchun, the Start of Spring, around February 4. Months do not change on the 1st either: each one begins at one of twelve solar terms.</p>
+<p>A solar term is the moment the Sun reaches a set point in the sky. Ipchun is when the Sun reaches 315° of celestial longitude, and the next term comes every 30° after that. SAN finds that moment to the minute with astronomical formulas, and your year and month depend on whether you were born before or after it.</p>
+<p class="ex">Example: in 2024, Ipchun fell at 5:27 pm on February 4 (Korea time). Born at 5:20 pm that day, you still belong to the old year (癸卯); born at 5:30 pm, to the new one (甲辰).</p>
+<p>If you don’t know your birth time, 12 noon is used to decide. “This year” in your readings also changes at Ipchun, not on January 1.</p>
+<p>The solar-term times found this way agree with the times published by national observatories to within a minute.</p>
+</section>
+<section id="lunar">
+<h2>Lunar birthdays</h2>
+<p>A birthday entered in the lunar calendar is first converted to the solar calendar. From 1900 to 2050 SAN follows the Korean lunar calendar published by KASI; from 2051 to 2100 it uses values calculated for Korea time. You can also choose a leap month. SAN does not accept a leap month that did not exist that year, or a 30th day in a month that had only 29.</p>
+</section>
+<section id="daeun">
+<h2>Daeun — the 10-year periods</h2>
+<ul>
+<li><b>Direction</b> — set by whether the top letter of your birth year is yang or yin, together with your gender. Men born in a yang year and women born in a yin year move forward; the others move backward. If you don’t choose a gender, SAN counts in the direction used for women and says so in the reading.</li>
+<li><b>Starting age</b> — the number of days from your birth to the next solar term (forward) or the one before it (backward), divided by three: three days count as one year. The result is rounded and kept between ages 1 and 10.</li>
+<li><b>After that</b> — from that age a new period begins every 10 years, each one step forward or back from the two letters of your birth month.</li>
+</ul>
+</section>
+<section id="astro">
+<h2>Astrology</h2>
+<p>The positions of the Sun, Moon and planets are worked out with astronomical formulas, as seen from the Earth. The signs are the twelve Western signs, counted from the spring equinox. Your rising sign — the sign coming up on the eastern horizon when you were born — needs your birth time and the latitude and longitude of your birth city, so it is not shown without a birth time.</p>
+<p>The positions match the real sky closely. But if you were born near a moment when a sign changes, a few minutes’ difference in your birth time can change the result.</p>
+</section>
+<section id="numer">
+<h2>Numerology</h2>
+<p>Numerology turns your birth date and name into numbers. The basic step is to keep adding the digits until one digit is left — except 11, 22 and 33, which are kept as they are.</p>
+<p class="ex">Example: June 15, 1990 → 1+9+9+0 = 19 → 1+9 = 10 → 1+0 = 1; June = 6; 15 → 1+5 = 6. Then 1+6+6 = 13 → 1+3 = 4. The Life Path is 4.</p>
+<p>Name numbers come from your name in English letters, with a set number for each letter (A=1, B=2 … I=9, then J=1 again). On the Korean screen, a name written in Hangul is turned into English letters by its sound when the English-name box is left empty. Accents are dropped before counting (é counts as e).</p>
+</section>
+<section id="note">
+<h2>Good to know</h2>
+<ul>
+<li>The calculation follows fixed rules, but the wording of a reading is SAN’s own way of reading the result. Please take it as something for fun and reference, and decide matters of health, big money and law with professionals.</li>
+<li>If another saju calculator shows a different chart, compare three things first: whether it uses true solar time, how it treats the midnight hour, and whether it applies daylight saving.</li>
+<li>An inexact birth time can change your hour pillar and rising sign. If you are not sure, it is better to tick “I don’t know my birth time”.</li>
+</ul>
+</section>
+<a class="cta" href="../../en/">See your reading in SAN</a>
+</main>
+<footer class="foot"><p>Readings are for fun and reference.</p></footer>
+</div>
+</body>
+</html>

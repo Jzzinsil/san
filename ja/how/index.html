@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SANの計算のしかた — 真太陽時・サマータイム・子の刻・立春・旧暦</title>
+<meta name="description" content="SANが四柱推命・占星術・数秘術をどのように計算しているかを、やさしい言葉でまとめました。真太陽時、韓国のかつての標準時とサマータイム、子の刻の二つの数え方、立春と節気、韓国の旧暦、大運の数え方について書いています。">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eae3d6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1915" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://jzzinsil.github.io/san/ja/how/">
+<link rel="alternate" hreflang="ko" href="https://jzzinsil.github.io/san/how/">
+<link rel="alternate" hreflang="en" href="https://jzzinsil.github.io/san/en/how/">
+<link rel="alternate" hreflang="ja" href="https://jzzinsil.github.io/san/ja/how/">
+<link rel="alternate" hreflang="x-default" href="https://jzzinsil.github.io/san/how/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SAN">
+<meta property="og:title" content="SANの計算のしかた — 真太陽時・サマータイム・子の刻・立春・旧暦">
+<meta property="og:description" content="SANが四柱推命・占星術・数秘術をどのように計算しているかを、やさしい言葉でまとめました。真太陽時、韓国のかつての標準時とサマータイム、子の刻の二つの数え方、立春と節気、韓国の旧暦、大運の数え方について書いています。">
+<meta property="og:url" content="https://jzzinsil.github.io/san/ja/how/">
+<meta property="og:image" content="https://jzzinsil.github.io/san/og-ja-1.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="600">
+<meta property="og:image:alt" content="山 SAN — 四柱推命・占星術・数秘術。ひとりひとり違うリーディング。登録不要・広告なし・無料">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='0' fill='%23eae3d6'/%3E%3Cpath d='M4 24L12 10l4.4 7.3L20 12l8 12z' fill='%232e2a23'/%3E%3Ccircle cx='23' cy='8' r='1.6' fill='%232e2a23'/%3E%3C/svg%3E">
+<!-- SAN 「어떻게 계산하나요」 — build_site.py가 만든 파일입니다(직접 고치지 않습니다). 스크립트 없음 · 외부 요청 없음 -->
+<style>
+:root{
+  --bg:#eae3d6;
+  --paper:#f2ecdf;
+  --paper-deep:#e2dac9;
+  --ink:#2e2a23;
+  --text:#2e2a23;
+  --muted:#575146;
+  --dim:#665f51;
+  --line:rgba(46,42,35,.5);
+  --hairline:rgba(46,42,35,.22);
+  --divider:rgba(46,42,35,.16);
+  --accent:#a63d28;
+  --gold:#a63d28;
+  --gold-soft:#96371f;
+  --nowgold:#8a6209;
+  --wood:#33664a;
+  --fire:#c13b34;
+  --earth:#8d6109;
+  --metal:#666560;
+  --water:#2e719a;
+  --serif:'Noto Serif KR','Nanum Myeongjo','Apple Myungjo',AppleMyungjo,Batang,'Noto Serif CJK KR','Songti SC',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,Roboto,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic','Noto Sans',Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.8;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+html[lang=en] body,html[lang=ja] body{font-size:16px}
+html[lang=ja] body{word-break:normal;line-break:strict;font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP',var(--sans)}
+html[lang=ja] h1{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',var(--serif)}
+.wrap{position:relative;max-width:680px;margin:0 auto;padding:0 20px 56px}
+.langs{position:absolute;top:14px;right:14px;display:flex;background:var(--paper);border:1px solid var(--line)}
+.langs a{position:relative;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--muted);text-decoration:none;padding:8px 12px;line-height:1.4}
+.langs a::after{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px}
+.langs a + a{border-left:1px solid var(--hairline)}
+.langs a[aria-current]{background:var(--ink);color:var(--paper)}
+.head{padding:64px 0 0;text-align:center}
+.head a{display:inline-flex;flex-direction:column;align-items:center;color:var(--ink);text-decoration:none}
+.head .icon{font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);margin-bottom:14px}
+.head .word{font-family:var(--serif);font-size:28px;font-weight:500;letter-spacing:.3em;text-indent:.3em;line-height:1.2}
+h1{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.45;margin-top:30px;text-align:center}
+.rule{border:none;width:44px;height:1px;margin:22px auto 0;background:var(--ink)}
+.lead{margin-top:22px;color:var(--muted)}
+.glance{background:var(--paper);border:1px solid var(--line);padding:18px 18px 20px;margin-top:26px}
+.glance h2{font-size:14px;letter-spacing:.16em;border-bottom:1px solid var(--ink);padding-bottom:8px}
+section{margin-top:42px}
+h2{font-size:19px;font-weight:700;line-height:1.5;padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+p{margin-top:14px}
+ul{margin-top:12px;padding-left:1.15em}
+li{margin-top:8px}
+.ex{margin-top:14px;background:var(--paper);border:1px solid var(--hairline);padding:13px 16px}
+.cta{display:block;max-width:420px;margin:46px auto 0;padding:16px 18px;text-align:center;background:var(--ink);color:var(--paper);font-weight:700;letter-spacing:.1em;text-decoration:none}
+.foot{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--dim);text-align:center}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:480px){h1{font-size:22px}h2{font-size:18px}}
+@media (prefers-color-scheme: dark){:root{color-scheme:dark;--bg:#1c1915;--paper:#24201b;--paper-deep:#2d2822;--ink:#ebe3d3;--text:#e2d9c8;--muted:#c2b8a6;--dim:#aaa08f;--line:rgba(235,227,211,.45);--hairline:rgba(235,227,211,.2);--divider:rgba(235,227,211,.13);--accent:#e48a70;--gold:#e48a70;--gold-soft:#dd8067;--nowgold:#d6ab50;--wood:#7dbb95;--fire:#ef7b70;--earth:#d4a54c;--metal:#b3b1a9;--water:#73afd9;--st-bgtop:#201d18;--st-bgbot:#181512;--st-field:rgba(0,0,0,.22);--st-fieldh:rgba(0,0,0,.3);--st-fieldf:rgba(0,0,0,.36);--st-fline:rgba(235,227,211,.55);--st-ink04:rgba(235,227,211,.05);--st-ink08:rgba(235,227,211,.1);--st-ink80:rgba(235,227,211,.85);--st-inkh:#fbf6ea;--st-paper80:rgba(36,32,27,.8);--st-paper75:rgba(36,32,27,.75);--st-paper65:rgba(36,32,27,.68);--st-paper40:rgba(36,32,27,.4);--st-paper30:rgba(36,32,27,.3);--st-bg94:rgba(28,25,21,.94);--st-bg97:rgba(28,25,21,.97);--st-bg0:rgba(28,25,21,0);--st-goldink:#7a560f;--st-accent07:rgba(228,138,112,.1);--st-cardfg:#4a4034;--st-cardline:rgba(74,64,52,.45);--st-cardline2:rgba(74,64,52,.7);--st-cardh:#f7f0e2;--st-mut2:#b9af9d;--st-mapsh:#000;--st-mapline:rgba(235,227,211,.3);--st-earth2:#d4a54c}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="langs" aria-label="言語の選択"><a href="../../how/" lang="ko" hreflang="ko">한국어</a><a href="../../en/how/" lang="en" hreflang="en">EN</a><a href="../../ja/how/" lang="ja" hreflang="ja" aria-current="page">日本語</a></nav>
+<header class="head"><a href="../../ja/" aria-label="SANの最初の画面"><span class="icon" aria-hidden="true">山</span><span class="word">SAN</span></a></header>
+<main>
+<h1>SANの計算のしかた</h1>
+<hr class="rule">
+<p class="lead">SANは、生年月日・生まれた時間・生まれた場所・お名前から、韓国サジュ(四柱推命)・占星術・数秘術の三つを計算します。同じ誕生日を入れても、ほかの命式ツールと結果が少しちがうことがあります。多くの場合、下にあげる基準がちがうためです。SANが使っている基準を、ひとつずつ書いておきます。</p>
+<div class="glance">
+<h2>ひと目でわかるまとめ</h2>
+<ul>
+<li>生まれた時間は、時計の時間ではなく、生まれた場所の太陽に合わせた時間(真太陽時)に直して読みます。</li>
+<li>韓国のかつての標準時とサマータイム、ほかの国のタイムゾーンとサマータイムを反映します。</li>
+<li>四柱推命の年は立春で、月は節気で変わります。日付ではなく、節気に入る時刻で分けます。</li>
+<li>夜11時を過ぎて生まれた場合は、次の日の干支で読みます(基本の設定)。真夜中ごろに生まれた方は、結果の画面でもう一つの数え方に切りかえられます。</li>
+<li>旧暦(陰暦)の誕生日は、韓国天文研究院(KASI)の韓国の旧暦で陽暦に直します。</li>
+<li>計算はすべて、お使いのスマートフォンやパソコンの中で行います。ご入力の内容がサーバーに送られることはありません。</li>
+</ul>
+</div>
+<section id="time">
+<h2>生まれた時間 — 時計の時間から太陽の時間へ</h2>
+<p>四柱推命では、生まれた時間の二文字(時柱)を、そのとき太陽が空のどこにあったかで決めます。ところが時計は、国や地域ごとに決めた基準の経線に合わせてあります。日本と韓国の時計は東経135度に合わせてありますが、東京は東経およそ139.7度にあるので、太陽は時計より19分ほど早く通ります。ソウル(東経127度)では、32分ほど遅くなります。そこでSANは、時計の時間を、生まれた都市の太陽の時間(真太陽時)に直して読みます。直すのは次の二つです。</p>
+<ul>
+<li><b>経度</b> — 生まれた都市が、その時計の基準の経線から東西にどれだけ離れているかの分を足し引きします(経度1度につき4分)。</li>
+<li><b>均時差</b> — 季節によって、太陽が時計より数分早かったり遅かったりするずれを足します(1年のあいだに約−15分から+16分)。</li>
+</ul>
+<p class="ex">例：東京で11月3日の正午12時に生まれた場合、太陽の時間では午後0時35分ごろです(経度で+19分、均時差で+16分)。時柱が切りかわる時刻の近くに生まれた方は、この差で時柱が変わります。</p>
+<p>生まれた時間がわからない場合は、時柱の二文字を空けて、六文字で読みます。太陽・月・惑星の位置はその日の正午で計算し、上昇宮(アセンダント)は出しません。</p>
+<p>均時差は簡単な式で求めているため、1〜2分の誤差があります。時柱が切りかわる時刻から数分以内に生まれた場合は、結果が変わることがあります。</p>
+</section>
+<section id="zone">
+<h2>韓国のかつての標準時とサマータイム、ほかの国のタイムゾーン</h2>
+<p>生まれた時刻は、その日その場所の時計が指していたとおりにご入力ください。その日の時計が協定世界時(UTC)とどれだけずれていたかは、SANが調べて計算します。</p>
+<ul>
+<li><b>韓国の標準時</b> — 今はUTC+9です。1908年4月から1911年までと、1954年3月から1961年8月までは、UTC+8:30でした。</li>
+<li><b>韓国のサマータイム</b> — 1948〜1951年、1955〜1960年、1987〜1988年の夏は、時計を1時間進めていました。</li>
+<li><b>ほかの国</b> — お使いの端末に入っているタイムゾーンの情報から、その日の時差とサマータイムを調べます(日本で1948〜1951年に行われたサマータイムも含まれます)。タイムゾーンがいくつもある国は、都市ごとに見ます。</li>
+<li>サマータイムの始まりで時計が飛ばした時刻と、終わりで二度あった時刻は、切りかわる直前の時差で読みます。</li>
+</ul>
+<p>これに当てはまる場合は、「四柱推命」タブの「計算のしかた」に一行でお知らせします。</p>
+</section>
+<section id="jasi">
+<h2>子の刻 — 夜11時から真夜中までに生まれた場合</h2>
+<p>一日の最初の刻である子の刻は、夜11時に始まり、午前1時に終わります。そのため、夜11時から真夜中までに生まれた人の「日」をどちらにするかには、二つの数え方があります。</p>
+<ul>
+<li><b>夜11時に日が変わると考える数え方</b> — 子の刻に入ったら、次の日の干支を日柱(生まれた日の二文字)に使います。</li>
+<li><b>真夜中に日が変わると考える数え方(夜子時・朝子時)</b> — 夜11時から真夜中までは、その日の干支をそのまま使い、時間だけを子の刻として読みます。</li>
+</ul>
+<p>SANは、基本として前の数え方を使います。ここでいう夜11時は、時計ではなく太陽の時間(真太陽時)です。東京で生まれた場合、時計では夜10時25分から10時56分ごろ(季節によって変わります)に日が切りかわります。</p>
+<p>夜11時から午前1時までに生まれた方は、結果の「四柱推命」タブで、もう一つの数え方に切りかえられます。</p>
+</section>
+<section id="term">
+<h2>年は立春で、月は節気で変わります</h2>
+<p>四柱推命の一年は、1月1日でも旧正月でもなく、立春(2月4日ごろ)に始まります。月も、毎月1日ではなく、十二の節気(立春・啓蟄・清明・立夏・芒種・小暑・立秋・白露・寒露・立冬・大雪・小寒)に入るときに変わります。</p>
+<p>節気は、太陽が空の決まった位置に来る瞬間です。立春は太陽が黄経315度に来たときで、そのあと30度ごとに次の節気になります。SANは太陽の位置を天文学の計算式で求めて、その瞬間を分の単位まで探し、生まれた時刻がその前か後かで年と月を決めます。</p>
+<p class="ex">例：2024年の立春は、2月4日の午後5時27分(日本・韓国の時刻)でした。この日の午後5時20分に生まれた場合はまだ前の年(癸卯)、午後5時30分に生まれた場合は新しい年(甲辰)になります。</p>
+<p>生まれた時間がわからない場合は、その日の正午で分けます。リーディングの中の「今年」も、1月1日ではなく立春で切りかわります。</p>
+<p>こうして求めた節気の時刻は、天文台が発表する時刻と1分以内で合っています。</p>
+</section>
+<section id="lunar">
+<h2>旧暦の誕生日</h2>
+<p>旧暦で入力された誕生日は、陽暦に直してから計算します。1900年から2050年までは韓国天文研究院(KASI)が発表している韓国の旧暦に従い、2051年から2100年までは韓国の時刻で計算した値を使います。閏月も選べます。その年にない閏月や、29日までしかない月の30日は受け付けません。</p>
+</section>
+<section id="daeun">
+<h2>大運 — 10年ごとに変わる大きな流れ</h2>
+<ul>
+<li><b>向き</b> — 生まれた年の上の文字(天干)が陽か陰かと、性別で決まります。陽の年に生まれた男性と、陰の年に生まれた女性は順に進み(順行)、その反対は逆に進みます(逆行)。性別を選ばなかった場合は女性の数え方で計算し、リーディングにもそう書いてあります。</li>
+<li><b>始まる年齢</b> — 生まれた時刻から、次の節気(順行)または前の節気(逆行)までの日数を3で割ります。3日を1年と数える計算です。四捨五入して、1歳から10歳のあいだにします。</li>
+<li><b>そのあと</b> — その年齢から10年ごとに、生まれた月の二文字(月柱)から一つずつ前か後ろへ進みます。</li>
+</ul>
+</section>
+<section id="astro">
+<h2>占星術</h2>
+<p>太陽・月・惑星の位置は、天文学の計算式で求めた、地球から見た位置です。星座は、春分点から数える西洋占星術の十二星座です。上昇宮(生まれた瞬間に東の地平線からのぼっていた星座)は、生まれた時刻と、生まれた都市の緯度・経度から求めるので、時間がわからない場合は出ません。</p>
+<p>計算した位置は、実際の空とほぼ同じです。ただし、星座が切りかわる時刻の近くに生まれた場合は、生まれた時刻が数分ちがうだけで結果が変わることがあります。</p>
+</section>
+<section id="numer">
+<h2>数秘術</h2>
+<p>数秘術は、生年月日とお名前を数字に変えて読みます。一桁になるまで数字を足していくのが基本です。ただし11・22・33は、そのまま残します。</p>
+<p class="ex">例：1990年6月15日 → 1+9+9+0 = 19 → 1+9 = 10 → 1+0 = 1、6月 = 6、15 → 1+5 = 6。全部足すと 1+6+6 = 13 → 1+3 = 4。ライフパスは4です。</p>
+<p>名前の数字は、お名前をローマ字にして、一文字ずつ決まった数字(A=1、B=2 … I=9、J=1にもどる)を足して出します。日本語の画面では、ひらがな・カタカナのお名前をローマ字に直して使います。漢字だけのお名前は、数字に変える計算をしません。</p>
+</section>
+<section id="note">
+<h2>知っておいていただきたいこと</h2>
+<ul>
+<li>計算は決まった規則に従いますが、リーディングの文章は、その結果をSANが読むひとつの読み方です。楽しみと参考としてご覧ください。健康・大きなお金・法律にかかわることは、専門家と相談して決めてください。</li>
+<li>ほかの命式ツールと結果がちがうときは、真太陽時を使っているか、子の刻をどう数えるか、サマータイムを反映しているかを、まず見くらべてみてください。</li>
+<li>生まれた時刻が正確でないと、時柱と上昇宮が変わることがあります。はっきりしない場合は、「生まれた時間がわからない」を選ぶほうが安心です。</li>
+</ul>
+</section>
+<a class="cta" href="../../ja/">SANでリーディングを見る</a>
+</main>
+<footer class="foot"><p>リーディングは、楽しみと参考のためのものです。</p></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+#!/bin/bash
+# SAN pre-commit — 방문 집계 코드(GA4 · Vercel Web Analytics)가 빠진 커밋을 막는다. CLAUDE.md 1번 참고.
+# 커밋하려는(스테이지된) 앱 파일마다 아래 다섯 가지가 모두 있어야 한다. 없는 파일(아직 만들지 않은 en/ja)은 건너뛴다.
+fail=0
+for f in index.html en/index.html ja/index.html; do
+  git cat-file -e ":$f" 2>/dev/null || continue
+  body="$(git show ":$f")"
+  for need in "googletagmanager.com/gtag/js?id=G-L7QPQ5GGL7" "gtag('config', 'G-L7QPQ5GGL7'" "/_vercel/insights/script.js" "sanissan.vercel.app" "jzzinsil.github.io"; do
+    if ! grep -qF -- "$need" <<<"$body"; then echo "✋ $f: 방문 집계 코드가 빠졌습니다 → $need"; fail=1; fi
+  done
+done
+if [ "$fail" != 0 ]; then
+  echo "커밋을 멈췄습니다. 방문 집계 코드(GA4 · Vercel Web Analytics)는 지우면 안 됩니다 — CLAUDE.md 1번을 읽어 주세요."
+  exit 1
+fi
+exit 0
